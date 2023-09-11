@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.douzone.comet.service.hr.pamprg.PAMPRG00100_Dao">
+
+	<select id="selectPAMPRG00100_ModelList" resultType="com.douzone.comet.service.hr.pamprg.models.PAMPRG00100_Model">		
+		SELECT	*
+		FROM	@{dzparam_dbname}HR_URGDBASETBL_INFO_X10005
+		WHERE 	1 = 1				
+	</select>
+
+	<select id="selectPAMPRG00100_Model" resultType="com.douzone.comet.service.hr.pamprg.models.PAMPRG00100_Model">		
+		SELECT	*
+		FROM	@{dzparam_dbname}HR_URGDBASETBL_INFO_X10005
+		WHERE	[columnName] = [columnValue]		
+	</select>
+
+	<insert id="insertPAMPRG00100_Model">		
+		INSERT INTO @{dzparam_dbname}HR_URGDBASETBL_INFO_X10005 (
+				[columnName]
+		) VALUES (
+				[columnValue]
+		)		
+	</insert>
+
+	<update id="updatePAMPRG00100_Model" >		
+		UPDATE	@{dzparam_dbname}HR_URGDBASETBL_INFO_X10005
+		SET		[columnName] = [columnValue]
+		WHERE	[columnName] = [columnValue]		
+	</update>
+
+	<delete id="deletePAMPRG00100_Model">		
+		DELETE
+		FROM	@{dzparam_dbname}HR_URGDBASETBL_INFO_X10005
+		WHERE	[columnName] = [columnValue]		
+	</delete>
+
+</mapper>

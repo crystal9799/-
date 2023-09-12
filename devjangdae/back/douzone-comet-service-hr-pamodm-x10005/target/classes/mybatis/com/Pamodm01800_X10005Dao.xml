@@ -4,36 +4,84 @@
    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.douzone.comet.service.hr.pamodm.dao.Pamodm01800_X10005Dao">
 
-	<select id="selectPamodm01800_X10005ModelList" resultType="com.douzone.comet.service.hr.pamodm.models.Pamodm01800_X10005Model">		
-		SELECT	*
-		FROM	@{dzparam_dbname}[tableName]
-		WHERE 	1 = 1				
+	<select id="HRPamodm01800_X10005Service_test" resultType="com.douzone.comet.service.hr.pamodm.models.Pamodm01800_X10005Model">		
+		SELECT -- [동서발전]행사정보 조회
+				A.COMPANY_CD		-- A.회사코드
+		        , A.EMP_NO		 	-- A.사원번호
+		        , B.KOR_NM			-- B.성명
+		       	, (
+		       		SELECT
+		       		COMET.FN_HR_UP_DEPT_NM2(A.COMPANY_CD, C.DEPT_CD , A.START_DT)
+		       		FROM DUAL L
+		       	  ) AS ORG 			-- L.소속
+		        , C.DEPT_CD			-- C.레벨
+		        , C.OGRP_CD			-- C.직군
+		        , C.PSTN_CD			-- C.직급
+		        , B.JNCO_DT			-- B.입사일
+		        , D.PRMT_DT			-- D.승격일
+		        , E.RETM_DT			-- E.퇴직예정일
+		        , A.START_DT		-- A.시작일
+		        , A.END_DT		 	-- A.종료일
+		        , E.TM_CD_NM		-- E.시간코드
+		        , A.DOF_TP		 	-- A.휴무유형
+		        , A.START_TM		-- A.시작시간
+		        , A.END_TM		 	-- A.종료시간
+		        , A.DOF_TM_CNT		-- A.휴무시간
+		        , A.LVE_TM_CNT 		-- A.이탈시간
+		FROM
+			HR_STRK_INFO_X10005 A
+		
+		    LEFT OUTER JOIN  (
+		    					SELECT COMPANY_CD, EMP_NO, KOR_NM, JNCO_DT, DEPT_CD FROM HR_EMP_MST
+		    ) B
+		    ON A.COMPANY_CD = B.COMPANY_CD
+		    AND A.EMP_NO = B.EMP_NO
+		        
+		    LEFT OUTER JOIN  (
+		                        SELECT 
+		                        RANK () OVER (PARTITION BY EMP_NO ORDER BY GNFD_DT DESC) AS ROW_IDX,
+		                        COMPANY_CD, EMP_NO, DEPT_CD, OGRP_CD, PSTN_CD, GNFD_DT FROM HR_HUAN_DTL
+		    ) C
+		    ON A.COMPANY_CD = C.COMPANY_CD
+		    AND A.EMP_NO = C.EMP_NO
+		    AND C.ROW_IDX = 1
+		        
+		    LEFT OUTER JOIN (   
+		        				SELECT MNG_DC AS PRMT_DT, COMPANY_CD, EMP_NO
+		                        FROM HR_EMP_SDTL 
+		                        WHERE MCLS_CD = 'EWP93'
+		                        AND MNG_DC IS NOT NULL
+		    ) D
+		    ON A.COMPANY_CD = D.COMPANY_CD
+		    AND A.EMP_NO = D.EMP_NO
+		        
+		    LEFT OUTER JOIN (   
+		        				SELECT MNG_DC AS RETM_DT, COMPANY_CD, EMP_NO
+		                        FROM HR_EMP_SDTL 
+		                        WHERE MCLS_CD = 'EWP50'
+		                        AND MNG_DC IS NOT NULL
+		    ) E
+		    ON A.COMPANY_CD = E.COMPANY_CD
+		    AND A.EMP_NO = E.EMP_NO
+		    
+			LEFT OUTER JOIN (
+								SELECT DISTINCT X.COMPANY_CD, W.EMP_NO, TM_CD_NM
+			    				FROM HR_OFFTIME_MST X
+			    				
+			    				INNER JOIN (
+			        						SELECT Z.TM_CD, Z.COMPANY_CD, Z.EMP_NO
+			        						FROM HR_STRK_INFO_X10005 Y
+			        						
+			        							LEFT OUTER JOIN 
+			        											HR_OFFDAILY_MST Z
+						        				ON Y.EMP_NO = Z.EMP_NO 
+						        				AND Y.START_DT = Z.BWRK_DT 
+						        				AND Y.COMPANY_CD = Z.COMPANY_CD
+			    				) W
+			    				ON (X.WORKTM_CD = W.TM_CD)
+			) E
+			ON A.COMPANY_CD = E.COMPANY_CD
+			AND A.EMP_NO = E.EMP_NO
 	</select>
-
-	<select id="selectPamodm01800_X10005Model" resultType="com.douzone.comet.service.hr.pamodm.models.Pamodm01800_X10005Model">		
-		SELECT	*
-		FROM	@{dzparam_dbname}[tableName]
-		WHERE	[columnName] = [columnValue]		
-	</select>
-
-	<insert id="insertPamodm01800_X10005Model">		
-		INSERT INTO @{dzparam_dbname}[tableName] (
-				[columnName]
-		) VALUES (
-				[columnValue]
-		)		
-	</insert>
-
-	<update id="updatePamodm01800_X10005Model" >		
-		UPDATE	@{dzparam_dbname}[tableName]
-		SET		[columnName] = [columnValue]
-		WHERE	[columnName] = [columnValue]		
-	</update>
-
-	<delete id="deletePamodm01800_X10005Model">		
-		DELETE
-		FROM	@{dzparam_dbname}[tableName]
-		WHERE	[columnName] = [columnValue]		
-	</delete>
 
 </mapper>

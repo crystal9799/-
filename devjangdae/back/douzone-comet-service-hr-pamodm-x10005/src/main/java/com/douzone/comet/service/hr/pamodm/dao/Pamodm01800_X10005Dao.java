@@ -30,8 +30,8 @@ public class Pamodm01800_X10005Dao {
 	 * @param Pamodm01800_X10005Model
 	 * @return List<Pamodm01800_X10005Model>
 	 */
-	public List<Pamodm01800_X10005Model> selectPamodm01800_AllDtModelList(Pamodm01800_X10005Model Pamodm01800_X10005Model) throws Exception {
-		return this.mybatisSupport.selectList(this.getClass().getName() + ".selectPamodm01800_AllDtModelList", Pamodm01800_X10005Model);
+	public List<Pamodm01800_X10005Model> HRPamodm01800_X10005Service_test(Pamodm01800_X10005Model Pamodm01800_X10005Model) throws Exception {
+		return this.mybatisSupport.selectList(this.getClass().getName() + ".HRPamodm01800_X10005Service_test", Pamodm01800_X10005Model);
 	}
 
 	/**

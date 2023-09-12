@@ -14,12 +14,12 @@ import com.douzone.comet.service.hr.pamprg.models.Pamprg00100_X10005Model;
   * @History : 
   */
 @Repository
-public class Pamprg00100_X100055Dao  {
+public class Pamprg00100_X10005Dao  {
 
 	private DzMybatisSupport mybatisSupport;
 
 	@Autowired
-	public Pamprg00100_X100055Dao(DzMybatisSupport mybatisSupport) {
+	public Pamprg00100_X10005Dao(DzMybatisSupport mybatisSupport) {
 		this.mybatisSupport = mybatisSupport;
 	}
 

@@ -8,7 +8,7 @@ import com.douzone.gpd.restful.annotation.DzApi;
 import com.douzone.gpd.restful.annotation.DzParam;
 import com.douzone.gpd.restful.enums.DzParamType;
 import com.douzone.gpd.restful.enums.DzRequestMethod;
-import com.douzone.comet.service.hr.pamprg.dao.Pamprg00100_X100055Dao;
+import com.douzone.comet.service.hr.pamprg.dao.Pamprg00100_X10005Dao;
 import com.douzone.comet.service.hr.pamprg.models.Pamprg00100_X10005Model;
 import org.springframework.beans.factory.annotation.Autowired;
 import com.douzone.gpd.components.exception.DzApplicationRuntimeException;
@@ -25,7 +25,7 @@ import java.util.ArrayList;
 public class HRPamprg00100_X10005Service extends DzCometService {
 
 	@Autowired
-	Pamprg00100_X100055Dao pamprg00100_X100055Dao;
+	Pamprg00100_X10005Dao pamprg00100_X10005Dao;
 
 	@DzApi(url = "/list_HR_URGDBASETBL_INFO_X10005MST", desc = "승급기준표-조회", httpMethod = DzRequestMethod.GET)
 	public List<Pamprg00100_X10005Model> list_HR_URGDBASETBL_INFO_X10005MST(
@@ -38,7 +38,7 @@ public class HRPamprg00100_X10005Service extends DzCometService {
 			pamprg00100_X10005Model.setStd_ym(STD_YM);
 			pamprg00100_X10005Model.setBizarea_cd(BIZAREA_CD);
  
-			pamprg00100_X10005ModelList = pamprg00100_X100055Dao
+			pamprg00100_X10005ModelList = pamprg00100_X10005Dao
 					.selectPamprg00100_X10005ModelList(pamprg00100_X10005Model);
 		} catch (Exception e) {
 			throw new DzApplicationRuntimeException(e);

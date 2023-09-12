@@ -1,0 +1,355 @@
+<?xml version="1.0" encoding="utf-8"?>
+<page title="직무분류등록" name="CDMJIM00100_직무분류등록도움창" type="dialog">
+  <canvas uid="canvas-1485142915113" type="dialog" dialogsize="big" title="직무분류등록" component="" function="">
+    <pageInformation>
+      <version>1.0</version>
+      <create>ahneh</create>
+      <modify>ahneh</modify>
+      <builddate d4p1:nil="true" xmlns:d4p1="http://www.w3.org/2001/XMLSchema-instance" />
+      <createdate>2020-08-06T15:00:18.8153943+09:00</createdate>
+      <modifieddate>2020-08-06T15:44:35.6213729+09:00</modifieddate>
+    </pageInformation>
+    <conditionPanel uid="conditionPanel-1485143399100" margin="false" optional="false" optionalcollapsed="true" columnLength="3" labelAlign="right">
+      <conditionGroup uid="conditionGroup-1485143399200" type="required">
+        <conditionItem uid="conditionItem-1485143453200" columnSize="1" text="검색어">
+          <textbox uid="textbox-1485143453201" id="textbox1" disabled="false" readonly="false" state="basic" predefined="false" useSecureMask="false" multiline="false" width_type="px" height_type="px" rows="0" maxlength="0" password="false" />
+        </conditionItem>
+      </conditionGroup>
+    </conditionPanel>
+    <buttonGroup uid="buttonGroup-1596694215756" align="right" bottom="false">
+      <button uid="button-1596694223916" text="추가" buttonType="normal" disabled="false" />
+      <button uid="button-1596694226416" text="삭제" buttonType="normal" disabled="false" />
+      <title uid="title-1596696186482" title="직무분류선택" type="h2" />
+    </buttonGroup>
+    <containerPanel uid="containerPanel-1596693687487" height_type="px" fitBottom="false" overflow="visible">
+      <containerItem uid="containerItem-1596693688019" width_type="px" width="213" location="left">
+        <grid uid="grid-1596693837044" mockupData="" id="grid1" dataSource="dataSource1" height_type="px" height="277" editable="false" movable="false" rowNo="true" selectable="false" checkable="false" sortable="false" shiftCheck="false" autoBind="true" requiredCheck="false" stateColumn="false" noData="false" noDataMessage="데이터가 없습니다" fillWidth="true" resizable="true" context="false" skipEdit="false" copyMode="cell" multiFooterCnt="0" useGridUserGroup="false">
+          <mockupText>64yA67aE66WYDQrspJHrtoTrpZgNCuyGjOu2hOulmA0K7IS467aE66WYDQrriqXroKXri6jsnIQ=</mockupText>
+          <columns>
+            <column uid="b0b39464-67c1-4fed-b367-c6e521b3fcaf" field="INSERT_FG" title="등록구분" width="150" align="center" editSkip="false" sortable="true" visible="true" hideChildHeaders="false" merge="false" grouping="false" groupable="true" movable="true" attributes="none" footerType="object">
+              <headerCheck used="false" location="right" />
+              <footer predefined="false" currency_type="value" currency="" align="center">
+                <group predefined="false" />
+              </footer>
+              <footerCollection />
+              <formats>
+                <DesignerControl />
+              </formats>
+              <editor>
+                <dropdownlist dataSource_type="value" dataSource="pipeDataSource1" dataValueField="SYSDEF_CD" dataTextField="SYSDEF_NM" autoOpen="false" editable_type="value" dataPipe="P04100" useDefault="false" defaultValue="" defaultText="">
+                  <dataSelectable />
+                </dropdownlist>
+              </editor>
+            </column>
+          </columns>
+          <gridGroupColumns />
+          <fixed colCount="0" rightColCount="0" />
+          <styles heightTyp="string">
+            <rowNo />
+            <cellBorder />
+            <font bold="false" />
+            <padding />
+            <heightObject />
+          </styles>
+        </grid>
+      </containerItem>
+      <containerItem uid="containerItem-1596693713376" width_type="px" width="" location="normal">
+        <grid uid="grid-1596694081703" mockupData="" id="grid2" dataSource="dataSource2" height_type="px" height="275" editable="false" movable="false" rowNo="true" selectable="false" checkable="true" sortable="false" shiftCheck="false" autoBind="true" requiredCheck="false" stateColumn="false" noData="false" noDataMessage="데이터가 없습니다" fillWidth="true" resizable="true" context="false" skipEdit="false" copyMode="cell" multiFooterCnt="0" useGridUserGroup="false">
+          <mockupText>MDEsIOyCrOyXheq0gOumrA0KMDIsIOqyveyYgcK37ZqM6rOEwrfsgqzrrLQNCjAzLCDquIjsnLXCt+uztO2XmA0KMDQsIOq1kOycocK37J6Q7Jewwrfsgqztmozqs7ztlZkNCjA1LOuyleuloMK36rK97LCwwrfshozrsKnCt+q1kOuPhMK36rWt67CpDQowNizrs7TqsbTCt+ydmOujjA0KMDcs7IKs7ZqM67O17KeAwrfsooXqtZANCjA4LOusuO2ZlMK37JiI7IigwrfrlJTsnpDsnbjCt+uwqeyGoQ==</mockupText>
+          <columns>
+            <column uid="76f20eef-7824-4d63-bc99-8d71a82b59aa" field="CODE" title="코드" width="60" align="center" editSkip="false" sortable="true" visible="true" hideChildHeaders="false" merge="false" grouping="false" groupable="true" movable="true" attributes="none" footerType="object">
+              <headerCheck used="false" location="right" />
+              <footer predefined="false" currency_type="value" currency="" align="center">
+                <group predefined="false" />
+              </footer>
+              <footerCollection />
+              <formats>
+                <DesignerControl />
+              </formats>
+              <editor>
+                <DesignerControl />
+              </editor>
+            </column>
+            <column uid="5d4ebd53-1ab4-4658-9bae-1ea6149814ad" field="NAME" title="명" width="150" align="center" editSkip="false" sortable="true" visible="true" hideChildHeaders="false" merge="false" grouping="false" groupable="true" movable="true" attributes="none" footerType="object">
+              <headerCheck used="false" location="right" />
+              <footer predefined="false" currency_type="value" currency="" align="center">
+                <group predefined="false" />
+              </footer>
+              <footerCollection />
+              <formats>
+                <DesignerControl />
+              </formats>
+              <editor>
+                <dropdownlist dataSource_type="value" dataSource="pipeDataSource2" dataValueField="SYSDEF_CD" dataTextField="SYSDEF_NM" autoOpen="false" editable_type="value" dataPipe="P02360" useDefault="false" defaultValue="" defaultText="">
+                  <dataSelectable />
+                </dropdownlist>
+              </editor>
+            </column>
+          </columns>
+          <gridGroupColumns />
+          <fixed colCount="0" rightColCount="0" />
+          <styles heightTyp="string">
+            <rowNo />
+            <cellBorder />
+            <font bold="false" />
+            <padding />
+            <heightObject />
+          </styles>
+        </grid>
+      </containerItem>
+    </containerPanel>
+    <buttonGroup uid="buttonGroup-1596695812548" align="right" bottom="false">
+      <title uid="title-1596695824720" title="선택내역" type="h2" />
+    </buttonGroup>
+    <containerPanel uid="containerPanel-1596695887994" height_type="px" fitBottom="false" overflow="visible">
+      <containerItem uid="containerItem-1596695888523" width_type="px" location="normal">
+        <grid uid="grid-1596695905116" mockupData="" id="grid3" dataSource="dataSource3" height_type="px" editable="false" movable="false" rowNo="false" selectable="false" checkable="false" sortable="false" shiftCheck="false" autoBind="true" requiredCheck="false" stateColumn="false" noData="false" noDataMessage="데이터가 없습니다" fillWidth="true" resizable="true" context="false" skipEdit="false" copyMode="cell" multiFooterCnt="0" useGridUserGroup="false">
+          <mockupText>6rK97JiBwrftmozqs4TCt+yCrOustCwg7LSd66y07J247IKsLOydvOuwmOyCrOustCzsgqzrrLTtlonsoJUs7IKs66y07ZmY6rK97KGw7ISx</mockupText>
+          <columns>
+            <column field="LCLAC_CD" title="대분류" width="80" align="center" editSkip="false" sortable="true" visible="true" hideChildHeaders="false" merge="false" grouping="false" groupable="true" movable="true" attributes="none" footerType="object">
+              <headerCheck used="false" location="right" />
+              <footer predefined="false" currency_type="value" currency="" align="center">
+                <group predefined="false" />
+              </footer>
+              <footerCollection />
+              <formats>
+                <DesignerControl />
+              </formats>
+              <editor>
+                <dropdownlist dataSource_type="value" dataSource="pipeDataSource3" dataValueField="SYSDEF_CD" dataTextField="SYSDEF_NM" autoOpen="false" editable_type="value" dataPipe="P00260" useDefault="false" defaultValue="" defaultText="">
+                  <dataSelectable />
+                </dropdownlist>
+              </editor>
+            </column>
+            <column field="MCLAS_CD" title="중분류" width="80" align="center" editSkip="false" sortable="true" visible="true" hideChildHeaders="false" merge="false" grouping="false" groupable="true" movable="true" attributes="none" footerType="object">
+              <headerCheck used="false" location="right" />
+              <footer predefined="false" currency_type="value" currency="" align="center">
+                <group predefined="false" />
+              </footer>
+              <footerCollection />
+              <formats>
+                <DesignerControl />
+              </formats>
+              <editor>
+                <dropdownlist dataSource_type="value" dataSource="pipeDataSource3" dataValueField="SYSDEF_CD" dataTextField="SYSDEF_NM" autoOpen="false" editable_type="value" dataPipe="P00680" useDefault="false" defaultValue="" defaultText="">
+                  <dataSelectable />
+                </dropdownlist>
+              </editor>
+            </column>
+            <column field="S_CSF_CD" title="소분류" width="80" align="center" editSkip="false" sortable="true" visible="true" hideChildHeaders="false" merge="false" grouping="false" groupable="true" movable="true" attributes="none" footerType="object">
+              <headerCheck used="false" location="right" />
+              <footer predefined="false" currency_type="value" currency="" align="center">
+                <group predefined="false" />
+              </footer>
+              <footerCollection />
+              <formats>
+                <DesignerControl />
+              </formats>
+              <editor>
+                <dropdownlist dataSource_type="value" dataSource="pipeDataSource3" dataValueField="SYSDEF_CD" dataTextField="SYSDEF_NM" autoOpen="false" editable_type="value" dataPipe="P00390" useDefault="false" defaultValue="" defaultText="">
+                  <dataSelectable />
+                </dropdownlist>
+              </editor>
+            </column>
+            <column field="N_CSF_CD" title="세분류" width="80" align="center" editSkip="false" sortable="true" visible="true" hideChildHeaders="false" merge="false" grouping="false" groupable="true" movable="true" attributes="none" footerType="object">
+              <headerCheck used="false" location="right" />
+              <footer predefined="false" currency_type="value" currency="" align="center">
+                <group predefined="false" />
+              </footer>
+              <footerCollection />
+              <formats>
+                <DesignerControl />
+              </formats>
+              <editor>
+                <DesignerControl />
+              </editor>
+            </column>
+            <column field="ABILITY_CD" title="능력단위" width="80" align="center" editSkip="false" sortable="true" visible="true" hideChildHeaders="false" merge="false" grouping="false" groupable="true" movable="true" attributes="none" footerType="object">
+              <headerCheck used="false" location="right" />
+              <footer predefined="false" currency_type="value" currency="" align="center">
+                <group predefined="false" />
+              </footer>
+              <footerCollection />
+              <formats>
+                <DesignerControl />
+              </formats>
+              <editor>
+                <codepicker helpCode="H_HR_COMP_MST_S" codeField="ABILITY_CD" textField="ABILITY_NM" helpCustom="false" helpTitle="역량도움창" helpSize="extra" useAjax="true" validation="true" editable_type="value">
+                  <mapping>
+                    <param parameter="company_cd" applyType="constant" />
+                    <param parameter="ability_fg" applyType="constant" />
+                    <param parameter="keyword" applyType="constant" />
+                  </mapping>
+                </codepicker>
+              </editor>
+            </column>
+          </columns>
+          <gridGroupColumns />
+          <fixed colCount="0" rightColCount="0" />
+          <styles heightTyp="string">
+            <rowNo />
+            <cellBorder />
+            <font bold="false" />
+            <padding />
+            <heightObject />
+          </styles>
+        </grid>
+      </containerItem>
+    </containerPanel>
+    <buttonGroup uid="buttonGroup-1485142915200" align="center" bottom="true">
+      <button uid="button-1485142971064" text="적용" buttonType="normal" disabled="false" />
+      <button uid="button-1485142973000" text="닫기" buttonType="normal" disabled="false" />
+    </buttonGroup>
+  </canvas>
+  <dataSources>
+    <datasource uid="datasource-285489f3cbaf497a817457109cee913d" id="dataSource1" isTreeGrid="false" grid="true" aggregate="false" group="false" userGroup="false" type="localdata" module="" service="" urlpattern="" params_type="none" params="" preview_type="none" preview="" localdata="5302e989-8751-4f12-a567-b4b0aed6c6cc" url="" useGroup="false" isMultiPipe="false" pipeparam="" pipecolumn="" paging="false" pagingCount="500" error="" DSType="Grid" isPost="false">
+      <mapping />
+      <columns>
+        <column field="INSERT_FG" unionfield="" dataType="string" editable="false" isID="false" isChildren="false" description="등록구분" useAggregate="false" aggregate="" useGroup="false" />
+      </columns>
+      <widgetSampleDatas />
+    </datasource>
+    <datasource uid="datasource-3cd5ffe2910f4b85a5e07f0667c36bc4" id="pipeDataSource1" isTreeGrid="false" grid="false" aggregate="false" group="false" userGroup="false" type="dataservice" module="CM" service="CommonCodeDtlService" urlpattern="common_ci_codeDtl_list" params_type="mapping" params="" preview_type="none" preview="" localdata="" url="" useGroup="false" isMultiPipe="true" pipeparam="field_cd_pipe" pipecolumn="FIELD_CD" paging="false" pagingCount="500" error="" DSType="None" isPost="false">
+      <mapping>
+        <param parameter="end_dt" applyType="constant" dataType="string" />
+        <param parameter="foreign_yn" applyType="constant" dataType="string" />
+        <param parameter="field_cd_pipe" applyType="constant" dataType="string" value="P04100" />
+        <param parameter="module_cd" applyType="constant" dataType="string" value="PS" />
+        <param parameter="syscode_yn" applyType="constant" dataType="string" />
+        <param parameter="keyword" applyType="constant" dataType="string" />
+        <param parameter="base_yn" applyType="constant" dataType="string" />
+      </mapping>
+      <columns>
+        <column field="FIELD_CD" unionfield="" dataType="string" editable="false" isID="false" isChildren="false" description="디테일코드" useAggregate="false" aggregate="" useGroup="false" />
+        <column field="SYSDEF_CD" unionfield="" dataType="string" editable="false" isID="false" isChildren="false" description="코드디테일코드" useAggregate="false" aggregate="" useGroup="false" />
+        <column field="SYSDEF_NM" unionfield="" dataType="string" editable="false" isID="false" isChildren="false" description="코드디테일명" useAggregate="false" aggregate="" useGroup="false" />
+        <column field="FLAG_CD" unionfield="" dataType="string" editable="false" isID="false" isChildren="false" description="참조코드" useAggregate="false" aggregate="" useGroup="false" />
+        <column field="END_DT" unionfield="" dataType="string" editable="false" isID="false" isChildren="false" description="종료일" useAggregate="false" aggregate="" useGroup="false" />
+      </columns>
+      <widgetSampleDatas />
+    </datasource>
+    <datasource uid="datasource-260932ffe88a4af194664e0fa7ace28f" id="dataSource2" isTreeGrid="false" grid="true" aggregate="false" group="false" userGroup="false" type="localdata" module="" service="" urlpattern="" params_type="none" params="" preview_type="none" preview="" localdata="13a14d3c-1acd-4340-a416-8435ebc0a690" url="" useGroup="false" isMultiPipe="false" pipeparam="" pipecolumn="" paging="false" pagingCount="500" error="" DSType="Grid" isPost="false">
+      <mapping />
+      <columns>
+        <column field="CODE" unionfield="" dataType="string" editable="false" isID="false" isChildren="false" description="코드" useAggregate="false" aggregate="" useGroup="false" />
+        <column field="NAME" unionfield="" dataType="string" editable="false" isID="false" isChildren="false" description="명" useAggregate="false" aggregate="" useGroup="false" />
+      </columns>
+      <widgetSampleDatas />
+    </datasource>
+    <datasource uid="datasource-532cf1f4a2764a42824d7960c09c40ff" id="pipeDataSource2" isTreeGrid="false" grid="false" aggregate="false" group="false" userGroup="false" type="dataservice" module="CM" service="CommonCodeDtlService" urlpattern="common_ci_codeDtl_list" params_type="mapping" params="" preview_type="none" preview="" localdata="" url="" useGroup="false" isMultiPipe="true" pipeparam="field_cd_pipe" pipecolumn="FIELD_CD" paging="false" pagingCount="500" error="" DSType="None" isPost="false">
+      <mapping>
+        <param parameter="end_dt" applyType="constant" dataType="string" />
+        <param parameter="foreign_yn" applyType="constant" dataType="string" />
+        <param parameter="field_cd_pipe" applyType="constant" dataType="string" value="P02360" />
+        <param parameter="module_cd" applyType="constant" dataType="string" value="HR" />
+        <param parameter="syscode_yn" applyType="constant" dataType="string" />
+        <param parameter="keyword" applyType="constant" dataType="string" />
+        <param parameter="base_yn" applyType="constant" dataType="string" />
+      </mapping>
+      <columns>
+        <column field="FIELD_CD" unionfield="" dataType="string" editable="false" isID="false" isChildren="false" description="디테일코드" useAggregate="false" aggregate="" useGroup="false" />
+        <column field="SYSDEF_CD" unionfield="" dataType="string" editable="false" isID="false" isChildren="false" description="코드디테일코드" useAggregate="false" aggregate="" useGroup="false" />
+        <column field="SYSDEF_NM" unionfield="" dataType="string" editable="false" isID="false" isChildren="false" description="코드디테일명" useAggregate="false" aggregate="" useGroup="false" />
+        <column field="FLAG_CD" unionfield="" dataType="string" editable="false" isID="false" isChildren="false" description="참조코드" useAggregate="false" aggregate="" useGroup="false" />
+        <column field="END_DT" unionfield="" dataType="string" editable="false" isID="false" isChildren="false" description="종료일" useAggregate="false" aggregate="" useGroup="false" />
+      </columns>
+      <widgetSampleDatas />
+    </datasource>
+    <datasource uid="datasource-eb556ea594a44a04988466d1bcadb818" id="dataSource3" isTreeGrid="false" grid="true" aggregate="false" group="false" userGroup="false" type="localdata" module="" service="" urlpattern="" params_type="none" params="" preview_type="none" preview="" localdata="b3a22ce5-76df-455e-8950-e42ec1cff90e" url="" useGroup="false" isMultiPipe="false" pipeparam="" pipecolumn="" paging="false" pagingCount="500" error="" DSType="Grid" isPost="false">
+      <mapping />
+      <columns>
+        <column field="LCLAC_CD" unionfield="" dataType="string" editable="false" isID="false" isChildren="false" description="대분류" useAggregate="false" aggregate="" useGroup="false" />
+        <column field="MCLAS_CD" unionfield="" dataType="string" editable="false" isID="false" isChildren="false" description="중분류" useAggregate="false" aggregate="" useGroup="false" />
+        <column field="S_CSF_CD" unionfield="" dataType="string" editable="false" isID="false" isChildren="false" description="소분류" useAggregate="false" aggregate="" useGroup="false" />
+        <column field="N_CSF_CD" unionfield="" dataType="string" editable="false" isID="false" isChildren="false" description="세분류" useAggregate="false" aggregate="" useGroup="false" />
+        <column field="ABILITY_CD" unionfield="" dataType="string" editable="false" isID="false" isChildren="false" description="능력단위" useAggregate="false" aggregate="" useGroup="false" />
+      </columns>
+      <widgetSampleDatas />
+    </datasource>
+    <datasource uid="datasource-4a3a3717d1d74b089e9110c5b438655a" id="pipeDataSource3" isTreeGrid="false" grid="false" aggregate="false" group="false" userGroup="false" type="dataservice" module="CM" service="CommonCodeDtlService" urlpattern="common_ci_codeDtl_list" params_type="mapping" params="" preview_type="none" preview="" localdata="" url="" useGroup="false" isMultiPipe="true" pipeparam="field_cd_pipe" pipecolumn="FIELD_CD" paging="false" pagingCount="500" error="" DSType="None" isPost="false">
+      <mapping>
+        <param parameter="end_dt" applyType="constant" dataType="string" />
+        <param parameter="foreign_yn" applyType="constant" dataType="string" />
+        <param parameter="field_cd_pipe" applyType="constant" dataType="string" value="P00260|P00680|P00390" />
+        <param parameter="module_cd" applyType="constant" dataType="string" value="MA" />
+        <param parameter="syscode_yn" applyType="constant" dataType="string" />
+        <param parameter="keyword" applyType="constant" dataType="string" />
+        <param parameter="base_yn" applyType="constant" dataType="string" />
+      </mapping>
+      <columns>
+        <column field="FIELD_CD" unionfield="" dataType="string" editable="false" isID="false" isChildren="false" description="디테일코드" useAggregate="false" aggregate="" useGroup="false" />
+        <column field="SYSDEF_CD" unionfield="" dataType="string" editable="false" isID="false" isChildren="false" description="코드디테일코드" useAggregate="false" aggregate="" useGroup="false" />
+        <column field="SYSDEF_NM" unionfield="" dataType="string" editable="false" isID="false" isChildren="false" description="코드디테일명" useAggregate="false" aggregate="" useGroup="false" />
+        <column field="FLAG_CD" unionfield="" dataType="string" editable="false" isID="false" isChildren="false" description="참조코드" useAggregate="false" aggregate="" useGroup="false" />
+        <column field="END_DT" unionfield="" dataType="string" editable="false" isID="false" isChildren="false" description="종료일" useAggregate="false" aggregate="" useGroup="false" />
+      </columns>
+      <widgetSampleDatas />
+    </datasource>
+  </dataSources>
+  <pageCssStyle><![CDATA[]]></pageCssStyle>
+  <stylesheets />
+  <javascripts />
+  <settings />
+  <datas>
+    <data id="5302e989-8751-4f12-a567-b4b0aed6c6cc" type="local"><![CDATA[[
+  {
+    "INSERT_FG": "대분류"
+  },
+  {
+    "INSERT_FG": "중분류"
+  },
+  {
+    "INSERT_FG": "소분류"
+  },
+  {
+    "INSERT_FG": "세분류"
+  },
+  {
+    "INSERT_FG": "능력단위"
+  }
+]]]></data>
+    <data id="13a14d3c-1acd-4340-a416-8435ebc0a690" type="local"><![CDATA[[
+  {
+    "CODE": "01",
+    "NAME": " 사업관리"
+  },
+  {
+    "CODE": "02",
+    "NAME": " 경영·회계·사무"
+  },
+  {
+    "CODE": "03",
+    "NAME": " 금융·보험"
+  },
+  {
+    "CODE": "04",
+    "NAME": " 교육·자연·사회과학"
+  },
+  {
+    "CODE": "05",
+    "NAME": "법률·경찰·소방·교도·국방"
+  },
+  {
+    "CODE": "06",
+    "NAME": "보건·의료"
+  },
+  {
+    "CODE": "07",
+    "NAME": "사회복지·종교"
+  },
+  {
+    "CODE": "08",
+    "NAME": "문화·예술·디자인·방송"
+  }
+]]]></data>
+    <data id="b3a22ce5-76df-455e-8950-e42ec1cff90e" type="local"><![CDATA[[
+  {
+    "LCLAC_CD": "경영·회계·사무",
+    "MCLAS_CD": " 총무인사",
+    "S_CSF_CD": "일반사무",
+    "N_CSF_CD": "사무행정",
+    "ABILITY_CD": "사무환경조성"
+  }
+]]]></data>
+  </datas>
+</page>

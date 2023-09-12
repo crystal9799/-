@@ -28,7 +28,7 @@ public class HREssodm01400_X10005Service extends DzCometService {
 	@Autowired
 	Essodm01400_x10005Dao essodm01400_x10005DAO; 
 
-	@DzApi(url="/list_HR_OFFAPPLY_MST_X10005", desc="결근계 조회", httpMethod=DzRequestMethod.GET)
+	@DzApi(url="/list_HR_OFFAPPLY_MST_X10005MST", desc="결근계 조회", httpMethod=DzRequestMethod.GET)
 	public List<Essodm01400_X10005Model> list_HR_OFFAPPLY_MST_X10005(
 		@DzParam(key="start_dt", desc="시작일", paramType = DzParamType.QueryString) String start_dt,
 		@DzParam(key="end_dt", desc="종료일", paramType = DzParamType.QueryString) String end_dt,
@@ -53,7 +53,7 @@ public class HREssodm01400_X10005Service extends DzCometService {
  	}
 
 	@Transactional(rollbackFor = Exception.class)
-	@DzApi(url="/save_HR_OFFAPPLY_MST_X10005", desc="결근계 신청", httpMethod=DzRequestMethod.POST)
+	@DzApi(url="/save_HR_OFFAPPLY_MST_X10005MST", desc="결근계 신청", httpMethod=DzRequestMethod.POST)
 	public void save_HR_OFFAPPLY_MST_X10005(
 		@DzParam(key="Essodm01400_X10005Model", desc="모델", paramType = DzParamType.Body) DzGridModel<Essodm01400_X10005Model> Essodm01400_X10005Model
 	) throws Exception {	    

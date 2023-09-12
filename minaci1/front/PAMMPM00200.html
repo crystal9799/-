@@ -1,0 +1,1764 @@
+<!--##d8beb647-0049-430d-ba17-e0c8035e31d3##-->
+<!--##PAMMPM00200##-->
+<!--##yyhFfb/ub7HDbK91QPvhVpmbQlgIFZSrfnVy5+MmuAk=##-->
+<!--
+  DEWS UI/UX IDE - Build Result - v1.5
+  # PageID: PAMMPM00200
+  # PageTitle: 출산휴가확인서등록
+  # Server: http://localhost:8090/
+-->
+<!--
+
+-->
+
+<div id="conditionPanel" class="dews-ui-condition-panel">
+  <ul class="required-area">
+    <li>
+      <label class="dews-ui-multilingual">등록일</label>
+      <span>
+        <span id="WRT_DT" class="dews-ui-periodpicker required"></span>
+      </span>
+    </li>
+    <li>
+      <label class="dews-ui-multilingual">신청종류</label>
+      <span>
+        <select id="REQ_KND_FG" name="REQ_KND_FG" class="dews-ui-dropdownlist basic" data-dews-value-field="SYSDEF_CD" data-dews-text-field="SYSDEF_NM" data-dews-show-tooltip="true" data-dews-option-label-value="" data-dews-option-label-text="" data-dews-show-value-tooltip="true" data-dews-use-numkey="false"></select>
+      </span>
+    </li>
+    <li>
+      <label class="dews-ui-multilingual">검색어</label>
+      <span>
+        <input id="KEYWORD" name="KEYWORD" type="text" class="dews-ui-textbox basic" />
+      </span>
+    </li>
+  </ul>
+</div>
+<div class="dews-button-group" style="text-align: right;">
+  <button class="dews-ui-button">신청서조회</button>
+  <button id="finish" class="dews-ui-button">마감</button>
+  <button id="cancelFinish" class="dews-ui-button">마감취소</button>
+</div>
+<div class="dews-ui-container-panel">
+  <div class="dews-container-item" data-dews-position="left" data-dews-width="531px">
+    <div id="mtnityidnfMaster_grid" class="dews-ui-grid"></div>
+  </div>
+  <div id="trgtpInfoPanel" class="dews-container-item" data-dews-position="normal" data-dews-width="600px">
+    <div id="topReqPanel" class="dews-ui-form-panel" data-dews-item-width="723">
+      <ul>
+        <li>
+          <label>신청번호</label>
+          <span>
+            <input id="DOC_NO" name="DOC_NO" type="text" data-dews-bind-column="DOC_NO" class="dews-ui-textbox" readonly="readonly" style="width: 132px;" />
+            <button id="REQNO_B" class="dews-ui-button">?</button>
+          </span>
+        </li>
+      </ul>
+      <ul>
+        <li>
+          <label>등록일</label>
+          <span>
+            <input type="text" id="WRT_DT_datepicker" name="WRT_DT_datepicker" class="dews-ui-datepicker required" data-dews-bind-column="WRT_DT" style="text-align: left;" />
+          </span>
+        </li>
+        <li>
+          <label>신고일</label>
+          <span>
+            <input type="text" id="DECL_DT_datepicker" name="DECL_DT_datepicker" class="dews-ui-datepicker basic" data-dews-bind-column="DECL_DT" />
+          </span>
+        </li>
+      </ul>
+    </div>
+    <div class="dews-ui-arcodien" data-dews-arcodien-height="0" data-dews-item-height="0">
+      <ul>
+        <li class="dews-arcodien-item" data-dews-item-title="사업장정보" data-dews-item-height="0" data-dews-item-open="true">
+          <div id="bizareaInfoPanel" class="dews-ui-form-panel">
+            <ul>
+              <li>
+                <label>사업장관리번호</label>
+                <span>
+                  <input id="BIZAREA_MNG_NO" name="BIZAREA_MNG_NO" type="text" class="dews-ui-textbox basic" />
+                </span>
+              </li>
+              <li>
+                <label>사업장</label>
+                <span>
+                  <input type="text" id="BIZAREA_CD" name="BIZAREA_CD" class="dews-ui-codepicker basic" data-dews-help-code="H_MA_BIZAREA_MST_S" data-dews-code-field="BIZAREA_CD" data-dews-text-field="BIZAREA_NM" data-dews-help-title="사업장 도움창" data-dews-help-custom="false" data-dews-help-size="medium" data-dews-use-keyword="false" />
+                </span>
+              </li>
+            </ul>
+            <ul>
+              <li class="col-2">
+                <label>사업장소재지</label>
+                <span>
+                  <input id="POST_NO" class="dews-ui-zipcodepicker basic" />
+                  <input id="BASE_ADDR" name="BASE_ADDR" type="text" class="dews-ui-textbox" style="width: 419px;" />
+                </span>
+              </li>
+            </ul>
+            <ul>
+              <li class="col-2">
+                <label>상세주소</label>
+                <span>
+                  <input id="DTL_ADDR" name="DTL_ADDR" type="text" class="dews-ui-textbox basic" />
+                </span>
+              </li>
+            </ul>
+            <ul>
+              <li>
+                <label>우선지원대상기업</label>
+                <span>
+                  <select id="PSPTCOM_YN" class="dews-ui-radio-group">
+                    <option class="dews-ui-multilingual" value="1">해당</option>
+                    <option class="dews-ui-multilingual" value="2">비해당</option>
+                  </select>
+                </span>
+              </li>
+              <li>
+                <label>담당자</label>
+                <span>
+                  <input type="text" id="RSPT_EMP_NO" name="RSPT_EMP_NO" class="dews-ui-codepicker basic" data-dews-help-code="H_HR_EMP_MST_S11" data-dews-code-field="EMP_NO" data-dews-text-field="KOR_NM" data-dews-help-title="사원도움창" data-dews-help-custom="false" data-dews-bind-code="RSPT_EMP_NO" data-dews-bind-text="RSPT_EMP_NM" data-dews-help-size="big" data-dews-ajax="true" />
+                </span>
+              </li>
+            </ul>
+            <ul>
+              <li>
+                <label>전화번호</label>
+                <span>
+                  <input id="RSPT_TEL_NO" name="RSPT_TEL_NO" type="text" class="dews-ui-textbox basic" />
+                </span>
+              </li>
+              <li>
+                <label>이메일</label>
+                <span>
+                  <input id="RSPT_EMAIL_NM" name="RSPT_EMAIL_NM" type="text" class="dews-ui-textbox basic" />
+                </span>
+              </li>
+            </ul>
+          </div>
+        </li>
+      </ul>
+    </div>
+    <div class="dews-ui-arcodien" data-dews-arcodien-height="0" data-dews-item-height="0">
+      <ul>
+        <li class="dews-arcodien-item" data-dews-item-title="대상자정보" data-dews-item-height="0" data-dews-item-open="true">
+          <div id="trgtpInfoPanel" class="dews-ui-form-panel">
+            <ul>
+              <li class="col-2">
+                <label>신청종류</label>
+                <span>
+                  <select id="REQ_KND_FG_radioBtn" class="dews-ui-radio-group" data-dews-bind-column="REQ_KND_FG">
+                    <option class="dews-ui-multilingual" value="1">출산전후휴가</option>
+                    <option class="dews-ui-multilingual" value="2">유산,사산휴가</option>
+                  </select>
+                </span>
+              </li>
+            </ul>
+            <ul>
+              <li>
+                <label>사원</label>
+                <span>
+                  <input id="KOR_NM" name="KOR_NM" type="text" class="dews-ui-textbox basic" readonly="readonly" />
+                </span>
+              </li>
+              <li>
+                <label>주민번호</label>
+                <span>
+                  <input id="RES_NO" name="RES_NO" type="text" class="dews-ui-maskedtextbox basic" data-dews-mask="000000-000000" readonly="readonly" data-dews-secure-mask="-,0,7" />
+                </span>
+              </li>
+            </ul>
+            <ul>
+              <li>
+                <label>출산(예정)일</label>
+                <span>
+                  <input type="text" id="CHLDBRTH_DT" name="CHLDBRTH_DT" class="dews-ui-datepicker basic" />
+                </span>
+              </li>
+              <li>
+                <label>분할사용여부</label>
+                <span>
+                  <select id="DIVD_YN" class="dews-ui-radio-group">
+                    <option class="dews-ui-multilingual" value="Y">예</option>
+                    <option class="dews-ui-multilingual" value="N">아니오</option>
+                  </select>
+                </span>
+              </li>
+            </ul>
+            <ul>
+              <li>
+                <label>임신기간(유산,사산)</label>
+                <span>
+                  <select id="TERM_CD" name="TERM_CD" class="dews-ui-dropdownlist basic" data-dews-value-field="SYSDEF_CD" data-dews-text-field="SYSDEF_NM" data-dews-show-tooltip="true" data-dews-show-value-tooltip="true" data-dews-use-numkey="false"></select>
+                </span>
+              </li>
+              <li>
+                <label>다태아여부</label>
+                <span>
+                  <select id="MLTPPRGN_YN" class="dews-ui-radio-group">
+                    <option class="dews-ui-multilingual" value="Y">예</option>
+                    <option class="dews-ui-multilingual" value="N">아니오</option>
+                  </select>
+                </span>
+              </li>
+            </ul>
+            <ul>
+              <li>
+                <label>통상임금산정기준</label>
+                <span>
+                  <select id="USL_WAGE_CD" name="USL_WAGE_CD" class="dews-ui-dropdownlist basic" data-dews-value-field="SYSDEF_CD" data-dews-text-field="SYSDEF_NM" data-dews-show-tooltip="true" style="width: 71px;" data-dews-show-value-tooltip="true" data-dews-use-numkey="false"></select>
+                </span>
+              </li>
+              <li>
+                <label>통상임금</label>
+                <span>
+                  <input id="USL_WAGE_AMT" name="USL_WAGE_AMT" type="text" class="dews-ui-numerictextbox basic" data-dews-increase-type="multiple" data-dews-increase-value="1000" data-dews-round="round" />
+                </span>
+              </li>
+            </ul>
+            <ul>
+              <li>
+                <label>월소정근로시간</label>
+                <span>
+                  <input id="MM_FIXED_LABORTM_DY" name="MM_FIXED_LABORTM_DY" type="text" class="dews-ui-numerictextbox basic" data-dews-increase-type="multiple" data-dews-increase-value="1000" data-dews-round="round" />
+                </span>
+              </li>
+              <li style="display: none;">
+                <label>라벨</label>
+                <span>
+                  <input id="EMP_NO" name="EMP_NO" type="text" data-dews-bind-column="EMP_NO" class="dews-ui-textbox basic" />
+                </span>
+              </li>
+            </ul>
+          </div>
+        </li>
+      </ul>
+    </div>
+    <div class="dews-ui-arcodien" data-dews-arcodien-height="0" data-dews-item-height="0">
+      <ul>
+        <li class="dews-arcodien-item" data-dews-item-title="대상기간급여내역" data-dews-item-height="0" data-dews-item-open="true">
+          <div class="dews-button-group" style="text-align: right;">
+            <button id="dtl_grid_add" class="dews-ui-button small">추가</button>
+            <button id="dtl_grid_delete" class="dews-ui-button small">삭제</button>
+          </div>
+          <div id="mtnityidnfDtl_grid" class="dews-ui-grid"></div>
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<style>
+    
+</style>
+
+
+
+<script>
+  dews.ready(function () {
+    var self = this;
+    self.version = self.version || {};
+    self.version.view='1.0';
+
+
+    /*1971b570-3149-4a90-9fb8-7767c38f18ed*/ self.WRT_DT.setStartDate(getStartDate());
+    self.WRT_DT.setEndDate(new Date());
+    
+    
+    
+    
+    
+    self.mtnityidnfMaster_ds = dews.ui.dataSource('mtnityidnfMaster_ds', {
+      grid: true,
+      transport: {
+        read: {
+          type: 'post',
+          url: dews.url.getApiUrl('HR', 'PAMMPM00200_Service', 'Pammpm00200_selectAllData'),
+          data: function () {
+            return {
+              wrtDt_start: self.WRT_DT.getStartDate(),
+              wrtDt_end: self.WRT_DT.getEndDate(),
+              keyword: self.KEYWORD.text(),
+              req_knd_fg: self.REQ_KND_FG.value()
+            };
+          }
+        }
+      },
+      schema: {
+        model: {
+          fields: [
+            { field: '_uid', editable: false, dataType: 'string' }, 
+            { field: 'COMPANY_CD', editable: false, dataType: 'string' }, 
+            { field: 'EMP_NO', editable: false, dataType: 'string' }, 
+            { field: 'KEYWORD', editable: false, dataType: 'string' }, 
+            { field: 'DOC_NO', editable: false, dataType: 'string' }, 
+            { field: 'DECL_DT', editable: false, dataType: 'string' }, 
+            { field: 'WRT_DT', editable: false, dataType: 'string' }, 
+            { field: 'WRTDT_START', editable: false, dataType: 'string' }, 
+            { field: 'WRTDT_END', editable: false, dataType: 'string' }, 
+            { field: 'CLOSE_YN', editable: false, dataType: 'string' }, 
+            { field: 'REQ_KND_FG', editable: false, dataType: 'string' }, 
+            { field: 'KOR_NM', editable: false, dataType: 'string' }, 
+            { field: 'BIZAREA_MNG_NO', editable: false, dataType: 'string' }, 
+            { field: 'BIZAREA_NM', editable: false, dataType: 'string' }, 
+            { field: 'POST_NO', editable: false, dataType: 'string' }, 
+            { field: 'ADDR_TP', editable: false, dataType: 'string' }, 
+            { field: 'BASE_ADDR', editable: false, dataType: 'string' }, 
+            { field: 'DTL_ADDR', editable: false, dataType: 'string' }, 
+            { field: 'PSPTCOM_YN', editable: false, dataType: 'string' }, 
+            { field: 'RSPT_EMP_NO', editable: false, dataType: 'string' }, 
+            { field: 'RSPT_TEL_NO', editable: false, dataType: 'string' }, 
+            { field: 'RSPT_EMAIL_NM', editable: false, dataType: 'string' }, 
+            { field: 'RES_NO', editable: false, dataType: 'string' }, 
+            { field: 'CHLDBRTH_DT', editable: false, dataType: 'string' }, 
+            { field: 'DIVD_YN', editable: false, dataType: 'string' }, 
+            { field: 'TERM_CD', editable: false, dataType: 'string' }, 
+            { field: 'MLTPPRGN_YN', editable: false, dataType: 'string' }, 
+            { field: 'USL_WAGE_CD', editable: false, dataType: 'string' }, 
+            { field: 'USL_WAGE_AMT', editable: false, dataType: 'number' }, 
+            { field: 'MM_FIXED_LABORTM_DY', editable: false, dataType: 'number' }, 
+            { field: 'BIZAREA_CD', editable: false, dataType: 'number' }, 
+            { field: 'RSPT_EMP_NM', editable: false, dataType: 'string' }
+          ]
+    
+        }
+      }
+    });
+    self.mtnityidnfDtl_ds = dews.ui.dataSource('mtnityidnfDtl_ds', {
+      grid: true,
+      transport: {
+        read: {
+          type: 'post',
+          url: dews.url.getApiUrl('HR', 'PAMMPM00200_Service', 'Pammpm00200_selectHrMtnityidnfDtl'),
+          data: function () {
+            return {
+              doc_no: self.DOC_NO.text(),
+              emp_no: self.EMP_NO.text()
+            };
+          }
+        }
+      },
+      schema: {
+        model: {
+          fields: [
+            { field: '_uid', editable: false, dataType: 'string' }, 
+            { field: 'COMPANY_CD', editable: false, dataType: 'string' }, 
+            { field: 'EMP_NO', editable: false, dataType: 'string' }, 
+            { field: 'KEYWORD', editable: false, dataType: 'string' }, 
+            { field: 'DOC_NO', editable: false, dataType: 'string' }, 
+            { field: 'DECL_DT', editable: false, dataType: 'string' }, 
+            { field: 'WRT_DT', editable: false, dataType: 'string' }, 
+            { field: 'WRTDT_START', editable: false, dataType: 'string' }, 
+            { field: 'WRTDT_END', editable: false, dataType: 'string' }, 
+            { field: 'CLOSE_YN', editable: false, dataType: 'string' }, 
+            { field: 'REQ_KND_FG', editable: false, dataType: 'string' }, 
+            { field: 'KOR_NM', editable: false, dataType: 'string' }, 
+            { field: 'BIZAREA_MNG_NO', editable: false, dataType: 'string' }, 
+            { field: 'BIZAREA_NM', editable: false, dataType: 'string' }, 
+            { field: 'POST_NO', editable: false, dataType: 'string' }, 
+            { field: 'ADDR_TP', editable: false, dataType: 'string' }, 
+            { field: 'BASE_ADDR', editable: false, dataType: 'string' }, 
+            { field: 'DTL_ADDR', editable: false, dataType: 'string' }, 
+            { field: 'PSPTCOM_YN', editable: false, dataType: 'string' }, 
+            { field: 'RSPT_EMP_NO', editable: false, dataType: 'string' }, 
+            { field: 'RSPT_TEL_NO', editable: false, dataType: 'string' }, 
+            { field: 'RSPT_EMAIL_NM', editable: false, dataType: 'string' }, 
+            { field: 'TRGTP_RES_NO', editable: false, dataType: 'string' }, 
+            { field: 'CHLDBRTH_DT', editable: false, dataType: 'string' }, 
+            { field: 'DIVD_YN', editable: false, dataType: 'string' }, 
+            { field: 'TERM_CD', editable: false, dataType: 'string' }, 
+            { field: 'MLTPPRGN_YN', editable: false, dataType: 'string' }, 
+            { field: 'USL_WAGE_CD', editable: false, dataType: 'string' }, 
+            { field: 'PAY_AMT', editable: false, dataType: 'number' }, 
+            { field: 'MM_FIXED_LABORTM_DY', editable: false, dataType: 'number' }, 
+            { field: 'BIZAREA_CD', editable: false, dataType: 'number' }, 
+            { field: 'BWRK_DY', editable: false, dataType: 'number' }, 
+            { field: 'PAY_YN', editable: false, dataType: 'string' }, 
+            { field: 'START_DT', editable: false, dataType: 'string' }, 
+            { field: 'END_DT', editable: false, dataType: 'string' }, 
+            { field: 'USL_WAGE_AMT', editable: false, dataType: 'number' }, 
+            { field: 'SQ_NO', editable: false, dataType: 'string' }
+          ]
+    
+        }
+      }
+    });
+    dews.api.get(dews.url.getApiUrl('CM', 'CommonCodeDtlService', 'common_ci_codeDtl_list'),{
+      async: false,
+      data: {
+          end_dt: '',
+          foreign_yn: '',
+          field_cd_pipe: 'P00520|P02010',
+          module_cd: 'HR',
+          syscode_yn: '',
+          keyword: '',
+          base_yn: ''
+      }
+    }).done(function (data) {
+      var ar_P00520 = new Array();
+      var ar_P02010 = new Array();
+    
+      for (var i = 0; i < data.length; i++) {
+        if (data[i].FIELD_CD == "P00520") { 
+          ar_P00520.push(data[i]); 
+    
+        }
+        else if (data[i].FIELD_CD == "P02010") { 
+          ar_P02010.push(data[i]); 
+    
+        }
+      }
+      self.pipeDataSource1_P00520 = dews.ui.dataSource('pipeDataSource1_P00520',  { data: ar_P00520 });
+      self.pipeDataSource1_P02010 = dews.ui.dataSource('pipeDataSource1_P02010',  { data: ar_P02010 });
+      self.pipeDataSource1 = dews.ui.dataSource('pipeDataSource1', { data: data });
+      
+    });
+    dews.api.get(dews.url.getApiUrl('CM', 'CommonCodeDtlService', 'common_ci_codeDtl_list'),{
+      async: false,
+      data: {
+          end_dt: '',
+          foreign_yn: '',
+          field_cd_pipe: 'S00320',
+          module_cd: 'MA',
+          syscode_yn: '',
+          keyword: '',
+          base_yn: ''
+      }
+    }).done(function (data) {
+      var ar_S00320 = new Array();
+    
+      for (var i = 0; i < data.length; i++) {
+        if (data[i].FIELD_CD == "S00320") { 
+          ar_S00320.push(data[i]); 
+    
+        }
+      }
+      self.pipeDataSource2_S00320 = dews.ui.dataSource('pipeDataSource2_S00320',  { data: ar_S00320 });
+      self.pipeDataSource2 = dews.ui.dataSource('pipeDataSource2', { data: data });
+      
+    });
+    dews.api.get(dews.url.getApiUrl('CM', 'CommonCodeDtlService', 'common_codeDtl_list'),{
+      async: false,
+      data: {
+          dept_cd: '',
+          base_dt: '',
+          end_dt: '',
+          crud_fg: '',
+          menu_cd: '',
+          foreign_yn: '',
+          up_sysdef_cd: '',
+          field_cd_pipe: 'P03510',
+          module_cd: 'HR',
+          company_cd: '',
+          syscode_yn: '',
+          keyword: '',
+          base_yn: ''
+      }
+    }).done(function (data) {
+      var ar_P03510 = new Array();
+    
+      for (var i = 0; i < data.length; i++) {
+        if (data[i].FIELD_CD == "P03510") { 
+          ar_P03510.push(data[i]); 
+    
+        }
+      }
+      self.HR_P03510_DS_P03510 = dews.ui.dataSource('HR_P03510_DS_P03510',  { data: ar_P03510 });
+      self.HR_P03510_DS = dews.ui.dataSource('HR_P03510_DS', { data: data });
+      
+    });
+    dews.api.get(dews.url.getApiUrl('CM', 'CommonCodeDtlService', 'common_codeDtl_list'),{
+      async: false,
+      data: {
+          dept_cd: '',
+          base_dt: '',
+          end_dt: '',
+          crud_fg: '',
+          menu_cd: '',
+          foreign_yn: '',
+          up_sysdef_cd: '',
+          field_cd_pipe: 'P03500',
+          module_cd: 'HR',
+          company_cd: '',
+          syscode_yn: '',
+          keyword: '',
+          base_yn: ''
+      }
+    }).done(function (data) {
+      var ar_P03500 = new Array();
+    
+      for (var i = 0; i < data.length; i++) {
+        if (data[i].FIELD_CD == "P03500") { 
+          ar_P03500.push(data[i]); 
+    
+        }
+      }
+      self.HR_P03500_DS_P03500 = dews.ui.dataSource('HR_P03500_DS_P03500',  { data: ar_P03500 });
+      self.HR_P03500_DS = dews.ui.dataSource('HR_P03500_DS', { data: data });
+      
+    });
+    dews.api.get(dews.url.getApiUrl('CM', 'CommonCodeDtlService', 'common_codeDtl_list'),{
+      async: false,
+      data: {
+          dept_cd: '',
+          base_dt: '',
+          end_dt: '',
+          crud_fg: '',
+          menu_cd: '',
+          foreign_yn: '',
+          up_sysdef_cd: '',
+          field_cd_pipe: 'P03520',
+          module_cd: 'HR',
+          company_cd: '',
+          syscode_yn: '',
+          keyword: '',
+          base_yn: ''
+      }
+    }).done(function (data) {
+      var ar_P03520 = new Array();
+    
+      for (var i = 0; i < data.length; i++) {
+        if (data[i].FIELD_CD == "P03520") { 
+          ar_P03520.push(data[i]); 
+    
+        }
+      }
+      self.dataSourceP03520_P03520 = dews.ui.dataSource('dataSourceP03520_P03520',  { data: ar_P03520 });
+      self.dataSourceP03520 = dews.ui.dataSource('dataSourceP03520', { data: data });
+      
+    });
+    self.payYN_ds = dews.ui.dataSource('payYN_ds', {
+      schema: {
+        model: {
+          fields: [
+            { field: 'YN_CD', editable: false, type: 'string' }, 
+            { field: 'YN_NM', editable: false, type: 'string' }
+          ]
+    
+        }
+      },
+      data: [{"YN_CD": "Y","YN_NM": "Yes"},{"YN_CD": "N","YN_NM": "No"}]
+    });
+    self.close_yn_ds = dews.ui.dataSource('close_yn_ds', {
+      schema: {
+        model: {
+          fields: [
+            { field: 'CLOSE_YN', editable: false, type: 'string' }, 
+            { field: 'CLOSE_YN_NM', editable: false, type: 'string' }
+          ]
+    
+        }
+      },
+      data: [{
+            "CLOSE_YN": "Y",
+            "CLOSE_YN_NM": "Yes",
+          },
+          {
+            "CLOSE_YN": "N",
+            "CLOSE_YN_NM": "No",
+          }]
+    });
+    
+    
+    dews.ui.mainbuttons.information.disable(true);
+    dews.ui.mainbuttons.localize.disable(true);
+    dews.ui.mainbuttons.approval.hide();
+    dews.ui.mainbuttons.etnapproval.hide();
+    dews.ui.mainbuttons.add.click(/*1b424883-798c-4da5-9e4b-6a4db933faa5*/ function (e) {
+        var dialog, initData;
+        initData = {
+            mode: 'multi',
+            code: 'H_HR_EMP_MST_S11',
+            params: {},
+            data: null
+        }
+        dialog = dews.ui.dialog("H_HR_EMP_MST_S11", {
+            url: '~/CODEHELP.html',
+            title: dews.localize.get('사원 도움창', 'D0010047', '', 'PAMMPM00200'),
+            width: 746,
+            height: 540,
+            buttons: 'applyAndClose',
+            ok: function (data) {
+                // callback 받아서 그리드에 셋팅해주는 부분
+                var idx;
+                $.each(data, function (idx, obj) {
+                    console.log("obj값은 " + obj);
+                    var mstGrid = self.mtnityidnfMaster_grid;
+                    var dupleFlag = false;
+                    $.each(mstGrid.dataItems(), function (idx2, val2) {
+                        if (val2.EMP_NO == obj.EMP_NO) { // 추가하는 사원이 마스터 그리드에 있으면
+                            dews.ui.snackbar.warning('마스터 그리드에 똑같은 사원이 있습니다.');
+                            dupleFlag = true;
+                            return false; // break
+                        }
+                    });
+                    if (dupleFlag == false) { // 중복되는 사원이 없으면
+                        // 마스터 그리드에 추가
+                        mstGrid.addRow();
+                        idx = mstGrid.select();
+                        mstGrid.setCellValue(idx, 'WRT_DT', new Date(), false); // 등록일
+                        mstGrid.setCellValue(idx, 'CLOSE_YN', 'N', false); // 마감여부
+                        mstGrid.setCellValue(idx, 'REQ_KND_FG', '1', false); // 신청종류
+                        mstGrid.setCellValue(idx, 'EMP_NO', obj.EMP_NO, false); // 사원번호
+                        mstGrid.setCellValue(idx, 'KOR_NM', obj.KOR_NM, false); // 사원명
+                        mstGrid.setCellValue(idx, 'BIZAREA_CD', obj.BIZAREA_CD, false); // 사업장코드
+                        GetMngNo(obj.BIZAREA_CD);
+                        GetBizareaInfo(obj.BIZAREA_CD);
+                        GetPsptComYn();
+                        GetResNo(obj.EMP_NO); // 주민번호 조회
+    
+    
+                        console.log("self.user['empCode']" + self.user['empCode']);
+    
+    
+                        GetLoginMemberInfo(self.user['empCode']); //반환 받아야 함...
+                        mstGrid.setCellValue(idx, "RSPT_EMP_NO", self.user['empCode'], false); // 담당자
+                        mstGrid.setCellValue(idx, "DIVD_YN", 'N', false); // 분할여부
+                        mstGrid.setCellValue(idx, "TERM_CD", '1', false); // 임신기간
+                        mstGrid.setCellValue(idx, "MLTPPRGN_YN", 'N', false); // 다태아여부
+                        mstGrid.setCellValue(idx, "USL_WAGE_CD", '1', false); // 통상임금산정기준
+    
+                        if (!obj.hasOwnProperty('DECL_DT')) {
+                            mstGrid.setCellValue(idx, 'DECL_DT', getTodayDate(), false); // 신고일
+                        }
+    
+                        self.mtnityidnfMaster_grid.bindPanel(self.topReqPanel);
+                        self.mtnityidnfMaster_grid.bindPanel(self.bizareaInfoPanel);
+                        self.mtnityidnfMaster_grid.bindPanel(self.trgtpInfoPanel);
+                        enableEdit();
+                    }
+                });
+            }
+        });
+        dialog.setInitData(initData);
+        dialog.open();
+    });
+    dews.ui.mainbuttons.search.click(/*3dceaecc-319c-43e3-a6bb-327bcace4a48*/ function () {
+    
+        var mstCnt = self.mtnityidnfMaster_ds.getDirtyDataCount();
+        var dtlCnt = self.mtnityidnfDtl_ds.getDirtyDataCount();
+    
+        if (isThisValidCondition()) { // 필수체크
+            if (mstCnt + dtlCnt >= 1) { // 수정한 데이터가 있으면
+                dews.confirm('저장되지 않은 데이터가 있습니다.\n그래도 조회 하시겠습니까?', "question").yes(function () {
+                    SearchData();
+                }).no(function () {
+                });
+            } else {
+                SearchData();
+            }
+        }
+    
+    });
+    dews.ui.mainbuttons.delete.click(/*c69b012d-617a-4849-9cdc-5bd400530bd7*/ function (e) {
+        var mstGrid = self.mtnityidnfMaster_grid;
+        var checkedIndexes = mstGrid.getCheckedIndex();
+    
+        if (checkedIndexes.length === 0) { // 체크된 row가 0개 이면
+            dews.ui.snackbar.warning("삭제할 사원을 체크해주세요."); // 경고창 띄어주기
+        } else {
+            console.log(mstGrid.getCellValue(checkedIndexes[0], "CLOSE_YN")); // 첫 번째 체크된 항목에 대한 CLOSE_YN 값을 가져옴
+            if (mstGrid.getCellValue(checkedIndexes[0], "CLOSE_YN") == 'N') {
+                mstGrid.removeRow(checkedIndexes);
+            } else {
+                dews.ui.snackbar.warning("마감된 자료는 삭제할 수 없습니다."); // 경고창 띄어주기
+            }
+    
+        }
+    });
+    dews.ui.mainbuttons.save.click(/*fe04b2fe-5748-44f6-9628-3e179f56225b*/ function () {
+    
+        self.mtnityidnfMaster_grid.commitCell(); // commitCell : 수정모드 종료
+        self.mtnityidnfDtl_grid.commitCell();
+    
+        var mstCnt = self.mtnityidnfMaster_ds.getDirtyDataCount();
+        var dtlCnt = self.mtnityidnfDtl_ds.getDirtyDataCount();
+    
+        console.log("mstCnt" + mstCnt);
+        console.log("dtlCnt" + dtlCnt);
+    
+        if (mstCnt + dtlCnt <= 0) {
+            dews.ui.snackbar.warning("변경된 내용이 없습니다.");
+        } else {
+            if (Is_validate()) {
+                dews.api.batchSave(dews.url.getApiUrl('HR', 'PAMMPM00200_Service', 'pammpm00200_service_save')
+                    , self.mtnityidnfMaster_ds, self.mtnityidnfDtl_ds)
+                    .done(function (data) {
+                        dews.ui.snackbar.ok("저장 되었습니다.");
+                        SearchData(); // 재조회
+                    }).fail(function (message) {
+                        dews.ui.snackbar.warning("저장을 실패하였습니다.");
+                    });
+    
+            } else {
+                dews.ui.snackbar.warning("필수값을 입력해주세요.");
+            }
+        }
+    });
+    self.REQ_KND_FG.setDataSource(self.HR_P03500_DS_P03500);
+    self.$finish.on('click', /*aecad3d0-01c7-4500-9e74-57e7e3dababf*/ function (e) {
+        var grid = self.mtnityidnfMaster_grid;
+        var checkedFg = false;  // 체크 여부
+    
+        if (getValueFromDOC_NO() == '') {
+            dews.ui.snackbar.warning("저장 후 마감처리해주세요");
+            return false;
+        }
+        else {
+            $.each(grid.getCheckedIndex(), function (idx, value) {
+                grid.setCellValue(value, 'CLOSE_YN', 'Y', false); // 현재 ROW의 마감여부 Y로 변경
+                if (grid.getCellValue(value, "DECL_DT") === null || grid.getCellValue(value, "DECL_DT") === undefined) { // 현재 ROW의 DECL_DT(신고일)가 NULL이면
+                    grid.setCellValue(value, 'DECL_DT', getTodayDate(), false); // 현재 ROW의 신고일 시스템일자로 변경
+                }
+                dews.ui.snackbar.ok("마감되었습니다.");
+                checkedFg = true;
+            })
+    
+            if (checkedFg == true) {
+                disableEdit(); // 수정 불가능하게 설정
+                self.mtnityidnfMaster_ds.batchSave(dews.url.getApiUrl('HR', 'PersonalAdministrationManagementMPMService', 'Pammpm00200_MasterData_finish')
+                    , { // 선택된 ROW만 변경 움직임 CLOSE_YN 만 있을 것임
+                        async: false,
+                        callback: function (result) {
+                        }
+                    }).done(function (data) {
+                        self.mtnityidnfMaster_ds.read();
+                        grid.setCellValue(value, 'CLOSE_YN', 'N', false);
+                        dews.ui.snackbar.ok("마감 취소되었습니다.");
+                    }).fail(function (data) {
+                        dews.ui.snackbar.warning("마감 취소가 실패하였습니다.");
+                    })
+    
+            }
+            else if (checkedFg == false) {
+                dews.ui.snackbar.warning("마감할 사원을 체크해주세요.");
+            }
+        }
+    });
+    self.$cancelFinish.on('click', /*e93e9ef0-e8e5-45b4-9371-c3400690610d*/ function (e) {
+        var grid = self.mtnityidnfMaster_grid;
+        var checkedFg = false;  // 체크 여부
+    
+        $.each(grid.getCheckedIndex(), function (idx, value) {
+            grid.setCellValue(value, 'CLOSE_YN', 'N', false); // 선택된 row의 마감여부 N으로 변경 마감 N 일 경우 chedckedFg = true
+            checkedFg = true;
+        })
+    
+        if (checkedFg == true) {
+            enableEdit(); // 수정 가능하게 설정
+    
+            self.mtnityidnfMaster_ds.batchSave(dews.url.getApiUrl('HR', 'PersonalAdministrationManagementMPMService', 'Pammpm00200_MasterData_finish')
+                , { // 선택된 ROW만 변경 움직임 CLOSE_YN 만 있을 것임
+                    async: false,
+                    callback: function (result) {
+                    }
+                }).done(function (data) {
+                    self.mtnityidnfMaster_ds.read();
+                    dews.ui.snackbar.ok("마감 취소되었습니다.");
+                }).fail(function (data) {
+                    dews.ui.snackbar.warning("마감 취소가 실패하였습니다.");
+                })
+        } else if (checkedFg == false) {
+            dews.ui.snackbar.warning("마감 취소할 사원을 선택해주세요.");
+        }
+    
+    });
+    dews.ui.grid(self.$mtnityidnfMaster_grid, {
+      dataSource: self.mtnityidnfMaster_ds,
+      height: 691,
+      sortable: false,
+      copyMode: 'cell',
+      columns: [
+        {
+          field: '_uid',
+          title: '_uid',
+          width: 60,
+          visible: false
+        },
+        {
+          field: 'COMPANY_CD',
+          title: '회사코드',
+          width: 80,
+          visible: false
+        },
+        {
+          field: 'KEYWORD',
+          title: '검색어',
+          width: 60,
+          visible: false
+        },
+        {
+          field: 'DOC_NO',
+          title: '문서번호',
+          width: 60,
+          visible: false
+        },
+        {
+          field: 'DECL_DT',
+          title: '신고일',
+          width: 80,
+          visible: false,
+          formats: {
+            type: 'date',
+            format: 'yyyy-MM-dd'
+          },
+          editor: {
+            type: 'date',
+            format: 'yyyy-MM-dd'
+          }
+        },
+        {
+          field: 'WRT_DT',
+          title: '작성일',
+          width: 80,
+          attributes: { class: 'required' },
+          formats: {
+            type: 'date',
+            format: 'yyyy-MM-dd'
+          },
+          editor: {
+            type: 'date',
+            format: 'yyyy-MM-dd'
+          }
+        },
+        {
+          field: 'WRTDT_START',
+          title: '시작일',
+          width: 60,
+          visible: false
+        },
+        {
+          field: 'WRTDT_END',
+          title: '종료일',
+          width: 60,
+          visible: false
+        },
+        {
+          field: 'CLOSE_YN',
+          title: '마감여부',
+          width: 60,
+          formats: {
+            type: 'dataSource',
+            dataSource: self.close_yn_ds,
+            dataValueField: 'CLOSE_YN',
+            dataTextField: 'CLOSE_YN_NM'
+          }
+        },
+        {
+          field: 'REQ_KND_FG',
+          title: '신청종류구분',
+          width: 60,
+          formats: {
+            type: 'dataSource',
+            dataSource: self.HR_P03500_DS,
+            dataValueField: 'SYSDEF_CD',
+            dataTextField: 'SYSDEF_NM'
+          }
+        },
+        {
+          field: 'EMP_NO',
+          title: '사원번호',
+          width: 60
+        },
+        {
+          field: 'KOR_NM',
+          title: '한글명',
+          width: 90,
+          align: 'left'
+        },
+        {
+          field: 'BIZAREA_MNG_NO',
+          title: '사업장관리번호',
+          width: 60,
+          visible: false
+        },
+        {
+          field: 'BIZAREA_NM',
+          title: '사업장명',
+          width: 90,
+          align: 'left',
+          visible: false
+        },
+        {
+          field: 'POST_NO',
+          title: '우편번호',
+          width: 60,
+          visible: false
+        },
+        {
+          field: 'ADDR_TP',
+          title: '주소유형',
+          width: 90,
+          align: 'left',
+          visible: false
+        },
+        {
+          field: 'BASE_ADDR',
+          title: '기본주소',
+          width: 90,
+          align: 'left',
+          visible: false
+        },
+        {
+          field: 'DTL_ADDR',
+          title: '상세주소',
+          width: 90,
+          align: 'left',
+          visible: false
+        },
+        {
+          field: 'PSPTCOM_YN',
+          title: '우선지원대상기업여부',
+          width: 60,
+          visible: false
+        },
+        {
+          field: 'RSPT_EMP_NO',
+          title: '담당사원번호',
+          width: 60,
+          visible: false
+        },
+        {
+          field: 'RSPT_TEL_NO',
+          title: '담당전화번호',
+          width: 60,
+          visible: false
+        },
+        {
+          field: 'RSPT_EMAIL_NM',
+          title: '담당이메일명',
+          width: 90,
+          align: 'left',
+          visible: false
+        },
+        {
+          field: 'TRGTP_RES_NO',
+          title: '주민등록번호',
+          width: 60,
+          visible: false
+        },
+        {
+          field: 'CHLDBRTH_DT',
+          title: '출산일',
+          width: 80,
+          visible: false,
+          formats: {
+            type: 'date',
+            format: 'yyyy-MM-dd'
+          },
+          editor: {
+            type: 'date',
+            format: 'yyyy-MM-dd'
+          }
+        },
+        {
+          field: 'DIVD_YN',
+          title: '분할여부',
+          width: 60,
+          visible: false
+        },
+        {
+          field: 'TERM_CD',
+          title: '기간코드',
+          width: 80,
+          visible: false
+        },
+        {
+          field: 'MLTPPRGN_YN',
+          title: '다태아여부',
+          width: 60,
+          visible: false
+        },
+        {
+          field: 'USL_WAGE_CD',
+          title: '통상임금코드',
+          width: 80,
+          visible: false
+        },
+        {
+          field: 'USL_WAGE_AMT',
+          title: '통상임금',
+          width: 100,
+          align: 'right',
+          visible: false,
+          formats: {
+            type: 'number',
+            format: 'MA00003',
+            predefined: true
+          },
+          editor: {
+            type: 'number'
+          }
+        },
+        {
+          field: 'MM_FIXED_LABORTM_DY',
+          title: '월소정근로시간일수',
+          width: 60,
+          visible: false
+        },
+        {
+          field: 'BIZAREA_CD',
+          title: '사업장코드',
+          width: 80,
+          visible: false
+        },
+        {
+          field: 'RSPT_EMP_NM',
+          title: '담당자이름',
+          visible: false
+        }
+      ],
+      fixed: {
+        colCount: 0,
+        rightColCount: 0
+      },
+      change: /*9571f2bb-f813-40e1-831b-d463d2bedfc9*/ function (e) {
+            self.mtnityidnfMaster_grid.bindPanel(self.topReqPanel);
+            self.mtnityidnfMaster_grid.bindPanel(self.bizareaInfoPanel);
+            self.mtnityidnfMaster_grid.bindPanel(self.trgtpInfoPanel);
+    
+            if (e.row.data != null) {
+                if (e.row.data.CLOSE_YN == 'Y') {
+                    disableEdit(); // 수정 불가능하게 설정
+                } else if (e.row.data.CLOSE_YN == 'N') {
+                    enableEdit(); // 수정 가능하게 설정
+                }
+            }
+    
+        }
+    ,
+      changing: /*a206fbe1-fb4f-4d81-a3a5-d75f0d387c33*/ function (e) {
+    
+        }
+    ,
+      dataBound: /*2e270946-ffe0-4dd5-8494-6fa99a0d35ea*/ function (e) {
+            dews.ui.loading.hide();
+            // console.log("data Bound");
+            self.mtnityidnfMaster_grid.bindPanel(self.topReqPanel);
+            self.mtnityidnfMaster_grid.bindPanel(self.bizareaInfoPanel);
+            self.mtnityidnfMaster_grid.bindPanel(self.trgtpInfoPanel);
+        }
+    ,
+      clicked: /*2da99545-d90d-45f1-a031-24946d74847a*/ function (e) {
+            self.mtnityidnfMaster_ds.read();
+            self.mtnityidnfDtl_ds.read();
+        }
+    
+    });
+    self.WRT_DT_datepicker.on('change', /*710d6166-80b0-4f9e-a03e-f693992415a7*/ function (e) {
+        var grid = self.mtnityidnfMaster_grid;
+        grid.setCellValue(grid.select(), 'WRT_DT', self.WRT_DT_datepicker.value(), false); // 변경된 날짜로 변경
+    
+    });
+    self.DECL_DT_datepicker.on('change', /*15ae1f25-811f-4f9d-a28e-4c89e7d061d5*/ function (e) {
+        var grid = self.mtnityidnfMaster_grid;
+        grid.setCellValue(grid.select(), 'DECL_DT', self.DECL_DT_datepicker.value(), false);
+    });
+    self.$BIZAREA_MNG_NO.on('change', /*69c08723-f3c1-41d0-b544-02e1d514717c*/ function (e) {
+        var grid = self.mtnityidnfMaster_grid;
+        grid.setCellValue(grid.select(), 'BIZAREA_MNG_NO', self.BIZAREA_MNG_NO.text(), false);
+    });
+    self.BIZAREA_CD.on('setData', /*25e75254-0307-406e-b096-8c548dcf329f*/ function (e, pickerData) {
+        var mstGrid = self.mtnityidnfMaster_grid;
+        mstGrid.setCellValue(mstGrid.select(), 'BIZAREA_CD', pickerData.BIZAREA_CD, false);
+    
+        GetBizareaInfo(pickerData.BIZAREA_CD); // 다른 주소 정보 변경
+    
+        self.mtnityidnfMaster_grid.bindPanel(self.topReqPanel);
+        self.mtnityidnfMaster_grid.bindPanel(self.bizareaInfoPanel);
+        self.mtnityidnfMaster_grid.bindPanel(self.trgtpInfoPanel);
+    });
+    self.POST_NO.on('setData', /*a01b803d-5f3a-44c2-8248-e1ccc2b4bd41*/ function (e) {
+        var grid = self.mtnityidnfMaster_grid;
+        // console.log("주소 변경시 이벤트 객체:", e);
+        // console.log("주소 변경시 e.roadAddress:", e.roadAddress);
+        // console.log("주소 변경시 e.jibunAddress:", e.jibunAddress);
+        // console.log("주소 변경시 e.userSelectedType:", e.userSelectedType);
+    
+        console.log("userSelectedType 이것은 " + userSelectedType);
+    
+        grid.setCellValue(grid.select(), 'POST_NO', e.zonecode, false);
+        grid.setCellValue(grid.select(), 'ADDR_TP', e.userSelectedType, false); // 주소 타입
+    
+        if (e.userSelectedType == 'R') {
+            $("#BASE_ADDR").val(e.roadAddress);
+            grid.setCellValue(grid.select(), 'BASE_ADDR', e.roadAddress, false);
+            // console.log("주소 변경시 R 선택됨");
+        } else if (e.userSelectedType == 'J') {
+            $("#BASE_ADDR").val(e.jibunAddress);
+            grid.setCellValue(grid.select(), 'BASE_ADDR', e.jibunAddress, false);
+            // console.log("주소 변경시 J 선택됨");
+        }
+    });
+    self.$DTL_ADDR.on('change', /*9d6b2dc5-1c5c-47e3-89b0-633be00c2882*/ function (e) {
+        var grid = self.mtnityidnfMaster_grid;
+        grid.setCellValue(grid.select(), 'DTL_ADDR', self.DTL_ADDR.text(), false); // grid에 상세주소 저장
+    });
+    self.PSPTCOM_YN.on('change', /*04468d18-fe77-45ef-9912-3545c35c0fc7*/ function (e) {
+        var grid = self.mtnityidnfMaster_grid;
+        grid.setCellValue(grid.select(), 'PSPTCOM_YN', self.PSPTCOM_YN.value(), false); // 선택된 라디오 버튼 값으로 변경
+    });
+    self.RSPT_EMP_NO.on('setData', /*452ee89e-23e8-46f5-9dc1-ea9f2c3b1a1d*/ function (e, pickerData) {
+        console.log('e.code  : ' + e.code + '   // e.text  : ' + e.text + '  //  pickerData : ' + pickerData);
+        var mstGrid = self.mtnityidnfMaster_grid;
+        // console.log("담당자 변경시 이벤트 객체e:", e);
+        // console.log("담당자 변경시 이벤트 객체pickerData:", pickerData);
+        mstGrid.setCellValue(mstGrid.select(), 'RSPT_EMP_NO', pickerData.EMP_NO, false); // 담당자 사원번호 변경
+        mstGrid.setCellValue(mstGrid.select(), 'RSPT_EMP_NM', pickerData.KOR_NM, false); // 담당자 사원명 변경
+        GetLoginMemberInfo(pickerData.EMP_NO); // 담당자 전화번호, 이메일 변경
+    
+        self.mtnityidnfMaster_grid.bindPanel(self.topReqPanel);
+        self.mtnityidnfMaster_grid.bindPanel(self.bizareaInfoPanel);
+        self.mtnityidnfMaster_grid.bindPanel(self.trgtpInfoPanel);
+    });
+    self.$RSPT_TEL_NO.on('change', /*baa0cf5c-41fa-4586-95bd-a2a284db82c8*/ function (e) {
+        var grid = self.mtnityidnfMaster_grid;
+        grid.setCellValue(grid.select(), 'RSPT_TEL_NO', self.RSPT_TEL_NO.text(), false);
+    });
+    self.$RSPT_EMAIL_NM.on('change', /*1a3d2bc2-aa94-418b-8638-0d8fc2e6417f*/ function (e) {
+        var grid = self.mtnityidnfMaster_grid;
+        grid.setCellValue(grid.select(), 'RSPT_EMAIL_NM', self.RSPT_EMAIL_NM.text(), false);
+    });
+    self.bizareaInfoPanel.on('change', /*744db8a1-e815-4d3e-9fca-4c5afea2602d*/ function (e) {
+    
+        self.bizareaInfoPanel.bindTo(self.mtnityidnfMaster_grid);
+    
+    });
+    self.REQ_KND_FG_radioBtn.on('change', /*049dd5b7-6ec1-4d38-9a77-d0b977167d10*/ function (e) {
+        var grid = self.mtnityidnfMaster_grid;
+        grid.setCellValue(grid.select(), 'REQ_KND_FG', self.REQ_KND_FG_radioBtn.value(), false);
+    });
+    self.CHLDBRTH_DT.on('change', /*66428909-5f3c-42d5-b8a6-948711500fa5*/ function (e) {
+        var grid = self.mtnityidnfMaster_grid;
+        grid.setCellValue(grid.select(), 'CHLDBRTH_DT', self.CHLDBRTH_DT.value(), false);
+    });
+    self.DIVD_YN.on('change', /*7e595758-f2b0-41ec-a2c8-e15778a71278*/ function (e) {
+        var grid = self.mtnityidnfMaster_grid;
+        grid.setCellValue(grid.select(), 'DIVD_YN', self.DIVD_YN.value(), false);
+    });
+    self.TERM_CD.setDataSource(self.HR_P03510_DS_P03510);
+    self.TERM_CD.on('change', /*701a997f-ea94-4588-877e-5c8446517b43*/ function (e) {
+        var grid = self.mtnityidnfMaster_grid;
+        grid.setCellValue(grid.select(), 'TERM_CD', self.TERM_CD.value(), false);
+    });
+    self.MLTPPRGN_YN.on('change', /*f2424bbd-644e-4e50-9652-ce3dd732e77e*/ function (e) {
+        var grid = self.mtnityidnfMaster_grid;
+        grid.setCellValue(grid.select(), 'MLTPPRGN_YN', self.MLTPPRGN_YN.value(), false);
+    });
+    self.USL_WAGE_CD.setDataSource(self.dataSourceP03520_P03520);
+    self.USL_WAGE_CD.on('change', /*71491c93-2ceb-40ef-b3a4-53e8b4e9e27a*/ function (e) {
+        var grid = self.mtnityidnfMaster_grid;
+        grid.setCellValue(grid.select(), 'USL_WAGE_CD', self.USL_WAGE_CD.value(), false);
+    });
+    self.USL_WAGE_CD.on('dataBound', /*10d57d7e-17d3-444b-a466-fd3812975f2a*/ function (e) {
+    
+    });
+    self.$USL_WAGE_AMT.on('change', /*b3296b12-37a9-47e3-b983-ce513766fb64*/ function (e) {
+        var grid = self.mtnityidnfMaster_grid;
+        grid.setCellValue(grid.select(), 'USL_WAGE_AMT', self.USL_WAGE_AMT.value(), false);
+    });
+    self.$MM_FIXED_LABORTM_DY.on('change', /*df2d3be6-49ce-4df1-abc0-5a7d16384463*/ function (e) {
+        var grid = self.mtnityidnfMaster_grid;
+        grid.setCellValue(grid.select(), 'MM_FIXED_LABORTM_DY', self.MM_FIXED_LABORTM_DY.text(), false);
+    });
+    self.$dtl_grid_add.on('click', /*62d57271-be5b-4e58-be49-d7e6cdb44780*/ function (e) {
+        var dtl_grid = self.mtnityidnfDtl_grid;
+        dtl_grid.addRow(); // 해당 grid에 row 추가하기
+        dtl_grid.setCellValue(dtl_grid.select(), 'PAY_YN', 'N', false); // 추가된 row의 PAY_YN을 디폴트 N으로 설정
+    
+    
+        // 문서번호, 사원번호는  마스터그리드에서 가져와서 저장
+        var mst_grid = self.mtnityidnfMaster_grid;
+        dtl_grid.setCellValue(dtl_grid.select(), 'DOC_NO', mst_grid.getCellValue(mst_grid.select(), 'DOC_NO'), false); // 마스터그리드에서 현재 row의 문서번호 가져와 저장
+        dtl_grid.setCellValue(dtl_grid.select(), 'EMP_NO', mst_grid.getCellValue(mst_grid.select(), 'EMP_NO'), false); // 마스터그리드에서 현재 row의 사원번호 가져와 저장 
+    
+        console.log("doc_no" + mst_grid.getCellValue(mst_grid.select(), 'DOC_NO'));
+        console.log("emp_no" + mst_grid.getCellValue(mst_grid.select(), 'EMP_NO'));
+        // SQ_NO를 하나 증가시킨다. (현재 있는 쿼리문에서 max+1(grid의 행중에 가장 큰 SQ_NO) 써서 사용한다.)
+        // 서브쿼리 사용 시 : (select max(SQ_NO) from 테이블명)
+    });
+    self.$dtl_grid_delete.on('click', /*fed2362e-520b-45e9-9377-c107f6d63a86*/ function (e) {
+        var grid = self.mtnityidnfDtl_grid;
+        grid.removeRow(grid.select());
+    });
+    dews.ui.grid(self.$mtnityidnfDtl_grid, {
+      dataSource: self.mtnityidnfDtl_ds,
+      height: 415,
+      editable: true,
+      selectable: true,
+      sortable: false,
+      autoBind: false,
+      checkable: false,
+      copyMode: 'cell',
+      columns: [
+        {
+          field: '_uid',
+          title: '_uid',
+          width: 60,
+          visible: false
+        },
+        {
+          field: 'COMPANY_CD',
+          title: '회사코드',
+          width: 80,
+          visible: false
+        },
+        {
+          field: 'EMP_NO',
+          title: '사원번호',
+          width: 60,
+          visible: false
+        },
+        {
+          field: 'KEYWORD',
+          title: '검색어',
+          width: 60,
+          visible: false
+        },
+        {
+          field: 'DOC_NO',
+          title: '문서번호',
+          width: 60,
+          visible: false
+        },
+        {
+          field: 'DECL_DT',
+          title: '신고일',
+          width: 80,
+          visible: false,
+          formats: {
+            type: 'date',
+            format: 'yyyy-MM-dd'
+          },
+          editor: {
+            type: 'date',
+            format: 'yyyy-MM-dd'
+          }
+        },
+        {
+          field: 'WRT_DT',
+          title: '작성일',
+          width: 80,
+          visible: false,
+          formats: {
+            type: 'date',
+            format: 'yyyy-MM-dd'
+          },
+          editor: {
+            type: 'date',
+            format: 'yyyy-MM-dd'
+          }
+        },
+        {
+          field: 'WRTDT_START',
+          title: '시작일',
+          width: 60,
+          visible: false
+        },
+        {
+          field: 'WRTDT_END',
+          title: '종료일',
+          width: 60,
+          visible: false
+        },
+        {
+          field: 'CLOSE_YN',
+          title: '마감여부',
+          width: 60,
+          visible: false
+        },
+        {
+          field: 'REQ_KND_FG',
+          title: '신청종류구분',
+          width: 60,
+          visible: false
+        },
+        {
+          field: 'KOR_NM',
+          title: '한글명',
+          width: 90,
+          align: 'left',
+          visible: false
+        },
+        {
+          field: 'BIZAREA_MNG_NO',
+          title: '사업장관리번호',
+          width: 60,
+          visible: false
+        },
+        {
+          field: 'BIZAREA_NM',
+          title: '사업장명',
+          width: 90,
+          align: 'left',
+          visible: false
+        },
+        {
+          field: 'POST_NO',
+          title: '우편번호',
+          width: 60,
+          visible: false
+        },
+        {
+          field: 'ADDR_TP',
+          title: '주소유형',
+          width: 90,
+          align: 'left',
+          visible: false
+        },
+        {
+          field: 'BASE_ADDR',
+          title: '기본주소',
+          width: 90,
+          align: 'left',
+          visible: false
+        },
+        {
+          field: 'DTL_ADDR',
+          title: '상세주소',
+          width: 90,
+          align: 'left',
+          visible: false
+        },
+        {
+          field: 'PSPTCOM_YN',
+          title: '우선지원대상기업여부',
+          width: 60,
+          visible: false
+        },
+        {
+          field: 'RSPT_EMP_NO',
+          title: '담당사원번호',
+          width: 60,
+          visible: false
+        },
+        {
+          field: 'RSPT_TEL_NO',
+          title: '담당전화번호',
+          width: 60,
+          visible: false
+        },
+        {
+          field: 'RSPT_EMAIL_NM',
+          title: '담당이메일명',
+          width: 90,
+          align: 'left',
+          visible: false
+        },
+        {
+          field: 'TRGTP_RES_NO',
+          title: '대상자주민등록번호',
+          width: 60,
+          visible: false
+        },
+        {
+          field: 'START_DT',
+          title: '시작일',
+          width: 80,
+          attributes: { class: 'required' },
+          formats: {
+            type: 'date',
+            format: 'yyyy-MM-dd'
+          },
+          editor: {
+            type: 'date',
+            format: 'yyyy-MM-dd'
+          }
+        },
+        {
+          field: 'END_DT',
+          title: '종료일',
+          width: 80,
+          attributes: { class: 'required' },
+          formats: {
+            type: 'date',
+            format: 'yyyy-MM-dd'
+          },
+          editor: {
+            type: 'date',
+            format: 'yyyy-MM-dd'
+          }
+        },
+        {
+          field: 'BWRK_DY',
+          title: '근무일수',
+          width: 60,
+          attributes: { class: 'readonly' }
+        },
+        {
+          field: 'PAY_YN',
+          title: '지급여부',
+          width: 60,
+          editor: {
+            type: 'dropDown',
+            dataSource: self.payYN_ds,
+            dataValueField: 'YN_CD',
+            dataTextField: 'YN_NM'
+          }
+        },
+        {
+          field: 'PAY_AMT',
+          title: '통상임금지급액',
+          width: 100,
+          align: 'right',
+          formats: {
+            type: 'number',
+            format: '#.###',
+            predefined: true
+          },
+          editor: {
+            type: 'number',
+            editable: /*5bf81362-9a5e-4938-aad6-164a9d3c7120*/ function(e) {
+        var payYN = e.row.data.PAY_YN;
+        if(payYN == 'Y'){
+            return true;
+        }else if(payYN =='N'){
+            return false;
+        }
+    }
+          }
+        },
+        {
+          field: 'CHLDBRTH_DT',
+          title: '출산일',
+          width: 80,
+          visible: false,
+          formats: {
+            type: 'date',
+            format: 'yyyy-MM-dd'
+          },
+          editor: {
+            type: 'date',
+            format: 'yyyy-MM-dd'
+          }
+        },
+        {
+          field: 'DIVD_YN',
+          title: '분할여부',
+          width: 60,
+          visible: false
+        },
+        {
+          field: 'TERM_CD',
+          title: '기간코드',
+          width: 80,
+          visible: false
+        },
+        {
+          field: 'MLTPPRGN_YN',
+          title: '다태아여부',
+          width: 60,
+          visible: false
+        },
+        {
+          field: 'USL_WAGE_CD',
+          title: '통상임금코드',
+          width: 80,
+          visible: false
+        },
+        {
+          field: 'MM_FIXED_LABORTM_DY',
+          title: '월소정근로시간일수',
+          width: 60,
+          visible: false
+        },
+        {
+          field: 'BIZAREA_CD',
+          title: '사업장코드',
+          width: 80,
+          visible: false
+        },
+        {
+          field: 'USL_WAGE_AMT',
+          title: '통상임금금액',
+          width: 100,
+          align: 'right',
+          visible: false,
+          attributes: { class: 'readonly' },
+          formats: {
+            type: 'number',
+            format: 'MA00003',
+            predefined: true
+          },
+          editor: {
+            type: 'number'
+          }
+        },
+        {
+          field: 'SQ_NO',
+          title: '순번번호',
+          visible: false
+        }
+      ],
+      fixed: {
+        colCount: 0,
+        rightColCount: 0
+      },
+      save: /*570a408f-e269-4560-86a4-1ca43edf1e68*/ function (e) {
+            var thisGrid = e.grid; // 지금 이벤트 발생하는 그리드 선택
+    
+            // var grid=self.MtnityidnfDtl_grid;
+            // var data1=grid.getCellValue(grid.select(), 'START_DT');
+            // console.log('data1', data1);
+    
+            var startDate = e.row.data.START_DT; // 변경된 시작일
+            var endDate = e.row.data.END_DT; // 변경된 종료일
+    
+    
+    
+            if (startDate != null && endDate != null) { // 둘 다 선택되면
+                var diff = ((endDate - startDate) / (60 * 60 * 24 * 1000)) + 1; // 시작일과 종료일의 일수 계산
+                if (diff > 0) {
+                    thisGrid.setCellValue(e.row.index, 'BWRK_DY', diff, false);
+                } else if (diff <= 0) {
+                    dews.ui.snackbar.warning(dews.localize.get("시작일은 종료일과 같거나 이전날짜를 선택해야 합니다.", "M0012831", '', 'PAMMPM00200'));
+                    // console.log('e.row.index:', e.row.index);
+                    // console.log('변경된 컬럼 이름:', e.cell.field);
+                    thisGrid.setCellValue(e.row.index, 'BWRK_DY', 0, false); // 일수 0으로 초기화
+                    thisGrid.setCellValue(e.row.index, e.cell.field, '', false); // 변경된 날짜 피커 초기화
+                }
+            }
+    
+        }
+    
+    });
+    
+    
+    self.mtnityidnfMaster_grid.setDetail(self.mtnityidnfDtl_grid);
+    
+    
+    /*d2692eed-91c6-4644-b7ca-3eed2f04ec7b*/ 
+    //# sourceURL=PAMMPM0200.js
+    
+    function getStartDate() {
+        var date = new Date();
+        var year = date.getFullYear();              //yyyy
+        var month = (1 + date.getMonth());          //M
+        month = month >= 10 ? month : '0' + month;  //month 두자리로 저장
+        return year + '' + month + '01';
+    }
+    
+    function getTodayDate() {
+        var date = new Date();
+        var year = date.getFullYear();              //yyyy
+        var month = (1 + date.getMonth());          //M
+        month = month >= 10 ? month : '0' + month;  //month 두자리로 저장
+        var date = date.getDate();
+        date = date >= 10 ? date : '0' + date; // 날짜
+        return year + '' + month + '' + date;
+    }
+    
+    
+    function SearchData() {
+        dews.ui.loading.show();
+        self.mtnityidnfMaster_ds.read();
+    
+    }
+    
+    
+    function isThisValidCondition() {
+        return self.conditionPanel.validate({ tooltip: true, message: '필수입력 항목입니다.' });
+    }
+    
+    function GetMngNo(bizarea_cd) {
+        dews.api.get(dews.url.getApiUrl("HR", "PersonalAdministrationManagementMPMService", "pammpm00200_InsuValDc"), {
+            async: false,
+            data: {
+                bizarea_cd: bizarea_cd
+            }
+        }).done(function (data) {
+            var grid = self.mtnityidnfMaster_grid;
+            grid.setCellValue(grid.select(), 'BIZAREA_MNG_NO', data[0].BIZAREA_MNG_NO, false);
+        }).fail(function (xhr, status, error) {
+            dews.error(xhr.responseJSON.message);
+        });
+    }
+    
+    function GetBizareaInfo(bizarea_cd) {
+        dews.api.get(dews.url.getApiUrl("HR", "PersonalAdministrationManagementMPMService", "pammpm00200_BizareaInfo"), {
+            async: false,
+            data: {
+                bizarea_cd: bizarea_cd
+            }
+        }).done(function (data) {
+            var grid = self.mtnityidnfMaster_grid;
+            // $("#BIZAREA_NM").val(data[0].BIZAREA_NM);
+            // $("#POST_NO").val(data[0].POST_NO);
+            // $("#BASE_ADDR").val(data[0].BASE_ADDR);
+            // $("#DTL_ADDR").val(data[0].DTL_ADDR);
+            grid.setCellValue(grid.select(), 'BIZAREA_NM', data[0].BIZAREA_NM, false); // 사업장명
+            grid.setCellValue(grid.select(), 'POST_NO', data[0].POST_NO, false); // 우편번호
+            grid.setCellValue(grid.select(), 'ADDR_TP', data[0].ADDR_TP, false); // 주소타입
+            grid.setCellValue(grid.select(), 'BASE_ADDR', data[0].BASE_ADDR, false); // 기본주소
+            grid.setCellValue(grid.select(), 'DTL_ADDR', data[0].DTL_ADDR, false); // 상세주소
+        }).fail(function (xhr, status, error) {
+            dews.error(xhr.responseJSON.message);
+        });
+    }
+    
+    function GetPsptComYn() {
+        dews.api.get(dews.url.getApiUrl("HR", "PersonalAdministrationManagementMPMService", "pammpm00200_CharCdValDc"), {
+            async: false,
+            data: {}
+        }).done(function (data) {
+            var grid = self.mtnityidnfMaster_grid;
+    
+            grid.setCellValue(grid.select(), 'PSPTCOM_YN', data[0].PSPTCOM_YN, false);
+        }).fail(function (xhr, status, error) {
+            dews.error(xhr.responseJSON.message);
+        });
+    }
+    
+    
+    
+    
+    function GetLoginMemberInfo(emp_no) {
+        dews.api.get(dews.url.getApiUrl("HR", "PersonalAdministrationManagementMPMService", "pammpm00200_LoginMemberInfo"), {
+            async: false,
+            data: {
+                emp_no: emp_no
+            }
+        }).done(function (data) {
+            var grid = self.mtnityidnfMaster_grid;
+    
+            console.log("data" + data);
+            if (data != null) {
+                // $("#RSPT_TEL_NO").val(data['TEL_NO']); // 화면상 전화번호 변경
+                // $("#RSPT_EMAIL_NM").val(data['EMAIL_NM']); // 화면상 이메일 변경
+                console.log("이거 반영 왜 안돼 ?" + data[0].RSPT_EMP_NM);
+                grid.setCellValue(grid.select(), 'RSPT_EMP_NM', data[0].RSPT_EMP_NM, false); // 사원명
+                grid.setCellValue(grid.select(), 'RSPT_EMP_NO', data[0].EMP_NO, false); // 사원명
+                grid.setCellValue(grid.select(), 'RSPT_TEL_NO', data[0].TEL_NO, false); // 전화번호
+                grid.setCellValue(grid.select(), 'RSPT_EMAIL_NM', data[0].EMAIL_NM, false); // 이메일
+    
+    
+                self.mtnityidnfMaster_grid.bindPanel(self.topReqPanel);
+                self.mtnityidnfMaster_grid.bindPanel(self.bizareaInfoPanel);
+                self.mtnityidnfMaster_grid.bindPanel(self.trgtpInfoPanel);
+    
+    
+                console.log("성공1");
+    
+            } else {
+                // $("#RSPT_TEL_NO").val(''); // 화면상 전화번호 변경
+                // $("#RSPT_EMAIL_NM").val(''); // 화면상 이메일 변경
+                grid.setCellValue(grid.select(), 'RSPT_TEL_NO', '', false); // 전화번호
+                grid.setCellValue(grid.select(), 'RSPT_EMAIL_NM', '', false); // 이메일
+    
+                self.mtnityidnfMaster_grid.bindPanel(self.topReqPanel);
+                self.mtnityidnfMaster_grid.bindPanel(self.bizareaInfoPanel);
+                self.mtnityidnfMaster_grid.bindPanel(self.trgtpInfoPanel);
+            }
+        }).fail(function (xhr, status, error) {
+            dews.error(xhr.responseJSON.message);
+        });
+    }
+    
+    
+    
+    function GetResNo(emp_no) {
+        dews.api.get(dews.url.getApiUrl("HR", "PersonalAdministrationManagementMPMService", "pammpm00200_ResNo"), {
+            async: false,
+            data: {
+                emp_no: emp_no
+            }
+        }).done(function (data) {
+            var grid = self.mtnityidnfMaster_grid;
+            console.log("여기와?");
+            grid.setCellValue(grid.select(), 'RES_NO', data, '');
+        }).fail(function (xhr, status, error) {
+            dews.error(xhr.responseJSON.message);
+        });
+    }
+    
+    function enableEdit() {
+        self.WRT_DT_datepicker.readonly(false); // 등록일 수정 가능
+        self.DECL_DT_datepicker.readonly(false); // 신고일 수정 가능
+        self.BIZAREA_MNG_NO.readonly(false); // 사업장관리번호 수정 가능
+        self.BIZAREA_CD.readonly(false); // 사업장 수정 가능  
+        self.BIZAREA_MNG_NO.readonly(false); // 사업장관리번호 수정 가능
+        self.BIZAREA_CD.readonly(false); // 사업장 수정 
+        self.POST_NO.readonly(false); // 우편번호 수정 가능
+        self.BASE_ADDR.readonly(false); // 기본주소 수정 가능
+        self.DTL_ADDR.readonly(false); // 상세주소 수정 가능
+        self.PSPTCOM_YN.disable(false); // 우선지원대상기업 수정 가능
+        self.RSPT_EMP_NO.readonly(false); // 담당자 수정 가능
+    
+        self.RSPT_TEL_NO.readonly(false); // 전화번호 수정 가능
+        self.RSPT_EMAIL_NM.readonly(false); // 이메일 수정 가능
+    
+        self.REQ_KND_FG_radioBtn.disable(false); // 신청종류 수정 가능
+        self.CHLDBRTH_DT.readonly(false); // 출산일 수정 가능
+        self.DIVD_YN.disable(false); // 분할사용여부 수정 가능
+        self.TERM_CD.readonly(false); // 임신기간 수정 가능
+        self.MLTPPRGN_YN.disable(false); // 다태아여부 수정 가능
+        self.USL_WAGE_CD.readonly(false); // 통상임금산정기준 수정 가능
+        self.USL_WAGE_AMT.readonly(false); // 통상임금 수정 가능
+        self.MM_FIXED_LABORTM_DY.readonly(false); // 월소정근로시간 수정 가능
+    
+        $("#dtl_grid_add").removeAttr('disabled'); // 추가 버튼 활성화
+        $("#dtl_grid_add").removeClass('k-state-disabled'); // 추가 버튼 비활성화 클래스 삭제
+        $("#dtl_grid_delete").removeAttr('disabled'); // 삭제 버튼 활성화
+        $("#dtl_grid_delete").removeClass('k-state-disabled'); // 추가 버튼 비활성화 클래스 삭제
+    
+        self.mtnityidnfDtl_grid.enable(true); // 디테일 그리드 활성화
+    
+    }
+    
+    function disableEdit() {
+        self.WRT_DT_datepicker.readonly(true); // 등록일 수정 불가
+        self.DECL_DT_datepicker.readonly(true); // 신고일 수정 불가
+        self.BIZAREA_MNG_NO.readonly(true); // 사업장관리번호 수정 불가
+        self.BIZAREA_CD.readonly(true); // 사업장 수정 불가  
+        self.BIZAREA_MNG_NO.readonly(true); // 사업장관리번호 수정 불가
+        self.BIZAREA_CD.readonly(true); // 사업장 수정 불가
+        self.POST_NO.readonly(true); // 우편번호 수정 불가
+        self.BASE_ADDR.readonly(true); // 기본주소 수정 불가
+        self.DTL_ADDR.readonly(true); // 상세주소 수정 불가
+        self.PSPTCOM_YN.disable(true); // 우선지원대상기업 수정 불가
+        self.RSPT_EMP_NO.readonly(true); // 담당자 수정 가능
+        self.RSPT_TEL_NO.readonly(true); // 전화번호 수정 불가
+        self.RSPT_EMAIL_NM.readonly(true); // 이메일 수정 불가
+        self.REQ_KND_FG_radioBtn.disable(true); // 신청종류 수정 불가
+        self.CHLDBRTH_DT.readonly(true); // 출산일 수정 불가
+        self.DIVD_YN.disable(true); // 분할사용여부 수정 불가
+        self.TERM_CD.readonly(true); // 임신기간 수정 불가
+        self.MLTPPRGN_YN.disable(true); // 다태아여부 수정 불가
+        self.USL_WAGE_CD.readonly(true); // 통상임금산정기준 수정 불가
+        self.USL_WAGE_AMT.readonly(true); // 통상임금 수정 불가
+        self.MM_FIXED_LABORTM_DY.readonly(true); // 월소정근로시간 수정 불가
+    
+        $("#dtl_grid_add").attr('disabled', true); // 추가 버튼 비활성화
+        $("#dtl_grid_add").addClass('k-state-disabled'); // 추가 버튼 비활성화 클래스 추가
+        $("#dtl_grid_delete").attr('disabled', true); // 삭제 버튼 비활성화
+        $("#dtl_grid_delete").addClass('k-state-disabled'); // 삭제 버튼 비활성화 클래스 추가
+    
+        self.mtnityidnfDtl_grid.enable(false); // 디테일 그리드 비활성화
+    
+    }
+    
+    
+    function Is_validate() { // 그리드 필수값 검사
+        return self.mtnityidnfMaster_grid.validate().result && self.mtnityidnfDtl_grid.validate().result;
+    }
+    
+    
+    
+    function getValueFromDOC_NO() {
+        // DOC_NO 요소를 가져옵니다.
+        var docNoElement = document.getElementById("DOC_NO");
+    
+        // DOC_NO 요소의 값을 가져옵니다.
+        var docNoValue = docNoElement.value;
+    
+        // 추출한 값을 반환합니다.
+        return docNoValue;
+    }
+    
+    
+    
+    
+
+  
+  });
+
+</script>

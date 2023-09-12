@@ -1,4 +1,4 @@
-package com.douzone.comet.service.hr.pamodm.x10005;
+package com.douzone.comet.service.hr.pamodm;
 
 /**
  * Hello world!

@@ -2,7 +2,7 @@
 <!DOCTYPE mapper
    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.douzone.comet.service.hr.pamprg.dao.Pamprg00100_X100055Dao">
+<mapper namespace="com.douzone.comet.service.hr.pamprg.dao.Pamprg00100_X10005Dao">
 
 	<select id="selectPamprg00100_X10005ModelList" resultType="com.douzone.comet.service.hr.pamprg.models.Pamprg00100_X10005Model">		
 		SELECT	*

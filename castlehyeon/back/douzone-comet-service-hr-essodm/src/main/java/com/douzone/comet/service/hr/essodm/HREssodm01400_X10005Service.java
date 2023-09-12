@@ -73,6 +73,10 @@ public class HREssodm01400_X10005Service extends DzCometService {
 	        	essodm01400_x10005DAO.insertEssodm01400_X10005Model(essodm01400_X10005Model);
 	        }
 	        
+	        
+	        
+	        
+	        
 	    } catch (Exception e) {
 	        throw new DzApplicationRuntimeException(e);
 	    }

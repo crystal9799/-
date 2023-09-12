@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.douzone.comet.service.hr.pamodm.dao.Pamodm01800_X10005Dao">
+
+	<select id="selectPamodm01800_X10005ModelList" resultType="com.douzone.comet.service.hr.pamodm.models.Pamodm01800_X10005Model">		
+		SELECT	*
+		FROM	@{dzparam_dbname}[tableName]
+		WHERE 	1 = 1				
+	</select>
+
+	<select id="selectPamodm01800_X10005Model" resultType="com.douzone.comet.service.hr.pamodm.models.Pamodm01800_X10005Model">		
+		SELECT	*
+		FROM	@{dzparam_dbname}[tableName]
+		WHERE	[columnName] = [columnValue]		
+	</select>
+
+	<insert id="insertPamodm01800_X10005Model">		
+		INSERT INTO @{dzparam_dbname}[tableName] (
+				[columnName]
+		) VALUES (
+				[columnValue]
+		)		
+	</insert>
+
+	<update id="updatePamodm01800_X10005Model" >		
+		UPDATE	@{dzparam_dbname}[tableName]
+		SET		[columnName] = [columnValue]
+		WHERE	[columnName] = [columnValue]		
+	</update>
+
+	<delete id="deletePamodm01800_X10005Model">		
+		DELETE
+		FROM	@{dzparam_dbname}[tableName]
+		WHERE	[columnName] = [columnValue]		
+	</delete>
+
+</mapper>

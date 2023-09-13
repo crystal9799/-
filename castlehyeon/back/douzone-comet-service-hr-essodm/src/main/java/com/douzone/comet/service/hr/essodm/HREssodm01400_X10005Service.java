@@ -37,21 +37,20 @@ public class HREssodm01400_X10005Service extends DzCometService {
 		@DzParam(key="company_cd", desc="회사코드", paramType = DzParamType.QueryString) String company_cd,
 		@DzParam(key="emp_no", desc="사원번호", paramType = DzParamType.QueryString) String emp_no
 	) throws Exception {
-		List<Essodm01400_X10005Model> essodm01400_X10005ModelList =  new ArrayList<Essodm01400_X10005Model>();
+		List<Essodm01400_X10005Model> items =  new ArrayList<Essodm01400_X10005Model>();	
 		try {
-	 		Essodm01400_X10005Model essodm01400_X10005Model = new Essodm01400_X10005Model();
-//	 		essodm01400_X10005Model.setStart_dt(start_dt);
-//			essodm01400_X10005Model.setEnd_dt(end_dt);
-//			essodm01400_X10005Model.setCompany_cd(company_cd);
-//			essodm01400_X10005Model.setEmp_no(emp_no);
-			//essodm01400_X10005Model.setCompany_cd(this.getCompanyCode());
-			//essodm01400_X10005Model.setLang_cd(this.getLanguage().toUpperCase());
-	 		essodm01400_X10005ModelList = essodm01400_x10005DAO.selectEssodm01400_X10005ModelList(essodm01400_X10005Model);
+			HashMap<String, Object> parameters = new HashMap<>();
+	 		parameters.put("P_EMP_NO", emp_no);
+			parameters.put("P_COMPANY_CD", company_cd);
+			parameters.put("P_START_DT", start_dt);
+			parameters.put("P_END_DT", end_dt);
+	 		
+	 		items = essodm01400_x10005DAO.selectEssodm01400_X10005ModelList(parameters);
 	 	} catch(Exception e) {
 	        throw new DzApplicationRuntimeException(e);
 	    }
 	    
-	    return essodm01400_X10005ModelList;
+	    return items;
  	}
  	
  	@DzApi(url="/getUserInfo", desc="메인페이지 기본정보 조회", httpMethod=DzRequestMethod.GET)

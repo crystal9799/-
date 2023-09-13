@@ -30,8 +30,8 @@ public class Essodm01400_x10005Dao  {
 	 * @param essodm01400_X10005Model
 	 * @return List<Essodm01400_X10005Model>
 	 */
-	public List<Essodm01400_X10005Model> selectEssodm01400_X10005ModelList(Essodm01400_X10005Model essodm01400_X10005Model) throws Exception {
-		return this.mybatisSupport.selectList(this.getClass().getName() + ".selectEssodm01400_X10005ModelList", essodm01400_X10005Model);
+	public List<Essodm01400_X10005Model> selectEssodm01400_X10005ModelList(HashMap<String, Object> parameters) throws Exception {
+		return this.mybatisSupport.selectList(this.getClass().getName() + ".selectEssodm01400_X10005ModelList", parameters);
 	}
 
 	/**

@@ -5,27 +5,42 @@
 <mapper
 	namespace="com.douzone.comet.service.hr.essodm.dao.Essodm01400_x10005Dao">
 
-	<select id="getUserInfo"
-	parameterType="HashMap"
+	<select id="getUserInfo" parameterType="HashMap"
 		resultType="com.douzone.comet.service.hr.essodm.models.Essodm01400_X10005_UserInfoModel">
 		SELECT
-		EMP_NO, 
-		KOR_NM, 
-		PSTN_CD, 
-		OGRP_CD, 
+		EMP_NO,
+		KOR_NM,
+		PSTN_CD,
+		OGRP_CD,
 		(SELECT COMET.FN_HR_UP_DEPT_NM2(COMPANY_CD, DEPT_CD , SYSDATE) FROM DUAL) AS
 		ORG,
-		POSI_CD 
+		POSI_CD
 		FROM HR_EMP_MST
 		WHERE COMPANY_CD = #{P_COMPANY_CD}
 		AND EMP_NO = #{P_EMP_NO}
 	</select>
 
-	<select id="selectEssodm01400_X10005Model"
+	<select id="selectEssodm01400_X10005ModelList" parameterType="HashMap"
 		resultType="com.douzone.comet.service.hr.essodm.models.Essodm01400_X10005Model">
-		SELECT *
-		FROM @{dzparam_dbname}[tableName]
-		WHERE [columnName] = [columnValue]
+		SELECT
+		REQ_NO,
+		REQ_DT,
+		DNLGB_CD,
+		DNL_CD,
+		START_DT,
+		END_DT,
+		ATHZ_DOC_CD,
+		ATHZ_ST_CD
+		FROM HR_OFFAPPLY_MST_X10005
+		WHERE DNLGB_CD = '400'
+		AND EMP_NO = #{P_EMP_NO}
+		AND COMPANY_CD = #{P_COMPANY_CD}
+		<if test='P_START_DT !=null and P_START_DT !="" and P_END_DT !=null and P_END_DT !=""'>
+		AND START_DT BETWEEN #{P_START_DT} AND #{P_END_DT}
+		</if>
+		<if test='P_START_DT !=null and P_START_DT !="" and P_END_DT !=null and P_END_DT !=""'>
+		AND END_DT BETWEEN #{P_START_DT} AND #{P_END_DT}
+		</if>
 	</select>
 
 	<insert id="insertEssodm01400_X10005Model">
@@ -38,7 +53,8 @@
 
 	<update id="updateEssodm01400_X10005Model">
 		UPDATE @{dzparam_dbname}[tableName]
-		SET [columnName] = [columnValue]
+		SET [columnName] =
+		[columnValue]
 		WHERE
 		[columnName] = [columnValue]
 	</update>
@@ -46,7 +62,8 @@
 	<delete id="deleteEssodm01400_X10005Model">
 		DELETE
 		FROM @{dzparam_dbname}[tableName]
-		WHERE [columnName] = [columnValue]
+		WHERE
+		[columnName] = [columnValue]
 	</delete>
 
 </mapper>

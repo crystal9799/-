@@ -28,7 +28,7 @@ public class Pamprg00100_X10005Model extends DzAbstractModel {
 
 	@SerializedName("UGRD_GRD_CD")
 	@DzModelField(name = "urgd_grd_cd", desc = "승급등급코드", colName = "UGRD_GRD_CD", colSize = "5", isKey = false)
-	private String urgd_grd_cd;
+	private String ugrd_grd_cd;
 	
 	@SerializedName("MIN_BWRK_MY")
 	@DzModelField(name = "min_bwrk_my", desc = "최소근무월수", colName = "MIN_BWRK_MY", colSize = "7", isKey = false)
@@ -139,11 +139,11 @@ public class Pamprg00100_X10005Model extends DzAbstractModel {
 	}
 
 	public String getUrgd_grd_cd() {
-		return urgd_grd_cd;
+		return ugrd_grd_cd;
 	}
 
-	public void setUrgd_grd_cd(String urgd_grd_cd) {
-		this.urgd_grd_cd = urgd_grd_cd;
+	public void setUrgd_grd_cd(String ugrd_grd_cd) {
+		this.ugrd_grd_cd = ugrd_grd_cd;
 	}
 
 	public String getBizarea_nm() {
@@ -157,7 +157,7 @@ public class Pamprg00100_X10005Model extends DzAbstractModel {
 	@Override
 	public String toString() {
 		return "Pamprg00100_X10005Model [std_ym=" + std_ym + ", pstn_cd=" + pstn_cd + ", pstn_nm=" + pstn_nm
-				+ ", trgt_grd_cd=" + trgt_grd_cd + ", urgd_grd_cd=" + urgd_grd_cd + ", min_bwrk_my=" + min_bwrk_my
+				+ ", trgt_grd_cd=" + trgt_grd_cd + ", urgd_grd_cd=" + ugrd_grd_cd + ", min_bwrk_my=" + min_bwrk_my
 				+ ", aggr_term_cnt=" + aggr_term_cnt + ", bwrk_sgrad_cd=" + bwrk_sgrad_cd + ", ledu_cd=" + ledu_cd
 				+ ", bwrk_my_calc_std_dt=" + bwrk_my_calc_std_dt + ", bizarea_cd=" + bizarea_cd + ", bizarea_nm="
 				+ bizarea_nm + "]";

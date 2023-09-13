@@ -186,4 +186,45 @@
 		</if>
 		ORDER BY START_DT
 	</select>
+	
+	<select id="getCompanyCode" parameterType="com.douzone.comet.service.hr.pamodm.models.Pamodm01800_X10005Model" resultType="String">
+		SELECT
+			DISTINCT COMPANY_CD 
+		FROM
+			HR_STRK_INFO_X10005 
+		WHERE
+			EMP_NO = #{emp_no}
+	</select>
+	
+	<delete id="delete_HR_STRK_INFO_X10005MST" parameterType="com.douzone.comet.service.hr.pamodm.models.Pamodm01800_X10005Model">
+		DELETE
+		FROM
+			HR_STRK_INFO_X10005
+		WHERE
+			COMPANY_CD = #{company_cd}
+			AND EMP_NO = #{emp_no}
+			AND START_DT = #{start_dt}
+			AND END_DT = #{end_dt}
+	</delete>
+	
+	<update id="update_HR_STRK_INFO_X10005MST" parameterType="com.douzone.comet.service.hr.pamodm.models.Pamodm01800_X10005Model">
+		UPDATE
+			HR_STRK_INFO_X10005	
+		SET
+			  DOF_TP = #{dof_tp} 			--휴무유형
+			, START_TM = #{start_tm} 		--시작시간
+			, END_TM = #{end_tm} 			--종료시간
+			, DOF_TM_CNT = #{dof_tm_cnt} 	--휴무시간
+			, LVE_TM_CNT = #{lve_tm_cnt} 	--이탈시간
+			, UPDATE_ID = #{update_id} 		--수정ID
+			, UPDATE_IP = #{update_ip} 		--수정IP
+			, UPDATE_MCADDR_NM = '' 		--수정맥어드레스명
+			, UPDATE_DTS = #{update_dts} 	--수정일시
+		WHERE
+			COMPANY_CD = #{company_cd}
+			AND EMP_NO = #{emp_no}
+			AND START_DT = #{start_dt}
+			AND END_DT = #{end_dt}
+	</update>
+	
 </mapper>

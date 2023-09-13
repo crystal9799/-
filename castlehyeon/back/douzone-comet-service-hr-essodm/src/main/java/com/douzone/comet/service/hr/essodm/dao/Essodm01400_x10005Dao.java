@@ -1,5 +1,6 @@
 package com.douzone.comet.service.hr.essodm.dao;
 
+import java.util.HashMap;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -7,6 +8,7 @@ import org.springframework.stereotype.Repository;
 
 import com.douzone.comet.jdbc.mybatis.DzMybatisSupport;
 import com.douzone.comet.service.hr.essodm.models.Essodm01400_X10005Model;
+import com.douzone.comet.service.hr.essodm.models.Essodm01400_X10005_UserInfoModel;
 /** 
   * @description :
   * @Since   : 
@@ -33,12 +35,12 @@ public class Essodm01400_x10005Dao  {
 	}
 
 	/**
-	 * 단일 데이터 조회
-	 * @param essodm01400_X10005Model
-	 * @return List<Essodm01400_X10005Model>
+	 * 메인 페이지 사원 정보 데이터 조회
+	 * @param hashMap
+	 * @return Essodm01400_X10005_UserInfoModel
 	 */
-	public Essodm01400_X10005Model selectEssodm01400_X10005Model(Essodm01400_X10005Model essodm01400_X10005Model) throws Exception {
-		return this.mybatisSupport.selectOne(this.getClass().getName() + ".selectEssodm01400_X10005Model", essodm01400_X10005Model);
+	public Essodm01400_X10005_UserInfoModel getUserInfo(HashMap<String, Object> parameters) throws Exception {
+		return this.mybatisSupport.selectOne(this.getClass().getName() + ".getUserInfo", parameters);
 	}
 
 	/**

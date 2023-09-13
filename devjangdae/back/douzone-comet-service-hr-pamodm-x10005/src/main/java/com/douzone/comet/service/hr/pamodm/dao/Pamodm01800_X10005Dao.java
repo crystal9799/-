@@ -60,7 +60,16 @@ public class Pamodm01800_X10005Dao {
 	public void delete_HR_STRK_INFO_X10005MST(List<Pamodm01800_X10005Model> parameters) throws Exception {
 		this.mybatisSupport.deleteBatch(this.getClass().getName() + ".delete_HR_STRK_INFO_X10005MST", parameters);
 	}
-
+	
+	/**
+	 * 복수 데이터 수정 처리 updateBatch
+	 * @param List<Pamodm01800_X10005Model> parameters
+	 * @return void
+	 */
+	public void update_HR_STRK_INFO_X10005MST(List<Pamodm01800_X10005Model> parameters) throws Exception {
+		this.mybatisSupport.updateBatch(this.getClass().getName() + ".update_HR_STRK_INFO_X10005MST", parameters);
+	}
+	
 	/**
 	 * 단일 데이터 입력 처리 insert
 	 * @param Pamodm01800_X10005Model parameters
@@ -68,15 +77,6 @@ public class Pamodm01800_X10005Dao {
 	 */
 	public void insert(Pamodm01800_X10005Model parameters) throws Exception {
 		this.mybatisSupport.insert(this.getClass().getName() + ".insert", parameters);
-	}
-
-	/**
-	 * 복수 데이터 수정 처리 updateBatch
-	 * @param List<Pamodm01800_X10005Model> parameters
-	 * @return void
-	 */
-	public void updateBatch(List<Pamodm01800_X10005Model> parameters) throws Exception {
-		this.mybatisSupport.updateBatch(this.getClass().getName() + ".updateBatch", parameters);
 	}
 
 	/**

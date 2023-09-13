@@ -39,8 +39,8 @@ public class Pamodm01800_X10005Dao {
 	 * @param HashMap<String, Object> parameters
 	 * @return List<Pamodm01800_X10005Model>
 	 */
-	public List<Pamodm01800_X10005Model> pamodm01800_listMaster(HashMap<String, Object> parameters) throws Exception {
-		return this.mybatisSupport.selectList(this.getClass().getName() + ".pamodm01800_listMaster", parameters);
+	public List<Pamodm01800_X10005Model> list_HR_STRK_INFO_X10005MST(HashMap<String, Object> parameters) throws Exception {
+		return this.mybatisSupport.selectList(this.getClass().getName() + ".list_HR_STRK_INFO_X10005MST", parameters);
 	}
 
 	/**

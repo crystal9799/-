@@ -1,6 +1,6 @@
-<!--##c3e310a8-df35-4fcb-be10-cd9a767d4022##-->
+<!--##c7ee0c72-0091-4427-a673-2eae131ca4cd##-->
 <!--##ESSODM01400_x10005##-->
-<!--##boYrI2d4CdKNU1t68jBm9qp2uBcV2gHDzlJo1HXYIjVBGYnyGboAc1SyNMtvOKje##-->
+<!--##7j7LXeFML7kTBNGYj/wLKALaxQXbdC+pfSe+17qTxOceJLXDgp82B1v/w9fHni/F##-->
 <!--
   DEWS UI/UX IDE - Build Result - v1.5
   # PageID: ESSODM01400_x10005
@@ -225,6 +225,9 @@
         }
     
     });
+    self.$search_button.on('click', /*db97b64c-80a9-43e4-8377-d609ac26b06e*/ function (e) {
+        self.main_ds.read();
+    });
     dews.ui.grid(self.$main_grid, {
       dataSource: self.main_ds,
       rowNo: false,
@@ -297,14 +300,14 @@
         {
           field: 'ATHZ_ST_CD',
           title: '결재상태코드',
-          width: 80,
-          visible: false
+          width: 80
         },
         {
           field: 'ATHZ_ST_NM',
           title: '결재상태코드이름',
           width: 90,
-          align: 'left'
+          align: 'left',
+          visible: false
         }
       ],
       fixed: {

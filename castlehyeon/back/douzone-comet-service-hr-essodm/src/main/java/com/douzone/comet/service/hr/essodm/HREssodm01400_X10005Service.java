@@ -46,6 +46,12 @@ public class HREssodm01400_X10005Service extends DzCometService {
 			parameters.put("P_END_DT", end_dt);
 	 		
 	 		items = essodm01400_x10005DAO.selectEssodm01400_X10005ModelList(parameters);
+	 		
+	 		System.out.println("MainGrid1Model==========================");
+			for (Essodm01400_X10005Model item : items) {
+				System.out.println(item.toString());
+			}
+			System.out.println("MainGrid1Model==========================");
 	 	} catch(Exception e) {
 	        throw new DzApplicationRuntimeException(e);
 	    }
@@ -60,7 +66,7 @@ public class HREssodm01400_X10005Service extends DzCometService {
 		List<Essodm01400_X10005_UserInfoModel> items = new ArrayList<Essodm01400_X10005_UserInfoModel>();
 		//현재 접속자 정보를 가져오지 않고 가장 많은 건수를 가진 사원정보를 입력
 		String company_cd = "EWP";
-		String emp_no = "20200308";
+		String emp_no = "20200317";
 		try {
 	 		HashMap<String, Object> parameters = new HashMap<>();
 	 		parameters.put("P_EMP_NO", emp_no);

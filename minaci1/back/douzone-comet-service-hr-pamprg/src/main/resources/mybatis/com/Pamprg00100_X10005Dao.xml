@@ -11,21 +11,22 @@
 			   ,HUI.STD_YM                                        -- 기준년월
 			   ,HUI.BIZAREA_CD                                    --사업장코드
 			   ,HUI.PSTN_CD                                       -- 직급코드
-			   --,HUI.PSTN_CD ORIG_PSTN_CD                          -- 수정이전 직급코드
+			   ,HUI.PSTN_CD ORIG_PSTN_CD                          -- 수정이전 직급코드
 			   ,COALESCE(MCS.SYSDEF_NM, MC.SYSDEF_NM) AS PSTN_NM  -- 직급명
 			   ,HUI.TRGT_GRD_CD                                   -- 대상등급코드
-			   --,HUI.TRGT_GRD_CD ORIG_TRGT_GRD_CD                  -- 수정이전 대상등급코드
+			   ,HUI.TRGT_GRD_CD ORIG_TRGT_GRD_CD                  -- 수정이전 대상등급코드
 			   ,HUI.UGRD_GRD_CD                    				  -- 승급등급코드
-			   --,HUI.UGRD_GRD_CD ORIG_UGRD_GRD_CD                  -- 수정이전 승급등급코드
+			   ,HUI.UGRD_GRD_CD ORIG_UGRD_GRD_CD                  -- 수정이전 승급등급코드
 			   ,HUI.MIN_BWRK_MY                                   -- 최소근무월수
-			   --,HUI.MIN_BWRK_MY ORIG_MIN_BWRK_MY                  -- 수정이전 최소근무월수
+			   ,HUI.MIN_BWRK_MY ORIG_MIN_BWRK_MY                  -- 수정이전 최소근무월수
 			   ,HUI.AGGR_TERM_CNT                                 -- 근무성적집계기간
 			   ,HUI.BWRK_SGRAD_CD                                 -- 근무성적
 			   ,HUI.LEDU_CD                                       -- 학력
 			   ,MC2.SYSDEF_NM LEDU_NM                             -- 학력명
 			   ,HUI.BWRK_MY_CALC_STD_DT                           -- 산정기준일
 			   ,HUI.RMK_NM                                        -- 비고
-		FROM HR_URGDBASETBL_INFO_X10005 HUI
+		FROM 
+			HR_URGDBASETBL_INFO_X10005 HUI
 			LEFT OUTER JOIN MA_CODEDTL MC
 				ON MC.COMPANY_CD = #{P_COMPANY_CD}
 				AND MC.MODULE_CD = 'HR'
@@ -55,9 +56,9 @@
 	</select>
 	
 	<select id="get_BizareaList" parameterType="hashMap" resultType="hashMap">
-		SELECT	MBM.COMPANY_CD,
-				MBM.BIZAREA_CD,
-				COALESCE(MBL.BIZAREA_NM, MBM.BIZAREA_NM) AS BIZAREA_NM
+		SELECT	MBM.COMPANY_CD
+				,MBM.BIZAREA_CD
+				,COALESCE(MBL.BIZAREA_NM, MBM.BIZAREA_NM) AS BIZAREA_NM
 		  FROM	MA_BIZAREA_MST MBM
 		  LEFT OUTER JOIN MA_BIZAREA_LDTL MBL
 			ON MBL.COMPANY_CD = MBM.COMPANY_CD 
@@ -66,5 +67,16 @@
 		 WHERE	MBM.COMPANY_CD = #{P_COMPANY_CD}
 		 ORDER	BY MBM.COMPANY_CD, MBM.BIZAREA_CD
 	</select>
-
+ 
+	<delete id="deletePAMPRG00100_Model" parameterType="com.douzone.comet.service.hr.pamprg.models.Pamprg00100_X10005Model">
+		DELETE FROM 
+					HR_URGDBASETBL_INFO_X10005
+		WHERE COMPANY_CD = #{company_cd}
+		AND STD_YM = #{std_ym}
+		AND BIZAREA_CD = #{bizarea_cd}
+		AND PSTN_CD = #{pstn_cd}
+		AND TRGT_GRD_CD = #{trgt_grd_cd}
+		AND UGRD_GRD_CD = #{urgd_grd_cd}
+		AND MIN_BWRK_MY = #{min_bwrk_my}
+	</delete>
 </mapper>

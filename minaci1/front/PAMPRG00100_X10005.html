@@ -1,0 +1,489 @@
+<!--##66726861-439b-4192-aa2a-19df599c0746##-->
+<!--##PAMPRG00100_X10005##-->
+<!--##Rp/qtzuUH0+GGUlrzAn/PXqTIM3fVSMc/PNva+iX0+pkjPaMRV4hiE4kdgvPXhWo##-->
+<!--
+  DEWS UI/UX IDE - Build Result - v1.5
+  # PageID: PAMPRG00100_X10005
+  # PageTitle: 승급기준표등록
+  # Server: http://localhost:8090/
+-->
+<!--
+
+-->
+
+<div class="dews-button-group" style="text-align: right;">
+  <button id="copybtnApply" class="dews-ui-button">종전자료복사</button>
+  <button id="downloandBtnApply" class="dews-ui-button">자료다운로드</button>
+  <button id="uploadBtnApply" class="dews-ui-button">자료업로드</button>
+</div>
+<div id="conditionpanel" class="dews-ui-condition-panel">
+  <ul class="required-area">
+    <li id="conditionItem">
+      <label class="dews-ui-multilingual">승급년월</label>
+      <span>
+        <input type="text" id="mpPROMO_YEAR_MONTH" name="mpPROMO_YEAR_MONTH" class="dews-ui-monthpicker required" />
+      </span>
+    </li>
+    <li>
+      <label class="dews-ui-multilingual">사업장</label>
+      <span>
+        <select id="BIZAREA_CD" name="BIZAREA_CD" class="dews-ui-dropdownlist required" data-dews-value-field="BIZAREA_CD" data-dews-text-field="BIZAREA_NM" data-dews-show-tooltip="true" data-dews-auto-bind="false" data-dews-show-value-tooltip="true" data-dews-use-numkey="false"></select>
+      </span>
+    </li>
+  </ul>
+</div>
+<div id="containerpanel1" class="dews-ui-container-panel" data-dews-fit-bottom="true">
+  <div id="containerpanelitem1" class="dews-container-item" data-dews-position="normal">
+    <div id="gridMaster" class="dews-ui-grid"></div>
+  </div>
+</div>
+
+<style>
+    
+</style>
+
+
+
+<script>
+  dews.ready(function () {
+    var self = this;
+    self.version = self.version || {};
+    self.version.view='1.0';
+
+
+    /*bf8a1f3b-4f27-439e-8495-a190c78bb027*/ //# sourceURL=PAMPRG00100_X10005.js
+    self.mainButtons.delete.useDefaultConfirm = false;
+    //사용자에게 기본으로 설정된 확인 메시지를 출력 후 확인 받았을 경우에만 핸들러를 실행합니다. (※ 생략가능 / 기본값: true)
+    
+    function getDefaultMonth() {
+        var date = new Date();
+        var year = date.getFullYear();              //yyyy
+        var month = (1 + date.getMonth());          //M
+        month = month >= 10 ? month : '0' + month;  //month 두자리로 저장
+    
+        return year + '' + month;
+    }
+    
+    function searchData() {
+        dews.ui.loading.show();
+        self.grid_ds.read();
+        dews.ui.loading.hide();
+    }
+    
+    
+    
+    self.grid_ds = dews.ui.dataSource('grid_ds', {
+      grid: true,
+      transport: {
+        read: {
+          url: dews.url.getApiUrl('HR', 'HRPamprg00100_X10005Service', 'list_HR_URGDBASETBL_INFO_X10005MST'),
+          data: /*7ee5833f-901a-4df1-9b1d-c782bd84fb79*/ function() {
+        return{
+        mpPROMO_YEAR_MONTH: self.mpPROMO_YEAR_MONTH.value(),
+        BIZAREA_CD: self.BIZAREA_CD.value()
+      }
+    }
+    
+        }
+      },
+      schema: {
+        model: {
+          fields: [
+            { field: 'STD_YM', editable: false, dataType: 'string' }, 
+            { field: 'PSTN_CD', editable: false, dataType: 'string' }, 
+            { field: 'PSTN_NM', editable: false, dataType: 'string' }, 
+            { field: 'TRGT_GRD_CD', editable: false, dataType: 'string' }, 
+            { field: 'UGRD_GRD_CD', editable: false, dataType: 'string' }, 
+            { field: 'MIN_BWRK_MY', editable: false, dataType: 'number' }, 
+            { field: 'AGGR_TERM_CNT', editable: false, dataType: 'number' }, 
+            { field: 'BWRK_SGRAD_CD', editable: false, dataType: 'string' }, 
+            { field: 'LEDU_CD', editable: false, dataType: 'string' }, 
+            { field: 'BWRK_MY_CALC_STD_DT', editable: false, dataType: 'string' }, 
+            { field: 'BIZAREA_CD', editable: false, dataType: 'string' }, 
+            { field: 'BIZAREA_NM', editable: false, dataType: 'string' }, 
+            { field: 'RMK_NM', editable: false, dataType: 'string' }, 
+            { field: 'LEDU_NM', editable: false, dataType: 'string' }
+          ]
+    
+        }
+      }
+    });
+    dews.api.get(dews.url.getApiUrl('CM', 'CommonCodeDtlService', 'common_codeDtl_list'),{
+      async: false,
+      data: {
+          dept_cd: '',
+          base_dt: '',
+          end_dt: '',
+          crud_fg: '',
+          menu_cd: '',
+          foreign_yn: '',
+          up_sysdef_cd: '',
+          field_cd_pipe: 'P00650|ZA11_10005|P00670',
+          module_cd: 'HR',
+          company_cd: '',
+          syscode_yn: '',
+          keyword: '',
+          base_yn: ''
+      }
+    }).done(function (data) {
+      var ar_P00650 = new Array();
+      var ar_ZA11_10005 = new Array();
+      var ar_P00670 = new Array();
+    
+      for (var i = 0; i < data.length; i++) {
+        if (data[i].FIELD_CD == "P00650") { 
+          ar_P00650.push(data[i]); 
+    
+        }
+        else if (data[i].FIELD_CD == "ZA11_10005") { 
+          ar_ZA11_10005.push(data[i]); 
+    
+        }
+        else if (data[i].FIELD_CD == "P00670") { 
+          ar_P00670.push(data[i]); 
+    
+        }
+      }
+      self.pipeDataSource1_P00650 = dews.ui.dataSource('pipeDataSource1_P00650',  { data: ar_P00650 });
+      self.pipeDataSource1_ZA11_10005 = dews.ui.dataSource('pipeDataSource1_ZA11_10005',  { data: ar_ZA11_10005 });
+      self.pipeDataSource1_P00670 = dews.ui.dataSource('pipeDataSource1_P00670',  { data: ar_P00670 });
+      self.pipeDataSource1 = dews.ui.dataSource('pipeDataSource1', { data: data });
+      
+    });
+    dews.api.get(dews.url.getApiUrl('CM', 'CommonCodeDtlService', 'common_ci_codeDtl_list'),{
+      async: false,
+      data: {
+          end_dt: '',
+          foreign_yn: '',
+          field_cd_pipe: 'P00650|P00670',
+          module_cd: 'HR',
+          syscode_yn: '',
+          keyword: '',
+          base_yn: ''
+      }
+    }).done(function (data) {
+      var ar_P00650 = new Array();
+      var ar_P00670 = new Array();
+    
+      for (var i = 0; i < data.length; i++) {
+        if (data[i].FIELD_CD == "P00650") { 
+          ar_P00650.push(data[i]); 
+    
+        }
+        else if (data[i].FIELD_CD == "P00670") { 
+          ar_P00670.push(data[i]); 
+    
+        }
+      }
+      self.pipeDataSource2_P00650 = dews.ui.dataSource('pipeDataSource2_P00650',  { data: ar_P00650 });
+      self.pipeDataSource2_P00670 = dews.ui.dataSource('pipeDataSource2_P00670',  { data: ar_P00670 });
+      self.pipeDataSource2 = dews.ui.dataSource('pipeDataSource2', { data: data });
+      
+    });
+    self.bizareaCd_ds = dews.ui.dataSource('bizareaCd_ds', {
+      transport: {
+        read: {
+          url: dews.url.getApiUrl('HR', 'HRPamprg00100_X10005Service', 'get_BizareaList')
+        }
+      },
+      schema: {
+        model: {
+          fields: [
+            { field: 'BIZAREA_CD', editable: false, type: 'string' }, 
+            { field: 'BIZAREA_NM', editable: false, type: 'string' }
+          ]
+    
+        }
+      }
+    });
+    
+    
+    dews.ui.mainbuttons.localize.disable(true);
+    dews.ui.mainbuttons.add.click(/*71614df6-9a67-4b0a-8f1b-7fb106ef6a8f*/ function () {
+        // TODO: 그리드에 데이터를 추가합니다.
+        // self.grid1.addRow();
+    });
+    dews.ui.mainbuttons.search.click(/*37fe89ce-9f9d-444b-a3a3-dfe45a8e42e2*/ function () {
+        if (self.conditionpanel.validate({ tooltip: true, message: '필수 항목을 입력해 주십시요.' })) {
+            //TODO: 저장여부를 확인한 후 데이터소스를 조회합니다.
+            if (self.grid_ds.getDirtyDataCount() != 0) {
+                dews.confirm('저장하지 않은 데이터가 있습니다. 조회를 계속하시겠습니까?', "question").yes(function () {
+                    searchData();
+                }).no(function () {
+                    dews.ui.snackbar.warning('취소되었습니다.');
+                    return false;
+                });
+            } else {
+                searchData();
+            }
+        } else {
+            dews.ui.snackbar.warning("누락된 필수값이 있습니다.");
+        }
+    
+    
+    
+    });
+    dews.ui.mainbuttons.delete.click(/*da329bef-6f06-4958-bb9d-489a5d95db95*/ function () {
+        try {
+            // 체크된 행 인덱스를 가진 배열
+            var checkArray = self.gridMaster.getCheckedIndex();
+            if (checkArray.length == 0) { // 체크된 행이 없다면
+                dews.ui.snackbar.warning("체크된 행이 없습니다."); // 스낵바 경고 띄우기
+                return;
+            }
+            dews.confirm("삭제하시겠습니까?", "question").yes(function () {
+                // 단일행
+                // self.grid1.removeRow(self.grid1.select());
+                // 체크
+                self.gridMaster.removeRow(checkArray); // 체크된 행 모두 삭제하기
+                dews.ui.snackbar.info("저장을 눌러 삭제를 완료하세요.");
+            });
+        } catch (error) {
+            console.error(error);
+            dews.error(error);
+        }
+    });
+    dews.ui.mainbuttons.save.click(/*de6735b5-68c0-4785-bc2d-308bb03c399d*/ function () {
+    
+        // TODO: 데이터소스를 저장합니다.
+        if (self.grid_ds.getDirtyDataCount() == 0) {
+            dews.alert('변경된 데이터가 없습니다.');
+            return false;
+        }
+    
+        //필수 필드값 데이터 체크
+        if (self.gridMaster.validate().result == false) {
+            dews.alert('필수 값이 입력되지 않은 항목이 있습니다.');
+            return false;
+        }
+    
+        //showTooltip : 첫 번째 미입력 필수 입력 셀로 이동하여 필수 입력 툴팁을 띄울지 여부 설정
+        if (!self.gridMaster.validate({ showTooltip: true }).result) {
+            return;
+        }
+    
+        //저장 API 서비스 호출
+        dews.confirm('데이터를 저장하시겠습니까 ? ', 'question').yes(function () {
+            dews.api.post(dews.url.getApiUrl('HR', 'HRPamprg00100_X10005Service', 'save_HR_URGDBASETBL_INFO_X10005MST'), {
+                async: false,
+                data: {
+                    grid_ds: JSON.stringify(self.grid_ds.getDirtyData())
+                }
+            }).done(function (data) {
+                dews.ui.snackbar.ok('자료가 정상적으로 저장되었습니다.');
+                searchData();
+                alert("자료가 정상적으로 저장되었습니다.");
+            }).fail(function (xhr, status, error) {
+                dews.ui.snackbar.error(error);
+                alert("저장 실패하였습니다.");
+            });
+        });
+    
+        //
+        // 서비스 파라미터명과 데이터소스명이 같은경우
+        // dews.confirm('저장하시겠습니까?', 'ico2').yes(function () {
+        //   self.dataSource1.batchSave(dews.url.getApiUrl('Module', 'ServiceName', 'urlPattern'))
+        //   .done(function (data) {
+        //     dews.ui.snackbar.ok('저장되었습니다.');
+        //     dews.ui.loading.show({
+        //       text: '조회중입니다.'
+        //     });
+        //     self.dataSource1.read();
+        //   }).fail(function (message) {
+        //     dews.ui.snackbar.warning(message);
+        //   }).always(function () {
+        //     dews.ui.loading.hide();
+        //   });
+        // }).no(function () {
+        //   dews.ui.snackbar.warning('취소되었습니다.');
+        // });
+        //
+        // 서비스 파라미터명과 데이터소스명이 다른경우
+        // dews.confirm('수정된 데이터를 저장하시겠습니까 ? ', 'question').yes(function(){
+        //     dews.api.post(dews.url.getApiUrl('Module', 'ServiceName', 'urlPattern'),{
+        //         async: false,
+        //         data: {
+        //             //ServiceParameterName : ServiceParameterValue
+        //             saveData: JSON.stringify(self.dataSource1.getDirtyData()),
+        //             param1: self.cd_gaap.value(),
+        //             param2: 'value2'
+        //         }
+        //     }).done(function (data) {
+        //         dews.ui.snackbar.ok('자료가 정상적으로 저장되었습니다.');
+        //         self.dataSource1.read();
+        //     }).fail(function (xhr,status,error) {
+        //         //dews.error('저장이 실패하였습니다.', 'ico1');
+        //         dews.ui.snackbar.error(error);
+        //     });
+        //  });
+    
+    });
+    self.mpPROMO_YEAR_MONTH.on('change', /*25c08b4f-d1ef-457d-a433-739d1b7c8cf7*/ function (e) {
+        // TODO: 필수항목 입력을 체크한 후 데이터소스를 조회합니다.
+        if (self.conditionpanel.validate({ tooltip: true, message: '필수 항목을 입력해 주십시요.' })) {
+            if (self.grid_ds.getDirtyDataCount() >= 1) {
+                dews.confirm('저장되지 않은 데이터가 있습니다.\n그래도 조회 하시겠습니까?', "question").yes(function () {
+                    searchData();
+                }).no(function () {
+                });
+            } else {
+                searchData();
+            }
+        } else {
+            dews.ui.snackbar.warning("누락된 필수값이 있습니다.");
+        }
+    });
+    self.BIZAREA_CD.setDataSource(self.bizareaCd_ds);
+    dews.ui.grid(self.$gridMaster, {
+      dataSource: self.grid_ds,
+      editable: true,
+      selectable: true,
+      sortable: false,
+      copyMode: 'cell',
+      columns: [
+        {
+          field: 'STD_YM',
+          title: '기준년월',
+          width: 60,
+          attributes: { class: 'required' }
+        },
+        {
+          field: 'PSTN_CD',
+          title: '직급코드',
+          width: 80,
+          visible: false
+        },
+        {
+          field: 'PSTN_NM',
+          title: '직급명',
+          width: 90,
+          align: 'left',
+          attributes: { class: 'required' }
+        },
+        {
+          field: 'TRGT_GRD_CD',
+          title: '대상등급',
+          width: 80,
+          attributes: { class: 'required' }
+        },
+        {
+          field: 'UGRD_GRD_CD',
+          title: '승급등급',
+          width: 80,
+          attributes: { class: 'required' }
+        },
+        {
+          field: 'MIN_BWRK_MY',
+          title: '최소근무월수',
+          width: 60,
+          attributes: { class: 'required' }
+        },
+        {
+          field: 'AGGR_TERM_CNT',
+          title: '근무성적집계기간',
+          width: 60
+        },
+        {
+          field: 'BWRK_SGRAD_CD',
+          title: '근무성적',
+          width: 80,
+          editor: {
+            type: 'dropDown',
+            dataSource: self.pipeDataSource1_ZA11_10005,
+            dataValueField: 'SYSDEF_CD',
+            dataTextField: 'SYSDEF_NM'
+          }
+        },
+        {
+          field: 'LEDU_NM',
+          title: '학력',
+          editor: {
+            type: 'codepicker',
+            helpCode: 'H_MA_CODEDTL_S',
+            codeField: 'SYSDEF_CD',
+            textField: 'SYSDEF_NM',
+            gridCodeField: 'LEDU_CD',
+            helpTitle: '학력 도움창',
+            helpSize: 'medium',
+            helpParams: /*587d6f15-8773-479c-a310-f91ef8ac5829*/ function(e) {
+      return {
+                company_cd : "EWP",
+                module_cd : "HR",
+                field_cd : "P00670"
+              }
+    }
+          }
+        },
+        {
+          field: 'LEDU_CD',
+          title: '학력코드',
+          width: 80,
+          visible: false,
+          editor: {
+            type: 'codepicker',
+            helpCode: 'H_MA_CODEDTL_S',
+            codeField: 'SYSDEF_CD',
+            textField: 'SYSDEF_NM',
+            gridCodeField: 'LEDU_CD',
+            helpTitle: '학력 도움창',
+            helpSize: 'medium',
+            helpParams: /*587d6f15-8773-479c-a310-f91ef8ac5829*/ function(e) {
+      return {
+                company_cd : "EWP",
+                module_cd : "HR",
+                field_cd : "P00670"
+              }
+    }
+          }
+        },
+        {
+          field: 'BWRK_MY_CALC_STD_DT',
+          title: '산정기준일',
+          width: 80,
+          formats: {
+            type: 'date',
+            format: 'yyyy-MM-dd'
+          },
+          editor: {
+            type: 'date',
+            format: 'yyyy-MM-dd'
+          }
+        },
+        {
+          field: 'BIZAREA_CD',
+          title: '사업장',
+          width: 80,
+          visible: false
+        },
+        {
+          field: 'BIZAREA_NM',
+          title: '사업장명',
+          width: 90,
+          align: 'left',
+          visible: false
+        },
+        {
+          field: 'RMK_NM',
+          title: '비고'
+        }
+      ],
+      fixed: {
+        colCount: 0,
+        rightColCount: 0
+      }
+    });
+    
+    
+    
+    
+    /*534ba9e1-a845-40e6-8d1e-d324d5bfa4cc*/ self.mpPROMO_YEAR_MONTH.value('202101'); //데이터 있는 기준 날짜 확인해야 함 
+    
+    
+    
+    
+    
+
+  
+  });
+
+</script>

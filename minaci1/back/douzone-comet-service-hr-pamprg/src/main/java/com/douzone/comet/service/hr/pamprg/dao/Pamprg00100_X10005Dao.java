@@ -33,15 +33,7 @@ public class Pamprg00100_X10005Dao  {
 		return this.mybatisSupport.selectList(this.getClass().getName() + ".selectPamprg00100_X10005ModelList", parameters);
 	}
 
-	/**
-	 * 단일 데이터 조회
-	 * @param Pamprg00100_X10005Model
-	 * @return List<Pamprg00100_X10005Model>
-	 */
-	public Pamprg00100_X10005Model selectPAMPRG00100_Model(Pamprg00100_X10005Model pamprg00100_X10005Model) throws Exception {
-		return this.mybatisSupport.selectOne(this.getClass().getName() + ".selectPAMPRG00100_Model", pamprg00100_X10005Model);
-	}
-
+	 
 	/**
 	 * 단일 데이터 입력 처리
 	 * @param Pamprg00100_X10005Model
@@ -62,8 +54,11 @@ public class Pamprg00100_X10005Dao  {
 	 * 단일 데이터 삭제 처리
 	 * @param Pamprg00100_X10005Model
 	 */
-	public void deletePAMPRG00100_Model(Pamprg00100_X10005Model pamprg00100_X10005Model) throws Exception {
-		this.mybatisSupport.delete(this.getClass().getName() + ".deletePAMPRG00100_Model", pamprg00100_X10005Model);
+	public void deletePAMPRG00100_Model(List<Pamprg00100_X10005Model> parameters) throws Exception {
+		this.mybatisSupport.deleteBatch(this.getClass().getName() + ".deletePAMPRG00100_Model", parameters);
 	}
 
+	 
+ 
+	 
 }

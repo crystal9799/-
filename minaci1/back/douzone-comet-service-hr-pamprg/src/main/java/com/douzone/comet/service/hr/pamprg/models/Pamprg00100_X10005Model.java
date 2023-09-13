@@ -23,12 +23,12 @@ public class Pamprg00100_X10005Model extends DzAbstractModel {
 	private String pstn_nm;
 
 	@SerializedName("TRGT_GRD_CD")
-	@DzModelField(name = "trgt_grd_cd", desc = "대상등급코드", colName = "TRGT_GRD_CD", colSize = "5", isKey = false)
+	@DzModelField(name = "trgt_grd_cd", desc = "대상등급", colName = "TRGT_GRD_CD", colSize = "5", isKey = false)
 	private String trgt_grd_cd;
 
 	@SerializedName("UGRD_GRD_CD")
-	@DzModelField(name = "urgd_grd_cd", desc = "승급등급코드", colName = "UGRD_GRD_CD", colSize = "5", isKey = false)
-	private String urgd_grd_cd;
+	@DzModelField(name = "ugrd_grd_cd", desc = "승급등급", colName = "UGRD_GRD_CD", colSize = "5", isKey = false)
+	private String ugrd_grd_cd;
 	
 	@SerializedName("MIN_BWRK_MY")
 	@DzModelField(name = "min_bwrk_my", desc = "최소근무월수", colName = "MIN_BWRK_MY", colSize = "7", isKey = false)
@@ -57,6 +57,11 @@ public class Pamprg00100_X10005Model extends DzAbstractModel {
 	@SerializedName("BIZAREA_NM")
 	@DzModelField(name = "bizarea_nm", desc = "사업장명", colName = "BIZAREA_NM", colSize = "8", isKey = false)
 	private String bizarea_nm;
+	
+	@SerializedName("RMK_NM")
+	@DzModelField(name="rmk_nm", desc="비고", colName="rmk_nm")
+	private String rmk_nm;
+	
 
 	public String getStd_ym() {
 		return std_ym;
@@ -139,11 +144,11 @@ public class Pamprg00100_X10005Model extends DzAbstractModel {
 	}
 
 	public String getUrgd_grd_cd() {
-		return urgd_grd_cd;
+		return ugrd_grd_cd;
 	}
 
-	public void setUrgd_grd_cd(String urgd_grd_cd) {
-		this.urgd_grd_cd = urgd_grd_cd;
+	public void setUrgd_grd_cd(String ugrd_grd_cd) {
+		this.ugrd_grd_cd = ugrd_grd_cd;
 	}
 
 	public String getBizarea_nm() {
@@ -154,12 +159,20 @@ public class Pamprg00100_X10005Model extends DzAbstractModel {
 		this.bizarea_nm = bizarea_nm;
 	}
 
+	public String getRmk_nm() {
+		return rmk_nm;
+	}
+
+	public void setRmk_nm(String rmk_nm) {
+		this.rmk_nm = rmk_nm;
+	}
+
 	@Override
 	public String toString() {
 		return "Pamprg00100_X10005Model [std_ym=" + std_ym + ", pstn_cd=" + pstn_cd + ", pstn_nm=" + pstn_nm
-				+ ", trgt_grd_cd=" + trgt_grd_cd + ", urgd_grd_cd=" + urgd_grd_cd + ", min_bwrk_my=" + min_bwrk_my
+				+ ", trgt_grd_cd=" + trgt_grd_cd + ", urgd_grd_cd=" + ugrd_grd_cd + ", min_bwrk_my=" + min_bwrk_my
 				+ ", aggr_term_cnt=" + aggr_term_cnt + ", bwrk_sgrad_cd=" + bwrk_sgrad_cd + ", ledu_cd=" + ledu_cd
 				+ ", bwrk_my_calc_std_dt=" + bwrk_my_calc_std_dt + ", bizarea_cd=" + bizarea_cd + ", bizarea_nm="
-				+ bizarea_nm + "]";
+				+ bizarea_nm + ", rmk_nm=" + rmk_nm + "]";
 	}
 }

@@ -1,5 +1,6 @@
 package com.douzone.comet.service.hr.pamprg.dao;
 
+import java.util.HashMap;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,12 +15,12 @@ import com.douzone.comet.service.hr.pamprg.models.Pamprg00100_X10005Model;
   * @History : 
   */
 @Repository
-public class Pamprg00100_X100055Dao  {
+public class Pamprg00100_X10005Dao  {
 
 	private DzMybatisSupport mybatisSupport;
 
 	@Autowired
-	public Pamprg00100_X100055Dao(DzMybatisSupport mybatisSupport) {
+	public Pamprg00100_X10005Dao(DzMybatisSupport mybatisSupport) {
 		this.mybatisSupport = mybatisSupport;
 	}
 
@@ -28,8 +29,8 @@ public class Pamprg00100_X100055Dao  {
 	 * @param Pamprg00100_X10005Model
 	 * @return List<Pamprg00100_X10005Model>
 	 */
-	public List<Pamprg00100_X10005Model> selectPamprg00100_X10005ModelList(Pamprg00100_X10005Model pamprg00100_X10005Model) throws Exception {
-		return this.mybatisSupport.selectList(this.getClass().getName() + ".selectPamprg00100_X10005ModelList", pamprg00100_X10005Model);
+	public List<Pamprg00100_X10005Model> selectPamprg00100_X10005ModelList(HashMap<String,Object> parameters) throws Exception {
+		return this.mybatisSupport.selectList(this.getClass().getName() + ".selectPamprg00100_X10005ModelList", parameters);
 	}
 
 	/**

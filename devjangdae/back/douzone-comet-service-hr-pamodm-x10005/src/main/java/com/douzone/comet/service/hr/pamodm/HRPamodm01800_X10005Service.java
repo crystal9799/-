@@ -145,43 +145,42 @@ public class HRPamodm01800_X10005Service extends DzCometService {
 			}
 
 
-//			// [INSERT]
-//			for (Pamodm01800_X10005Model row : dataSourceMst.getAdded()) {
-//
-//				// COMPANY_CD
-//				// companyCd = pamodm01800_X10005Dao.getCompanyCode(row.getEmp_no());
-//				// if (companyCd == null || companyCd.equals("")) {
-//				// throw new DzApplicationRuntimeException("조회된 사원번호는 존재하지 않습니다.\n재조회 후
-//				// 처리하십시오.");
-//				// } insert의 경우 로그인한 사용자의 회사 코드가 들어가게 됨.
-//				row.setCompany_cd(this.getCompanyCode());
-//				// START_DT
-//				row.setStart_dt(StringUtil.getLocaleTimeString(row.getStart_dt(), "yyyyMMdd"));
-//				// END_DT
-//				row.setEnd_dt(StringUtil.getLocaleTimeString(row.getEnd_dt(), "yyyyMMdd"));
-//				row.setStart_tm(row.getStart_tm());
-//				row.setEnd_tm(row.getEnd_tm());
-//				row.setDof_tm_cnt(row.getDof_tm_cnt());
-//				row.setLve_tm_cnt(row.getLve_tm_cnt());
-//
-//				// INSERT_ID
-//				row.setInsert_id(this.getUserId());
-//				// INSERT_IP
-//				row.setInsert_ip(this.getRemoteHost());
-//				// INSERT_DTS
-//				row.setInsert_dts(new Date());
-//
-//				count = pamodm01800_X10005Dao.selectPK(row);
-//				if (count > 0) {
-//					throw new DzApplicationRuntimeException("이미 등록된 데이터가 있습니다.\n재조회 후 처리하십시오.");
-//				}
-//
-//				pamodm01800_X10005Dao.insert(row); // insert 배치아닌경우
-//			}
+			// [INSERT]
+			for (Pamodm01800_X10005Model row : dataSourceMst.getAdded()) {
+
+				// COMPANY_CD
+				// companyCd = pamodm01800_X10005Dao.getCompanyCode(row.getEmp_no());
+				// if (companyCd == null || companyCd.equals("")) {
+				// throw new DzApplicationRuntimeException("조회된 사원번호는 존재하지 않습니다.\n재조회 후
+				// 처리하십시오.");
+				// } insert의 경우 로그인한 사용자의 회사 코드가 들어가게 됨.
+				row.setCompany_cd(this.getCompanyCode());
+				// START_DT
+				row.setStart_dt(StringUtil.getLocaleTimeString(row.getStart_dt(), "yyyyMMdd"));
+				// END_DT
+				row.setEnd_dt(StringUtil.getLocaleTimeString(row.getEnd_dt(), "yyyyMMdd"));
+				row.setStart_tm(row.getStart_tm());
+				row.setEnd_tm(row.getEnd_tm());
+				row.setDof_tm_cnt(row.getDof_tm_cnt());
+				row.setLve_tm_cnt(row.getLve_tm_cnt());
+
+				// INSERT_ID
+				row.setInsert_id(this.getUserId());
+				// INSERT_IP
+				row.setInsert_ip(this.getRemoteHost());
+				// INSERT_DTS
+				row.setInsert_dts(new Date());
+
+				count = pamodm01800_X10005Dao.hasContainPrimaryKey(row);
+				if (count > 0) {
+					throw new DzApplicationRuntimeException("이미 등록된 데이터가 있습니다.\n재조회 후 처리하십시오.");
+				}
+
+				pamodm01800_X10005Dao.insert_HR_STRK_INFO_X10005MST(row); // insert 배치아닌경우
+			}
 
 		} catch (Exception e) {
 			throw DzExceptionWrapper.getDzApplicationRuntimeException(e);
 		}
 	}
-
 }

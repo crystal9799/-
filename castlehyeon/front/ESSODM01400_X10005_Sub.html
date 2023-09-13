@@ -1,0 +1,143 @@
+<!--##73aba8bc-dc64-4560-bd68-82c6e8c03b77##-->
+<!--##ESSODM01400_X10005_Sub##-->
+<!--##QACay9s0RLTZic0OUbOYFPc+atak4XuHgMALEy3S0HkF5oEMHajeA4XJxhM3yxVG##-->
+<!--
+  DEWS UI/UX IDE - Build Result - v1.5
+  # PageID: ESSODM01400_X10005_Sub
+  # PageTitle: 결근계 신청 상세내역
+  # Server: http://localhost:8080/
+-->
+<!--
+
+-->
+
+<div id="containerpanel1" class="dews-ui-container-panel" data-dews-fit-bottom="true">
+  <div id="containerpanelitem1" class="dews-container-item" data-dews-position="normal">
+    <h4 id="tit1" class="dews-ui-title">기본정보</h4>
+    <div id="formpanel1" class="dews-ui-form-panel" data-dews-columns="4">
+      <ul>
+        <li>
+          <label>사번</label>
+          <span>
+            <input id="txt1" name="txt1" type="text" class="dews-ui-textbox basic" readonly="readonly" />
+          </span>
+        </li>
+        <li>
+          <label>성명</label>
+          <span>
+            <input id="txt2" name="txt2" type="text" class="dews-ui-textbox basic" readonly="readonly" />
+          </span>
+        </li>
+        <li>
+          <label>직급</label>
+          <span>
+            <input id="txt3" name="txt3" type="text" class="dews-ui-textbox basic" readonly="readonly" />
+          </span>
+        </li>
+        <li>
+          <label>직군</label>
+          <span>
+            <input id="txt4" name="txt4" type="text" class="dews-ui-textbox basic" readonly="readonly" />
+          </span>
+        </li>
+        <li class="col-3">
+          <label>소속</label>
+          <span>
+            <input id="txt5" name="txt5" type="text" class="dews-ui-textbox basic" readonly="readonly" />
+          </span>
+        </li>
+        <li>
+          <label>직위</label>
+          <span>
+            <input id="txt6" name="txt6" type="text" class="dews-ui-textbox basic" readonly="readonly" />
+          </span>
+        </li>
+      </ul>
+    </div>
+    <div class="dews-button-group" style="text-align: right;">
+      <button id="temp_save_button" class="dews-ui-button">임시 저장</button>
+      <button id="req_button" class="dews-ui-button">결재 요청</button>
+      <button id="req_cancel_button" class="dews-ui-button">결재요청 취소</button>
+      <button id="delete_button" class="dews-ui-button">삭제</button>
+      <button id="sub_close_button" class="dews-ui-button">목록</button>
+    </div>
+    <h4 id="tit3" class="dews-ui-title">결근계 신청 상세내역</h4>
+    <div id="formpanel2" class="dews-ui-form-panel" data-dews-columns="3">
+      <ul>
+        <li class="col-3">
+          <label>신청자</label>
+          <span>
+            <input id="EMP_NO" name="EMP_NO" type="text" class="dews-ui-textbox" readonly="readonly" style="width: 100px;" />
+            <input id="KOR_NM" name="KOR_NM" type="text" class="dews-ui-textbox" readonly="readonly" style="width: 100px;" />
+            <button id="CHANGE_REQ_USERT" class="dews-ui-button">신청자변경</button>
+          </span>
+        </li>
+        <li class="col-3">
+          <label>근태종류</label>
+          <span>
+            <select id="ddl1" name="ddl1" class="dews-ui-dropdownlist required" data-dews-show-tooltip="true" style="width: 204px;" data-dews-show-value-tooltip="true" data-dews-use-numkey="false"></select>
+          </span>
+        </li>
+        <li>
+          <label>시작일</label>
+          <span>
+            <input type="text" id="dp1" name="dp1" class="dews-ui-datepicker required" />
+          </span>
+        </li>
+        <li class="col-2">
+          <label>종료일</label>
+          <span>
+            <input type="text" id="dp2" name="dp2" class="dews-ui-datepicker required" style="width: 175px;" />
+          </span>
+        </li>
+        <li class="col-3">
+          <label>사유</label>
+          <span>
+            <input id="txt7" name="txt7" type="text" class="dews-ui-textbox required" style="width: 500px;" />
+          </span>
+        </li>
+        <li class="col-3">
+          <label>결재상태</label>
+          <span>
+            <input id="txt8" name="txt8" type="text" class="dews-ui-textbox basic" readonly="readonly" style="width: 170px;" />
+          </span>
+        </li>
+        <li>
+          <label>신청일</label>
+          <span>
+            <input type="text" id="dp3" name="dp3" class="dews-ui-datepicker basic" readonly="readonly" />
+          </span>
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<style>
+    
+</style>
+
+
+
+<script>
+  dews.ready(function () {
+    var self = this;
+    self.version = self.version || {};
+    self.version.view='1.0';
+
+
+    
+    
+    
+    
+    dews.ui.mainbuttons.localize.disable(true);
+    
+    
+    
+    
+    
+
+  
+  });
+
+</script>

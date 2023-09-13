@@ -186,4 +186,25 @@
 		</if>
 		ORDER BY START_DT
 	</select>
+	
+	<select id="getCompanyCode" parameterType="com.douzone.comet.service.hr.pamodm.models.Pamodm01800_X10005Model" resultType="String">
+		SELECT
+			DISTINCT COMPANY_CD 
+		FROM
+			HR_STRK_INFO_X10005 
+		WHERE
+			EMP_NO = #{emp_no}
+	</select>
+	
+	<delete id="delete_HR_STRK_INFO_X10005MST" parameterType="com.douzone.comet.service.hr.pamodm.models.Pamodm01800_X10005Model">
+		DELETE
+		FROM
+			HR_STRK_INFO_X10005
+		WHERE
+			COMPANY_CD = #{company_cd}
+			AND EMP_NO = #{emp_no}
+			AND START_DT = #{start_dt}
+			AND END_DT = #{end_dt}
+	</delete>
+	
 </mapper>

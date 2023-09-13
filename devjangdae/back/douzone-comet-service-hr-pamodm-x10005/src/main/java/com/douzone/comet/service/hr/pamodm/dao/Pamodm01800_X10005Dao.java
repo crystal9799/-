@@ -26,7 +26,7 @@ public class Pamodm01800_X10005Dao {
 	}
 
 	/**
-	 * 복수 데이터 목록 전체 조회
+	 * 복수 데이터 목록 전체 조회 selectList
 	 * @param Pamodm01800_X10005Model
 	 * @return List<Pamodm01800_X10005Model>
 	 */
@@ -35,7 +35,7 @@ public class Pamodm01800_X10005Dao {
 	}
 
 	/**
-	 * 복수 데이터 목록 조건 조회
+	 * 복수 데이터 목록 조건 조회 selectList
 	 * @param HashMap<String, Object> parameters
 	 * @return List<Pamodm01800_X10005Model>
 	 */
@@ -44,25 +44,25 @@ public class Pamodm01800_X10005Dao {
 	}
 
 	/**
-	 * 단일 데이터 목록 조회 (사원번호로 회사코드 추출하기)
-	 * @param String string
+	 * 단일 데이터 목록 조회 (사원번호로 회사코드 추출하기) selectOne
+	 * @param String emp_no
 	 * @return String
 	 */
-	public String selectCompanyCd(String string) throws Exception {
-		return this.mybatisSupport.selectOne(this.getClass().getName() + ".selectCompanyCd", string);
+	public String getCompanyCode(String emp_no) throws Exception {
+		return this.mybatisSupport.selectOne(this.getClass().getName() + ".getCompanyCode", emp_no);
 	}
 
 	/**
-	 * 복수 데이터 삭제 처리
+	 * 복수 데이터 삭제 처리 deleteBatch
 	 * @param List<Pamodm01800_X10005Model> parameters
 	 * @return void
 	 */
-	public void deleteBatch(List<Pamodm01800_X10005Model> parameters) throws Exception {
-		this.mybatisSupport.deleteBatch(this.getClass().getName() + ".deleteBatch", parameters);
+	public void delete_HR_STRK_INFO_X10005MST(List<Pamodm01800_X10005Model> parameters) throws Exception {
+		this.mybatisSupport.deleteBatch(this.getClass().getName() + ".delete_HR_STRK_INFO_X10005MST", parameters);
 	}
 
 	/**
-	 * 단일 데이터 입력 처리
+	 * 단일 데이터 입력 처리 insert
 	 * @param Pamodm01800_X10005Model parameters
 	 * @return void
 	 */
@@ -71,7 +71,7 @@ public class Pamodm01800_X10005Dao {
 	}
 
 	/**
-	 * 복수 데이터 수정 처리
+	 * 복수 데이터 수정 처리 updateBatch
 	 * @param List<Pamodm01800_X10005Model> parameters
 	 * @return void
 	 */
@@ -80,7 +80,7 @@ public class Pamodm01800_X10005Dao {
 	}
 
 	/**
-	 * 중복 데이터 조회
+	 * 중복 데이터 조회 selectOne
 	 * @param Pamodm01800_X10005Model parameters
 	 * @return Integer
 	 */

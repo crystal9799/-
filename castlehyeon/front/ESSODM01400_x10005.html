@@ -1,6 +1,6 @@
-<!--##c3e310a8-df35-4fcb-be10-cd9a767d4022##-->
+<!--##1075f797-8b54-4768-86b1-093250731027##-->
 <!--##ESSODM01400_x10005##-->
-<!--##boYrI2d4CdKNU1t68jBm9qp2uBcV2gHDzlJo1HXYIjVBGYnyGboAc1SyNMtvOKje##-->
+<!--##As8EhV+9cPl1ByNnTiuJCb8GaJvSeeRa1sggQLH3RfKdwJscxrdTxm5NNu+q47sm##-->
 <!--
   DEWS UI/UX IDE - Build Result - v1.5
   # PageID: ESSODM01400_x10005
@@ -99,9 +99,6 @@
 
 
     /*df7c8e91-e23e-4a35-b67a-3e7cde0d1cb3*/ //# sourceURL=ESSODM01400_x10005.js
-    
-    // 메인버튼 삭제 버튼의 기본 확인 메시지 사용 여부 설정
-    self.mainButtons.delete.useDefaultConfirm = false;
     self.period_picker.setStartDate(new Date());
     self.period_picker.setEndDate(GetEndDate());
     // self.COMPANY_CD.text(self.user.companyCode());
@@ -225,6 +222,21 @@
         }
     
     });
+    self.$search_button.on('click', /*db97b64c-80a9-43e4-8377-d609ac26b06e*/ function (e) {
+        self.main_ds.read();
+    });
+    self.$subPage_open.on('click', /*483d34f3-0a84-497f-be94-85abe787fa80*/ function (e) {
+        dews.ui.page.openSubPage('ESSODM01400_X10005_Sub', {
+            title: '결근신청 및 조회',
+            url: '/HR/ESSODM01400_X10005_Sub',
+            data: {
+                status: 'insert'
+            },
+            callback: function () {
+                SearchData();
+            }
+        });
+    });
     dews.ui.grid(self.$main_grid, {
       dataSource: self.main_ds,
       rowNo: false,
@@ -297,14 +309,14 @@
         {
           field: 'ATHZ_ST_CD',
           title: '결재상태코드',
-          width: 80,
-          visible: false
+          width: 80
         },
         {
           field: 'ATHZ_ST_NM',
           title: '결재상태코드이름',
           width: 90,
-          align: 'left'
+          align: 'left',
+          visible: false
         }
       ],
       fixed: {
@@ -344,6 +356,7 @@
             });
             self.main_ds.read();  // 데이터소스 Read
             self.main_userInfo_ds.read();
+            dews.ui.loading.hide();
         } catch (error) {
             dews.ui.loading.hide();
         }

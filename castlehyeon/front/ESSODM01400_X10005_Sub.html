@@ -1,6 +1,6 @@
-<!--##73aba8bc-dc64-4560-bd68-82c6e8c03b77##-->
+<!--##ac1c879c-41c8-4e1a-8696-7c7edbf6ea35##-->
 <!--##ESSODM01400_X10005_Sub##-->
-<!--##QACay9s0RLTZic0OUbOYFPc+atak4XuHgMALEy3S0HkF5oEMHajeA4XJxhM3yxVG##-->
+<!--##aTZ0uiSVLj+M0HAYO0vMIfRcbL3zxvuM3psmOIt8G0fTKbVL6LfPKLIraFX5t9px##-->
 <!--
   DEWS UI/UX IDE - Build Result - v1.5
   # PageID: ESSODM01400_X10005_Sub
@@ -14,42 +14,48 @@
 <div id="containerpanel1" class="dews-ui-container-panel" data-dews-fit-bottom="true">
   <div id="containerpanelitem1" class="dews-container-item" data-dews-position="normal">
     <h4 id="tit1" class="dews-ui-title">기본정보</h4>
-    <div id="formpanel1" class="dews-ui-form-panel" data-dews-columns="4">
+    <div id="userInfo_formpanel" class="dews-ui-form-panel" data-dews-columns="4">
       <ul>
         <li>
           <label>사번</label>
           <span>
-            <input id="txt1" name="txt1" type="text" class="dews-ui-textbox basic" readonly="readonly" />
+            <input id="EMP_NO" name="EMP_NO" type="text" class="dews-ui-textbox basic" readonly="readonly" />
           </span>
         </li>
         <li>
           <label>성명</label>
           <span>
-            <input id="txt2" name="txt2" type="text" class="dews-ui-textbox basic" readonly="readonly" />
+            <input id="KOR_NM" name="KOR_NM" type="text" class="dews-ui-textbox basic" readonly="readonly" />
           </span>
         </li>
         <li>
           <label>직급</label>
           <span>
-            <input id="txt3" name="txt3" type="text" class="dews-ui-textbox basic" readonly="readonly" />
+            <input id="PSTN_CD" name="PSTN_CD" type="text" class="dews-ui-textbox basic" readonly="readonly" />
           </span>
         </li>
         <li>
           <label>직군</label>
           <span>
-            <input id="txt4" name="txt4" type="text" class="dews-ui-textbox basic" readonly="readonly" />
+            <input id="OGRP_CD" name="OGRP_CD" type="text" class="dews-ui-textbox basic" readonly="readonly" />
           </span>
         </li>
         <li class="col-3">
           <label>소속</label>
           <span>
-            <input id="txt5" name="txt5" type="text" class="dews-ui-textbox basic" readonly="readonly" />
+            <input id="ORG" name="ORG" type="text" class="dews-ui-textbox basic" readonly="readonly" />
           </span>
         </li>
         <li>
           <label>직위</label>
           <span>
-            <input id="txt6" name="txt6" type="text" class="dews-ui-textbox basic" readonly="readonly" />
+            <input id="POSI_CD" name="POSI_CD" type="text" class="dews-ui-textbox basic" readonly="readonly" />
+          </span>
+        </li>
+        <li style="display: none;">
+          <label>라벨</label>
+          <span>
+            <input id="COMPANY_CD" name="COMPANY_CD" type="text" class="dews-ui-textbox basic" />
           </span>
         </li>
       </ul>
@@ -110,6 +116,7 @@
         </li>
       </ul>
     </div>
+    <div id="sub_userInfo_grid" class="dews-ui-grid"></div>
   </div>
 </div>
 
@@ -126,11 +133,98 @@
     self.version.view='1.0';
 
 
+    /*b86609c9-3017-4aef-896e-65022e1080a4*/ //# sourceURL=ESSODM01400_x10005_Sub.js
+    self.COMPANY_CD.text('EWP');
     
     
+    
+    self.sub_userInfo_ds = dews.ui.dataSource('sub_userInfo_ds', {
+      grid: true,
+      transport: {
+        read: {
+          url: dews.url.getApiUrl('HR', 'HREssodm01400_X10005Service', 'getUserInfo')
+        }
+      },
+      schema: {
+        model: {
+          fields: [
+            { field: 'EMP_NO', editable: false, dataType: 'string' }, 
+            { field: 'KOR_NM', editable: false, dataType: 'string' }, 
+            { field: 'PSTN_CD', editable: false, dataType: 'string' }, 
+            { field: 'OGRP_CD', editable: false, dataType: 'string' }, 
+            { field: 'ORG', editable: false, dataType: 'string' }, 
+            { field: 'POSI_CD', editable: false, dataType: 'string' }
+          ]
+    
+        }
+      }
+    });
     
     
     dews.ui.mainbuttons.localize.disable(true);
+    self.$sub_close_button.on('click', /*64036093-15ee-4515-9241-24b3b54e6681*/ function (e) {
+        //   if (self.absData_ds.getDirtyDataCount() > 0) {
+        //     dews.confirm('저장되지 않은 데이터가 있습니다.\n그래도 이동 하시겠습니까?', "question").yes(function () {
+        //       dews.ui.page.close();
+        //     }).no(function () {
+        //     });
+        //   } else {
+        dews.ui.page.close();
+        //   }
+    
+    });
+    dews.ui.grid(self.$sub_userInfo_grid, {
+      dataSource: self.sub_userInfo_ds,
+      sortable: false,
+      autoBind: false,
+      checkable: false,
+      copyMode: 'cell',
+      columns: [
+        {
+          field: 'EMP_NO',
+          title: '사원번호',
+          width: 60
+        },
+        {
+          field: 'KOR_NM',
+          title: '한글명',
+          width: 90,
+          align: 'left'
+        },
+        {
+          field: 'PSTN_CD',
+          title: '직급코드',
+          width: 80
+        },
+        {
+          field: 'OGRP_CD',
+          title: '직군코드',
+          width: 80
+        },
+        {
+          field: 'ORG',
+          title: '소속',
+          width: 60
+        },
+        {
+          field: 'POSI_CD',
+          title: '직위코드',
+          width: 80
+        }
+      ],
+      fixed: {
+        colCount: 0,
+        rightColCount: 0
+      },
+      change: /*db1ed69a-e653-4cb9-a4a3-0f3f96c3393b*/ function (e) {
+            self.sub_userInfo_grid.bindPanel(self.userInfo_formpanel);
+        }
+    ,
+      dataBound: /*71f50151-f975-4857-8f38-bbf2b9064960*/ function (e) {
+            self.sub_userInfo_grid.bindPanel(self.userInfo_formpanel);
+        }
+    
+    });
     
     
     

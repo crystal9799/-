@@ -9,6 +9,9 @@ import com.google.gson.annotations.SerializedName;
 
 @DzModel(name = "Pamprg00100_X10005Model", desc = "승급기준표등록", tableName = "")
 public class Pamprg00100_X10005Model extends DzAbstractModel {
+	@SerializedName("COMPANY_CD")
+	@DzModelField(name="company_cd", desc="회사코드", colName="COMPANY_CD", colSize="7", isKey=false)
+	private String company_cd;
 
 	@SerializedName("STD_YM")
 	@DzModelField(name = "std_ym", desc = "기준년월", colName = "STD_YM", colSize = "6", isKey = false)
@@ -21,19 +24,35 @@ public class Pamprg00100_X10005Model extends DzAbstractModel {
 	@SerializedName("PSTN_NM")
 	@DzModelField(name = "pstn_nm", desc = "직급명", colName = "PSTN_NM", colSize = "5", isKey = false)
 	private String pstn_nm;
-
+	
+	@SerializedName("ORIG_PSTN_CD")
+	@DzModelField(name = "orig_pstn_cd", desc = "수정이전 직급코드", colName = "ORIG_PSTN_CD", colSize = "5", isKey = false)
+	private String orig_pstn_cd;
+	
 	@SerializedName("TRGT_GRD_CD")
 	@DzModelField(name = "trgt_grd_cd", desc = "대상등급코드", colName = "TRGT_GRD_CD", colSize = "5", isKey = false)
 	private String trgt_grd_cd;
-
+	
+	@SerializedName("ORIG_TRGT_GRD_CD")
+	@DzModelField(name = "orig_trgt_grd_cd", desc = "수정이전 등급코드", colName = "ORIG_TRGT_GRD_CD", colSize = "5", isKey = false)
+	private String orig_trgt_grd_cd;
+	
 	@SerializedName("UGRD_GRD_CD")
 	@DzModelField(name = "urgd_grd_cd", desc = "승급등급코드", colName = "UGRD_GRD_CD", colSize = "5", isKey = false)
 	private String ugrd_grd_cd;
+	
+	@SerializedName("ORIG_UGRD_GRD_CD")
+	@DzModelField(name = "orig_urgd_grd_cd", desc = "수정이전 승급등급코드", colName = "ORIG_UGRD_GRD_CD", colSize = "5", isKey = false)
+	private String orig_urgd_grd_cd;
 	
 	@SerializedName("MIN_BWRK_MY")
 	@DzModelField(name = "min_bwrk_my", desc = "최소근무월수", colName = "MIN_BWRK_MY", colSize = "7", isKey = false)
 	private BigDecimal min_bwrk_my;
 
+	@SerializedName("ORIG_MIN_BWRK_MY")
+	@DzModelField(name = "orig_min_bwrk_my", desc = "수정이전 최소근무월수", colName = "ORIG_MIN_BWRK_MY", colSize = "7", isKey = false)
+	private BigDecimal orig_min_bwrk_my;
+	
 	@SerializedName("AGGR_TERM_CNT")
 	@DzModelField(name = "aggr_term_cnt", desc = "집계기간수", colName = "AGGR_TERM_CNT", colSize = "5", isKey = false)
 	private BigDecimal aggr_term_cnt;
@@ -54,9 +73,33 @@ public class Pamprg00100_X10005Model extends DzAbstractModel {
 	@DzModelField(name = "bizarea_cd", desc = "사업장", colName = "BIZAREA_CD", colSize = "8", isKey = false)
 	private String bizarea_cd;
 
+	@SerializedName("LEDU_NM")
+	@DzModelField(name = "ledu_nm", desc = "학력명", colName = "LEDU_NM", colSize = "8", isKey = false)
+	private String ledu_nm;
+	
+	@SerializedName("RMK_NM")
+	@DzModelField(name = "rmk_nm", desc = "비고", colName = "RMK_NM", colSize = "100", isKey = false)
+	private String rmk_nm;
+
 	@SerializedName("BIZAREA_NM")
 	@DzModelField(name = "bizarea_nm", desc = "사업장명", colName = "BIZAREA_NM", colSize = "8", isKey = false)
 	private String bizarea_nm;
+	
+	public String getCompany_cd() {
+		return company_cd;
+	}
+
+	public void setCompany_cd(String company_cd) {
+		this.company_cd = company_cd;
+	}
+
+	public String getUgrd_grd_cd() {
+		return ugrd_grd_cd;
+	}
+
+	public void setUgrd_grd_cd(String ugrd_grd_cd) {
+		this.ugrd_grd_cd = ugrd_grd_cd;
+	}
 
 	public String getStd_ym() {
 		return std_ym;
@@ -154,12 +197,62 @@ public class Pamprg00100_X10005Model extends DzAbstractModel {
 		this.bizarea_nm = bizarea_nm;
 	}
 
+	public String getOrig_pstn_nm() {
+		return orig_pstn_cd;
+	}
+
+	public void setOrig_pstn_nm(String orig_pstn_cd) {
+		this.orig_pstn_cd = orig_pstn_cd;
+	}
+
+	public String getOrig_trgt_grd_cd() {
+		return orig_trgt_grd_cd;
+	}
+
+	public void setOrig_trgt_grd_cd(String orig_trgt_grd_cd) {
+		this.orig_trgt_grd_cd = orig_trgt_grd_cd;
+	}
+
+	public String getOrig_urgd_grd_cd() {
+		return orig_urgd_grd_cd;
+	}
+
+	public void setOrig_urgd_grd_cd(String orig_urgd_grd_cd) {
+		this.orig_urgd_grd_cd = orig_urgd_grd_cd;
+	}
+
+	public BigDecimal getOrig_min_bwrk_my() {
+		return orig_min_bwrk_my;
+	}
+
+	public void setOrig_min_bwrk_my(BigDecimal orig_min_bwrk_my) {
+		this.orig_min_bwrk_my = orig_min_bwrk_my;
+	}
+
+	public String getLedu_nm() {
+		return ledu_nm;
+	}
+
+	public void setLedu_nm(String ledu_nm) {
+		this.ledu_nm = ledu_nm;
+	}
+
+	public String getRmk_nm() {
+		return rmk_nm;
+	}
+
+	public void setRmk_nm(String rmk_nm) {
+		this.rmk_nm = rmk_nm;
+	}
+
 	@Override
 	public String toString() {
-		return "Pamprg00100_X10005Model [std_ym=" + std_ym + ", pstn_cd=" + pstn_cd + ", pstn_nm=" + pstn_nm
-				+ ", trgt_grd_cd=" + trgt_grd_cd + ", urgd_grd_cd=" + ugrd_grd_cd + ", min_bwrk_my=" + min_bwrk_my
+		return "Pamprg00100_X10005Model [company_cd=" + company_cd + ", std_ym=" + std_ym + ", pstn_cd=" + pstn_cd
+				+ ", pstn_nm=" + pstn_nm + ", orig_pstn_cd=" + orig_pstn_cd + ", trgt_grd_cd=" + trgt_grd_cd
+				+ ", orig_trgt_grd_cd=" + orig_trgt_grd_cd + ", ugrd_grd_cd=" + ugrd_grd_cd + ", orig_urgd_grd_cd="
+				+ orig_urgd_grd_cd + ", min_bwrk_my=" + min_bwrk_my + ", orig_min_bwrk_my=" + orig_min_bwrk_my
 				+ ", aggr_term_cnt=" + aggr_term_cnt + ", bwrk_sgrad_cd=" + bwrk_sgrad_cd + ", ledu_cd=" + ledu_cd
-				+ ", bwrk_my_calc_std_dt=" + bwrk_my_calc_std_dt + ", bizarea_cd=" + bizarea_cd + ", bizarea_nm="
-				+ bizarea_nm + "]";
+				+ ", bwrk_my_calc_std_dt=" + bwrk_my_calc_std_dt + ", bizarea_cd=" + bizarea_cd + ", ledu_nm=" + ledu_nm
+				+ ", rmk_nm=" + rmk_nm + ", bizarea_nm=" + bizarea_nm + "]";
 	}
 }

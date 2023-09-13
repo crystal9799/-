@@ -75,8 +75,8 @@ public class Pamodm01800_X10005Dao {
 	 * @param Pamodm01800_X10005Model parameters
 	 * @return void
 	 */
-	public void insert(Pamodm01800_X10005Model parameters) throws Exception {
-		this.mybatisSupport.insert(this.getClass().getName() + ".insert", parameters);
+	public void insert_HR_STRK_INFO_X10005MST(Pamodm01800_X10005Model parameters) throws Exception {
+		this.mybatisSupport.insert(this.getClass().getName() + ".insert_HR_STRK_INFO_X10005MST", parameters);
 	}
 
 	/**
@@ -84,8 +84,8 @@ public class Pamodm01800_X10005Dao {
 	 * @param Pamodm01800_X10005Model parameters
 	 * @return Integer
 	 */
-	public Integer selectPK(Pamodm01800_X10005Model parameters) throws Exception {
-		return this.mybatisSupport.selectOne(this.getClass().getName() + ".selectPK", parameters);
+	public Integer hasContainPrimaryKey(Pamodm01800_X10005Model parameters) throws Exception {
+		return this.mybatisSupport.selectOne(this.getClass().getName() + ".hasContainPrimaryKey", parameters);
 	}
 
 }

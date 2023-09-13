@@ -2,38 +2,51 @@
 <!DOCTYPE mapper
    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.douzone.comet.service.hr.essodm.dao.Essodm01400_x10005Dao">
+<mapper
+	namespace="com.douzone.comet.service.hr.essodm.dao.Essodm01400_x10005Dao">
 
-	<select id="selectEssodm01400_X10005ModelList" resultType="com.douzone.comet.service.hr.essodm.models.Essodm01400_X10005Model">		
-		SELECT	*
-		FROM	@{dzparam_dbname}[tableName]
-		WHERE 	1 = 1				
+	<select id="getUserInfo"
+	parameterType="HashMap"
+		resultType="com.douzone.comet.service.hr.essodm.models.Essodm01400_X10005_UserInfoModel">
+		SELECT
+		EMP_NO, 
+		KOR_NM, 
+		PSTN_CD, 
+		OGRP_CD, 
+		(SELECT COMET.FN_HR_UP_DEPT_NM2(COMPANY_CD, DEPT_CD , SYSDATE) FROM DUAL) AS
+		ORG,
+		POSI_CD 
+		FROM HR_EMP_MST
+		WHERE COMPANY_CD = #{P_COMPANY_CD}
+		AND EMP_NO = #{P_EMP_NO}
 	</select>
 
-	<select id="selectEssodm01400_X10005Model" resultType="com.douzone.comet.service.hr.essodm.models.Essodm01400_X10005Model">		
-		SELECT	*
-		FROM	@{dzparam_dbname}[tableName]
-		WHERE	[columnName] = [columnValue]		
+	<select id="selectEssodm01400_X10005Model"
+		resultType="com.douzone.comet.service.hr.essodm.models.Essodm01400_X10005Model">
+		SELECT *
+		FROM @{dzparam_dbname}[tableName]
+		WHERE [columnName] = [columnValue]
 	</select>
 
-	<insert id="insertEssodm01400_X10005Model">		
+	<insert id="insertEssodm01400_X10005Model">
 		INSERT INTO @{dzparam_dbname}[tableName] (
-				[columnName]
+		[columnName]
 		) VALUES (
-				[columnValue]
-		)		
+		[columnValue]
+		)
 	</insert>
 
-	<update id="updateEssodm01400_X10005Model" >		
-		UPDATE	@{dzparam_dbname}[tableName]
-		SET		[columnName] = [columnValue]
-		WHERE	[columnName] = [columnValue]		
+	<update id="updateEssodm01400_X10005Model">
+		UPDATE @{dzparam_dbname}[tableName]
+		SET [columnName] = [columnValue]
+		WHERE
+		[columnName] = [columnValue]
 	</update>
 
-	<delete id="deleteEssodm01400_X10005Model">		
+	<delete id="deleteEssodm01400_X10005Model">
 		DELETE
-		FROM	@{dzparam_dbname}[tableName]
-		WHERE	[columnName] = [columnValue]		
+		FROM @{dzparam_dbname}[tableName]
+		WHERE [columnName] = [columnValue]
 	</delete>
 
 </mapper>

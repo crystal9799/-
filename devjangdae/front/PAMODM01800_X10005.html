@@ -1,6 +1,6 @@
-<!--##f9500dea-8263-4897-9055-6153c0b9d342##-->
+<!--##d3432157-7a2c-4d02-892d-655fe2a0f6b8##-->
 <!--##PAMODM01800_X10005##-->
-<!--##SAtl4j1Y1YS5WBnXXgw1SLpyyvrF4Sx7WC3lHqYs3rTn78+1EMW3HpBn6/1KNYUr##-->
+<!--##eNONpF0ydAJ6PIRKb77JfDvIu7AKsN67v+/hsH8Ockb0AYaG6ip8RoUoeO2ViWh6##-->
 <!--
   DEWS UI/UX IDE - Build Result - v1.5
   # PageID: PAMODM01800_X10005
@@ -39,7 +39,7 @@
         <select id="s_DOF_TP" name="s_DOF_TP" class="dews-ui-dropdownlist basic" data-dews-value-field="SYSDEF_CD" data-dews-text-field="SYSDEF_NM" data-dews-show-tooltip="true" data-dews-option-label-value="" data-dews-option-label-text="" data-dews-show-value-tooltip="true" data-dews-use-numkey="false"></select>
       </span>
     </li>
-    <li style="display: none;">
+    <li>
       <label class="dews-ui-multilingual">사원</label>
       <span>
         <input type="text" id="s_EMP_NO" name="s_EMP_NO" class="dews-ui-codepicker basic" data-dews-help-code="H_HR_EMP_MST_S" data-dews-code-field="EMP_NO" data-dews-text-field="KOR_NM" data-dews-help-title="사원 도움창" data-dews-help-custom="false" data-dews-help-size="big" data-dews-ajax="true" />
@@ -200,7 +200,7 @@
     dews.ui.mainbuttons.localize.disable(true);
     dews.ui.mainbuttons.add.click(/*d1cbdcb0-8f4b-4a3e-9937-683f712ca116*/ function () {
         try {
-            self.grid1.addRow();
+    
             self.s_EMP_NO.open(); // 행 추가 후 사원도움창 오픈
             //self.grid1.setCellValue(self.grid1.select(), "COMPANY_CD", '5000');
             // self.grid1.setCellValue(self.grid1.select(), "EMP_NO", 'jueunp'); // 사원번호
@@ -340,6 +340,7 @@
     self.s_DOF_TP.setDataSource(self.pipeData_ZC01_10005);
     self.s_EMP_NO.on('codedialog', /*cb79863b-31a6-46cd-b298-9bc53ff1a028*/ function (e) {
         e.callback = function (s) {
+            self.grid1.addRow();
             self.grid1.setCellValue(self.grid1.select(), 'EMP_NO', s.EMP_NO)
             self.grid1.setCellValue(self.grid1.select(), 'KOR_NM', s.KOR_NM)
             self.grid1.setCellValue(self.grid1.select(), 'JNCO_DT', s.JNCO_DT)

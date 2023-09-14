@@ -43,15 +43,15 @@ public class Pamprg00100_X10005Dao  {
 	}
 
 	/**
-	 * 단일 데이터 수정 처리
+	 * 복수 데이터 수정 처리
 	 * @param Pamprg00100_X10005Model
 	 */
-	public void updatePAMPRG00100_Model(Pamprg00100_X10005Model pamprg00100_X10005Model) throws Exception {
-		this.mybatisSupport.update(this.getClass().getName() + ".updatePAMPRG00100_Model", pamprg00100_X10005Model);
+	public void updatePAMPRG00100_Model(List<Pamprg00100_X10005Model> parameters) throws Exception {
+		this.mybatisSupport.updateBatch(this.getClass().getName() + ".updatePAMPRG00100_Model", parameters);
 	}
 
 	/**
-	 * 단일 데이터 삭제 처리
+	 * 복수 데이터 삭제 처리
 	 * @param Pamprg00100_X10005Model
 	 */
 	public void deletePAMPRG00100_Model(List<Pamprg00100_X10005Model> parameters) throws Exception {

@@ -1,6 +1,7 @@
 package com.douzone.comet.service.hr.pamprg;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -10,7 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.douzone.comet.components.DzCometService;
 import com.douzone.comet.service.hr.pamprg.dao.Pamprg00100_X10005Dao;
 import com.douzone.comet.service.hr.pamprg.models.Pamprg00100_X10005Model;
- 
+import com.douzone.comet.service.util.StringUtil;
 import com.douzone.comet.service.util.mybatis.MyBatisUtil;
 import com.douzone.gpd.components.exception.DzApplicationRuntimeException;
 import com.douzone.gpd.jdbc.core.MapperType;
@@ -25,7 +26,7 @@ import com.douzone.gpd.restful.model.DzGridModel;
 
 /**
  * @description : 승급관리기준표_Service
- * @Since : 23.09.12 화요일 작성
+ * @Since : 23.09.12 화요일 개발시작
  * @Author : minaci
  * @History :
  */
@@ -36,7 +37,8 @@ public class HRPamprg00100_X10005Service extends DzCometService {
 	Pamprg00100_X10005Dao pamprg00100_X10005Dao;
 
 	String company_cd = "EWP";
-
+	
+	//[메인화면 조회]
 	@DzApi(url = "/list_HR_URGDBASETBL_INFO_X10005MST", desc = "승급기준표-조회", httpMethod = DzRequestMethod.GET)
 	public List<Pamprg00100_X10005Model> list_HR_URGDBASETBL_INFO_X10005MST(
 			@DzParam(key = "mpPROMO_YEAR_MONTH", desc = "승급년월", required = false, paramType = DzParamType.QueryString) String mpPROMO_YEAR_MONTH,
@@ -60,6 +62,7 @@ public class HRPamprg00100_X10005Service extends DzCometService {
 		return pamprg00100_X10005ModelList;
 	}
 
+	//[드롭다운리스트 데이터]
 	@DzApi(url = "/get_BizareaList", desc = "사업장 조회", httpMethod = DzRequestMethod.GET)
 	public List<Map<String, Object>> get_BizareaList() throws Exception {
 		List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
@@ -87,7 +90,7 @@ public class HRPamprg00100_X10005Service extends DzCometService {
 		return list;
 	}
 
-	// 배치 작업, ip,dts 받아와야 함//수정전 데이터를 둔 이유는 원본을 훼손시키지 않기 위하여 
+	//[저장- delete/update/insert]
 	@Transactional(rollbackFor = Exception.class)
 	@DzApi(url = "/save_HR_URGDBASETBL_INFO_X10005MST", desc = "변경된 승급기준표 데이터소스 저장", httpMethod = DzRequestMethod.POST)
 	public void save_HR_URGDBASETBL_INFO_X10005MST(
@@ -95,19 +98,41 @@ public class HRPamprg00100_X10005Service extends DzCometService {
 			throws Exception {
 		try {
 
-			// [delete]
+			// [delete] : 완료
 			for (Pamprg00100_X10005Model deleteRow : grid_ds.getDeleted()) {
-				System.out.println("여기오   냐"+deleteRow.toString());
 				deleteRow.setCompany_cd(company_cd);
-
 			}
-
+			
+			// [update] : 논리 확인 후 진행 예정
+			for(Pamprg00100_X10005Model updateRow : grid_ds.getUpdated()) {
+				updateRow.setCompany_cd(company_cd);
+				updateRow.setUpdate_id(this.getUserId());
+				updateRow.setUpdate_dts(new Date());
+				updateRow.setUpdate_ip(this.getRemoteHost());
+				updateRow.setBwrk_my_calc_std_dt(StringUtil.getLocaleTimeString(updateRow.getBwrk_my_calc_std_dt(),"yyyyMMdd"));
+				logger.info("updateRow"+updateRow.toString());
+			}
+			
+			//[insert] : 진행 예정
+			for(Pamprg00100_X10005Model insertRow : grid_ds.getAdded()) {
+				insertRow.setCompany_cd(company_cd);
+				insertRow.setUpdate_id(this.getUserId());
+				insertRow.setUpdate_dts(new Date());
+				insertRow.setUpdate_ip(this.getRemoteHost());
+				insertRow.setBwrk_my_calc_std_dt(StringUtil.getLocaleTimeString(insertRow.getBwrk_my_calc_std_dt(),"yyyyMMdd"));
+				logger.info("insertRow"+insertRow.toString());
+			}
+			
+			 
 			if (grid_ds.getDeleted() != null && grid_ds.getDeleted().size() > 0) {
-				 
 				pamprg00100_X10005Dao.deletePAMPRG00100_Model(grid_ds.getDeleted());
 				logger.info("그리드 삭제완료");
 			}
-
+			if (grid_ds.getUpdated() != null && grid_ds.getUpdated().size() > 0) {
+				pamprg00100_X10005Dao.updatePAMPRG00100_Model(grid_ds.getUpdated());
+				logger.info("그리드 수정완료");
+			}
+			
 		} catch (Exception e) {
 			throw new DzApplicationRuntimeException(e);
 		}

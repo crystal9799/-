@@ -10,7 +10,7 @@ import com.google.gson.annotations.SerializedName;
 @DzModel(name = "Pamprg00100_X10005Model", desc = "승급기준표등록", tableName = "")
 public class Pamprg00100_X10005Model extends DzAbstractModel {
 	@SerializedName("COMPANY_CD")
-	@DzModelField(name="company_cd", desc="회사코드", colName="COMPANY_CD", colSize="7", isKey=false)
+	@DzModelField(name = "company_cd", desc = "회사코드", colName = "COMPANY_CD", colSize = "7", isKey = false)
 	private String company_cd;
 
 	@SerializedName("STD_YM")
@@ -24,27 +24,27 @@ public class Pamprg00100_X10005Model extends DzAbstractModel {
 	@SerializedName("PSTN_NM")
 	@DzModelField(name = "pstn_nm", desc = "직급명", colName = "PSTN_NM", colSize = "5", isKey = false)
 	private String pstn_nm;
-	
+
 	@SerializedName("ORIG_PSTN_CD")
 	@DzModelField(name = "orig_pstn_cd", desc = "수정이전 직급코드", colName = "ORIG_PSTN_CD", colSize = "5", isKey = false)
 	private String orig_pstn_cd;
-	
+
 	@SerializedName("TRGT_GRD_CD")
 	@DzModelField(name = "trgt_grd_cd", desc = "대상등급코드", colName = "TRGT_GRD_CD", colSize = "5", isKey = false)
 	private String trgt_grd_cd;
-	
+
 	@SerializedName("ORIG_TRGT_GRD_CD")
 	@DzModelField(name = "orig_trgt_grd_cd", desc = "수정이전 등급코드", colName = "ORIG_TRGT_GRD_CD", colSize = "5", isKey = false)
 	private String orig_trgt_grd_cd;
-	
+
 	@SerializedName("UGRD_GRD_CD")
 	@DzModelField(name = "urgd_grd_cd", desc = "승급등급코드", colName = "UGRD_GRD_CD", colSize = "5", isKey = false)
 	private String ugrd_grd_cd;
-	
+
 	@SerializedName("ORIG_UGRD_GRD_CD")
 	@DzModelField(name = "orig_urgd_grd_cd", desc = "수정이전 승급등급코드", colName = "ORIG_UGRD_GRD_CD", colSize = "5", isKey = false)
 	private String orig_urgd_grd_cd;
-	
+
 	@SerializedName("MIN_BWRK_MY")
 	@DzModelField(name = "min_bwrk_my", desc = "최소근무월수", colName = "MIN_BWRK_MY", colSize = "7", isKey = false)
 	private BigDecimal min_bwrk_my;
@@ -52,7 +52,7 @@ public class Pamprg00100_X10005Model extends DzAbstractModel {
 	@SerializedName("ORIG_MIN_BWRK_MY")
 	@DzModelField(name = "orig_min_bwrk_my", desc = "수정이전 최소근무월수", colName = "ORIG_MIN_BWRK_MY", colSize = "7", isKey = false)
 	private BigDecimal orig_min_bwrk_my;
-	
+
 	@SerializedName("AGGR_TERM_CNT")
 	@DzModelField(name = "aggr_term_cnt", desc = "집계기간수", colName = "AGGR_TERM_CNT", colSize = "5", isKey = false)
 	private BigDecimal aggr_term_cnt;
@@ -76,7 +76,7 @@ public class Pamprg00100_X10005Model extends DzAbstractModel {
 	@SerializedName("LEDU_NM")
 	@DzModelField(name = "ledu_nm", desc = "학력명", colName = "LEDU_NM", colSize = "8", isKey = false)
 	private String ledu_nm;
-	
+
 	@SerializedName("RMK_NM")
 	@DzModelField(name = "rmk_nm", desc = "비고", colName = "RMK_NM", colSize = "100", isKey = false)
 	private String rmk_nm;
@@ -84,7 +84,31 @@ public class Pamprg00100_X10005Model extends DzAbstractModel {
 	@SerializedName("BIZAREA_NM")
 	@DzModelField(name = "bizarea_nm", desc = "사업장명", colName = "BIZAREA_NM", colSize = "8", isKey = false)
 	private String bizarea_nm;
-	
+
+	@SerializedName("INSERT_ID")
+	@DzModelField(name = "insert_id", desc = "INSERT_ID", colName = "INSERT_ID")
+	private String insert_id;
+
+	@SerializedName("INSERT_DTS")
+	@DzModelField(name = "insert_dts", desc = "INSERT_DTS", colName = "INSERT_DTS")
+	protected java.util.Date insert_dts;
+
+	@SerializedName("INSERT_IP")
+	@DzModelField(name = "insert_ip", desc = "등록IP", colName = "INSERT_IP", colSize = "200", isKey = false)
+	private String insert_ip;
+
+	@SerializedName("UPDATE_ID")
+	@DzModelField(name = "update_id", desc = "UPDATE_ID", colName = "UPDATE_ID")
+	private String update_id;
+
+	@SerializedName("UPDATE_DTS")
+	@DzModelField(name = "update_dts", desc = "UPDATE_DTS", colName = "UPDATE_DTS")
+	protected java.util.Date update_dts;
+
+	@SerializedName("UPDATE_IP")
+	@DzModelField(name = "update_ip", desc = "수정IP", colName = "UPDATE_IP", colSize = "200", isKey = false)
+	private String update_ip;
+
 	public String getCompany_cd() {
 		return company_cd;
 	}
@@ -245,6 +269,62 @@ public class Pamprg00100_X10005Model extends DzAbstractModel {
 		this.rmk_nm = rmk_nm;
 	}
 
+	public String getOrig_pstn_cd() {
+		return orig_pstn_cd;
+	}
+
+	public void setOrig_pstn_cd(String orig_pstn_cd) {
+		this.orig_pstn_cd = orig_pstn_cd;
+	}
+
+	public String getInsert_id() {
+		return insert_id;
+	}
+
+	public void setInsert_id(String insert_id) {
+		this.insert_id = insert_id;
+	}
+
+	public java.util.Date getInsert_dts() {
+		return insert_dts;
+	}
+
+	public void setInsert_dts(java.util.Date insert_dts) {
+		this.insert_dts = insert_dts;
+	}
+
+	public String getInsert_ip() {
+		return insert_ip;
+	}
+
+	public void setInsert_ip(String insert_ip) {
+		this.insert_ip = insert_ip;
+	}
+
+	public String getUpdate_id() {
+		return update_id;
+	}
+
+	public void setUpdate_id(String update_id) {
+		this.update_id = update_id;
+	}
+
+	public java.util.Date getUpdate_dts() {
+		return update_dts;
+	}
+
+	public void setUpdate_dts(java.util.Date update_dts) {
+		this.update_dts = update_dts;
+	}
+
+	public String getUpdate_ip() {
+		return update_ip;
+	}
+
+	public void setUpdate_ip(String update_ip) {
+		this.update_ip = update_ip;
+	}
+
 	@Override
 	public String toString() {
 		return "Pamprg00100_X10005Model [company_cd=" + company_cd + ", std_ym=" + std_ym + ", pstn_cd=" + pstn_cd
@@ -253,6 +333,8 @@ public class Pamprg00100_X10005Model extends DzAbstractModel {
 				+ orig_urgd_grd_cd + ", min_bwrk_my=" + min_bwrk_my + ", orig_min_bwrk_my=" + orig_min_bwrk_my
 				+ ", aggr_term_cnt=" + aggr_term_cnt + ", bwrk_sgrad_cd=" + bwrk_sgrad_cd + ", ledu_cd=" + ledu_cd
 				+ ", bwrk_my_calc_std_dt=" + bwrk_my_calc_std_dt + ", bizarea_cd=" + bizarea_cd + ", ledu_nm=" + ledu_nm
-				+ ", rmk_nm=" + rmk_nm + ", bizarea_nm=" + bizarea_nm + "]";
+				+ ", rmk_nm=" + rmk_nm + ", bizarea_nm=" + bizarea_nm + ", insert_id=" + insert_id + ", insert_dts="
+				+ insert_dts + ", insert_ip=" + insert_ip + ", update_id=" + update_id + ", update_dts=" + update_dts
+				+ ", update_ip=" + update_ip + "]";
 	}
 }

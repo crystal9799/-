@@ -1,6 +1,6 @@
-<!--##66726861-439b-4192-aa2a-19df599c0746##-->
+<!--##091112f7-d6f6-44d0-afe4-ffc51090395f##-->
 <!--##PAMPRG00100_X10005##-->
-<!--##Rp/qtzuUH0+GGUlrzAn/PXqTIM3fVSMc/PNva+iX0+pkjPaMRV4hiE4kdgvPXhWo##-->
+<!--##jcfu1N4QBbVrHgpfZ6MCy8udyYXPC5IcpAM/a7jXv+mNgXOCSpKjxEs+ioPYIEV4##-->
 <!--
   DEWS UI/UX IDE - Build Result - v1.5
   # PageID: PAMPRG00100_X10005
@@ -72,6 +72,7 @@
     
     
     
+    
     self.grid_ds = dews.ui.dataSource('grid_ds', {
       grid: true,
       transport: {
@@ -102,7 +103,11 @@
             { field: 'BIZAREA_CD', editable: false, dataType: 'string' }, 
             { field: 'BIZAREA_NM', editable: false, dataType: 'string' }, 
             { field: 'RMK_NM', editable: false, dataType: 'string' }, 
-            { field: 'LEDU_NM', editable: false, dataType: 'string' }
+            { field: 'LEDU_NM', editable: false, dataType: 'string' }, 
+            { field: 'ORIG_PSTN_CD ', editable: false, dataType: 'string' }, 
+            { field: 'ORIG_TRGT_GRD_CD ', editable: false, dataType: 'string' }, 
+            { field: 'ORIG_UGRD_GRD_CD  ', editable: false, dataType: 'string' }, 
+            { field: 'ORIG_MIN_BWRK_MY', editable: false, dataType: 'string' }
           ]
     
         }
@@ -201,7 +206,14 @@
     dews.ui.mainbuttons.localize.disable(true);
     dews.ui.mainbuttons.add.click(/*71614df6-9a67-4b0a-8f1b-7fb106ef6a8f*/ function () {
         // TODO: 그리드에 데이터를 추가합니다.
-        // self.grid1.addRow();
+        self.gridMaster.addRow(0);  // 그리드 제일 위쪽에 추가
+        idx = self.gridMaster.select();
+        
+        self.gridMaster.setCellValue(idx, 'STD_YM', self.mpPROMO_YEAR_MONTH.value(), false); // 기준년월에 "승급년월" 저장
+        self.gridMaster.setCellValue(idx, 'BIZAREA_CD', self.BIZAREA_CD.value(), false); // 사업장 코드 저장
+        self.gridMaster.setCellValue(idx, 'BIZAREA_NM', self.BIZAREA_CD.text(), false); // 사업장명 저장
+        self.gridMaster.setCellValue(idx, 'BWRK_MY_CALC_STD_DT', self.mpPROMO_YEAR_MONTH.value() + "01", false); // 산정기준일에 "승급년월"의 1일로 저장
+        self.gridMaster.select(idx, "PSTN_NM"); // "직급명" 컬럼으로 포커스 이동
     });
     dews.ui.mainbuttons.search.click(/*37fe89ce-9f9d-444b-a3a3-dfe45a8e42e2*/ function () {
         if (self.conditionpanel.validate({ tooltip: true, message: '필수 항목을 입력해 주십시요.' })) {
@@ -219,9 +231,6 @@
         } else {
             dews.ui.snackbar.warning("누락된 필수값이 있습니다.");
         }
-    
-    
-    
     });
     dews.ui.mainbuttons.delete.click(/*da329bef-6f06-4958-bb9d-489a5d95db95*/ function () {
         try {
@@ -345,7 +354,12 @@
           field: 'STD_YM',
           title: '기준년월',
           width: 60,
-          attributes: { class: 'required' }
+          attributes: { class: 'readonly' },
+          editor: {
+            type: 'multiline',
+            minHeight: '0px',
+            maxLength: 0
+          }
         },
         {
           field: 'PSTN_CD',
@@ -358,25 +372,42 @@
           title: '직급명',
           width: 90,
           align: 'left',
-          attributes: { class: 'required' }
+          attributes: { class: 'readonly' },
+          editor: {
+            type: 'codepicker',
+            helpCode: 'H_MA_CODEDTL_S',
+            codeField: 'SYSDEF_CD',
+            textField: 'SYSDEF_NM',
+            gridCodeField: 'PSTN_CD',
+            gridTextField: 'PSTN_NM',
+            helpTitle: '코드 도움창',
+            helpSize: 'medium',
+            helpParams: /*ad6ff1a1-9589-4d22-a430-33fc07d92418*/ function() {
+      return {
+        company_cd : "EWP",
+        module_cd : 'HR',
+        field_cd : 'P00650'
+      }
+    }
+          }
         },
         {
           field: 'TRGT_GRD_CD',
           title: '대상등급',
           width: 80,
-          attributes: { class: 'required' }
+          attributes: { class: 'readonly' }
         },
         {
           field: 'UGRD_GRD_CD',
           title: '승급등급',
           width: 80,
-          attributes: { class: 'required' }
+          attributes: { class: 'readonly' }
         },
         {
           field: 'MIN_BWRK_MY',
           title: '최소근무월수',
           width: 60,
-          attributes: { class: 'required' }
+          attributes: { class: 'readonly' }
         },
         {
           field: 'AGGR_TERM_CNT',
@@ -403,6 +434,7 @@
             codeField: 'SYSDEF_CD',
             textField: 'SYSDEF_NM',
             gridCodeField: 'LEDU_CD',
+            gridTextField: 'LEDU_NM',
             helpTitle: '학력 도움창',
             helpSize: 'medium',
             helpParams: /*587d6f15-8773-479c-a310-f91ef8ac5829*/ function(e) {

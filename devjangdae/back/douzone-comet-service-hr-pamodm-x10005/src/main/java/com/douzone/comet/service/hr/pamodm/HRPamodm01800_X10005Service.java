@@ -49,7 +49,7 @@ public class HRPamodm01800_X10005Service extends DzCometService {
 
 	@DzApi(url = "/list_HR_STRK_INFO_X10005MST", desc = "행사참가직원등록_마스터_조회", httpMethod = DzRequestMethod.POST)
 	public List<Pamodm01800_X10005Model> list_HR_STRK_INFO_X10005MST(
-			@DzParam(key = "company_cd", desc = "회사코드(멀티)", paramType = DzParamType.Body) String company_cd,
+			@DzParam(key = "bizarea_cd", desc = "사업장코드(멀티)", paramType = DzParamType.Body) String bizarea_cd,
 			@DzParam(key = "dept_cd", desc = "부서코드(멀티)", paramType = DzParamType.Body) String dept_cd,
 			@DzParam(key = "start_dt", desc = "시작시간", paramType = DzParamType.Body) String start_dt,
 			@DzParam(key = "end_dt", desc = "종료시간", paramType = DzParamType.Body) String end_dt,
@@ -58,13 +58,16 @@ public class HRPamodm01800_X10005Service extends DzCometService {
 		List<Pamodm01800_X10005Model> items = new ArrayList<Pamodm01800_X10005Model>();
 
 		try {
-			String[] strToStrArrayCompany_cd = company_cd.split("\\|");
+			String[] strToStrArrayBizarea_cd = bizarea_cd.split("\\|");
 			String[] strToStrArrayDept_cd = dept_cd.split("\\|");
 
 			HashMap<String, Object> parameters = new HashMap<String, Object>();
 
-			parameters.put("P_COMPANY_CD", strToStrArrayCompany_cd);
+			parameters.put("P_COMPANY_CD", this.getCompanyCode());
+			
+			parameters.put("P_BIZAREA_CD", strToStrArrayBizarea_cd);
 			parameters.put("P_DEPT_CD", strToStrArrayDept_cd);
+			
 			parameters.put("P_START_DT", start_dt);
 			parameters.put("P_END_DT", end_dt);
 			parameters.put("P_DOF_TP", dof_tp);

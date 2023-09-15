@@ -1,10 +1,10 @@
-<!--##d3432157-7a2c-4d02-892d-655fe2a0f6b8##-->
+<!--##e379e96f-0ba4-4cc4-b84d-f282352276db##-->
 <!--##PAMODM01800_X10005##-->
-<!--##eNONpF0ydAJ6PIRKb77JfDvIu7AKsN67v+/hsH8Ockb0AYaG6ip8RoUoeO2ViWh6##-->
+<!--##nUeNNOcDKw/80SAmEzU/9dMFKqtmvoZPA20pSzxQDZjsCBomDaaHjwhbEDsD1DlD##-->
 <!--
   DEWS UI/UX IDE - Build Result - v1.5
   # PageID: PAMODM01800_X10005
-  # PageTitle: [한국동서발전]행사참가직원등록
+  # PageTitle: 행사참가직원등록
   # Server: http://localhost:8090/
 -->
 <!--
@@ -14,9 +14,9 @@
 <div id="conditionpanel1" class="dews-ui-condition-panel">
   <ul class="required-area">
     <li>
-      <label class="dews-ui-multilingual">회사</label>
+      <label class="dews-ui-multilingual">사업장</label>
       <span>
-        <select id="s_COMPANY_CD" name="s_COMPANY_CD" class="dews-ui-multicodepicker basic" data-dews-help-code="H_MA_COMPANY_S" data-dews-code-field="COMPANY_CD" data-dews-text-field="COMPANY_NM" data-dews-help-title="회사 도움창" data-dews-help-custom="false" data-dews-help-size="medium" />
+        <select id="s_BIZAREA_CD" name="s_BIZAREA_CD" class="dews-ui-multicodepicker basic" data-dews-help-code="H_MA_BIZAREA_MST_S" data-dews-code-field="BIZAREA_CD" data-dews-text-field="BIZAREA_NM" data-dews-help-title="회사 도움창" data-dews-help-custom="false" data-dews-help-size="medium" />
       </span>
     </li>
     <li>
@@ -80,6 +80,9 @@
     // 메인버튼 삭제 버튼의 기본 확인 메시지 사용 여부 설정 
     self.mainButtons.delete.useDefaultConfirm = false;
     
+    var self = this;
+    self.version.view = '1.0.23091501';
+    self.version.service = 'HRPamodm01800_X10005Service';
     
     
     
@@ -96,7 +99,7 @@
               start_dt: self.s_START_DT.getStartDate(),
               end_dt: self.s_START_DT.getEndDate(),
               dept_cd: self.s_DEPT_CD.codes().join('|'),
-              company_cd: self.s_COMPANY_CD.codes().join('|')
+              bizarea_cd: self.s_BIZAREA_CD.codes().join('|')
             };
           }
         }
@@ -198,6 +201,8 @@
     
     
     dews.ui.mainbuttons.localize.disable(true);
+    dews.ui.mainbuttons.approval.hide();
+    dews.ui.mainbuttons.etnapproval.hide();
     dews.ui.mainbuttons.add.click(/*d1cbdcb0-8f4b-4a3e-9937-683f712ca116*/ function () {
         try {
     
@@ -288,6 +293,7 @@
             dews.error(error);
         }
     });
+    dews.ui.mainbuttons.print.hide();
     dews.ui.mainbuttons.save.click(/*78e0612d-4142-4edb-9167-158e5496e7a0*/ function () {
         // // TODO: 데이터소스를 저장합니다.
         if (self.ds1.getDirtyDataCount() == 0) {
@@ -329,7 +335,7 @@
             dews.error(error);
         }
     });
-    self.s_COMPANY_CD.setHelpParams(function () {
+    self.s_BIZAREA_CD.setHelpParams(function () {
       return {
         company_cd: '',
         cd_company_exc: '',

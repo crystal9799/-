@@ -82,6 +82,7 @@
 			) E
 			ON A.COMPANY_CD = E.COMPANY_CD
 			AND A.EMP_NO = E.EMP_NO
+			WHERE A.COMPANY_CD = '0126'
 	</select>
 	
 	<select id="list_HR_STRK_INFO_X10005MST" resultType="com.douzone.comet.service.hr.pamodm.models.Pamodm01800_X10005Model">		
@@ -102,7 +103,7 @@
 		        , E.RETM_DT			-- E.퇴직예정일
 		        , A.START_DT		-- A.시작일
 		        , A.END_DT		 	-- A.종료일
-		        , E.TM_CD_NM		-- E.시간코드
+		        , E.TM_CD_NM		-- E.시간코드 근태시간코드마스터 HR_OFFTIME_MST 일근태마스터의 근무일
 		        , A.DOF_TP		 	-- A.휴무유형
 		        , A.START_TM		-- A.시작시간
 		        , A.END_TM		 	-- A.종료시간
@@ -112,7 +113,7 @@
 			HR_STRK_INFO_X10005 A
 		
 		    LEFT OUTER JOIN  (
-		    					SELECT COMPANY_CD, EMP_NO, KOR_NM, JNCO_DT, DEPT_CD FROM HR_EMP_MST
+		    					SELECT COMPANY_CD, EMP_NO, KOR_NM, JNCO_DT, DEPT_CD, BIZAREA_CD FROM HR_EMP_MST
 		    ) B
 		    ON A.COMPANY_CD = B.COMPANY_CD
 		    AND A.EMP_NO = B.EMP_NO
@@ -163,14 +164,16 @@
 			ON A.COMPANY_CD = E.COMPANY_CD
 			AND A.EMP_NO = E.EMP_NO
 		WHERE 1=1
-        
-		<if test=' P_COMPANY_CD[0] != null and P_COMPANY_CD[0] != "" '>
-			AND A.COMPANY_CD IN
-			<foreach item="item" index="index" collection="P_COMPANY_CD"
+		
+		AND A.COMPANY_CD = #{P_COMPANY_CD}
+		
+		<if test="P_BIZAREA_CD != null and P_BIZAREA_CD.length > 0 and !P_BIZAREA_CD[0].isEmpty()">
+			AND B.BIZAREA_CD IN
+			<foreach item="item" index="index" collection="P_BIZAREA_CD"
 				open="(" separator="," close=")"> #{item} </foreach>
 		</if>
 		
-		<if test=' P_DEPT_CD[0] != null and P_DEPT_CD[0] != "" '>
+		<if test='P_DEPT_CD[0] != null and P_DEPT_CD[0] != ""'>
 			AND C.DEPT_CD IN
 			<foreach item="item" index="index" collection="P_DEPT_CD"
 				open="(" separator="," close=")"> #{item} </foreach>

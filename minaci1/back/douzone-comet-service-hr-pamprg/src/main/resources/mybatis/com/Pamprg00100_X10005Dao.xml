@@ -10,7 +10,7 @@
 			 ,HUI.BIZAREA_CD                                     -- 사업장 코드
 			 ,MBM.BIZAREA_NM                                     -- 사업장명
 			 ,HUI.STD_YM                                         -- 기준년월
-			 ,HUI.BIZAREA_CD                                     --사업장코드
+			 ,HUI.BIZAREA_CD                                     -- 사업장코드
 			 ,HUI.PSTN_CD                                        -- 직급코드
 			 ,HUI.PSTN_CD ORIG_PSTN_CD                           -- 수정이전 직급코드
 			 ,COALESCE(MCS.SYSDEF_NM, MC.SYSDEF_NM) AS PSTN_NM   -- 직급명

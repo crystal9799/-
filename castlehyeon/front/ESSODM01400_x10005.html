@@ -1,0 +1,485 @@
+<!--##96e4b353-d8bb-429d-af60-3dc7fd171ca2##-->
+<!--##ESSODM01400_x10005##-->
+<!--##cimSDHFFMw0iwL0rpVM41YlHTyresD6NTGnkZUaA++p3ShQkdcQL3WOK0D4E0VlJ##-->
+<!--
+  DEWS UI/UX IDE - Build Result - v1.5
+  # PageID: ESSODM01400_x10005
+  # PageTitle: 결근계
+  # Server: http://localhost:8080/
+-->
+<!--
+
+-->
+
+<h2 id="tit3" class="dews-ui-title">기본정보</h2>
+<div id="containerpanel3" class="dews-ui-container-panel" data-dews-fit-bottom="true">
+  <div id="containerpanelitem3" class="dews-container-item" data-dews-position="normal">
+    <div id="userInfo_formpanel" class="dews-ui-form-panel" data-dews-columns="4">
+      <ul>
+        <li>
+          <label>사번</label>
+          <span>
+            <input id="EMP_NO" name="EMP_NO" type="text" class="dews-ui-textbox basic" readonly="readonly" />
+          </span>
+        </li>
+        <li>
+          <label>성명</label>
+          <span>
+            <input id="KOR_NM" name="KOR_NM" type="text" class="dews-ui-textbox basic" readonly="readonly" />
+          </span>
+        </li>
+        <li>
+          <label>직급</label>
+          <span>
+            <input id="PSTN_CD" name="PSTN_CD" type="text" class="dews-ui-textbox basic" readonly="readonly" />
+          </span>
+        </li>
+        <li>
+          <label>직군</label>
+          <span>
+            <input id="OGRP_CD" name="OGRP_CD" type="text" class="dews-ui-textbox basic" readonly="readonly" />
+          </span>
+        </li>
+        <li class="col-3">
+          <label>소속</label>
+          <span>
+            <input id="ORG" name="ORG" type="text" class="dews-ui-textbox basic" readonly="readonly" />
+          </span>
+        </li>
+        <li>
+          <label>직위</label>
+          <span>
+            <input id="POSI_CD" name="POSI_CD" type="text" class="dews-ui-textbox basic" readonly="readonly" />
+          </span>
+        </li>
+        <li style="display: none;">
+          <label>라벨</label>
+          <span>
+            <input id="COMPANY_CD" name="COMPANY_CD" type="text" class="dews-ui-textbox basic" />
+          </span>
+        </li>
+      </ul>
+    </div>
+    <h2 id="tit4" class="dews-ui-title">조회조건</h2>
+    <div id="formpanel2" class="dews-ui-form-panel" data-dews-columns="3">
+      <ul>
+        <li class="col-2">
+          <label class="required">결근 기간</label>
+          <span>
+            <span id="period_picker" class="dews-ui-periodpicker required" style="width: 200px;"></span>
+            <button id="search_button" class="dews-ui-button">조회</button>
+          </span>
+        </li>
+        <li>
+          <label></label>
+          <span>
+            <button id="subPage_open" class="dews-ui-button">신규</button>
+          </span>
+        </li>
+      </ul>
+    </div>
+    <h2 id="tit5" class="dews-ui-title">조회정보</h2>
+    <div id="main_grid" class="dews-ui-grid"></div>
+    <div id="formpanel3" class="dews-ui-form-panel"></div>
+  </div>
+</div>
+
+<style>
+    
+</style>
+
+
+
+<script>
+  dews.ready(function () {
+    var self = this;
+    self.version = self.version || {};
+    self.version.view='1.0';
+
+
+    /*df7c8e91-e23e-4a35-b67a-3e7cde0d1cb3*/ //# sourceURL=ESSODM01400_x10005.js
+    self.period_picker.setStartDate(new Date());
+    self.period_picker.setEndDate(GetEndDate());
+    // self.COMPANY_CD.text(self.user.companyCode());
+    self.COMPANY_CD.text('EWP');
+    
+    
+    
+    
+    self.main_ds = dews.ui.dataSource('main_ds', {
+      grid: true,
+      transport: {
+        read: {
+          url: dews.url.getApiUrl('HR', 'HREssodm01400_X10005Service', 'list_HR_OFFAPPLY_MST_X10005MST'),
+          data: function () {
+            return {
+              start_dt: self.period_picker.getStartDate(),
+              end_dt: self.period_picker.getEndDate(),
+              company_cd: self.COMPANY_CD.text()
+            };
+          }
+        }
+      },
+      schema: {
+        model: {
+          fields: [
+            { field: 'COMPANY_CD', editable: false, dataType: 'string' }, 
+            { field: 'REQ_NO', editable: false, dataType: 'string' }, 
+            { field: 'REQ_DT', editable: false, dataType: 'string' }, 
+            { field: 'DNLGB_CD', editable: false, dataType: 'string' }, 
+            { field: 'DNL_CD', editable: false, dataType: 'string' }, 
+            { field: 'START_DT', editable: false, dataType: 'string' }, 
+            { field: 'END_DT', editable: false, dataType: 'string' }, 
+            { field: 'ATHZ_DOC_CD', editable: false, dataType: 'string' }, 
+            { field: 'ATHZ_ST_CD', editable: false, dataType: 'string' }, 
+            { field: 'EMP_NO', editable: false, dataType: 'string' }, 
+            { field: 'KOR_NM', editable: false, dataType: 'string' }, 
+            { field: 'PSTN_CD', editable: false, dataType: 'string' }, 
+            { field: 'OGRP_CD', editable: false, dataType: 'string' }, 
+            { field: 'DEPT_CD', editable: false, dataType: 'string' }, 
+            { field: 'ORG', editable: false, dataType: 'string' }, 
+            { field: 'POSI_CD', editable: false, dataType: 'string' }, 
+            { field: 'REQ_EMP_NO', editable: false, dataType: 'string' }, 
+            { field: 'REQ_KOR_NM', editable: false, dataType: 'string' }, 
+            { field: 'REASON_DC', editable: false, dataType: 'string' }, 
+            { field: 'REQ_DY', editable: false, dataType: 'number' }
+          ]
+    
+        }
+      }
+    });
+    self.main_userInfo_ds = dews.ui.dataSource('main_userInfo_ds', {
+      grid: true,
+      transport: {
+        read: {
+          url: dews.url.getApiUrl('HR', 'HREssodm01400_X10005Service', 'getUserInfo')
+        }
+      },
+      schema: {
+        model: {
+          fields: [
+            { field: 'EMP_NO', editable: false, dataType: 'string' }, 
+            { field: 'KOR_NM', editable: false, dataType: 'string' }, 
+            { field: 'PSTN_CD', editable: false, dataType: 'string' }, 
+            { field: 'OGRP_CD', editable: false, dataType: 'string' }, 
+            { field: 'ORG', editable: false, dataType: 'string' }, 
+            { field: 'POSI_CD', editable: false, dataType: 'string' }
+          ]
+    
+        }
+      }
+    });
+    self.athz_st_ds = dews.ui.dataSource('athz_st_ds', {
+      schema: {
+        model: {
+          fields: [
+            { field: 'DNL_CD', editable: false, type: 'string' }, 
+            { field: 'DNL_NM', editable: false, type: 'string' }
+          ]
+    
+        }
+      },
+      data: [{ DNL_CD: "1", DNL_NM: "임시저장"},
+    { DNL_CD: "2", DNL_NM: "결재대기"},
+    { DNL_CD: "3", DNL_NM: "반려"},
+    { DNL_CD: "4", DNL_NM: "결재완료"}]
+    });
+    self.dnl_ds = dews.ui.dataSource('dnl_ds', {
+      schema: {
+        model: {
+          fields: [
+            { field: 'HR_CD', editable: false, type: 'string' }, 
+            { field: 'HR_CD_NM', editable: false, type: 'string' }
+          ]
+    
+        }
+      },
+      data: [{ HR_CD: "5100", HR_CD_NM: "유계결근[10일 이내]"},
+    { HR_CD: "5101", HR_CD_NM: "유계결근[10일 초과]"},
+    { HR_CD: "5102", HR_CD_NM: "유계결근[30일 초과]"}]
+    });
+    
+    
+    dews.ui.mainbuttons.localize.hide();
+    dews.ui.mainbuttons.approval.hide();
+    dews.ui.mainbuttons.etnapproval.hide();
+    dews.ui.mainbuttons.add.hide();
+    dews.ui.mainbuttons.search.hide();
+    dews.ui.mainbuttons.delete.hide();
+    dews.ui.mainbuttons.print.hide();
+    dews.ui.mainbuttons.save.hide();
+    self.$search_button.on('click', /*db97b64c-80a9-43e4-8377-d609ac26b06e*/ function (e) {
+        SearchData();
+    });
+    self.$subPage_open.on('click', /*483d34f3-0a84-497f-be94-85abe787fa80*/ function (e) {
+        try {
+            OpenSubPage(false, null);
+        } catch (error) {
+            dews.error(error);
+            console.error(error);
+        }
+    });
+    dews.ui.grid(self.$main_grid, {
+      dataSource: self.main_ds,
+      rowNo: false,
+      sortable: false,
+      checkable: false,
+      copyMode: 'cell',
+      columns: [
+        {
+          field: 'REQ_NO',
+          title: '신청번호',
+          width: 60,
+          visible: false
+        },
+        {
+          field: 'REQ_DT',
+          title: '신청일',
+          width: 80,
+          formats: {
+            type: 'date',
+            format: 'yyyy-MM-dd'
+          },
+          editor: {
+            type: 'date',
+            format: 'yyyy-MM-dd'
+          }
+        },
+        {
+          field: 'DNLGB_CD',
+          title: '근태구분코드',
+          width: 80,
+          visible: false
+        },
+        {
+          field: 'DNL_CD',
+          title: '근태코드',
+          width: 80,
+          formats: {
+            type: 'dataSource',
+            dataSource: self.dnl_ds,
+            dataValueField: 'HR_CD',
+            dataTextField: 'HR_CD_NM'
+          }
+        },
+        {
+          field: 'START_DT',
+          title: '시작일',
+          width: 80,
+          formats: {
+            type: 'date',
+            format: 'yyyy-MM-dd'
+          },
+          editor: {
+            type: 'date',
+            format: 'yyyy-MM-dd'
+          }
+        },
+        {
+          field: 'END_DT',
+          title: '종료일',
+          width: 80,
+          formats: {
+            type: 'date',
+            format: 'yyyy-MM-dd'
+          },
+          editor: {
+            type: 'date',
+            format: 'yyyy-MM-dd'
+          }
+        },
+        {
+          field: 'ATHZ_DOC_CD',
+          title: '결재문서코드',
+          width: 80,
+          visible: false
+        },
+        {
+          field: 'ATHZ_ST_CD',
+          title: '결재상태코드',
+          width: 80,
+          formats: {
+            type: 'dataSource',
+            dataSource: self.athz_st_ds,
+            dataValueField: 'DNL_CD',
+            dataTextField: 'DNL_NM'
+          }
+        },
+        {
+          field: 'ATHZ_ST_NM',
+          title: '결재상태코드이름',
+          width: 90,
+          align: 'left',
+          visible: false
+        },
+        {
+          field: 'COMPANY_CD',
+          title: '회사코드',
+          width: 80,
+          visible: false
+        },
+        {
+          field: 'EMP_NO',
+          title: '사원번호',
+          width: 60,
+          visible: false
+        },
+        {
+          field: 'KOR_NM',
+          title: '한글명',
+          width: 90,
+          align: 'left',
+          visible: false
+        },
+        {
+          field: 'PSTN_CD',
+          title: '직급코드',
+          width: 80,
+          visible: false
+        },
+        {
+          field: 'OGRP_CD',
+          title: '직군코드',
+          width: 80,
+          visible: false
+        },
+        {
+          field: 'DEPT_CD',
+          title: '부서코드',
+          width: 80,
+          visible: false
+        },
+        {
+          field: 'ORG',
+          title: '소속',
+          width: 60,
+          visible: false
+        },
+        {
+          field: 'POSI_CD',
+          title: '직위코드',
+          width: 80,
+          visible: false
+        },
+        {
+          field: 'REQ_EMP_NO',
+          title: '신청사원번호',
+          width: 60,
+          visible: false
+        },
+        {
+          field: 'REQ_KOR_NM',
+          title: '신청사원이름',
+          width: 90,
+          align: 'left',
+          visible: false
+        },
+        {
+          field: 'REASON_DC',
+          title: '사유내역',
+          width: 120,
+          align: 'left',
+          visible: false
+        },
+        {
+          field: 'REQ_DY',
+          title: '신청일수',
+          width: 60,
+          visible: false
+        }
+      ],
+      fixed: {
+        colCount: 0,
+        rightColCount: 0
+      },
+      change: /*c73793a0-4e5c-4138-bd40-65e6ee05bec5*/ function (e) {
+            self.main_grid.bindPanel(self.userInfo_formpanel);
+        }
+    ,
+      dataBound: /*5eb4bf2d-4855-4936-a0cb-98e2311d959b*/ function (e) {
+            self.main_grid.bindPanel(self.userInfo_formpanel);
+        }
+    ,
+      dblClicked: /*eaec3c1c-a71e-4d9b-a544-3699ee452c09*/ function (e) {
+            try {
+                //데이터 이미 존재: true => 조회
+                OpenSubPage(true, self.main_grid.dataItem(e.grid.select()));
+            } catch (error) {
+                dews.error(error);
+                console.error(error);
+            }
+        }
+    
+    });
+    
+    
+    
+    
+    /*7b94ccf8-7b1d-41e7-9ddb-3b62c2f625c1*/ //메인페이지 첫 렌더링 시 불러오는 사원정보(현재는 건수가 제일 많은 사원으로 파라미터 고정)
+    function GetUserInfo() {
+        dews.api.get(dews.url.getApiUrl("HR", "HREssodm01400_X10005Service", "getUserInfo"), {
+            async: false,
+            data: {
+                // bizarea_cd: bizarea_cd,
+                // company_cd: company_cd
+            }
+        }).done(function (data) {
+            self.main_userInfo_ds.read();
+            var grid = self.main_userInfo_grid;
+            grid.setCellValue(grid.select(), 'EMP_NO', data[0].EMP_NO, false); // 사원번호
+            grid.setCellValue(grid.select(), 'KOR_NM', data[0].KOR_NM, false); // 한글명
+            grid.setCellValue(grid.select(), 'PSTN_CD', data[0].PSTN_CD, false); // 직급코드
+            grid.setCellValue(grid.select(), 'OGRP_CD', data[0].OGRP_CD, false); // 직군코드
+            grid.setCellValue(grid.select(), 'ORG', data[0].ORG, false); // 소속
+            grid.setCellValue(grid.select(), 'POSI_CD', data[0].POSI_CD, false); // 직위코드
+        }).fail(function (xhr, status, error) {
+            dews.error(xhr.responseJSON.message);
+        });
+    }
+    function SearchData() {
+        try {
+            dews.ui.loading.show({ // 로딩화면 보여주기
+                text: '조회중입니다.'
+            });
+            self.main_ds.read();  // 데이터소스 Read
+            self.main_userInfo_ds.read();
+            dews.ui.loading.hide();
+        } catch (error) {
+            dews.ui.loading.hide();
+        }
+    }
+    
+    function GetEndDate() {
+        var date = new Date();
+        var year = date.getFullYear();              //yyyy
+        var month = (2 + date.getMonth());          //M
+        var date = (date.getDate() - 1);
+        month = month >= 10 ? month : '0' + month;  //month 두자리로 저장
+        return year + '' + month + date;
+    }
+    
+    function OpenSubPage(isExist, userData) {
+        try {
+            dews.ui.page.openSubPage('ESSODM01400_X10005_Sub', {
+                title: isExist ? '결근조회' : '결근신청',
+                url: '/HR/ESSODM01400_X10005_Sub',
+                data: {
+                    isExist: isExist,
+                    userData: userData
+                },
+                callback: function () {
+                    SearchData();
+                }
+            });
+        } catch (error) {
+            dews.error(error);
+            console.error(error);
+        }
+    }
+    
+    
+
+  
+  });
+
+</script>

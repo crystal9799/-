@@ -227,4 +227,48 @@
 			AND END_DT = #{end_dt}
 	</update>
 	
+	<insert id="insert_HR_STRK_INFO_X10005MST" parameterType="com.douzone.comet.service.hr.pamodm.models.Pamodm01800_X10005Model">
+		INSERT INTO HR_STRK_INFO_X10005 
+		(
+			  COMPANY_CD
+			, EMP_NO
+			, START_DT
+			, END_DT
+			, DOF_TP
+			, START_TM
+			, END_TM
+			, DOF_TM_CNT
+			, LVE_TM_CNT
+			, INSERT_ID
+			, INSERT_IP
+			, INSERT_DTS
+		)
+		VALUES 
+		(
+			  #{company_cd}
+			, #{emp_no}
+			, #{start_dt}
+			, #{end_dt}
+			, #{dof_tp}
+			, #{start_tm}
+			, #{end_tm}
+			, #{dof_tm_cnt}
+			, #{lve_tm_cnt}
+			, #{insert_id}
+			, #{insert_ip}
+			, #{insert_dts}
+		)
+	</insert>
+	
+	<select id="hasContainPrimaryKey" parameterType="com.douzone.comet.service.hr.pamodm.models.Pamodm01800_X10005Model" resultType="Integer">
+		SELECT
+			COUNT(*)
+		FROM
+			HR_STRK_INFO_X10005
+		WHERE
+			COMPANY_CD = #{company_cd}
+			AND EMP_NO = #{emp_no}
+			AND START_DT = #{start_dt}
+			AND END_DT = #{end_dt}
+	</select>
 </mapper>

@@ -89,5 +89,4 @@
 		WHERE
 		[columnName] = [columnValue]
 	</delete>
-
-</mapper>
+	</mapper>

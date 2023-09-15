@@ -44,6 +44,12 @@ public class HREssodm01400_X10005Service extends DzCometService {
 			parameters.put("P_END_DT", end_dt);
 	 		
 	 		items = essodm01400_x10005DAO.selectEssodm01400_X10005ModelList(parameters);
+	 		
+	 		System.out.println("MainGrid1Model==========================");
+			for (Essodm01400_X10005Model item : items) {
+				System.out.println(item.toString());
+			}
+			System.out.println("MainGrid1Model==========================");
 	 	} catch(Exception e) {
 	        throw new DzApplicationRuntimeException(e);
 	    }

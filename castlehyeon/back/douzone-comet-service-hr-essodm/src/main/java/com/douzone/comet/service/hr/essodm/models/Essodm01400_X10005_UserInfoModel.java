@@ -31,7 +31,7 @@ public class Essodm01400_X10005_UserInfoModel extends DzAbstractModel {
 	@SerializedName("POSI_CD")
 	@DzModelField(name="posi_cd", desc="직위코드", colName="POSI_CD", colSize="5", isKey=false)
 	private String posi_cd;
-
+	
 	public String getEmp_no() {
 		return emp_no;
 	}

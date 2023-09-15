@@ -1,6 +1,6 @@
-<!--##c5660943-65bb-42ca-aac4-3cd107402d8a##-->
+<!--##c7ee0c72-0091-4427-a673-2eae131ca4cd##-->
 <!--##ESSODM01400_x10005##-->
-<!--##ugXEu8iQopmhEe+430LUarIgRNDtqxjrmObyOzias2+uSi4EH7gBUdM6gZNb8GaW##-->
+<!--##7j7LXeFML7kTBNGYj/wLKALaxQXbdC+pfSe+17qTxOceJLXDgp82B1v/w9fHni/F##-->
 <!--
   DEWS UI/UX IDE - Build Result - v1.5
   # PageID: ESSODM01400_x10005
@@ -53,6 +53,12 @@
             <input id="POSI_CD" name="POSI_CD" type="text" class="dews-ui-textbox basic" readonly="readonly" />
           </span>
         </li>
+        <li style="display: none;">
+          <label>라벨</label>
+          <span>
+            <input id="COMPANY_CD" name="COMPANY_CD" type="text" class="dews-ui-textbox basic" />
+          </span>
+        </li>
       </ul>
     </div>
     <h2 id="tit4" class="dews-ui-title">조회조건</h2>
@@ -98,6 +104,8 @@
     self.mainButtons.delete.useDefaultConfirm = false;
     self.period_picker.setStartDate(new Date());
     self.period_picker.setEndDate(GetEndDate());
+    // self.COMPANY_CD.text(self.user.companyCode());
+    self.COMPANY_CD.text('EWP');
     
     
     
@@ -109,10 +117,10 @@
           url: dews.url.getApiUrl('HR', 'HREssodm01400_X10005Service', 'list_HR_OFFAPPLY_MST_X10005MST'),
           data: function () {
             return {
-              start_dt: '',
-              end_dt: '',
-              emp_no: '',
-              company_cd: ''
+              start_dt: self.period_picker.getStartDate(),
+              end_dt: self.period_picker.getEndDate(),
+              emp_no: self.EMP_NO.text(),
+              company_cd: self.COMPANY_CD.text()
             };
           }
         }
@@ -217,6 +225,9 @@
         }
     
     });
+    self.$search_button.on('click', /*db97b64c-80a9-43e4-8377-d609ac26b06e*/ function (e) {
+        self.main_ds.read();
+    });
     dews.ui.grid(self.$main_grid, {
       dataSource: self.main_ds,
       rowNo: false,
@@ -289,14 +300,14 @@
         {
           field: 'ATHZ_ST_CD',
           title: '결재상태코드',
-          width: 80,
-          visible: false
+          width: 80
         },
         {
           field: 'ATHZ_ST_NM',
           title: '결재상태코드이름',
           width: 90,
-          align: 'left'
+          align: 'left',
+          visible: false
         }
       ],
       fixed: {

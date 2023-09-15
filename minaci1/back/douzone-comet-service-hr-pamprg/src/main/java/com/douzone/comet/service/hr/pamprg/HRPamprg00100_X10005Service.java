@@ -116,9 +116,9 @@ public class HRPamprg00100_X10005Service extends DzCometService {
 			//[insert] : 진행 예정
 			for(Pamprg00100_X10005Model insertRow : grid_ds.getAdded()) {
 				insertRow.setCompany_cd(company_cd);
-				insertRow.setUpdate_id(this.getUserId());
-				insertRow.setUpdate_dts(new Date());
-				insertRow.setUpdate_ip(this.getRemoteHost());
+				insertRow.setInsert_id(this.getUserId());
+				insertRow.setInsert_dts(new Date());
+				insertRow.setInsert_ip(this.getRemoteHost());
 				insertRow.setBwrk_my_calc_std_dt(StringUtil.getLocaleTimeString(insertRow.getBwrk_my_calc_std_dt(),"yyyyMMdd"));
 				logger.info("insertRow"+insertRow.toString());
 			}
@@ -132,7 +132,10 @@ public class HRPamprg00100_X10005Service extends DzCometService {
 				pamprg00100_X10005Dao.updatePAMPRG00100_Model(grid_ds.getUpdated());
 				logger.info("그리드 수정완료");
 			}
-			
+			if (grid_ds.getAdded() != null && grid_ds.getAdded().size() > 0) {
+				pamprg00100_X10005Dao.insertPAMPRG00100_Model(grid_ds.getAdded());
+				logger.info("그리드 추가완료");
+			}
 		} catch (Exception e) {
 			throw new DzApplicationRuntimeException(e);
 		}

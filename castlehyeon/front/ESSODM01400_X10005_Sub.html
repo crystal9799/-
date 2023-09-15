@@ -1,6 +1,6 @@
-<!--##58156e40-3b34-4576-a9f9-cc6e1ea075fa##-->
+<!--##dddf75c0-c812-4950-a7de-9c5dd01fc880##-->
 <!--##ESSODM01400_X10005_Sub##-->
-<!--##5ErGmqy/dCGxfpFFVosAtqIiQQ1H9EfGJhLOnMTDuKkrPrY6k/JJT1mB4qsngYHn##-->
+<!--##RuwESfyzs1DgerhFqAFudzt6jQGgXnpsDd7JYtwsmYPsdzR4nMLe5JedZ5N8iZob##-->
 <!--
   DEWS UI/UX IDE - Build Result - v1.5
   # PageID: ESSODM01400_X10005_Sub
@@ -58,10 +58,10 @@
             <input id="COMPANY_CD" name="COMPANY_CD" type="text" class="dews-ui-textbox basic" />
           </span>
         </li>
-        <li>
+        <li style="display: none;">
           <label>라벨</label>
           <span>
-            <input type="text" id="cdp1" name="cdp1" class="dews-ui-codepicker basic" data-dews-help-custom="false" data-dews-help-size="medium" data-dews-ajax="true" />
+            <input type="text" id="s_EMP_NO" name="s_EMP_NO" class="dews-ui-codepicker basic" data-dews-help-code="H_HR_EMP_MST_S" data-dews-help-title="사원 도움창" data-dews-help-custom="false" data-dews-help-size="big" data-dews-ajax="true" />
           </span>
         </li>
       </ul>
@@ -120,9 +120,15 @@
             <input type="text" id="REQ_DT" name="REQ_DT" class="dews-ui-datepicker basic" readonly="readonly" />
           </span>
         </li>
+        <li style="display: none;">
+          <label>라벨</label>
+          <span>
+            <input id="ATHZ_ST_CD" name="ATHZ_ST_CD" type="text" class="dews-ui-textbox basic" />
+          </span>
+        </li>
       </ul>
     </div>
-    <div id="main_grid" class="dews-ui-grid" style="display: none;"></div>
+    <div id="main_grid" class="dews-ui-grid"></div>
   </div>
 </div>
 
@@ -239,6 +245,21 @@
     
     
     dews.ui.mainbuttons.localize.disable(true);
+    self.s_EMP_NO.on('codedialog', /*bac2ec72-9198-4777-905f-fcea45bac730*/ function (e) {
+        e.callback = function (s) {
+            self.REQ_EMP_NO.text(s.EMP_NO);
+            self.REQ_KOR_NM.text(s.KOR_NM);
+            self.main_grid.setCellValue(self.main_grid.select(), 'REQ_EMP_NO', s.EMP_NO);
+            self.main_grid.setCellValue(self.main_grid.select(), 'REQ_KOR_NM', s.KOR_NM);
+            GetUserInfo(s.EMP_NO, s.COMPANY_CD);
+    
+        }
+    });
+    self.s_EMP_NO.setHelpParams(function () {
+      return {
+        company_cd: self.COMPANY_CD.text()
+      };
+    });
     self.$sub_close_button.on('click', /*64036093-15ee-4515-9241-24b3b54e6681*/ function (e) {
         //   if (self.absData_ds.getDirtyDataCount() > 0) {
         //     dews.confirm('저장되지 않은 데이터가 있습니다.\n그래도 이동 하시겠습니까?', "question").yes(function () {
@@ -250,9 +271,35 @@
         //   }
     
     });
+    self.$REQ_EMP_NO.on('change', /*1f1fac4a-039e-4381-8e09-422d31b52d2d*/ function (e) {
+        self.userInfo_formpanel.bindTo(self.main_grid);
+        self.sub_formpanel.bindTo(self.main_grid);
+    });
+    self.$REQ_KOR_NM.on('change', /*7d0bb8eb-1fce-45ec-a9a2-7857091a706a*/ function (e) {
+        self.userInfo_formpanel.bindTo(self.main_grid);
+        self.sub_formpanel.bindTo(self.main_grid);
+    });
+    self.$CHANGE_REQ_USERT.on('click', /*10c3134e-6820-4e85-a391-74ef74a1d7bd*/ function (e) {
+        self.s_EMP_NO.open();
+    });
     self.DNL_CD.setDataSource(self.dnl_ds);
+    self.DNL_CD.on('change', /*2ddf2b3d-9672-4e5d-b425-5479d04a1352*/ function (e) {
+        self.main_grid.setCellValue(self.main_grid.select(), 'DNL_CD', self.DNL_CD.value(), false);
+    });
     self.DNL_CD.on('dataBound', /*97731c64-14b3-4865-9735-194681c78b19*/ function (e) {
     
+    });
+    self.START_DT.on('change', /*ccc4611e-cf21-4ae8-8948-d969f46f8c87*/ function (e) {
+        self.userInfo_formpanel.bindTo(self.main_grid);
+        self.sub_formpanel.bindTo(self.main_grid);
+    });
+    self.END_DT.on('change', /*a139e6fd-50ba-44f9-b311-e7d4e459801d*/ function (e) {
+        self.userInfo_formpanel.bindTo(self.main_grid);
+        self.sub_formpanel.bindTo(self.main_grid);
+    });
+    self.$REASON_DC.on('change', /*6fbf625f-c7be-46c0-973b-2fc0932200a0*/ function (e) {
+        self.userInfo_formpanel.bindTo(self.main_grid);
+        self.sub_formpanel.bindTo(self.main_grid);
     });
     self.$ATHZ_ST_NM.on('change', /*1c610c93-aae0-41c7-acdf-94d47324e4d1*/ function (e) {
     
@@ -295,7 +342,13 @@
         {
           field: 'DNL_CD',
           title: '근태코드',
-          width: 80
+          width: 80,
+          formats: {
+            type: 'dataSource',
+            dataSource: self.dnl_ds,
+            dataValueField: 'HR_CD',
+            dataTextField: 'HR_CD_NM'
+          }
         },
         {
           field: 'START_DT',
@@ -395,7 +448,17 @@
       fixed: {
         colCount: 0,
         rightColCount: 0
-      }
+      },
+      change: /*c04e9cc0-71cf-4547-95b0-7d9c0086bb38*/ function (e) {
+            self.userInfo_formpanel.bindTo(self.main_grid);
+            self.sub_formpanel.bindTo(self.main_grid);
+        }
+    ,
+      dataBound: /*ed8e6da1-4b37-4159-9ad7-d1e40519430c*/ function (e) {
+            self.userInfo_formpanel.bindTo(self.main_grid);
+            self.sub_formpanel.bindTo(self.main_grid);
+        }
+    
     });
     
     
@@ -470,6 +533,32 @@
     
     }
     
+    //신청자 변경 시 기본정보도 함께 변경될 수 있도록 사원정보를 불러오는 함수
+    function GetUserInfo(emp_no, company_cd) {
+        dews.api.get(dews.url.getApiUrl("HR", "HREssodm01400_X10005Service", "getUserInfo"), {
+            async: false,
+            data: {
+                emp_no: emp_no,
+                company_cd: company_cd
+            }
+        }).done(function (data) {
+            var grid = self.main_grid;
+            grid.setCellValue(grid.select(), 'EMP_NO', data[0].EMP_NO, false); // 사원번호
+            grid.setCellValue(grid.select(), 'KOR_NM', data[0].KOR_NM, false); // 한글명
+            grid.setCellValue(grid.select(), 'PSTN_CD', data[0].PSTN_CD, false); // 직급코드
+            grid.setCellValue(grid.select(), 'OGRP_CD', data[0].OGRP_CD, false); // 직군코드
+            grid.setCellValue(grid.select(), 'ORG', data[0].ORG, false); // 소속
+            grid.setCellValue(grid.select(), 'POSI_CD', data[0].POSI_CD, false); // 직위코드
+            self.EMP_NO.text(data[0].EMP_NO);
+            self.KOR_NM.text(data[0].KOR_NM);
+            self.PSTN_CD.text(data[0].PSTN_CD);
+            self.OGRP_CD.text(data[0].OGRP_CD);
+            self.ORG.text(data[0].ORG);
+            self.POSI.text(data[0].POSI_CD);
+        }).fail(function (xhr, status, error) {
+            dews.error(xhr.responseJSON.message);
+        });
+    }
     
     
 

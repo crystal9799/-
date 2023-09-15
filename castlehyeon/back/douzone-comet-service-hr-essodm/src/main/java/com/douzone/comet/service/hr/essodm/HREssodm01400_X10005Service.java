@@ -54,12 +54,14 @@ public class HREssodm01400_X10005Service extends DzCometService {
  	//이건 사용하지 않을 것 그리드에서 기본정보를 다 들고 있음.
  	@DzApi(url="/getUserInfo", desc="메인페이지 기본정보 조회", httpMethod=DzRequestMethod.GET)
 	public List<Essodm01400_X10005_UserInfoModel> getUserInfo(
+	@DzParam(key="company_cd", desc="회사코드", paramType = DzParamType.QueryString) String company_cd,
+	@DzParam(key="emp_no", desc="사원번호", paramType = DzParamType.QueryString) String emp_no
 	) throws Exception {
 		Essodm01400_X10005_UserInfoModel item =  new Essodm01400_X10005_UserInfoModel();
 		List<Essodm01400_X10005_UserInfoModel> items = new ArrayList<Essodm01400_X10005_UserInfoModel>();
 		//현재 접속자 정보를 가져오지 않고 가장 많은 건수를 가진 사원정보를 입력
-		String company_cd = "EWP";
-		String emp_no = "20200308";
+//		String company_cd = "EWP";
+//		String emp_no = "20200308";
 		try {
 	 		HashMap<String, Object> parameters = new HashMap<>();
 	 		parameters.put("P_EMP_NO", emp_no);

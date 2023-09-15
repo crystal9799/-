@@ -1,6 +1,6 @@
-<!--##b35144f8-9a4d-4039-82bc-74380e2ffa1d##-->
+<!--##c8e70d11-9041-4c9a-a671-367746dd5867##-->
 <!--##ESSODM01400_x10005##-->
-<!--##BD2WnpYEqECHL1sAsXNNzcQMVCVMP7yzU/xiHXro0WB4F7+K68RR9jW7uIy+vAXn##-->
+<!--##qrPcIm4srPpDPLIL91A8a24p7Umbzg8kvay8k8ru3p9AWJ4t4rWLY9a3SyjITPLh##-->
 <!--
   DEWS UI/UX IDE - Build Result - v1.5
   # PageID: ESSODM01400_x10005
@@ -213,7 +213,7 @@
     });
     self.$subPage_open.on('click', /*483d34f3-0a84-497f-be94-85abe787fa80*/ function (e) {
         try {
-            OpenSubPage(true, null);
+            OpenSubPage(false, null);
         } catch (error) {
             dews.error(error);
             console.error(error);
@@ -461,7 +461,7 @@
     function OpenSubPage(isExist, userData) {
         try {
             dews.ui.page.openSubPage('ESSODM01400_X10005_Sub', {
-                title: isExist ? '결근신청' : '결근조회',
+                title: isExist ? '결근조회' : '결근신청',
                 url: '/HR/ESSODM01400_X10005_Sub',
                 data: {
                     isExist: isExist,

@@ -84,25 +84,29 @@ public class HREssodm01400_X10005Service extends DzCometService {
 	@Transactional(rollbackFor = Exception.class)
 	@DzApi(url="/save_HR_OFFAPPLY_MST_X10005MST", desc="결근계 신청", httpMethod=DzRequestMethod.POST)
 	public void save_HR_OFFAPPLY_MST_X10005(
-		@DzParam(key="Essodm01400_X10005Model", desc="모델", paramType = DzParamType.Body) DzGridModel<Essodm01400_X10005Model> Essodm01400_X10005Model
-	) throws Exception {	    
-	    try {	        	        
+		@DzParam(key="main_ds", desc="모델", paramType = DzParamType.Body) DzGridModel<Essodm01400_X10005Model> main_ds
+	) throws Exception {
+	//전부 단건 처리	    
+	    try {
+	    	logger.info("전달받은 파라미터 main_ds===>" + main_ds.toString());
 	        // update
-	        for(Essodm01400_X10005Model essodm01400_X10005Model : Essodm01400_X10005Model.getUpdated()) {
-	        	essodm01400_x10005DAO.updateEssodm01400_X10005Model(essodm01400_X10005Model);
-	        }
+//	        for(Essodm01400_X10005Model essodm01400_X10005Model : main_ds.getUpdated()) {
+//	        	essodm01400_x10005DAO.updateEssodm01400_X10005Model(essodm01400_X10005Model);
+//	        }
 	        
 	        // delete
-	        for(Essodm01400_X10005Model essodm01400_X10005Model : Essodm01400_X10005Model.getDeleted()) {
-	        	essodm01400_x10005DAO.deleteEssodm01400_X10005Model(essodm01400_X10005Model);
-	        }
+//	        for(Essodm01400_X10005Model essodm01400_X10005Model : main_ds.getDeleted()) {
+//	        	essodm01400_x10005DAO.deleteEssodm01400_X10005Model(essodm01400_X10005Model);
+//	        }
 	        
 	        // add
-	        for(Essodm01400_X10005Model essodm01400_X10005Model : Essodm01400_X10005Model.getAdded()) {
-	        	essodm01400_x10005DAO.insertEssodm01400_X10005Model(essodm01400_X10005Model);
-	        }
+//	        for(Essodm01400_X10005Model essodm01400_X10005Model : main_ds.getAdded()) {
+//	        	
+//	        	essodm01400_x10005DAO.insertEssodm01400_X10005Model(essodm01400_X10005Model);
+//	        }
 	        
 	        
+	        return 
 	        
 	        
 	        

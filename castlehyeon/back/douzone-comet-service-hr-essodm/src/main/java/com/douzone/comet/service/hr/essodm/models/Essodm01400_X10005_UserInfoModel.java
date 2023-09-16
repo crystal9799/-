@@ -32,6 +32,10 @@ public class Essodm01400_X10005_UserInfoModel extends DzAbstractModel {
 	@DzModelField(name="posi_cd", desc="직위코드", colName="POSI_CD", colSize="5", isKey=false)
 	private String posi_cd;
 	
+	@SerializedName("BIZAREA_CD")
+	@DzModelField(name="bizarea_cd", desc="사업장코드", colName="BIZAREA_CD", colSize="7", isKey=false)
+	private String bizarea_cd;
+	
 	public String getEmp_no() {
 		return emp_no;
 	}
@@ -80,14 +84,20 @@ public class Essodm01400_X10005_UserInfoModel extends DzAbstractModel {
 		this.posi_cd = posi_cd;
 	}
 	
-    @Override
-    public String toString() {
-      return
-        "emp_no: ["+ emp_no +"]\n"+
-        "kor_nm: ["+ kor_nm +"]\n"+
-        "pstn_cd: ["+ pstn_cd +"]\n"+
-        "ogrp_cd: ["+ ogrp_cd +"]\n"+
-        "org: ["+ org +"]\n"+
-        "posi_cd: ["+ posi_cd +"]";
-    }
+	
+    public String getBizarea_cd() {
+		return bizarea_cd;
+	}
+
+	public void setBizarea_cd(String bizarea_cd) {
+		this.bizarea_cd = bizarea_cd;
+	}
+
+	@Override
+	public String toString() {
+		return "Essodm01400_X10005_UserInfoModel [emp_no=" + emp_no + ", kor_nm=" + kor_nm + ", pstn_cd=" + pstn_cd
+				+ ", ogrp_cd=" + ogrp_cd + ", org=" + org + ", posi_cd=" + posi_cd + ", bizarea_cd=" + bizarea_cd + "]";
+	}
+
+	
 }

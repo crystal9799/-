@@ -12,7 +12,11 @@ public class Pamprg00100_X10005Model extends DzAbstractModel {
 	@SerializedName("COMPANY_CD")
 	@DzModelField(name = "company_cd", desc = "회사코드", colName = "COMPANY_CD", colSize = "7", isKey = false)
 	private String company_cd;
-
+	
+	@SerializedName("SEQ")
+	@DzModelField(name = "company_cd", desc = "순번", colName = "SEQ", colSize = "7", isKey = false)
+	private int seq;
+	
 	@SerializedName("STD_YM")
 	@DzModelField(name = "std_ym", desc = "기준년월", colName = "STD_YM", colSize = "6", isKey = false)
 	private String std_ym;
@@ -116,6 +120,14 @@ public class Pamprg00100_X10005Model extends DzAbstractModel {
 
 	public String getCompany_cd() {
 		return company_cd;
+	}
+
+	public int getSeq() {
+		return seq;
+	}
+
+	public void setSeq(int i) {
+		this.seq = i;
 	}
 
 	public void setCompany_cd(String company_cd) {
@@ -332,14 +344,14 @@ public class Pamprg00100_X10005Model extends DzAbstractModel {
 
 	@Override
 	public String toString() {
-		return "Pamprg00100_X10005Model [company_cd=" + company_cd + ", std_ym=" + std_ym + ", pstn_cd=" + pstn_cd
-				+ ", pstn_nm=" + pstn_nm + ", orig_pstn_cd=" + orig_pstn_cd + ", trgt_grd_cd=" + trgt_grd_cd
-				+ ", orig_trgt_grd_cd=" + orig_trgt_grd_cd + ", ugrd_grd_cd=" + ugrd_grd_cd + ", orig_urgd_grd_cd="
-				+ orig_urgd_grd_cd + ", min_bwrk_my=" + min_bwrk_my + ", orig_min_bwrk_my=" + orig_min_bwrk_my
-				+ ", aggr_term_cnt=" + aggr_term_cnt + ", bwrk_sgrad_cd=" + bwrk_sgrad_cd + ", ledu_cd=" + ledu_cd
-				+ ", bwrk_my_calc_std_dt=" + bwrk_my_calc_std_dt + ", bizarea_cd=" + bizarea_cd + ", ledu_nm=" + ledu_nm
-				+ ", rmk_nm=" + rmk_nm + ", bizarea_nm=" + bizarea_nm + ", insert_id=" + insert_id + ", insert_dts="
-				+ insert_dts + ", insert_ip=" + insert_ip + ", update_id=" + update_id + ", update_dts=" + update_dts
-				+ ", update_ip=" + update_ip + "]";
+		return "Pamprg00100_X10005Model [company_cd=" + company_cd + ", seq=" + seq + ", std_ym=" + std_ym
+				+ ", pstn_cd=" + pstn_cd + ", pstn_nm=" + pstn_nm + ", orig_pstn_cd=" + orig_pstn_cd + ", trgt_grd_cd="
+				+ trgt_grd_cd + ", orig_trgt_grd_cd=" + orig_trgt_grd_cd + ", ugrd_grd_cd=" + ugrd_grd_cd
+				+ ", orig_urgd_grd_cd=" + orig_urgd_grd_cd + ", min_bwrk_my=" + min_bwrk_my + ", orig_min_bwrk_my="
+				+ orig_min_bwrk_my + ", aggr_term_cnt=" + aggr_term_cnt + ", bwrk_sgrad_cd=" + bwrk_sgrad_cd
+				+ ", ledu_cd=" + ledu_cd + ", bwrk_my_calc_std_dt=" + bwrk_my_calc_std_dt + ", bizarea_cd=" + bizarea_cd
+				+ ", ledu_nm=" + ledu_nm + ", rmk_nm=" + rmk_nm + ", bizarea_nm=" + bizarea_nm + ", insert_id="
+				+ insert_id + ", insert_dts=" + insert_dts + ", insert_ip=" + insert_ip + ", update_id=" + update_id
+				+ ", update_dts=" + update_dts + ", update_ip=" + update_ip + "]";
 	}
 }

@@ -36,7 +36,7 @@ public class HRPamprg00100_X10005Service extends DzCometService {
 	@Autowired
 	Pamprg00100_X10005Dao pamprg00100_X10005Dao;
 
-	String company_cd = "EWP";
+	 
 	
 	//[메인화면 조회]
 	@DzApi(url = "/list_HR_URGDBASETBL_INFO_X10005MST", desc = "승급기준표-조회", httpMethod = DzRequestMethod.GET)
@@ -50,16 +50,25 @@ public class HRPamprg00100_X10005Service extends DzCometService {
 
 			HashMap<String, Object> parameters = new HashMap<String, Object>();
 
-			parameters.put("P_COMPANY_CD", company_cd);
+			parameters.put("P_COMPANY_CD", this.getCompanyCode());
 			parameters.put("P_BIZAREA_CD", BIZAREA_CD);
 			parameters.put("P_PROMO_YEAR_MONTH", mpPROMO_YEAR_MONTH);
-
+			
 			pamprg00100_X10005ModelList = pamprg00100_X10005Dao.selectPamprg00100_X10005ModelList(parameters);
-			System.out.println("pamprg00100_X10005ModelList" + pamprg00100_X10005ModelList.toString());
+			
+			// SEQ 값 생성하는 로직 
+			for (int i = 0; i < pamprg00100_X10005ModelList.size(); i++) {
+			    Pamprg00100_X10005Model model = pamprg00100_X10005ModelList.get(i);
+			    model.setSeq(i+1);
+			}
+			// 수정된 모델 리스트를 반환
+			logger.info("pamprg00100_X10005ModelList"+pamprg00100_X10005ModelList.toString());
+			return pamprg00100_X10005ModelList;
+			
 		} catch (Exception e) {
 			throw new DzApplicationRuntimeException(e);
 		}
-		return pamprg00100_X10005ModelList;
+ 
 	}
 
 	//[드롭다운리스트 데이터]
@@ -70,7 +79,7 @@ public class HRPamprg00100_X10005Service extends DzCometService {
 		try {
 			HashMap<String, Object> parameters = new HashMap<String, Object>();
 
-			parameters.put("P_COMPANY_CD", company_cd);
+			parameters.put("P_COMPANY_CD", this.getCompanyCode());
 
 			String sqlText = MyBatisUtil.getId(this.getClass(), "dao.Pamprg00100_X10005Dao.get_BizareaList");
 			SqlPack so = new SqlPack();
@@ -100,12 +109,12 @@ public class HRPamprg00100_X10005Service extends DzCometService {
 
 			// [delete] : 완료
 			for (Pamprg00100_X10005Model deleteRow : grid_ds.getDeleted()) {
-				deleteRow.setCompany_cd(company_cd);
+				deleteRow.setCompany_cd(this.getCompanyCode());
 			}
 			
 			// [update] : 논리 확인 후 진행 예정
 			for(Pamprg00100_X10005Model updateRow : grid_ds.getUpdated()) {
-				updateRow.setCompany_cd(company_cd);
+				updateRow.setCompany_cd(this.getCompanyCode());
 				updateRow.setUpdate_id(this.getUserId());
 				updateRow.setUpdate_dts(new Date());
 				updateRow.setUpdate_ip(this.getRemoteHost());
@@ -113,9 +122,9 @@ public class HRPamprg00100_X10005Service extends DzCometService {
 				logger.info("updateRow"+updateRow.toString());
 			}
 			
-			//[insert] : 진행 예정
+			//[insert] : 완료
 			for(Pamprg00100_X10005Model insertRow : grid_ds.getAdded()) {
-				insertRow.setCompany_cd(company_cd);
+				insertRow.setCompany_cd(this.getCompanyCode());
 				insertRow.setInsert_id(this.getUserId());
 				insertRow.setInsert_dts(new Date());
 				insertRow.setInsert_ip(this.getRemoteHost());

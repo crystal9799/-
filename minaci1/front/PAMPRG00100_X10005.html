@@ -1,6 +1,6 @@
-<!--##f91a92ee-04a5-42d6-9de3-9b7e3a199811##-->
+<!--##87319398-cc08-4a5f-b3ca-1f6265c2efe3##-->
 <!--##PAMPRG00100_X10005##-->
-<!--##gOOI7Yuo4Uj/MPhQzATJ1zAlHcQq0MbdaZGTWBHs7LsCfHmTZvHXhkx8TOEYIkdI##-->
+<!--##wr9UTAy9xc9HNRqzVdd7yYMGEOA8LDlPJJiu3n3gflbYXHhm/iy3KevimImczZ3V##-->
 <!--
   DEWS UI/UX IDE - Build Result - v1.5
   # PageID: PAMPRG00100_X10005
@@ -222,8 +222,8 @@
             { field: 'RMK_NM', editable: false, dataType: 'string' }, 
             { field: 'LEDU_NM', editable: false, dataType: 'string' }, 
             { field: 'ORIG_PSTN_CD ', editable: false, dataType: 'string' }, 
-            { field: 'ORIG_TRGT_GRD_CD ', editable: false, dataType: 'string' }, 
-            { field: 'ORIG_UGRD_GRD_CD  ', editable: false, dataType: 'string' }, 
+            { field: 'ORIG_TRGT_GRD_CD', editable: false, dataType: 'string' }, 
+            { field: 'ORIG_UGRD_GRD_CD', editable: false, dataType: 'string' }, 
             { field: 'ORIG_MIN_BWRK_MY', editable: false, dataType: 'string' }, 
             { field: 'SEQ', editable: false, dataType: 'number' }
           ]
@@ -626,12 +626,39 @@
             max: 100,
             min: 0
           }
+        },
+        {
+          field: 'ORIG_PSTN_CD',
+          title: '수정이전 직급코드',
+          visible: false
+        },
+        {
+          field: 'ORIG_MIN_BWRK_MY',
+          title: '수정이전 최소근무월수',
+          visible: false
+        },
+        {
+          field: 'ORIG_TRGT_GRD_CD',
+          title: '수정이전 대상코드',
+          visible: false
+        },
+        {
+          field: 'ORIG_UGRD_GRD_CD',
+          title: '수정이전 승급등급코드',
+          visible: false
         }
       ],
       fixed: {
         colCount: 0,
         rightColCount: 0
-      }
+      },
+      dataBound: /*e79fcd7e-9392-4123-8817-489aae742cc6*/ function (e) {
+            dews.ui.loading.hide();
+            if (self.gridMaster.dataItems().length === 0) {
+                dews.ui.snackbar.warning("조회된 내역이 없습니다.");
+            }
+        }
+    
     });
     
     

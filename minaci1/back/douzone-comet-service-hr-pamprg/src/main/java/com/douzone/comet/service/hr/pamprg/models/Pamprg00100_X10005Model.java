@@ -46,8 +46,8 @@ public class Pamprg00100_X10005Model extends DzAbstractModel {
 	private String ugrd_grd_cd;
 
 	@SerializedName("ORIG_UGRD_GRD_CD")
-	@DzModelField(name = "orig_urgd_grd_cd", desc = "수정이전 승급등급코드", colName = "ORIG_UGRD_GRD_CD", colSize = "5", isKey = false)
-	private String orig_urgd_grd_cd;
+	@DzModelField(name = "orig_ugrd_grd_cd", desc = "수정이전 승급등급코드", colName = "ORIG_UGRD_GRD_CD", colSize = "5", isKey = false)
+	private String orig_ugrd_grd_cd;
 
 	@SerializedName("MIN_BWRK_MY")
 	@DzModelField(name = "min_bwrk_my", desc = "최소근무월수", colName = "MIN_BWRK_MY", colSize = "7", isKey = false)
@@ -255,11 +255,11 @@ public class Pamprg00100_X10005Model extends DzAbstractModel {
 	}
 
 	public String getOrig_urgd_grd_cd() {
-		return orig_urgd_grd_cd;
+		return orig_ugrd_grd_cd;
 	}
 
-	public void setOrig_urgd_grd_cd(String orig_urgd_grd_cd) {
-		this.orig_urgd_grd_cd = orig_urgd_grd_cd;
+	public void setOrig_urgd_grd_cd(String orig_ugrd_grd_cd) {
+		this.orig_ugrd_grd_cd = orig_ugrd_grd_cd;
 	}
 
 	public BigDecimal getOrig_min_bwrk_my() {
@@ -347,7 +347,7 @@ public class Pamprg00100_X10005Model extends DzAbstractModel {
 		return "Pamprg00100_X10005Model [company_cd=" + company_cd + ", seq=" + seq + ", std_ym=" + std_ym
 				+ ", pstn_cd=" + pstn_cd + ", pstn_nm=" + pstn_nm + ", orig_pstn_cd=" + orig_pstn_cd + ", trgt_grd_cd="
 				+ trgt_grd_cd + ", orig_trgt_grd_cd=" + orig_trgt_grd_cd + ", ugrd_grd_cd=" + ugrd_grd_cd
-				+ ", orig_urgd_grd_cd=" + orig_urgd_grd_cd + ", min_bwrk_my=" + min_bwrk_my + ", orig_min_bwrk_my="
+				+ ", orig_urgd_grd_cd=" + orig_ugrd_grd_cd + ", min_bwrk_my=" + min_bwrk_my + ", orig_min_bwrk_my="
 				+ orig_min_bwrk_my + ", aggr_term_cnt=" + aggr_term_cnt + ", bwrk_sgrad_cd=" + bwrk_sgrad_cd
 				+ ", ledu_cd=" + ledu_cd + ", bwrk_my_calc_std_dt=" + bwrk_my_calc_std_dt + ", bizarea_cd=" + bizarea_cd
 				+ ", ledu_nm=" + ledu_nm + ", rmk_nm=" + rmk_nm + ", bizarea_nm=" + bizarea_nm + ", insert_id="

@@ -2,7 +2,7 @@ package com.douzone.comet.service.hr.essodm.utils;
 
 import java.time.LocalDate;
 
-public class GenerateDOC_NO {
+public class GenerateREQ_NO {
 	public String generateDocNoByMaxThisMonth(int maxSeq) {
 		String prefix = "MPC";
 

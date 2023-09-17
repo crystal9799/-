@@ -1,6 +1,6 @@
-<!--##96e4b353-d8bb-429d-af60-3dc7fd171ca2##-->
+<!--##ee3b95e8-05e1-4346-93c7-d21462ad61a7##-->
 <!--##ESSODM01400_x10005##-->
-<!--##cimSDHFFMw0iwL0rpVM41YlHTyresD6NTGnkZUaA++p3ShQkdcQL3WOK0D4E0VlJ##-->
+<!--##EeqjLCmMrdTs+eoCi+9yvHRwzOzIUZf9ZuO9MyaLlQ/z4udedsluxC6Jw5Jdx+b5##-->
 <!--
   DEWS UI/UX IDE - Build Result - v1.5
   # PageID: ESSODM01400_x10005
@@ -142,7 +142,8 @@
             { field: 'REQ_EMP_NO', editable: false, dataType: 'string' }, 
             { field: 'REQ_KOR_NM', editable: false, dataType: 'string' }, 
             { field: 'REASON_DC', editable: false, dataType: 'string' }, 
-            { field: 'REQ_DY', editable: false, dataType: 'number' }
+            { field: 'REQ_DY', editable: false, dataType: 'number' }, 
+            { field: 'BIZAREA_CD', editable: false, dataType: 'string' }
           ]
     
         }
@@ -163,7 +164,8 @@
             { field: 'PSTN_CD', editable: false, dataType: 'string' }, 
             { field: 'OGRP_CD', editable: false, dataType: 'string' }, 
             { field: 'ORG', editable: false, dataType: 'string' }, 
-            { field: 'POSI_CD', editable: false, dataType: 'string' }
+            { field: 'POSI_CD', editable: false, dataType: 'string' }, 
+            { field: 'BIZAREA_CD', editable: false, dataType: 'string' }
           ]
     
         }
@@ -386,6 +388,12 @@
           title: '신청일수',
           width: 60,
           visible: false
+        },
+        {
+          field: 'BIZAREA_CD',
+          title: '사업장코드',
+          width: 80,
+          visible: false
         }
       ],
       fixed: {
@@ -420,8 +428,8 @@
         dews.api.get(dews.url.getApiUrl("HR", "HREssodm01400_X10005Service", "getUserInfo"), {
             async: false,
             data: {
-                // bizarea_cd: bizarea_cd,
-                // company_cd: company_cd
+                emp_no: emp_no,
+                company_cd: company_cd
             }
         }).done(function (data) {
             self.main_userInfo_ds.read();

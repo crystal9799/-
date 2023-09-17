@@ -93,7 +93,7 @@ public class Essodm01400_X10005Model extends DzAbstractModel {
 
 	@SerializedName("BIZAREA_CD")
 	@DzModelField(name="bizarea_cd", desc="사업장코드", colName="BIZAREA_CD", colSize="7", isKey=false)
-	private BigDecimal bizarea_cd;
+	private String bizarea_cd;
 	
 	public String getCompany_cd() {
 		return company_cd;
@@ -257,11 +257,11 @@ public class Essodm01400_X10005Model extends DzAbstractModel {
 	}
 
 	
-	public BigDecimal getBizarea_cd() {
+	public String getBizarea_cd() {
 		return bizarea_cd;
 	}
 
-	public void setBizarea_cd(BigDecimal bizarea_cd) {
+	public void setBizarea_cd(String bizarea_cd) {
 		this.bizarea_cd = bizarea_cd;
 	}
 

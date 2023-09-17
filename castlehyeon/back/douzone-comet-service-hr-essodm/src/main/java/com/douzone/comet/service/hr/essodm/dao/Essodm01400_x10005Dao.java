@@ -55,8 +55,8 @@ public class Essodm01400_x10005Dao  {
 	 * 단일 데이터 수정 처리
 	 * @param essodm01400_X10005Model
 	 */
-	public void updateEssodm01400_X10005Model(Essodm01400_X10005Model essodm01400_X10005Model) throws Exception {
-		this.mybatisSupport.update(this.getClass().getName() + ".updateEssodm01400_X10005Model", essodm01400_X10005Model);
+	public void updateEssodm01400_X10005Model(HashMap<String, Object> parameters) throws Exception {
+		this.mybatisSupport.update(this.getClass().getName() + ".updateEssodm01400_X10005Model", parameters);
 	}
 
 	/**
@@ -65,6 +65,14 @@ public class Essodm01400_x10005Dao  {
 	 */
 	public void deleteEssodm01400_X10005Model(Essodm01400_X10005Model essodm01400_X10005Model) throws Exception {
 		this.mybatisSupport.delete(this.getClass().getName() + ".deleteEssodm01400_X10005Model", essodm01400_X10005Model);
+	}
+	// 채번하여 기존에 가장 큰 값 구하기
+	public int selectMaxReqNo() {
+		return this.mybatisSupport.selectOne(this.getClass().getName() + ".selectMaxReqNo");
+	}
+	//기존 기간 내에 근태기록이 있는지 확인하기
+	public String hasContainSamePeriod(HashMap<String, Object> parameters) {
+		return this.mybatisSupport.selectOne(this.getClass().getName() + ".hasContainSamePeriod", parameters);
 	}
 
 }

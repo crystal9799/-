@@ -10,7 +10,6 @@ import org.springframework.stereotype.Component;
 
 import com.douzone.comet.components.DzCometService;
 
-@Component
 public class GetInsertUpdateInfo extends DzCometService {
 
 	// 현재 사용자의 company_cd

@@ -109,7 +109,7 @@ public class HRPamprg00100_X10005Service extends DzCometService {
 				deleteRow.setCompany_cd(this.getCompanyCode());
 			}
 
-			// [update] : 논리 확인 후 진행 예정
+			// [update] : 기본키 수정 가능하게 함(완료)
 			for (Pamprg00100_X10005Model updateRow : grid_ds.getUpdated()) {
 				updateRow.setCompany_cd(this.getCompanyCode());
 				updateRow.setUpdate_id(this.getUserId());

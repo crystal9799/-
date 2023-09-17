@@ -1,6 +1,6 @@
-<!--##b1edb972-fa76-4543-b1f2-fd00a01d6752##-->
+<!--##f91a92ee-04a5-42d6-9de3-9b7e3a199811##-->
 <!--##PAMPRG00100_X10005##-->
-<!--##F79uUoynXudlVTHl8ZkyMc44WbG0sINvWh5wfDm4CZdw9iznTE18rEg4JMpOp0+Z##-->
+<!--##gOOI7Yuo4Uj/MPhQzATJ1zAlHcQq0MbdaZGTWBHs7LsCfHmTZvHXhkx8TOEYIkdI##-->
 <!--
   DEWS UI/UX IDE - Build Result - v1.5
   # PageID: PAMPRG00100_X10005
@@ -72,7 +72,7 @@
     }
     
     // 기본키 중복 확인 함수
-    function checkForDuplicates(grid_ds) {
+    function hasDuplicates(grid_ds) {
         var getChangeCount = grid_ds.getDirtyDataCount();
         var changeData = grid_ds.getDirtyData();
         var allData = self.gridMaster.dataItems();
@@ -148,6 +148,45 @@
     
         return false; // 중복 발견 없음
     }
+    
+    function checkListExist() { // 데이터 삭제 전, 자료가 존재하는지 확인
+        var existFlag = false;
+    
+        var allData = self.gridMaster.dataItems();
+        if (allData.length > 0) {
+            existFlag = true;
+        }
+        return existFlag;
+    }
+    
+    function deleteBeforeList() {
+        dews.api.get(dews.url.getApiUrl("HR", "HRPamprg00100_X10005Service", "delete_BeforeList"), {
+            async: false,
+            data: {
+                mpPROMO_YEAR_MONTH: self.mpPROMO_YEAR_MONTH.value(),
+                BIZAREA_CD: self.BIZAREA_CD.value()
+            }
+        }).done(function (data) {
+        }).fail(function (message) {
+            dews.ui.snackbar.warning(message.responseJSON.message);
+        });
+    }
+    
+    function copyBeforeList() {
+        dews.api.get(dews.url.getApiUrl("HR", "HRPamprg00100_X10005Service", "copy_BeforeList"), {
+            async: false,
+            data: {
+                mpPROMO_YEAR_MONTH: self.mpPROMO_YEAR_MONTH.value(),
+                BIZAREA_CD: self.BIZAREA_CD.value()
+            }
+        }).done(function (data) {
+            dews.ui.snackbar.ok("종전자료복사가 완료되었습니다.");
+            searchData();
+        }).fail(function (message) {
+            dews.ui.snackbar.warning(message.responseJSON.message);
+        });
+    }
+    
     
     
     
@@ -301,9 +340,9 @@
         self.gridMaster.setCellValue(idx, 'STD_YM', self.mpPROMO_YEAR_MONTH.value(), false); // 기준년월에 "승급년월" 저장
         self.gridMaster.setCellValue(idx, 'BIZAREA_CD', self.BIZAREA_CD.value(), false); // 사업장 코드 저장
         self.gridMaster.setCellValue(idx, 'BIZAREA_NM', self.BIZAREA_CD.text(), false); // 사업장명 저장
-        self.gridMaster.setCellValue(idx, 'TRGT_GRD_CD', 'K1', false);
-        self.gridMaster.setCellValue(idx, 'UGRD_GRD_CD', 'K2', false);
-        self.gridMaster.setCellValue(idx, 'MIN_BWRK_MY', '30', false);
+        self.gridMaster.setCellValue(idx, 'TRGT_GRD_CD', 'K1', false); // 기본값 설정
+        self.gridMaster.setCellValue(idx, 'UGRD_GRD_CD', 'K2', false); // 기본값 설정
+        self.gridMaster.setCellValue(idx, 'MIN_BWRK_MY', '30', false); // 기본값 설정
         self.gridMaster.setCellValue(idx, 'BWRK_MY_CALC_STD_DT', self.mpPROMO_YEAR_MONTH.value() + "01", false); // 산정기준일에 "승급년월"의 1일로 저장
         self.gridMaster.select(idx, "PSTN_NM"); // "직급명" 컬럼으로 포커스 이동
     });
@@ -360,7 +399,7 @@
         }
     
         // 중복 확인
-        if (checkForDuplicates(self.grid_ds)) {
+        if (hasDuplicates(self.grid_ds)) {
             return false;
         }
     
@@ -383,6 +422,17 @@
                 alert("저장 실패하였습니다.");
             });
         });
+    });
+    self.$copybtnApply.on('click', /*df183ba1-b663-4f91-b5c4-39905db4b87c*/ function (e) {
+        if (checkListExist() == false) { // 등록된 데이터가 없으면
+            copyBeforeList();
+        } else { // 등록된 데이터가 있으면
+            dews.confirm('기존 등록된 데이터가 삭제되고 등록됩니다.\n계속하시겠습니까?', "question").yes(function () {
+                deleteBeforeList();
+                copyBeforeList();
+            }).no(function () {
+            });
+        }
     });
     self.mpPROMO_YEAR_MONTH.on('change', /*25c08b4f-d1ef-457d-a433-739d1b7c8cf7*/ function (e) {
         // TODO: 필수항목 입력을 체크한 후 데이터소스를 조회합니다.

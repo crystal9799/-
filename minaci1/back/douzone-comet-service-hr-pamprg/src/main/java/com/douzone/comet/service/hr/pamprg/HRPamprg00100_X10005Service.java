@@ -5,7 +5,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import com.douzone.comet.components.DzCometService;
@@ -36,9 +35,7 @@ public class HRPamprg00100_X10005Service extends DzCometService {
 	@Autowired
 	Pamprg00100_X10005Dao pamprg00100_X10005Dao;
 
-	 
-	
-	//[메인화면 조회]
+	// [메인화면 조회]
 	@DzApi(url = "/list_HR_URGDBASETBL_INFO_X10005MST", desc = "승급기준표-조회", httpMethod = DzRequestMethod.GET)
 	public List<Pamprg00100_X10005Model> list_HR_URGDBASETBL_INFO_X10005MST(
 			@DzParam(key = "mpPROMO_YEAR_MONTH", desc = "승급년월", required = false, paramType = DzParamType.QueryString) String mpPROMO_YEAR_MONTH,
@@ -53,25 +50,25 @@ public class HRPamprg00100_X10005Service extends DzCometService {
 			parameters.put("P_COMPANY_CD", this.getCompanyCode());
 			parameters.put("P_BIZAREA_CD", BIZAREA_CD);
 			parameters.put("P_PROMO_YEAR_MONTH", mpPROMO_YEAR_MONTH);
-			
+
 			pamprg00100_X10005ModelList = pamprg00100_X10005Dao.selectPamprg00100_X10005ModelList(parameters);
-			
-			// SEQ 값 생성하는 로직 
+
+			// SEQ 값 생성하는 로직
 			for (int i = 0; i < pamprg00100_X10005ModelList.size(); i++) {
-			    Pamprg00100_X10005Model model = pamprg00100_X10005ModelList.get(i);
-			    model.setSeq(i+1);
+				Pamprg00100_X10005Model model = pamprg00100_X10005ModelList.get(i);
+				model.setSeq(i + 1);
 			}
 			// 수정된 모델 리스트를 반환
-			logger.info("pamprg00100_X10005ModelList"+pamprg00100_X10005ModelList.toString());
+			logger.info("pamprg00100_X10005ModelList" + pamprg00100_X10005ModelList.toString());
 			return pamprg00100_X10005ModelList;
-			
+
 		} catch (Exception e) {
 			throw new DzApplicationRuntimeException(e);
 		}
- 
+
 	}
 
-	//[드롭다운리스트 데이터]
+	// [드롭다운리스트 데이터]
 	@DzApi(url = "/get_BizareaList", desc = "사업장 조회", httpMethod = DzRequestMethod.GET)
 	public List<Map<String, Object>> get_BizareaList() throws Exception {
 		List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
@@ -99,7 +96,7 @@ public class HRPamprg00100_X10005Service extends DzCometService {
 		return list;
 	}
 
-	//[저장- delete/update/insert]
+	// [저장- delete/update/insert]
 	@Transactional(rollbackFor = Exception.class)
 	@DzApi(url = "/save_HR_URGDBASETBL_INFO_X10005MST", desc = "변경된 승급기준표 데이터소스 저장", httpMethod = DzRequestMethod.POST)
 	public void save_HR_URGDBASETBL_INFO_X10005MST(
@@ -111,28 +108,29 @@ public class HRPamprg00100_X10005Service extends DzCometService {
 			for (Pamprg00100_X10005Model deleteRow : grid_ds.getDeleted()) {
 				deleteRow.setCompany_cd(this.getCompanyCode());
 			}
-			
+
 			// [update] : 논리 확인 후 진행 예정
-			for(Pamprg00100_X10005Model updateRow : grid_ds.getUpdated()) {
+			for (Pamprg00100_X10005Model updateRow : grid_ds.getUpdated()) {
 				updateRow.setCompany_cd(this.getCompanyCode());
 				updateRow.setUpdate_id(this.getUserId());
 				updateRow.setUpdate_dts(new Date());
 				updateRow.setUpdate_ip(this.getRemoteHost());
-				updateRow.setBwrk_my_calc_std_dt(StringUtil.getLocaleTimeString(updateRow.getBwrk_my_calc_std_dt(),"yyyyMMdd"));
-				logger.info("updateRow"+updateRow.toString());
+				updateRow.setBwrk_my_calc_std_dt(
+						StringUtil.getLocaleTimeString(updateRow.getBwrk_my_calc_std_dt(), "yyyyMMdd"));
+				logger.info("updateRow" + updateRow.toString());
 			}
-			
-			//[insert] : 완료
-			for(Pamprg00100_X10005Model insertRow : grid_ds.getAdded()) {
+
+			// [insert] : 완료
+			for (Pamprg00100_X10005Model insertRow : grid_ds.getAdded()) {
 				insertRow.setCompany_cd(this.getCompanyCode());
 				insertRow.setInsert_id(this.getUserId());
 				insertRow.setInsert_dts(new Date());
 				insertRow.setInsert_ip(this.getRemoteHost());
-				insertRow.setBwrk_my_calc_std_dt(StringUtil.getLocaleTimeString(insertRow.getBwrk_my_calc_std_dt(),"yyyyMMdd"));
-				logger.info("insertRow"+insertRow.toString());
+				insertRow.setBwrk_my_calc_std_dt(
+						StringUtil.getLocaleTimeString(insertRow.getBwrk_my_calc_std_dt(), "yyyyMMdd"));
+				logger.info("insertRow" + insertRow.toString());
 			}
-			
-			 
+
 			if (grid_ds.getDeleted() != null && grid_ds.getDeleted().size() > 0) {
 				pamprg00100_X10005Dao.deletePAMPRG00100_Model(grid_ds.getDeleted());
 				logger.info("그리드 삭제완료");
@@ -148,6 +146,80 @@ public class HRPamprg00100_X10005Service extends DzCometService {
 		} catch (Exception e) {
 			throw new DzApplicationRuntimeException(e);
 		}
+	}
+
+	// [종전자료 전 기존데이터 삭제]
+	@Transactional
+	@DzApi(url = "/delete_BeforeList", desc = "종전자료복사 전 기존데이터 삭제", httpMethod = DzRequestMethod.GET)
+	public boolean delete_BeforeList(
+			@DzParam(key = "mpPROMO_YEAR_MONTH", desc = "승급년월", paramType = DzParamType.QueryString) String mpPROMO_YEAR_MONTH,
+			@DzParam(key = "BIZAREA_CD", desc = "사업장", paramType = DzParamType.QueryString) String BIZAREA_CD)
+			throws Exception {
+
+		try {
+			HashMap<String, Object> parameters = new HashMap<String, Object>();
+			parameters.put("P_COMPANY_CD", this.getCompanyCode()); // required
+			parameters.put("P_PROMO_YEAR_MONTH", mpPROMO_YEAR_MONTH);
+			parameters.put("P_BIZAREA_CD", BIZAREA_CD);
+
+			String sqlText = MyBatisUtil.getId(this.getClass(), "dao.Pamprg00100_X10005Dao.delete_BeforeList");
+			SqlPack so = new SqlPack();
+			so.setStoreProcedure(false);
+			so.setMapperType(MapperType.MyBatis);
+			so.setSqlText(sqlText);
+			so.getInParameters().putAll(parameters);
+
+			this.update(so);
+
+		} catch (DzApplicationRuntimeException e) {
+			throw e;
+		} catch (Exception e) {
+			throw e;
+		}
+		return true;
+	}
+
+	@Transactional
+	@DzApi(url = "/copy_BeforeList", desc = "종전자료복사", httpMethod = DzRequestMethod.GET)
+	public boolean copy_BeforeList(
+			@DzParam(key = "mpPROMO_YEAR_MONTH", desc = "승급년월", paramType = DzParamType.QueryString) String mpPROMO_YEAR_MONTH,
+			@DzParam(key = "BIZAREA_CD", desc = "사업장", paramType = DzParamType.QueryString) String BIZAREA_CD)
+			throws Exception {
+
+		try {
+			HashMap<String, Object> parameters = new HashMap<String, Object>();
+			parameters.put("P_COMPANY_CD", this.getCompanyCode()); // required
+			parameters.put("P_PROMO_YEAR_MONTH", mpPROMO_YEAR_MONTH); // 승급년월
+			parameters.put("P_BIZAREA_CD", BIZAREA_CD);
+			parameters.put("P_BWRK_MY_CALC_STD_DT", mpPROMO_YEAR_MONTH + "01"); // -- 산정기준일 (승급년월의 1일)
+
+			parameters.put("P_INSERT_ID", this.getUserId()); // 등록ID
+			parameters.put("P_INSERT_IP", this.getRemoteHost()); // 등록 IP
+
+			String sqlText = MyBatisUtil.getId(this.getClass(), "dao.Pamprg00100_X10005Dao.copy_BeforeList");
+			SqlPack so = new SqlPack();
+			so.setStoreProcedure(false);
+			so.setMapperType(MapperType.MyBatis);
+			so.setSqlText(sqlText);
+			so.getInParameters().putAll(parameters);
+
+			this.update(so);
+
+		} catch (DzApplicationRuntimeException e) {
+			if (e.getCause().getMessage().contains("ORA-00001")) {
+				throw new DzApplicationRuntimeException("현재 승급년월에 중복되는 데이터가 있습니다.");
+			} else {
+				throw e;
+			}
+		} catch (Exception e) {
+			if (e.getCause().getMessage().contains("ORA-00001")) {
+				throw new DzApplicationRuntimeException("현재 승급년월에 중복되는 데이터가 있습니다.");
+			} else {
+				throw e;
+			}
+		}
+
+		return true;
 	}
 
 }

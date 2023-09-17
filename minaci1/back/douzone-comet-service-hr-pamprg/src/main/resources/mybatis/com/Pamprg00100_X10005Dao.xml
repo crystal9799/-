@@ -89,6 +89,10 @@
 		UPDATE 
 			  HR_URGDBASETBL_INFO_X10005
 		<set>
+			PSTN_CD = #{pstn_cd},
+			TRGT_GRD_CD = #{trgt_grd_cd},
+			UGRD_GRD_CD = #{ugrd_grd_cd},
+			MIN_BWRK_MY = #{min_bwrk_my},
 			<if test="aggr_term_cnt != null and aggr_term_cnt != ''">
 			AGGR_TERM_CNT = #{aggr_term_cnt},
 			</if>
@@ -112,10 +116,10 @@
 			 COMPANY_CD = #{company_cd}
 			AND (STD_YM = #{std_ym})
 			AND (BIZAREA_CD = #{bizarea_cd})
-			AND (PSTN_CD = #{pstn_cd})
-			AND (TRGT_GRD_CD = #{trgt_grd_cd})
-			AND (UGRD_GRD_CD = #{urgd_grd_cd})
-			AND (MIN_BWRK_MY = #{min_bwrk_my})
+			AND (PSTN_CD = #{orig_pstn_cd})
+			AND (TRGT_GRD_CD = #{orig_trgt_grd_cd})
+			AND (UGRD_GRD_CD = #{orig_ugrd_grd_cd})
+			AND (MIN_BWRK_MY = #{orig_min_bwrk_my})
 	</update>
 	
 	<insert id="insertPAMPRG00100_Model" parameterType="com.douzone.comet.service.hr.pamprg.models.Pamprg00100_X10005Model">

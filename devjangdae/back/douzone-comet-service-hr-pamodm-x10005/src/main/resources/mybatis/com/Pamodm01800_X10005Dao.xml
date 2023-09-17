@@ -90,7 +90,7 @@
 				  A.COMPANY_CD		-- A.회사코드
 		        , A.EMP_NO		 	-- A.사원번호
 		        , B.KOR_NM			-- B.성명
-		       	, COMET.FN_HR_UP_DEPT_NM2(A.COMPANY_CD, C.DEPT_CD , A.START_DT) AS ORG -- L.소속
+		       	, G.ORG				-- G.소속
 		        , C.DEPT_CD			-- C.레벨
 		        , C.OGRP_CD			-- C.직군
 		        , C.PSTN_CD			-- C.직급
@@ -162,6 +162,15 @@
 			ON A.COMPANY_CD = F.COMPANY_CD
 			AND A.EMP_NO = F.EMP_NO
 			AND B.BIZAREA_CD = F.BIZAREA_CD
+			
+			LEFT OUTER JOIN (
+								SELECT A.DEPT_CD, C.DEPT_NM || '/' || B.DEPT_NM || '/' || A.DEPT_NM AS ORG
+								FROM MA_DEPT_MST A 
+									LEFT JOIN MA_DEPT_MST B ON A.UP_DEPT_CD = B.DEPT_CD AND B.COMPANY_CD = #{P_COMPANY_CD}
+									LEFT JOIN MA_DEPT_MST C ON B.UP_DEPT_CD = C.DEPT_CD AND C.COMPANY_CD = #{P_COMPANY_CD}
+								WHERE A.COMPANY_CD = #{P_COMPANY_CD}
+			) G
+			ON B.DEPT_CD = G.DEPT_CD
 		WHERE
 			1 = 1
 		
@@ -187,7 +196,7 @@
 		<if test=' P_DOF_TP != null and P_DOF_TP != "" '>
 			AND A.DOF_TP = #{P_DOF_TP} -- C.DEPT_CD ='1000200' -- A.DOF_TP = '0002'
 		</if>
-		ORDER BY START_DT
+		ORDER BY START_DT, END_DT, INSERT_DTS 
 	</select>
 	
 	<select id="getCompanyCode" parameterType="com.douzone.comet.service.hr.pamodm.models.Pamodm01800_X10005Model" resultType="String">

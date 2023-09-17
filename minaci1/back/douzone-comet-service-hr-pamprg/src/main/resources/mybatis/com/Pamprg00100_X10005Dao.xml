@@ -3,7 +3,7 @@
    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.douzone.comet.service.hr.pamprg.dao.Pamprg00100_X10005Dao">
-
+ 
 	<select id="selectPamprg00100_X10005ModelList" parameterType="hashMap" resultType="com.douzone.comet.service.hr.pamprg.models.Pamprg00100_X10005Model">		
 		SELECT
 			  HUI.COMPANY_CD                                     -- 회사 코드
@@ -139,4 +139,61 @@
 												#{insert_id}, #{insert_ip},  #{insert_dts}
 										)
 	</insert>
+	
+	<delete id="delete_BeforeList" parameterType="hashMap">
+		DELETE 
+			  FROM
+			  	  HR_URGDBASETBL_INFO_X10005
+		WHERE COMPANY_CD = #{P_COMPANY_CD}
+		AND STD_YM = #{P_PROMO_YEAR_MONTH}
+		<if test="P_BIZAREA_CD != '' and P_BIZAREA_CD != null">
+		    AND BIZAREA_CD = #{P_BIZAREA_CD}
+		</if>
+	</delete>
+		
+	<insert id="copy_BeforeList"  parameterType="hashMap">
+		INSERT INTO HR_URGDBASETBL_INFO_X10005
+			( COMPANY_CD,
+			STD_YM,
+			BIZAREA_CD,
+			PSTN_CD,
+			TRGT_GRD_CD,
+			UGRD_GRD_CD,
+			MIN_BWRK_MY,
+			AGGR_TERM_CNT,
+			BWRK_SGRAD_CD,
+			LEDU_CD,
+			BWRK_MY_CALC_STD_DT, -- 산정기준일
+			RMK_NM,
+			INSERT_ID, INSERT_IP, INSERT_DTS,
+			UPDATE_ID, UPDATE_IP, UPDATE_DTS )
+			SELECT HUI.COMPANY_CD,
+				   #{P_PROMO_YEAR_MONTH}, -- 기준년월
+				   HUI.BIZAREA_CD,
+				   HUI.PSTN_CD, -- 직급코드
+				   HUI.TRGT_GRD_CD, -- 대상등급코드
+				   HUI.UGRD_GRD_CD, -- 승급등급코드
+				   HUI.MIN_BWRK_MY, -- 최소근무월수
+				   HUI.AGGR_TERM_CNT,  -- 근무성적집계기간
+				   HUI.BWRK_SGRAD_CD,  -- 근무성적
+				   HUI.LEDU_CD,  -- 학력
+				   #{P_BWRK_MY_CALC_STD_DT}, -- 산정기준일
+				   HUI.RMK_NM, -- 비고
+				   #{P_INSERT_ID}, #{P_INSERT_IP}, SYSDATE,
+				   #{P_INSERT_ID}, #{P_INSERT_IP}, SYSDATE
+			FROM HR_URGDBASETBL_INFO_X10005 HUI
+			WHERE HUI.COMPANY_CD = #{P_COMPANY_CD}
+				AND HUI.STD_YM = ( SELECT MAX(STD_YM) -- 기준년월
+								   FROM HR_URGDBASETBL_INFO_X10005
+								   WHERE COMPANY_CD = #{P_COMPANY_CD}
+										AND STD_YM <![CDATA[<]]> #{P_PROMO_YEAR_MONTH}
+									<if test="P_BIZAREA_CD != '' and P_BIZAREA_CD != null">
+									    AND BIZAREA_CD = #{P_BIZAREA_CD}
+									</if>
+								  )
+				<if test="P_BIZAREA_CD != '' and P_BIZAREA_CD != null">
+				    AND HUI.BIZAREA_CD = #{P_BIZAREA_CD}
+				</if>
+	</insert>
+	
 </mapper>

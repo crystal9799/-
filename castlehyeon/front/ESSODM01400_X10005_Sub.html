@@ -1,6 +1,6 @@
-<!--##735d5da6-7b42-4b44-bbbc-e85958375ea5##-->
+<!--##c91025fa-90c3-43ce-b2c0-64f5ddc5a5eb##-->
 <!--##ESSODM01400_X10005_Sub##-->
-<!--##rDVfPA/AWVVmtzXLRltTO6uGX1/ocG63WtQXXMHjIUEXVtN4tYuRmtw5SM6CITDz##-->
+<!--##U4U4FjHYYh7JmH2eV4bdMn9+qxNiZGQ5S8k/o2zbUNeu2ZNhNWLQP/FQPhHMDLfE##-->
 <!--
   DEWS UI/UX IDE - Build Result - v1.5
   # PageID: ESSODM01400_X10005_Sub
@@ -687,12 +687,12 @@
                             // main_ds: main_ds
                         }
                     }).done(function (data) {
-                        if (data[0].MSG == 'already_existed') {
+                        if (data == 'already_existed') {
                             dews.ui.snackbar.warning("해당 기간에 근태내역이 있습니다.");
                             return;
                         }
-                        if (data[0].MSG !== 'OK') {
-                            dews.ui.snackbar.warning(data[0].MSG);
+                        if (data !== 'OK') {
+                            dews.ui.snackbar.warning(data);
                             return;
                         }
                         dews.ui.snackbar.ok("임시 저장 되었습니다.");
@@ -718,11 +718,11 @@
                         posi_cd: self.absData_grid.getCellValue(0, 'POSI_CD')
                     }
                 }).done(function (data) {
-                    if (data[0].MSG == 'already_existed') {
+                    if (data[0] == 'already_existed') {
                         dews.ui.snackbar.warning("해당 기간에 근태내역이 있습니다.");
                         return;
                     }
-                    if (data[0].MSG !== 'OK') {
+                    if (data[0] !== 'OK') {
                         dews.ui.snackbar.warning(data[0].MSG);
                         return;
                     }

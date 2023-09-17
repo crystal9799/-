@@ -113,7 +113,7 @@ public class HREssodm01400_X10005Service extends DzCometService {
 //                        reason_dc: self.main_grid.getCellValue(0, 'REASON_DC')
 	@Transactional(rollbackFor = Exception.class)
 	@DzApi(url = "/update_HR_OFFAPPLY_MST_X10005MST", desc = "결근계 수정", httpMethod = DzRequestMethod.GET)
-	public HashMap<String, Object> save_HR_OFFAPPLY_MST_X10005(
+	public String save_HR_OFFAPPLY_MST_X10005(
 			@DzParam(key = "company_cd", desc = "", paramType = DzParamType.QueryString) String company_cd,
 			@DzParam(key = "req_no", desc = "", paramType = DzParamType.QueryString) String req_no,
 			@DzParam(key = "bizarea_cd", desc = "", paramType = DzParamType.QueryString) String bizarea_cd,
@@ -161,13 +161,13 @@ public class HREssodm01400_X10005Service extends DzCometService {
 			model.setStart_dt(start_dt);
 			model.setEnd_dt(end_dt);
 			HashMap<String, Object> response = new HashMap<String, Object>();
-			response = responseMap.hasContainSamePeriod(model);
+			response = responseMap.hasContainSamePeriod(model, essodm01400_x10005DAO);
 
 			if (response.get("MSG").equals("OK")) {
 				essodm01400_x10005DAO.updateEssodm01400_X10005Model(parameters);
 			}
 
-			return response;
+			return (String) response.get("MSG");
 		} catch (Exception e) {
 			throw new DzApplicationRuntimeException(e);
 		}

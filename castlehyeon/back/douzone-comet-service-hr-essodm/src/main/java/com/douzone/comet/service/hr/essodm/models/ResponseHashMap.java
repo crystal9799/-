@@ -15,8 +15,8 @@ import com.douzone.gpd.jdbc.core.MapperType;
 import com.douzone.gpd.jdbc.objects.SqlPack;
 
 public class ResponseHashMap extends DzCometService {
-	@Autowired
-	Essodm01400_x10005Dao essodm01400_x10005DAO;
+//	@Autowired
+//	Essodm01400_x10005Dao essodm01400_x10005DAO;
 
 	HashMap<String, Object> response;
 
@@ -28,7 +28,7 @@ public class ResponseHashMap extends DzCometService {
 
 	// 유효성 검사
 	// 해당 DOC_NO이 존재하는지. 없다면 새로 생성해주기.
-	public Map<String, Object> createReqNo(Essodm01400_X10005Model parameter) {
+	public Map<String, Object> createReqNo(Essodm01400_X10005Model parameter, Essodm01400_x10005Dao essodm01400_x10005DAO) {
 		// 기존값이 있을 수도 있으니 clear
 		response.clear();
 		GenerateREQ_NO genNO = new GenerateREQ_NO();
@@ -47,7 +47,7 @@ public class ResponseHashMap extends DzCometService {
 
 	// 유효성 검사
 	// 전달받은 파라미터에서 선택한 기간이 기존에 근태기간과 겹치지 않는지 검사
-	public HashMap<String, Object> hasContainSamePeriod(Essodm01400_X10005Model parameter) {
+	public HashMap<String, Object> hasContainSamePeriod(Essodm01400_X10005Model parameter, Essodm01400_x10005Dao essodm01400_x10005DAO) {
 		response.clear();
 		HashMap<String, Object> parameters = new HashMap<String, Object>();
 		String result = "";

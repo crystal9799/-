@@ -32,6 +32,26 @@ public class Essodm01400_X10005_UserInfoModel extends DzAbstractModel {
 	@DzModelField(name="posi_cd", desc="직위코드", colName="POSI_CD", colSize="5", isKey=false)
 	private String posi_cd;
 	
+	@SerializedName("BIZAREA_CD")
+	@DzModelField(name="bizarea_cd", desc="사업장코드", colName="BIZAREA_CD", colSize="7", isKey=false)
+	private String bizarea_cd;
+	
+	@SerializedName("BIZAREA_NM")
+	@DzModelField(name="bizarea_nm", desc="사업장명", colName="BIZAREA_NM", colSize="50", isKey=false)
+	private String bizarea_nm;
+	
+	@SerializedName("GRP_NM")
+	@DzModelField(name="grp_nm", desc="그룹명", colName="GRP_NM", colSize="100", isKey=false)
+	private String grp_nm;
+	
+	@SerializedName("DEPT_NM")
+	@DzModelField(name="dept_nm", desc="부서명", colName="DEPT_NM", colSize="50", isKey=false)
+	private String dept_nm;
+	
+	@SerializedName("PATH")
+	@DzModelField(name="path", desc="수정소속", colName="PATH", colSize="200", isKey=false)
+	private String path;
+	
 	public String getEmp_no() {
 		return emp_no;
 	}
@@ -80,14 +100,54 @@ public class Essodm01400_X10005_UserInfoModel extends DzAbstractModel {
 		this.posi_cd = posi_cd;
 	}
 	
-    @Override
-    public String toString() {
-      return
-        "emp_no: ["+ emp_no +"]\n"+
-        "kor_nm: ["+ kor_nm +"]\n"+
-        "pstn_cd: ["+ pstn_cd +"]\n"+
-        "ogrp_cd: ["+ ogrp_cd +"]\n"+
-        "org: ["+ org +"]\n"+
-        "posi_cd: ["+ posi_cd +"]";
-    }
+	
+    public String getBizarea_cd() {
+		return bizarea_cd;
+	}
+
+	public void setBizarea_cd(String bizarea_cd) {
+		this.bizarea_cd = bizarea_cd;
+	}
+
+	
+	public String getBizarea_nm() {
+		return bizarea_nm;
+	}
+
+	public void setBizarea_nm(String bizarea_nm) {
+		this.bizarea_nm = bizarea_nm;
+	}
+
+	public String getGrp_nm() {
+		return grp_nm;
+	}
+
+	public void setGrp_nm(String grp_nm) {
+		this.grp_nm = grp_nm;
+	}
+
+	public String getDept_nm() {
+		return dept_nm;
+	}
+
+	public void setDept_nm(String dept_nm) {
+		this.dept_nm = dept_nm;
+	}
+
+	
+	public String getPath() {
+		return path;
+	}
+
+	public void setPath(String path) {
+		this.path = path;
+	}
+
+	@Override
+	public String toString() {
+		return "Essodm01400_X10005_UserInfoModel [emp_no=" + emp_no + ", kor_nm=" + kor_nm + ", pstn_cd=" + pstn_cd
+				+ ", ogrp_cd=" + ogrp_cd + ", org=" + org + ", posi_cd=" + posi_cd + ", bizarea_cd=" + bizarea_cd
+				+ ", bizarea_nm=" + bizarea_nm + ", grp_nm=" + grp_nm + ", dept_nm=" + dept_nm + ", path=" + path + "]";
+	}
+	
 }

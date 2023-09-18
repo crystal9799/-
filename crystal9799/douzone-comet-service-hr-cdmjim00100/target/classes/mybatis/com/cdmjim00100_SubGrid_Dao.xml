@@ -10,6 +10,7 @@
 		FROM HR_JOBDIVBASE_DTL hjd 
 		WHERE ACLF_NO = #{ACLF_NO}
 		AND VER_CD = #{VER_CD}
+		ORDER BY AELM_CD
 	</select>
 	
 	<!-- 수행준거 내역 상단 그리드 -->

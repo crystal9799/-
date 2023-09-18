@@ -1,10 +1,10 @@
-<!--##f9500dea-8263-4897-9055-6153c0b9d342##-->
+<!--##338459f2-b76b-446e-908f-b463914b025c##-->
 <!--##PAMODM01800_X10005##-->
-<!--##SAtl4j1Y1YS5WBnXXgw1SLpyyvrF4Sx7WC3lHqYs3rTn78+1EMW3HpBn6/1KNYUr##-->
+<!--##OZlceua0bVRH2Wbpf9XOaZ07W+y5yzG+o6LW+CZTDerNAUbq2BlbUgrVIw9G4tL3##-->
 <!--
   DEWS UI/UX IDE - Build Result - v1.5
   # PageID: PAMODM01800_X10005
-  # PageTitle: [한국동서발전]행사참가직원등록
+  # PageTitle: 행사참가직원등록
   # Server: http://localhost:8090/
 -->
 <!--
@@ -14,9 +14,9 @@
 <div id="conditionpanel1" class="dews-ui-condition-panel">
   <ul class="required-area">
     <li>
-      <label class="dews-ui-multilingual">회사</label>
+      <label class="dews-ui-multilingual">사업장</label>
       <span>
-        <select id="s_COMPANY_CD" name="s_COMPANY_CD" class="dews-ui-multicodepicker basic" data-dews-help-code="H_MA_COMPANY_S" data-dews-code-field="COMPANY_CD" data-dews-text-field="COMPANY_NM" data-dews-help-title="회사 도움창" data-dews-help-custom="false" data-dews-help-size="medium" />
+        <select id="s_BIZAREA_CD" name="s_BIZAREA_CD" class="dews-ui-multicodepicker basic" data-dews-help-code="H_MA_BIZAREA_MST_S" data-dews-code-field="BIZAREA_CD" data-dews-text-field="BIZAREA_NM" data-dews-help-title="회사 도움창" data-dews-help-custom="false" data-dews-help-size="medium" />
       </span>
     </li>
     <li>
@@ -39,7 +39,7 @@
         <select id="s_DOF_TP" name="s_DOF_TP" class="dews-ui-dropdownlist basic" data-dews-value-field="SYSDEF_CD" data-dews-text-field="SYSDEF_NM" data-dews-show-tooltip="true" data-dews-option-label-value="" data-dews-option-label-text="" data-dews-show-value-tooltip="true" data-dews-use-numkey="false"></select>
       </span>
     </li>
-    <li style="display: none;">
+    <li>
       <label class="dews-ui-multilingual">사원</label>
       <span>
         <input type="text" id="s_EMP_NO" name="s_EMP_NO" class="dews-ui-codepicker basic" data-dews-help-code="H_HR_EMP_MST_S" data-dews-code-field="EMP_NO" data-dews-text-field="KOR_NM" data-dews-help-title="사원 도움창" data-dews-help-custom="false" data-dews-help-size="big" data-dews-ajax="true" />
@@ -80,6 +80,9 @@
     // 메인버튼 삭제 버튼의 기본 확인 메시지 사용 여부 설정 
     self.mainButtons.delete.useDefaultConfirm = false;
     
+    var self = this;
+    self.version.view = '1.0.23091501';
+    self.version.service = 'HRPamodm01800_X10005Service';
     
     
     
@@ -96,7 +99,7 @@
               start_dt: self.s_START_DT.getStartDate(),
               end_dt: self.s_START_DT.getEndDate(),
               dept_cd: self.s_DEPT_CD.codes().join('|'),
-              company_cd: self.s_COMPANY_CD.codes().join('|')
+              bizarea_cd: self.s_BIZAREA_CD.codes().join('|')
             };
           }
         }
@@ -115,7 +118,9 @@
             { field: 'PRMT_DT', editable: false, dataType: 'string' }, 
             { field: 'RETM_DT', editable: false, dataType: 'string' }, 
             { field: 'START_DT', editable: false, dataType: 'string' }, 
+            { field: 'ORIG_START_DT', editable: false, dataType: 'string' }, 
             { field: 'END_DT', editable: false, dataType: 'string' }, 
+            { field: 'ORIG_END_DT', editable: false, dataType: 'string' }, 
             { field: 'TM_CD_NM', editable: false, dataType: 'string' }, 
             { field: 'DOF_TP', editable: false, dataType: 'string' }, 
             { field: 'START_TM', editable: false, dataType: 'string' }, 
@@ -198,9 +203,11 @@
     
     
     dews.ui.mainbuttons.localize.disable(true);
+    dews.ui.mainbuttons.approval.hide();
+    dews.ui.mainbuttons.etnapproval.hide();
     dews.ui.mainbuttons.add.click(/*d1cbdcb0-8f4b-4a3e-9937-683f712ca116*/ function () {
         try {
-            self.grid1.addRow();
+    
             self.s_EMP_NO.open(); // 행 추가 후 사원도움창 오픈
             //self.grid1.setCellValue(self.grid1.select(), "COMPANY_CD", '5000');
             // self.grid1.setCellValue(self.grid1.select(), "EMP_NO", 'jueunp'); // 사원번호
@@ -288,6 +295,7 @@
             dews.error(error);
         }
     });
+    dews.ui.mainbuttons.print.hide();
     dews.ui.mainbuttons.save.click(/*78e0612d-4142-4edb-9167-158e5496e7a0*/ function () {
         // // TODO: 데이터소스를 저장합니다.
         if (self.ds1.getDirtyDataCount() == 0) {
@@ -329,7 +337,7 @@
             dews.error(error);
         }
     });
-    self.s_COMPANY_CD.setHelpParams(function () {
+    self.s_BIZAREA_CD.setHelpParams(function () {
       return {
         company_cd: '',
         cd_company_exc: '',
@@ -340,6 +348,7 @@
     self.s_DOF_TP.setDataSource(self.pipeData_ZC01_10005);
     self.s_EMP_NO.on('codedialog', /*cb79863b-31a6-46cd-b298-9bc53ff1a028*/ function (e) {
         e.callback = function (s) {
+            self.grid1.addRow();
             self.grid1.setCellValue(self.grid1.select(), 'EMP_NO', s.EMP_NO)
             self.grid1.setCellValue(self.grid1.select(), 'KOR_NM', s.KOR_NM)
             self.grid1.setCellValue(self.grid1.select(), 'JNCO_DT', s.JNCO_DT)
@@ -469,6 +478,12 @@
           }
         },
         {
+          field: 'ORIG_START_DT',
+          title: 'ORIG_시작일',
+          width: 60,
+          visible: false
+        },
+        {
           field: 'END_DT',
           title: '종료일',
           width: 80,
@@ -481,6 +496,12 @@
             type: 'date',
             format: 'yyyy-MM-dd'
           }
+        },
+        {
+          field: 'ORIG_END_DT',
+          title: 'ORIG_종료일',
+          width: 60,
+          visible: false
         },
         {
           field: 'TM_CD_NM',

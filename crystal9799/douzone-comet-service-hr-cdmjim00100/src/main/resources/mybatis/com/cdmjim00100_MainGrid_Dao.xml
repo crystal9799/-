@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.douzone.comet.service.hr.cdmjim00100.dao.cdmjim00100_MainGrid_Dao">
+
+	<select id="selectcdmjim00100_maingridList" resultType="com.douzone.comet.service.hr.cdmjim00100.models.cdmjim00100_maingrid">		
+		SELECT USE_YN
+		     , JOB_FG
+		     , ACLF_NO
+		     , VER_CD
+		     , LCLAS_CD
+		     , LCLAS_NM
+		     , MLSFC_CD
+		     , MLSFC_NM
+		     , S_CSF_CD
+		     , S_CSF_NM
+		     , TCLF_CD    
+		     , TCLF_NM
+		     , ACLF_CD
+		     , ACLF_NM
+		     , ACLF_LV
+		     , ACLF_TXT    
+		FROM HR_JOBDIVBASE_MST hjm
+		<where>
+			<if test='lst_ver_yn != null and lst_ver_yn.equals("true")'>
+				AND HJM.VER_CD = (
+				    SELECT
+				        MAX(HJMD.VER_CD)
+				    FROM
+				        HR_JOBDIVBASE_MST HJMD
+				    WHERE
+				        HJMD.COMPANY_CD = #{COMPANY_CD}
+				        AND HJMD.ACLF_NO = HJM.ACLF_NO
+			    )			
+			</if>
+			<if test='COMPANY_CD != null and COMPANY_CD != ""'>
+				AND COMPANY_CD = #{COMPANY_CD}
+			</if>
+			<if test='USE_YN != null and USE_YN != ""'>
+				AND USE_YN = #{USE_YN}
+			</if>
+			<if test='JOB_FG != null and JOB_FG != ""'>
+				AND JOB_FG = #{JOB_FG}				
+			</if>
+		</where>
+		ORDER BY VER_CD
+	</select>
+
+
+	<insert id="insertcdmjim00100_maingrid">		
+		INSERT INTO @{dzparam_dbname}[tableName] (
+				[columnName]
+		) VALUES (
+				[columnValue]
+		)		
+	</insert>
+
+	<update id="updatecdmjim00100_maingrid" >		
+		UPDATE	@{dzparam_dbname}[tableName]
+		SET		[columnName] = [columnValue]
+		WHERE	[columnName] = [columnValue]		
+	</update>
+
+	<delete id="deletecdmjim00100_maingrid">		
+		DELETE
+		FROM	@{dzparam_dbname}[tableName]
+		WHERE	[columnName] = [columnValue]		
+	</delete>
+
+</mapper>

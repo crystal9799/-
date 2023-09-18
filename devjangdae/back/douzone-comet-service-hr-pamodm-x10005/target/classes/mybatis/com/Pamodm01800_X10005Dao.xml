@@ -91,9 +91,8 @@
 		        , A.EMP_NO		 	-- A.사원번호
 		        , B.KOR_NM			-- B.성명
 		       	, G.ORG				-- G.소속
-		        , C.DEPT_CD			-- C.레벨
-		        , C.OGRP_CD			-- C.직군
-		        , C.PSTN_CD			-- C.직급
+        		, C1.OGRP_CD		-- C1.직군
+        		, C2.PSTN_CD		-- C2.직급
 		        , B.JNCO_DT			-- B.입사일
 		        , D.PRMT_DT			-- D.승격일
 		        , E.RETM_DT			-- E.퇴직예정일
@@ -111,20 +110,27 @@
 			HR_STRK_INFO_X10005 A
 		
 		    LEFT OUTER JOIN  (
-		    					SELECT COMPANY_CD, EMP_NO, KOR_NM, JNCO_DT, DEPT_CD, BIZAREA_CD FROM HR_EMP_MST
+		    					SELECT COMPANY_CD, EMP_NO, KOR_NM, JNCO_DT, DEPT_CD, BIZAREA_CD, OGRP_CD, PSTN_CD FROM HR_EMP_MST
 		    ) B
 		    ON A.COMPANY_CD = B.COMPANY_CD
 		    AND A.EMP_NO = B.EMP_NO
 		        
 		    LEFT OUTER JOIN  (
-		                        SELECT 
-		                        RANK () OVER (PARTITION BY EMP_NO ORDER BY GNFD_DT DESC) AS ROW_IDX,
-		                        COMPANY_CD, EMP_NO, DEPT_CD, OGRP_CD, PSTN_CD, GNFD_DT FROM HR_HUAN_DTL
-		    ) C
-		    ON A.COMPANY_CD = C.COMPANY_CD
-		    AND A.EMP_NO = C.EMP_NO
-		    AND C.ROW_IDX = 1
-		        
+					    		SELECT SYSDEF_NM AS OGRP_CD	, COMPANY_CD, MODULE_CD, FIELD_CD, SYSDEF_CD  FROM MA_CODEDTL
+			) C1
+			ON A.COMPANY_CD = C1.COMPANY_CD
+			AND C1.MODULE_CD = 'HR'
+			AND C1.FIELD_CD = 'P00660'
+			AND C1.SYSDEF_CD = B.OGRP_CD
+			
+			LEFT OUTER JOIN  (
+							    SELECT SYSDEF_NM AS PSTN_CD	, COMPANY_CD, MODULE_CD, FIELD_CD, SYSDEF_CD  FROM MA_CODEDTL
+			) C2
+			ON A.COMPANY_CD = C2.COMPANY_CD
+			AND C2.MODULE_CD = 'HR'
+			AND C2.FIELD_CD = 'P00650'
+			AND C2.SYSDEF_CD = B.PSTN_CD
+			
 		    LEFT OUTER JOIN (   
 		        				SELECT MNG_DC AS PRMT_DT, COMPANY_CD, EMP_NO
 		                        FROM HR_EMP_SDTL 

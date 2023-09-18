@@ -74,6 +74,7 @@ public class cdmjim00100_SubGrid_Service extends DzCometService {
 			parameters.put("AELM_CD", AELM_CD);
 			
 			right_grid1_List = subgrid_dao.selectcdmjim00100_right_grid1List(parameters);
+			System.out.println(right_grid1_List.toString());
 			
 			for(cdmjim00100_right_grid1 rg1:right_grid1_List){
 				rg1.set_uid(UUID.randomUUID().toString());

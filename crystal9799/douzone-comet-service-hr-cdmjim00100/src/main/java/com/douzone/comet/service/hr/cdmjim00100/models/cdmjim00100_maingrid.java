@@ -11,7 +11,7 @@ import com.google.gson.annotations.SerializedName;
 public class cdmjim00100_maingrid extends DzAbstractModel {
 
 	@SerializedName("_uid")
-	@DzModelField(name = "_uid", desc = "uid", colName = "uid", colSize = "20", isKey = false)
+	@DzModelField(name = "_uid", desc = "_uid", colName = "_uid", colSize = "100", isKey = false)
 	private String _uid;
 	
 	public String get_uid() {

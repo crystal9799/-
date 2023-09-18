@@ -1,6 +1,6 @@
-<!--##bc2e62f6-450c-47c2-b81a-d0386856e62a##-->
+<!--##749cd7c7-e2bb-4193-971f-99c7a6b6874c##-->
 <!--##CDMJIM00100_Main##-->
-<!--##q/prvp/UDoqWWUl3yQDzNZDR7zyuPO9aGlF4c8oyMJkNXMl7PkvCwrzZ8vhtLdS/##-->
+<!--##zNcnsPeQss1Hxij57B0YvMLCrIrOvxUmTmLYMhZOPi34CUYokQOMaeL7tiQ8aFrz##-->
 <!--
   DEWS UI/UX IDE - Build Result - v1.5
   # PageID: CDMJIM00100_Main
@@ -20,20 +20,20 @@
     <li>
       <label class="dews-ui-multilingual">조회구분</label>
       <span>
-        <select id="FG_DROP" name="FG_DROP" class="dews-ui-dropdownlist basic" data-dews-value-field="SYSDEF_CD" data-dews-text-field="SYSDEF_NM" data-dews-show-tooltip="true" data-dews-show-value-tooltip="true" data-dews-use-numkey="false"></select>
+        <select id="FG_DROP" name="FG_DROP" class="dews-ui-dropdownlist basic" data-dews-value-field="JOB_FG" data-dews-text-field="JOB_FG_NM" data-dews-show-tooltip="true" data-dews-option-label-value="" data-dews-option-label-text="" data-dews-show-value-tooltip="true" data-dews-use-numkey="false"></select>
       </span>
     </li>
     <li>
       <label class="dews-ui-multilingual">사용여부</label>
       <span>
-        <select id="USE_DROP" name="USE_DROP" class="dews-ui-dropdownlist basic" data-dews-value-field="USE_YN" data-dews-text-field="USE_YN_NM" data-dews-show-tooltip="true" data-dews-option-label-value="" data-dews-option-label-text="" data-dews-show-value-tooltip="true" data-dews-use-numkey="false"></select>
+        <select id="USE_DROP" name="USE_DROP" class="dews-ui-dropdownlist basic" data-dews-value-field="USE_YN" data-dews-text-field="USE_YN_NM" data-dews-show-tooltip="true" data-dews-show-value-tooltip="true" data-dews-use-numkey="false"></select>
       </span>
     </li>
     <li>
       <label class="dews-ui-multilingual">조회조건</label>
       <span>
-        <input type="checkbox" class="dews-ui-checkbox" checked="checked" />
-        <label>최종버전 조회</label>
+        <input id="lst_ver_yn" name="lst_ver_yn" type="checkbox" class="dews-ui-checkbox" checked="checked" />
+        <label for="lst_ver_yn">최종버전 조회</label>
       </span>
     </li>
   </ul>
@@ -90,18 +90,18 @@
   <button class="dews-ui-button">삭제</button>
 </div>
 <div class="dews-ui-container-panel">
-  <div class="dews-container-item" data-dews-position="left" data-dews-width="443px">
-    <div id="grid2" class="dews-ui-grid"></div>
+  <div class="dews-container-item" data-dews-position="left" data-dews-width="574px">
+    <div id="left_grid" class="dews-ui-grid"></div>
   </div>
   <div class="dews-container-item" data-dews-position="normal">
     <div class="dews-ui-arcodien" data-dews-arcodien-height="0" data-dews-item-height="0">
       <ul>
         <li class="dews-arcodien-item" data-dews-item-title="수행준거내역" data-dews-item-height="0">
-          <div id="grid4" class="dews-ui-grid"></div>
+          <div id="right1_grid" class="dews-ui-grid"></div>
         </li>
       </ul>
     </div>
-    <div id="grid3" class="dews-ui-grid"></div>
+    <div id="right2_grid" class="dews-ui-grid"></div>
   </div>
 </div>
 
@@ -118,22 +118,37 @@
     self.version.view='1.0';
 
 
+    /*70cee10b-3521-442d-82f0-480b335cebfb*/ //# sourceURL=CDMJIM00100_Main.js
+    self.USE_DROP.value("YES");
     
     
-    self.dataSource1 = dews.ui.dataSource('dataSource1', {
-      grid: true,
+    
+    
+    self.use_yn = dews.ui.dataSource('use_yn', {
       schema: {
         model: {
           fields: [
-            { field: 'LCLAS_CD', editable: false, dataType: 'string' }, 
-            { field: 'MLSFC_CD', editable: false, dataType: 'string' }, 
-            { field: 'S_CSF_CD', editable: false, dataType: 'string' }, 
-            { field: 'N_CSF_CD', editable: false, dataType: 'string' }
+            { field: 'USE_YN', editable: false, type: 'string' }, 
+            { field: 'USE_YN_NM', editable: false, type: 'string' }
           ]
     
         }
       },
-      data: []
+      data: [{USE_YN: 'Y', USE_YN_NM: 'YES'},
+    {USE_YN: 'N', USE_YN_NM: 'NO'}]
+    });
+    self.job_fg = dews.ui.dataSource('job_fg', {
+      schema: {
+        model: {
+          fields: [
+            { field: 'JOB_FG', editable: false, type: 'string' }, 
+            { field: 'JOB_FG_NM', editable: false, type: 'string' }
+          ]
+    
+        }
+      },
+      data: [{JOB_FG:"1", JOB_FG_NM:"NCS직무"},
+    {JOB_FG:"2", JOB_FG_NM:"회사고유직무"}]
     });
     self.MAIN_DS = dews.ui.dataSource('MAIN_DS', {
       grid: true,
@@ -143,8 +158,9 @@
           url: dews.url.getApiUrl('HR', 'Cdmjim00100_MainGrid_Service', 'cdmjim00100_MainGrid_List'),
           data: function () {
             return {
-              USE_YN: '',
-              JOB_FG: ''
+              USE_YN: self.USE_DROP.value(),
+              JOB_FG: self.FG_DROP.value(),
+              lst_ver_yn: self.$lst_ver_yn.prop('checked')
             };
           }
         }
@@ -152,6 +168,7 @@
       schema: {
         model: {
           fields: [
+            { field: '_uid', editable: false, dataType: 'string' }, 
             { field: 'USE_YN', editable: false, dataType: 'string' }, 
             { field: 'JOB_FG', editable: false, dataType: 'string' }, 
             { field: 'ACLF_NO', editable: false, dataType: 'string' }, 
@@ -174,90 +191,92 @@
         }
       }
     });
-    self.use_yn = dews.ui.dataSource('use_yn', {
-      schema: {
-        model: {
-          fields: [
-            { field: 'USE_YN', editable: false, type: 'number' }, 
-            { field: 'USE_YN_NM', editable: false, type: 'string' }
-          ]
-    
-        }
-      },
-      data: [{USE_YN: 'Y', USE_YN_NM: 'YES'},
-    {USE_YN: 'N', USE_YN_NM: 'NO'}]
-    });
-    self.dataSource3 = dews.ui.dataSource('dataSource3', {
+    self.LEFT_DS = dews.ui.dataSource('LEFT_DS', {
       grid: true,
+      transport: {
+        read: {
+          type: 'post',
+          url: dews.url.getApiUrl('HR', 'Cdmjim00100_SubGrid_Service', 'selectcdmjim00100_left_gridList'),
+          data: /*18bdd294-f1da-4fea-847b-d4f5bc1356de*/ function() {
+        return {
+            ACLF_NO: self.main_grid.getCellValue(self.main_grid.select(), "ACLF_NO"),
+            VER_CD: self.main_grid.getCellValue(self.main_grid.select(), "VER_CD")
+        }
+    }
+        }
+      },
       schema: {
         model: {
           fields: [
-            { field: 'ABIILITY_NM', editable: false, dataType: 'string' }, 
-            { field: 'S_ABILITY_NO', editable: false, dataType: 'string' }, 
-            { field: 'S_ABILITY_NM', editable: false, dataType: 'string' }, 
-            { field: 'S_ABILITY_LV', editable: false, dataType: 'string' }, 
-            { field: 'PERFORM_NO', editable: false, dataType: 'string' }, 
-            { field: 'PERFORM_DC', editable: false, dataType: 'string' }
+            { field: 'ACLF_NO', editable: false, dataType: 'string' }, 
+            { field: 'VER_CD', editable: false, dataType: 'string' }, 
+            { field: 'AELM_NM', editable: false, dataType: 'string' }, 
+            { field: 'AELM_LV', editable: false, dataType: 'number' }, 
+            { field: '_uid', editable: false, dataType: 'string' }
           ]
     
         }
-      },
-      data: [
-      {
-        "ABIILITY_NM": "1 ",
-        "S_ABILITY_NO": "조직의 비전과 중ㆍ장기 사업전략에 따라 인사전략 환경을 분석할 수 있다.",
-        "S_ABILITY_NM": null,
-        "S_ABILITY_LV": null,
-        "PERFORM_NO": null,
-        "PERFORM_DC": null
-      },
-      {
-        "ABIILITY_NM": "2 ",
-        "S_ABILITY_NO": "인사전략 환경분석 결과에 따라 중ㆍ장기 인사전략의 방향성을 수립할 수 있다.",
-        "S_ABILITY_NM": null,
-        "S_ABILITY_LV": null,
-        "PERFORM_NO": null,
-        "PERFORM_DC": null
-      },
-      {
-        "ABIILITY_NM": "3 ",
-        "S_ABILITY_NO": "중ㆍ장기 방향성에 따라 당해 연도의 인사전략을 수립할 수 있다.",
-        "S_ABILITY_NM": null,
-        "S_ABILITY_LV": null,
-        "PERFORM_NO": null,
-        "PERFORM_DC": null
       }
-    ]
     });
-    self.dataSource4 = dews.ui.dataSource('dataSource4', {
+    self.RIGHT1_DS = dews.ui.dataSource('RIGHT1_DS', {
       grid: true,
+      transport: {
+        read: {
+          type: 'post',
+          url: dews.url.getApiUrl('HR', 'cdmjim00100_right_grid2_List', 'cdmjim00100_right_grid2_List'),
+          data: /*ce349233-d50a-4fc0-96ea-30945b1bcb4a*/ function() {
+        return {
+        ACLF_NO: self.left_grid.getCellValue(self.left_grid.select(), "ACLF_NO"),
+        VER_CD: self.left_grid.getCellValue(self.left_grid.select(), "VER_CD")
+        }
+    }
+        }
+      },
       schema: {
         model: {
           fields: [
-            { field: 'NEED1_NM', editable: false, dataType: 'string' }, 
-            { field: 'NEED2_NM', editable: false, dataType: 'string' }, 
-            { field: 'NEED3_NM', editable: false, dataType: 'string' }
+            { field: 'ACLF_NO', editable: false, dataType: 'string' }, 
+            { field: 'VER_CD', editable: false, dataType: 'string' }, 
+            { field: 'AELM_CD', editable: false, dataType: 'string' }, 
+            { field: 'AELM_NM', editable: false, dataType: 'string' }, 
+            { field: 'PCFM_CD', editable: false, dataType: 'string' }, 
+            { field: 'PCFM_DC', editable: false, dataType: 'string' }, 
+            { field: '_uid', editable: false, dataType: 'string' }
           ]
     
         }
-      },
-      data: [
-      {
-        "NEED1_NM": "전략적 인적자원관리",
-        "NEED2_NM": " 환경분석 능력",
-        "NEED3_NM": "전략적 사고"
-      },
-      {
-        "NEED1_NM": "인사전략 환경분석법",
-        "NEED2_NM": "비전과 중장기 사업 전략 분석",
-        "NEED3_NM": "포괄적 시각"
-      },
-      {
-        "NEED1_NM": "관리회계",
-        "NEED2_NM": null,
-        "NEED3_NM": "거시적 시각"
       }
-    ]
+    });
+    self.RIGHT2_DS = dews.ui.dataSource('RIGHT2_DS', {
+      grid: true,
+      transport: {
+        read: {
+          type: 'post',
+          url: dews.url.getApiUrl('HR', 'Cdmjim00100_SubGrid_Service', 'cdmjim00100_right_grid2_List'),
+          data: /*272933d0-986d-40ab-bef4-f9c13e4259ff*/ function() {
+        return {
+            ACLF_NO: self.right1_grid.getCellValue(self.right1_grid.select(), "ACLF_NO"),
+            VER_CD: self.right1_grid.getCellValue(self.right1_grid.select(), "VER_CD"),
+            PCFM_CD: self.right1_grid.getCellValue(self.right1_grid.select(), "PCFM_CD"),
+            AELM_CD: self.right1_grid.getCellValue(self.right1_grid.select(), "AELM_CD")
+        }
+    }
+        }
+      },
+      schema: {
+        model: {
+          fields: [
+            { field: 'ACLF_NO', editable: false, dataType: 'string' }, 
+            { field: 'VER_CD', editable: false, dataType: 'string' }, 
+            { field: 'AELM_CD', editable: false, dataType: 'string' }, 
+            { field: 'PCFM_CD', editable: false, dataType: 'string' }, 
+            { field: 'NEED_RQISIT_FG', editable: false, dataType: 'string' }, 
+            { field: 'NEED_RQISIT_CD', editable: false, dataType: 'string' }, 
+            { field: 'NEED_RQISIT_NM', editable: false, dataType: 'string' }
+          ]
+    
+        }
+      }
     });
     
     
@@ -284,7 +303,7 @@
             self.MAIN_DS.read();
         }
     });
-    self.FG_DROP.setDataSource(self.pipeDataSource1);
+    self.FG_DROP.setDataSource(self.job_fg);
     self.USE_DROP.setDataSource(self.use_yn);
     dews.ui.grid(self.$main_grid, {
       dataSource: self.MAIN_DS,
@@ -388,54 +407,59 @@
           title: '회사코드',
           width: 80,
           visible: false
+        },
+        {
+          field: '_uid',
+          title: 'UID',
+          width: 60,
+          visible: false
         }
       ],
       fixed: {
         colCount: 0,
         rightColCount: 0
-      }
+      },
+      change: /*6fa43097-3321-45f2-b6e7-23d35427e057*/ function (e) {
+            self.LEFT_DS.read();
+        }
+    ,
+      clicked: /*8bc71cbd-875f-47df-9a4b-3d22918465b0*/ function (e) {
+            self.LEFT_DS.read();
+        }
+    
     });
-    dews.ui.grid(self.$grid2, {
-      dataSource: self.dataSource3,
+    dews.ui.grid(self.$left_grid, {
+      dataSource: self.LEFT_DS,
       height: 200,
       sortable: false,
       checkable: false,
       copyMode: 'cell',
       columns: [
         {
-          field: 'ABIILITY_NM',
-          title: '능력단위명',
-          width: 90,
-          align: 'left',
-          visible: false
-        },
-        {
-          field: 'S_ABILITY_NO',
-          title: '능력단위요소번호',
+          field: 'ACLF_NO',
+          title: '능력분류번호',
           width: 60
         },
         {
-          field: 'S_ABILITY_NM',
-          title: '능력단위요소명',
-          width: 150,
+          field: 'VER_CD',
+          title: '버전코드',
+          width: 80
+        },
+        {
+          field: 'AELM_NM',
+          title: '능력요소명',
+          width: 90,
           align: 'left'
         },
         {
-          field: 'S_ABILITY_LV',
-          title: '능력단위요소레벨',
+          field: 'AELM_LV',
+          title: '능력요소레벨',
           width: 60
         },
         {
-          field: 'PERFORM_NO',
-          title: '수행준거번호',
+          field: '_uid',
+          title: '_uid',
           width: 60,
-          visible: false
-        },
-        {
-          field: 'PERFORM_DC',
-          title: '수행준거내역',
-          width: 300,
-          align: 'left',
           visible: false
         }
       ],
@@ -444,48 +468,50 @@
         rightColCount: 0
       }
     });
-    dews.ui.grid(self.$grid4, {
-      dataSource: self.dataSource3,
+    dews.ui.grid(self.$right1_grid, {
+      dataSource: self.RIGHT1_DS,
+      height: 200,
       sortable: false,
       checkable: false,
       copyMode: 'cell',
       columns: [
         {
-          field: 'ABIILITY_NM',
-          title: '능력단위명',
-          width: 90,
-          align: 'left',
-          visible: false
-        },
-        {
-          field: 'S_ABILITY_NO',
-          title: '능력단위요소번호',
-          width: 60,
-          visible: false
-        },
-        {
-          field: 'S_ABILITY_NM',
-          title: '능력단위요소명',
-          width: 90,
-          align: 'left',
-          visible: false
-        },
-        {
-          field: 'S_ABILITY_LV',
-          title: '능력단위요소레벨',
-          width: 60,
-          visible: false
-        },
-        {
-          field: 'PERFORM_NO',
-          title: '수행준거번호',
+          field: 'ACLF_NO',
+          title: '능력분류번호',
           width: 60
         },
         {
-          field: 'PERFORM_DC',
-          title: '수행준거내역',
-          width: 350,
+          field: 'VER_CD',
+          title: '버전코드',
+          width: 80
+        },
+        {
+          field: 'AELM_CD',
+          title: '능력요소코드',
+          width: 80
+        },
+        {
+          field: 'AELM_NM',
+          title: '능력요소명',
+          width: 90,
           align: 'left'
+        },
+        {
+          field: 'PCFM_CD',
+          title: '수행준거코드',
+          width: 80
+        },
+        {
+          field: 'PCFM_DC',
+          title: '수행준거내역',
+          width: 120,
+          align: 'left'
+        },
+        {
+          field: '_uid',
+          title: '_uid',
+          width: 60,
+          visible: false
         }
       ],
       fixed: {
@@ -493,28 +519,46 @@
         rightColCount: 0
       }
     });
-    dews.ui.grid(self.$grid3, {
-      dataSource: self.dataSource4,
+    dews.ui.grid(self.$right2_grid, {
+      dataSource: self.RIGHT2_DS,
       height: 161,
       sortable: false,
       checkable: false,
       copyMode: 'cell',
       columns: [
         {
-          field: 'NEED1_NM',
-          title: '필요지식',
-          width: 90,
-          align: 'left'
+          field: 'ACLF_NO',
+          title: '능력분류번호',
+          width: 60
         },
         {
-          field: 'NEED2_NM',
-          title: '필요기술',
-          width: 90,
-          align: 'left'
+          field: 'VER_CD',
+          title: '버전코드',
+          width: 80
         },
         {
-          field: 'NEED3_NM',
-          title: '필요역량',
+          field: 'AELM_CD',
+          title: '능력요소코드',
+          width: 80
+        },
+        {
+          field: 'PCFM_CD',
+          title: '수행준거코드',
+          width: 80
+        },
+        {
+          field: 'NEED_RQISIT_FG',
+          title: '필요요건구분',
+          width: 60
+        },
+        {
+          field: 'NEED_RQISIT_CD',
+          title: '필요요건코드',
+          width: 80
+        },
+        {
+          field: 'NEED_RQISIT_NM',
+          title: '필요요건명',
           width: 90,
           align: 'left'
         }
@@ -526,6 +570,9 @@
     });
     
     
+    self.main_grid.setDetail(self.left_grid);
+    self.left_grid.setDetail(self.right1_grid);
+    self.right1_grid.setDetail(self.right2_grid);
     
     
     

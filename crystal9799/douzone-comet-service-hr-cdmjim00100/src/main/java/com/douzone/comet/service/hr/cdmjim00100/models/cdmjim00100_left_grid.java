@@ -29,6 +29,19 @@ public class cdmjim00100_left_grid extends DzAbstractModel {
 	@SerializedName("AELM_LV")
 	@DzModelField(name="aelm_lv", desc="능력요소레벨", colName="AELM_LV", colSize="3", isKey=false)
 	private BigDecimal aelm_lv;
+	
+	@SerializedName("_uid")
+	@DzModelField(name="_uid", desc="_uid", colName="_uid", colSize="100", isKey=false)
+	private String _uid;
+
+	
+	public String get_uid() {
+		return _uid;
+	}
+
+	public void set_uid(String _uid) {
+		this._uid = _uid;
+	}
 
 	public String getAclf_no() {
 		return aclf_no;

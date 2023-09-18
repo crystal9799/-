@@ -12,7 +12,7 @@ public class cdmjim00100_maingrid extends DzAbstractModel {
 
 	@SerializedName("USE_YN")
 	@DzModelField(name="use_yn", desc="사용여부", colName="USE_YN", colSize="1", isKey=false)
-	private String use_yn;
+	private String USE_YN;
 	  
 	@SerializedName("JOB_FG")
 	@DzModelField(name="job_fg", desc="직업구분", colName="JOB_FG", colSize="5", isKey=false)
@@ -74,12 +74,25 @@ public class cdmjim00100_maingrid extends DzAbstractModel {
 	@DzModelField(name="aclf_txt", desc="능력분류텍스트", colName="ACLF_TXT", colSize="1000", isKey=false)
 	private String aclf_txt;
 
+	@SerializedName("COMPANY_CD")
+	@DzModelField(name="company_cd", desc="회사코드", colName="COMPANY_CD", colSize="1000", isKey=false)
+	private String COMPANY_CD;
+	
+
+	public String getCompany_cd() {
+		return COMPANY_CD;
+	}
+
+	public void setCompany_cd(String company_cd) {
+		this.COMPANY_CD = company_cd;
+	}
+
 	public String getUse_yn() {
-		return use_yn;
+		return USE_YN;
 	}
 
 	public void setUse_yn(String use_yn) {
-		this.use_yn = use_yn;
+		this.USE_YN = use_yn;
 	}
  
 	public String getJob_fg() {
@@ -205,7 +218,7 @@ public class cdmjim00100_maingrid extends DzAbstractModel {
     @Override
     public String toString() {
       return
-        "use_yn: ["+ use_yn +"]\n"+
+        "use_yn: ["+ USE_YN +"]\n"+
         "job_fg: ["+ job_fg +"]\n"+
         "aclf_no: ["+ aclf_no +"]\n"+
         "ver_cd: ["+ ver_cd +"]\n"+

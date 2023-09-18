@@ -189,7 +189,7 @@
 		</if>
 		
 		<if test='P_DEPT_CD[0] != null and P_DEPT_CD[0] != ""'>
-			AND C.DEPT_CD IN
+			AND B.DEPT_CD IN
 			<foreach item="item" index="index" collection="P_DEPT_CD"
 				open="(" separator="," close=")"> #{item} </foreach>
 		</if>

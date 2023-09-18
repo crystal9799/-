@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -33,27 +34,34 @@ public class cdmjim00100_SubGrid_Service extends DzCometService {
 	@Autowired
 	cdmjim00100_SubGrid_Dao subgrid_dao;
 	
-	@DzApi(url="/cdmjim00100_left_grid_List", desc="메인그리드_조회", httpMethod=DzRequestMethod.POST)
-	public List<cdmjim00100_left_grid> left_grid_List(
+	@DzApi(url="/selectcdmjim00100_left_gridList", desc="세부분류_조회", httpMethod=DzRequestMethod.POST)
+	public List<cdmjim00100_left_grid> selectcdmjim00100_left_gridList(
 			@DzParam(key = "ACLF_NO", desc = "능력분류번호", defaultValue = "", required = false, paramType = DzParamType.Body) String ACLF_NO,
 			@DzParam(key = "VER_CD", desc = "버전", defaultValue = "", required = false, paramType = DzParamType.Body) String VER_CD
 	)throws Exception{
 		List<cdmjim00100_left_grid> left_grid_List = new ArrayList<>();
 		try {
+			System.out.println("ACLF_NO = "+ ACLF_NO);
+			System.out.println("VER_CD = "+ VER_CD);
 			Map<String, Object> parameters = new HashMap<>();
 			parameters.put("ACLF_NO", ACLF_NO);
 			parameters.put("VER_CD", VER_CD);
 			
 			left_grid_List = subgrid_dao.selectcdmjim00100_left_gridList(parameters);
+			
+			for(cdmjim00100_left_grid lg:left_grid_List){
+				lg.set_uid(UUID.randomUUID().toString());
+			}
 		} catch (Exception e) {
 			throw new DzApplicationRuntimeException(e);
 		}
 		return left_grid_List;
 	}
-	@DzApi(url="/cdmjim00100_right_grid1_List", desc="메인그리드_조회", httpMethod=DzRequestMethod.POST)
+	@DzApi(url="/cdmjim00100_right_grid1_List", desc="수행준거_상단_조회", httpMethod=DzRequestMethod.POST)
 	public List<cdmjim00100_right_grid1> right1_grid_List(
 			@DzParam(key = "ACLF_NO", desc = "능력분류번호", defaultValue = "", required = false, paramType = DzParamType.Body) String ACLF_NO,
-			@DzParam(key = "VER_CD", desc = "버전", defaultValue = "", required = false, paramType = DzParamType.Body) String VER_CD
+			@DzParam(key = "VER_CD", desc = "버전", defaultValue = "", required = false, paramType = DzParamType.Body) String VER_CD,
+			@DzParam(key = "AELM_CD", desc = "능력단위요소번호", defaultValue = "", required = false, paramType = DzParamType.Body) String AELM_CD
 			)throws Exception{
 		List<cdmjim00100_right_grid1> right_grid1_List = new ArrayList<>();
 		try {
@@ -61,14 +69,19 @@ public class cdmjim00100_SubGrid_Service extends DzCometService {
 			parameters.put("COMPANY_CD", this.getCompanyCode());
 			parameters.put("ACLF_NO", ACLF_NO);
 			parameters.put("VER_CD", VER_CD);
+			parameters.put("AELM_CD", AELM_CD);
 			
 			right_grid1_List = subgrid_dao.selectcdmjim00100_right_grid1List(parameters);
+			
+			for(cdmjim00100_right_grid1 rg1:right_grid1_List){
+				rg1.set_uid(UUID.randomUUID().toString());
+			}
 		} catch (Exception e) {
 			throw new DzApplicationRuntimeException(e);
 		}
 		return right_grid1_List;
 	}
-	@DzApi(url="/cdmjim00100_right_grid2_List", desc="메인그리드_조회", httpMethod=DzRequestMethod.POST)
+	@DzApi(url="/cdmjim00100_right_grid2_List", desc="수행준거_하단_조회", httpMethod=DzRequestMethod.POST)
 	public List<cdmjim00100_right_grid2> right2_grid_List(
 			@DzParam(key = "ACLF_NO", desc = "능력분류번호", defaultValue = "", required = false, paramType = DzParamType.Body) String ACLF_NO,
 			@DzParam(key = "VER_CD", desc = "버전", defaultValue = "", required = false, paramType = DzParamType.Body) String VER_CD,

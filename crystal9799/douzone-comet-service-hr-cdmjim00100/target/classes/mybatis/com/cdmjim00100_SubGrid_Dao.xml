@@ -5,7 +5,7 @@
 <mapper namespace="com.douzone.comet.service.hr.cdmjim00100.dao.cdmjim00100_SubGrid_Dao">
 
 	<!-- 세부분류 그리드 -->
-	<select id="selectcdmjim00100_left_grid" resultType="com.douzone.comet.service.hr.cdmjim00100.models.cdmjim00100_left_grid">		
+	<select id="selectcdmjim00100_left_gridList" resultType="com.douzone.comet.service.hr.cdmjim00100.models.cdmjim00100_left_grid">		
 		SELECT DISTINCT ACLF_NO, VER_CD , ACLF_NO , VER_CD , AELM_CD , AELM_NM , AELM_LV
 		FROM HR_JOBDIVBASE_DTL hjd 
 		WHERE ACLF_NO = #{ACLF_NO}
@@ -13,7 +13,7 @@
 	</select>
 	
 	<!-- 수행준거 내역 상단 그리드 -->
-	<select id="selectcdmjim00100_right_grid1" resultType="com.douzone.comet.service.hr.cdmjim00100.models.cdmjim00100_right_grid1">		
+	<select id="selectcdmjim00100_right_grid1List" resultType="com.douzone.comet.service.hr.cdmjim00100.models.cdmjim00100_right_grid1">		
 		SELECT DISTINCT HJD.AELM_CD
 					  , HJD.ACLF_NO
 					  , HJD.VER_CD 
@@ -22,11 +22,13 @@
 		FROM HR_JOBDIVBASE_DTL hjd
 		WHERE ACLF_NO = #{ACLF_NO}
 		AND VER_CD = #{VER_CD}
+		AND AELM_CD = #{AELM_CD}
 		AND COMPANY_CD = #{COMPANY_CD}
+		ORDER BY AELM_CD
 	</select>
 	
 	<!-- 수행준거 내역 하단 그리드 -->
-	<select id="selectcdmjim00100_right_grid2" resultType="com.douzone.comet.service.hr.cdmjim00100.models.cdmjim00100_right_grid2">		
+	<select id="selectcdmjim00100_right_grid2List" resultType="com.douzone.comet.service.hr.cdmjim00100.models.cdmjim00100_right_grid2">		
 		SELECT ACLF_NO,				
 			   VER_CD,				
 			   AELM_CD,				

@@ -28,6 +28,19 @@ public class cdmjim00100_right_grid1 extends DzAbstractModel {
 	@DzModelField(name="pcfm_dc", desc="수행준거내역", colName="PCFM_DC", colSize="500", isKey=false)
 	private String pcfm_dc;
 
+	@SerializedName("_uid")
+	@DzModelField(name="_uid", desc="_uid", colName="_uid", colSize="100", isKey=false)
+	private String _uid;
+	
+	
+	public String get_uid() {
+		return _uid;
+	}
+
+	public void set_uid(String _uid) {
+		this._uid = _uid;
+	}
+
 	public String getAelm_cd() {
 		return aelm_cd;
 	}

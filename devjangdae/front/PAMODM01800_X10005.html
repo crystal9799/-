@@ -1,6 +1,6 @@
-<!--##e379e96f-0ba4-4cc4-b84d-f282352276db##-->
+<!--##338459f2-b76b-446e-908f-b463914b025c##-->
 <!--##PAMODM01800_X10005##-->
-<!--##nUeNNOcDKw/80SAmEzU/9dMFKqtmvoZPA20pSzxQDZjsCBomDaaHjwhbEDsD1DlD##-->
+<!--##OZlceua0bVRH2Wbpf9XOaZ07W+y5yzG+o6LW+CZTDerNAUbq2BlbUgrVIw9G4tL3##-->
 <!--
   DEWS UI/UX IDE - Build Result - v1.5
   # PageID: PAMODM01800_X10005
@@ -118,7 +118,9 @@
             { field: 'PRMT_DT', editable: false, dataType: 'string' }, 
             { field: 'RETM_DT', editable: false, dataType: 'string' }, 
             { field: 'START_DT', editable: false, dataType: 'string' }, 
+            { field: 'ORIG_START_DT', editable: false, dataType: 'string' }, 
             { field: 'END_DT', editable: false, dataType: 'string' }, 
+            { field: 'ORIG_END_DT', editable: false, dataType: 'string' }, 
             { field: 'TM_CD_NM', editable: false, dataType: 'string' }, 
             { field: 'DOF_TP', editable: false, dataType: 'string' }, 
             { field: 'START_TM', editable: false, dataType: 'string' }, 
@@ -476,6 +478,12 @@
           }
         },
         {
+          field: 'ORIG_START_DT',
+          title: 'ORIG_시작일',
+          width: 60,
+          visible: false
+        },
+        {
           field: 'END_DT',
           title: '종료일',
           width: 80,
@@ -488,6 +496,12 @@
             type: 'date',
             format: 'yyyy-MM-dd'
           }
+        },
+        {
+          field: 'ORIG_END_DT',
+          title: 'ORIG_종료일',
+          width: 60,
+          visible: false
         },
         {
           field: 'TM_CD_NM',

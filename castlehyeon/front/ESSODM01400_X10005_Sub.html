@@ -1,6 +1,6 @@
-<!--##dc565e6f-ce58-4f79-b9ff-9badf7f2c5d3##-->
+<!--##d06d709d-4561-42f0-a5d3-07eb9f00c6fa##-->
 <!--##ESSODM01400_X10005_Sub##-->
-<!--##9ucmgSv7WBELtjfoDUIInzK2dHkmvOv1SA2vYuM5gRP8rJmP1HC1VHsmNVA6Rcge##-->
+<!--##gjfRfSw+nFQRA4TC3uClHqKokPIBofjngCn71vCjTg1W5skYVWya0VfF3yJ8ASsv##-->
 <!--
   DEWS UI/UX IDE - Build Result - v1.5
   # PageID: ESSODM01400_X10005_Sub
@@ -170,7 +170,8 @@
             { field: 'DEPT_NM', editable: false, dataType: 'string' }, 
             { field: 'GRP_NM', editable: false, dataType: 'string' }, 
             { field: 'BIZAREA_NM', editable: false, dataType: 'string' }, 
-            { field: 'PATH', editable: false, dataType: 'string' }
+            { field: 'PATH', editable: false, dataType: 'string' }, 
+            { field: 'DEPT_CD', editable: false, dataType: 'string' }
           ]
     
         }
@@ -690,6 +691,7 @@
             grid.setCellValue(grid.select(), 'OGRP_CD', data[0].OGRP_CD, false); // 직군코드
             grid.setCellValue(grid.select(), 'ORG', data[0].ORG === null ? data[0].PATH : data[0].ORG, false); // 소속
             grid.setCellValue(grid.select(), 'POSI_CD', data[0].POSI_CD === undefined ? '사원' : data[0].POSI_CD, false); // 직위코드
+            grid.setCellValue(grid.select(), 'DEPT_CD', data[0].DEPT_CD, false);
             self.EMP_NO.text(data[0].EMP_NO);
             self.KOR_NM.text(data[0].KOR_NM);
             self.PSTN_CD.text(data[0].PSTN_CD === null ? '연구원' : data[0].PSTN_CD);

@@ -39,7 +39,7 @@
 	<select id="getUserInfo" parameterType="HashMap"
 		resultType="com.douzone.comet.service.hr.essodm.models.Essodm01400_X10005_UserInfoModel">
 		SELECT EMP_NO, KOR_NM, PSTN_CD, OGRP_CD, BIZAREA_CD,
-		BIZAREA_NM, ORG, POSI_CD, GRP_NM, DEPT_NM, PATH
+		BIZAREA_NM, ORG, POSI_CD, GRP_NM, DEPT_NM, DEPT_CD, PATH
 		FROM (
 		SELECT
 		HEM.EMP_NO
@@ -53,6 +53,7 @@
 		HEM.POSI_CD POSI_CD,
 		MGM.GRP_NM GRP_NM,
 		MDM.DEPT_NM DEPT_NM,
+		MDM.DEPT_CD DEPT_CD,
 		MDM.DEPT_START_DT DEPT_START_DT,
 		ORG_TB.PATH PATH
 		FROM HR_EMP_MST HEM

@@ -85,33 +85,6 @@ public class HREssodm01400_X10005Service extends DzCometService {
 		return items;
 	}
 
-	// posi_cd=19, end_dt=20201208, reason_dc=수술, req_no=PAB202010300005,
-	// pstn_cd=2C, req_emp_no=KHLEE,
-	// start_dt=20201201, dept_cd=50042165, emp_no=KHLEE, company_cd=EWP, req_dy=8,
-	// ogrp_cd=B, dnl_cd=5100,
-
-	//// 기본키
-//                        company_cd: self.COMPANY_CD.text(),//회사코드
-//                        req_no: self.main_grid.getCellValue(0, 'REQ_NO'), // 신청번호
-//
-//
-//                        //소속 (사업장/부서)
-//                        bizarea_cd: self.main_grid.getCellValue(0, 'BIZAREA_CD'), //사업장코드
-//                        dept_cd: self.main_grid.getCellValue(0, 'DEPT_CD'),
-//
-//                        //결근 대상자 정보
-//                        emp_no: self.EMP_NO.text(),  // 결근 대상자 사원번호
-//                        pstn_cd: self.main_grid.getCellValue(0, 'PSTN_CD'), // 결근 대상자 직급코드
-//                        ogrp_cd: self.main_grid.getCellValue(0, 'OGRP_CD'), // 직군코드
-//                        posi_cd: self.main_grid.getCellValue(0, 'POSI_CD'), // 직위 코드
-//
-//                        //결근 신청자 정보
-//                        req_emp_no: self.REQ_EMP_NO.text(), // 결근 신청하는(현재 로그인한) 사원번호
-//                        dnl_cd: self.DNL_CD.value(), // 현재 선택되어 있는 드랍다운리스트의 value 값
-//                        start_dt: self.START_DT.value(),
-//                        end_dt: self.END_DT.value(),
-//                        req_dy: self.main_grid.getCellValue(0, 'REQ_DY'),
-//                        reason_dc: self.main_grid.getCellValue(0, 'REASON_DC')
 	@Transactional(rollbackFor = Exception.class)
 	@DzApi(url = "/update_HR_OFFAPPLY_MST_X10005MST", desc = "결근계 수정", httpMethod = DzRequestMethod.GET)
 	public String save_HR_OFFAPPLY_MST_X10005(
@@ -154,16 +127,20 @@ public class HREssodm01400_X10005Service extends DzCometService {
 
 			logger.info("parameter====>" + parameters);
 
-			// 기존에 기간이 겹치는지 유효성 검사
+			// 기존에 기간이 겹치는지 유효성 검사, 기간이 변경되지 않았을 경우 유효성 검사를 진행하지 않음.
+			Essodm01400_X10005Model oldModel = null;
+			oldModel = essodm01400_x10005DAO.selectEssodm01400_X10005ModelByPK(parameters);
 			ResponseHashMap responseMap = new ResponseHashMap();
 			Essodm01400_X10005Model model = new Essodm01400_X10005Model();
-			model.setCompany_cd(company_cd);
-			model.setEmp_no(emp_no);
-			model.setStart_dt(start_dt);
-			model.setEnd_dt(end_dt);
 			HashMap<String, Object> response = new HashMap<String, Object>();
-			response = responseMap.hasContainSamePeriod(model, essodm01400_x10005DAO);
-
+			if (oldModel.getStart_dt() != parameters.get("P_START_DT")
+					&& oldModel.getEnd_dt() != parameters.get("P_END_DT")) {
+				model.setCompany_cd(company_cd);
+				model.setEmp_no(emp_no);
+				model.setStart_dt(start_dt);
+				model.setEnd_dt(end_dt);
+				response = responseMap.hasContainSamePeriod(model, essodm01400_x10005DAO);
+			}
 			if (response.get("MSG").equals("OK")) {
 				GetInsertUpdateInfo userInfo = new GetInsertUpdateInfo();
 				parameters.put("P_UPDATE_ID", userInfo.getUserId() != null ? userInfo.getUserId() : this.getUserId());
@@ -177,7 +154,7 @@ public class HREssodm01400_X10005Service extends DzCometService {
 			throw new DzApplicationRuntimeException(e);
 		}
 	}
-	
+
 	@Transactional(rollbackFor = Exception.class)
 	@DzApi(url = "/insert_HR_OFFAPPLY_MST_X10005MST", desc = "결근계 신청", httpMethod = DzRequestMethod.GET)
 	public String insert_HR_OFFAPPLY_MST_X10005MST(
@@ -220,7 +197,6 @@ public class HREssodm01400_X10005Service extends DzCometService {
 			parameters.put("P_REASON_DC", reason_dc);
 			parameters.put("P_DNLGB_CD", dnlgb_cd);
 			parameters.put("P_REQ_DT", req_dt);
-			
 
 			logger.info("parameter====>" + parameters);
 
@@ -233,43 +209,26 @@ public class HREssodm01400_X10005Service extends DzCometService {
 			model.setEnd_dt(end_dt);
 			HashMap<String, Object> response = new HashMap<String, Object>();
 			response = responseMap.hasContainSamePeriod(model, essodm01400_x10005DAO);
-			
-			//유효성 검사 통과
+			// 유효성 검사 통과
 			if (response.get("MSG").equals("OK")) {
-				//채번 생성
+				// 채번 생성
 				response = responseMap.createReqNo(model, essodm01400_x10005DAO);
-				model.setReq_no((String)response.get("REQ_NO"));
-				logger.info("새로 생성된 req_no=========>"+model.getReq_no());
-				//모델로 넘기지 않고 파라미터로 넘긴다.
+				model.setReq_no((String) response.get("REQ_NO"));
+				logger.info("새로 생성된 req_no=========>" + model.getReq_no());
+				// 모델로 넘기지 않고 파라미터로 넘긴다.
 				parameters.put("P_REQ_NO", model.getReq_no());
-				
-				//유저정보 추가
+
+				// 유저정보 추가
 				GetInsertUpdateInfo userInfo = new GetInsertUpdateInfo();
 				parameters.put("P_INSERT_ID", userInfo.getUserId() != null ? userInfo.getUserId() : this.getUserId());
 				parameters.put("P_INSERT_IP", userInfo.getIp());
 				parameters.put("P_INSERT_DTS", userInfo.getDate());
 				essodm01400_x10005DAO.insertEssodm01400_X10005Model(parameters);
 			}
-				response.put("MSG", model.getReq_no());
+			response.put("MSG", model.getReq_no());
 			return (String) response.get("MSG");
 		} catch (Exception e) {
 			throw new DzApplicationRuntimeException(e);
 		}
 	}
 }
-
-// update
-//	        for(Essodm01400_X10005Model essodm01400_X10005Model : main_ds.getUpdated()) {
-//	        	essodm01400_x10005DAO.updateEssodm01400_X10005Model(essodm01400_X10005Model);
-//	        }
-
-// delete
-//	        for(Essodm01400_X10005Model essodm01400_X10005Model : main_ds.getDeleted()) {
-//	        	essodm01400_x10005DAO.deleteEssodm01400_X10005Model(essodm01400_X10005Model);
-//	        }
-
-// add
-//	        for(Essodm01400_X10005Model essodm01400_X10005Model : main_ds.getAdded()) {
-//	        	
-//	        	essodm01400_x10005DAO.insertEssodm01400_X10005Model(essodm01400_X10005Model);
-//	        }

@@ -35,6 +35,14 @@ public class Essodm01400_x10005Dao  {
 	}
 
 	/**
+	 * 단일 데이터 목록 조회
+	 * @param essodm01400_X10005Model
+	 * @return List<Essodm01400_X10005Model>
+	 */
+	public Essodm01400_X10005Model selectEssodm01400_X10005ModelByPK(HashMap<String, Object> parameters) throws Exception {
+		return this.mybatisSupport.selectOne(this.getClass().getName() + ".selectEssodm01400_X10005ModelByPK", parameters);
+	}
+	/**
 	 * 메인 페이지 사원 정보 데이터 조회
 	 * @param hashMap
 	 * @return Essodm01400_X10005_UserInfoModel

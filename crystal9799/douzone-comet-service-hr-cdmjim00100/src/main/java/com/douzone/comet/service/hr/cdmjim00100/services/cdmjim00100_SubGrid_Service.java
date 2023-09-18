@@ -57,8 +57,10 @@ public class cdmjim00100_SubGrid_Service extends DzCometService {
 		}
 		return left_grid_List;
 	}
-	@DzApi(url="/cdmjim00100_right_grid1_List", desc="수행준거_상단_조회", httpMethod=DzRequestMethod.POST)
-	public List<cdmjim00100_right_grid1> right1_grid_List(
+	
+	
+	@DzApi(url="/selectcdmjim00100_right_grid1List", desc="수행준거_상단_조회", httpMethod=DzRequestMethod.POST)
+	public List<cdmjim00100_right_grid1> selectcdmjim00100_right_grid1List(
 			@DzParam(key = "ACLF_NO", desc = "능력분류번호", defaultValue = "", required = false, paramType = DzParamType.Body) String ACLF_NO,
 			@DzParam(key = "VER_CD", desc = "버전", defaultValue = "", required = false, paramType = DzParamType.Body) String VER_CD,
 			@DzParam(key = "AELM_CD", desc = "능력단위요소번호", defaultValue = "", required = false, paramType = DzParamType.Body) String AELM_CD
@@ -81,8 +83,10 @@ public class cdmjim00100_SubGrid_Service extends DzCometService {
 		}
 		return right_grid1_List;
 	}
-	@DzApi(url="/cdmjim00100_right_grid2_List", desc="수행준거_하단_조회", httpMethod=DzRequestMethod.POST)
-	public List<cdmjim00100_right_grid2> right2_grid_List(
+	
+	
+	@DzApi(url="/selectcdmjim00100_right_grid2List", desc="수행준거_하단_조회", httpMethod=DzRequestMethod.POST)
+	public List<cdmjim00100_right_grid2> selectcdmjim00100_right_grid2List(
 			@DzParam(key = "ACLF_NO", desc = "능력분류번호", defaultValue = "", required = false, paramType = DzParamType.Body) String ACLF_NO,
 			@DzParam(key = "VER_CD", desc = "버전", defaultValue = "", required = false, paramType = DzParamType.Body) String VER_CD,
 			@DzParam(key = "PCFM_CD", desc = "수행준거번호", defaultValue = "", required = false, paramType = DzParamType.Body) String PCFM_CD,

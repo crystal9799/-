@@ -41,7 +41,7 @@ public class cdmjim00100_SubGrid_Dao  {
 	 * @return List<cdmjim00100_left_grid>
 	 */
 	public List<cdmjim00100_right_grid1> selectcdmjim00100_right_grid1List(Map<String, Object> cdmjim00100_right_grid1) throws Exception {
-		return this.mybatisSupport.selectList(this.getClass().getName() + ".selectcdmjim00100_left_gridList", cdmjim00100_right_grid1);
+		return this.mybatisSupport.selectList(this.getClass().getName() + ".selectcdmjim00100_right_grid1List", cdmjim00100_right_grid1);
 	}
 	
 	/**
@@ -50,7 +50,7 @@ public class cdmjim00100_SubGrid_Dao  {
 	 * @return List<cdmjim00100_left_grid>
 	 */
 	public List<cdmjim00100_right_grid2> selectcdmjim00100_right_grid2List(Map<String, Object> cdmjim00100_right_grid2) throws Exception {
-		return this.mybatisSupport.selectList(this.getClass().getName() + ".selectcdmjim00100_left_gridList", cdmjim00100_right_grid2);
+		return this.mybatisSupport.selectList(this.getClass().getName() + ".selectcdmjim00100_right_grid2List", cdmjim00100_right_grid2);
 	}
 
 

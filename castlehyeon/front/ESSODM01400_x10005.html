@@ -1,6 +1,6 @@
-<!--##b4f20466-be33-42f5-8f4c-6a3563228c6f##-->
+<!--##2f9e8697-a5c9-4e97-8d97-9cf8fa6716d6##-->
 <!--##ESSODM01400_x10005##-->
-<!--##hq/w8BS4ZtVWjfVpBvdJNxL9GZlnCoYkFXMvOUyqSd2XrnArxru5G35vcK5gSESL##-->
+<!--##lgbirFoTtYhhyMnPvNuw/d9+ci+59ePjesVZ9jnxY3nMaWmLXjGsS7Iwywhj0vWO##-->
 <!--
   DEWS UI/UX IDE - Build Result - v1.5
   # PageID: ESSODM01400_x10005
@@ -405,6 +405,11 @@
         rightColCount: 0
       },
       change: /*c73793a0-4e5c-4138-bd40-65e6ee05bec5*/ function (e) {
+            var emp_no = self.main_grid.getCellValue(self.main_grid.select(), 'EMP_NO');
+            var company_cd = self.main_grid.getCellValue(self.main_grid.select(), 'COMPANY_CD');
+            if (emp_no != null && emp_no != '' && company_cd != null && company_cd != '') {
+                GetUserInfo(self.main_grid.getCellValue(self.main_grid.select(), 'EMP_NO'), self.main_grid.getCellValue(self.main_grid.select(), 'COMPANY_CD'));
+            }
             self.main_grid.bindPanel(self.userInfo_formpanel);
         }
     ,
@@ -460,7 +465,6 @@
                 text: '조회중입니다.'
             });
             self.main_ds.read();  // 데이터소스 Read
-            self.main_userInfo_ds.read();
             dews.ui.loading.hide();
         } catch (error) {
             dews.ui.loading.hide();
@@ -486,7 +490,15 @@
                     userData: userData
                 },
                 callback: function () {
+                    //기본 정보 초기화
+                    self.EMP_NO.text('');
+                    self.KOR_NM.text('');
+                    self.PSTN_CD.text('');
+                    self.OGRP_CD.text('');
+                    self.ORG.text('');
+                    self.POSI_CD.text('');
                     SearchData();
+    
                 }
             });
         } catch (error) {

@@ -1,6 +1,6 @@
-<!--##b848e199-3f9f-4b63-9640-e5c027c2dce8##-->
+<!--##dc565e6f-ce58-4f79-b9ff-9badf7f2c5d3##-->
 <!--##ESSODM01400_X10005_Sub##-->
-<!--##A38MmKUC9joLWhauaLnzreTzZhAMfSMcBT2+7+z06SGYk0aIMkKxlveRAuZcl0B9##-->
+<!--##9ucmgSv7WBELtjfoDUIInzK2dHkmvOv1SA2vYuM5gRP8rJmP1HC1VHsmNVA6Rcge##-->
 <!--
   DEWS UI/UX IDE - Build Result - v1.5
   # PageID: ESSODM01400_X10005_Sub
@@ -289,6 +289,34 @@
         }
     
     });
+    self.$delete_button.on('click', /*4d8e17ac-e695-4e96-93b8-5762ecd28545*/ function (e) {
+        var req_no = self.main_grid.getCellValue(0, 'REQ_NO');
+        var company_cd = self.COMPANY_CD.text();
+        dews.confirm('삭제하시겠습니까?', "question").yes(function () {
+            if (req_no == "") {
+                dews.ui.snackbar.error('존재하지 않는 문서입니다.');
+                return;
+            }
+            else {
+                dews.api.get(dews.url.getApiUrl("HR", "HREssodm01400_X10005Service", "delete_HR_OFFAPPLY_MST_X10005MST"), {
+                    async: false,
+                    data: {
+                        req_no: req_no,
+                        company_cd: company_cd
+                    }
+                }).done(function (data) {
+                    if (data == 'OK') {
+                        dews.ui.snackbar.ok('삭제되었습니다.');
+                        dews.ui.page.close(); // 현재 서브페이지 닫기
+                    } else
+                        dews.ui.snackbar.warning(data);
+                }).fail(function (e) {
+                    dews.ui.snackbar.error('삭제하는데 실패하였습니다.');
+                });
+            }
+        }).no(function () {
+        });
+    });
     self.$sub_close_button.on('click', /*64036093-15ee-4515-9241-24b3b54e6681*/ function (e) {
         //   if (self.absData_ds.getDirtyDataCount() > 0) {
         //     dews.confirm('저장되지 않은 데이터가 있습니다.\n그래도 이동 하시겠습니까?', "question").yes(function () {
@@ -523,6 +551,7 @@
                 self.sub_formpanel.bindData(userData);
                 self.ATHZ_ST_NM.text(GetATHZ_ST_NM());
                 self.REQ_DT.text(userData.REQ_DT);
+                GetUserInfo(self.EMP_NO.text(), self.COMPANY_CD.text());
     
     
                 //만약 REQ_EMP_NO와 REQ_KOR_NM이 공백이라면 기본정보의 데이터 바인딩

@@ -47,8 +47,8 @@ public class Essodm01400_x10005Dao  {
 	 * 단일 데이터 입력 처리
 	 * @param essodm01400_X10005Model
 	 */
-	public void insertEssodm01400_X10005Model(Essodm01400_X10005Model essodm01400_X10005Model) throws Exception {
-		this.mybatisSupport.insert(this.getClass().getName() + ".insertEssodm01400_X10005Model", essodm01400_X10005Model);
+	public void insertEssodm01400_X10005Model(HashMap<String, Object> parameters) throws Exception {
+		this.mybatisSupport.insert(this.getClass().getName() + ".insertEssodm01400_X10005Model", parameters);
 	}
 
 	/**

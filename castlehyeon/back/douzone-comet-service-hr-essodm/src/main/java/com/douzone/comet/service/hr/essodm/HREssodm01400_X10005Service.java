@@ -172,6 +172,67 @@ public class HREssodm01400_X10005Service extends DzCometService {
 			throw new DzApplicationRuntimeException(e);
 		}
 	}
+	
+	@Transactional(rollbackFor = Exception.class)
+	@DzApi(url = "/insert_HR_OFFAPPLY_MST_X10005MST", desc = "결근계 신청", httpMethod = DzRequestMethod.GET)
+	public String insert_HR_OFFAPPLY_MST_X10005MST(
+			@DzParam(key = "company_cd", desc = "", paramType = DzParamType.QueryString) String company_cd,
+			@DzParam(key = "req_no", desc = "", paramType = DzParamType.QueryString) String req_no,
+			@DzParam(key = "bizarea_cd", desc = "", paramType = DzParamType.QueryString) String bizarea_cd,
+			@DzParam(key = "dept_cd", desc = "", paramType = DzParamType.QueryString) String dept_cd,
+			@DzParam(key = "emp_no", desc = "", paramType = DzParamType.QueryString) String emp_no,
+			@DzParam(key = "pstn_cd", desc = "", paramType = DzParamType.QueryString) String pstn_cd,
+			@DzParam(key = "ogrp_cd", desc = "", paramType = DzParamType.QueryString) String ogrp_cd,
+			@DzParam(key = "posi_cd", desc = "", paramType = DzParamType.QueryString) String posi_cd,
+			@DzParam(key = "req_emp_no", desc = "", paramType = DzParamType.QueryString) String req_emp_no,
+			@DzParam(key = "dnl_cd", desc = "", paramType = DzParamType.QueryString) String dnl_cd,
+			@DzParam(key = "start_dt", desc = "", paramType = DzParamType.QueryString) String start_dt,
+			@DzParam(key = "end_dt", desc = "", paramType = DzParamType.QueryString) String end_dt,
+			@DzParam(key = "req_dy", desc = "", paramType = DzParamType.QueryString) String req_dy,
+			@DzParam(key = "reason_dc", desc = "", paramType = DzParamType.QueryString) String reason_dc)
+			throws Exception {
+		// 전부 단건 처리
+		// 1. 파라미터로 들어온 기간이 기존에 있는지 검사
+		// 2. 해당기간에 공휴일이 있는지 검사(추가기능사항으로 => 공휴일과 주말 제외한 "실제 휴가일" 컬럼추가)
+		// 이를 급여와 연관시키기.
+		try {
+			HashMap<String, Object> parameters = new HashMap<>();
+			parameters.put("P_COMPANY_CD", company_cd);
+			parameters.put("P_REQ_NO", req_no);
+			parameters.put("P_BIZAREA_CD", bizarea_cd);
+			parameters.put("P_DEPT_CD", dept_cd);
+			parameters.put("P_EMP_NO", emp_no);
+			parameters.put("P_PSTN_CD", pstn_cd);
+			parameters.put("P_OGRP_CD", ogrp_cd);
+			parameters.put("P_POSI_CD", posi_cd);
+			parameters.put("P_REQ_EMP_NO", req_emp_no);
+			parameters.put("P_DNL_CD", dnl_cd);
+			parameters.put("P_START_DT", start_dt);
+			parameters.put("P_END_DT", end_dt);
+			parameters.put("P_REQ_DY", req_dy);
+			parameters.put("P_REASON_DC", reason_dc);
+
+			logger.info("parameter====>" + parameters);
+
+			// 기존에 기간이 겹치는지 유효성 검사
+			ResponseHashMap responseMap = new ResponseHashMap();
+			Essodm01400_X10005Model model = new Essodm01400_X10005Model();
+			model.setCompany_cd(company_cd);
+			model.setEmp_no(emp_no);
+			model.setStart_dt(start_dt);
+			model.setEnd_dt(end_dt);
+			HashMap<String, Object> response = new HashMap<String, Object>();
+			response = responseMap.hasContainSamePeriod(model, essodm01400_x10005DAO);
+
+//			if (response.get("MSG").equals("OK")) {
+//				essodm01400_x10005DAO.insertEssodm01400_X10005Model(parameters);
+//			}
+
+			return (String) response.get("MSG");
+		} catch (Exception e) {
+			throw new DzApplicationRuntimeException(e);
+		}
+	}
 }
 
 // update

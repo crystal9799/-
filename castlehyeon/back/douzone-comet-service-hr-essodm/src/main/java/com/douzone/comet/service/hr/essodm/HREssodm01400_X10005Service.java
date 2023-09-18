@@ -14,6 +14,7 @@ import com.douzone.comet.service.hr.essodm.dao.Essodm01400_x10005Dao;
 import com.douzone.comet.service.hr.essodm.models.Essodm01400_X10005Model;
 import com.douzone.comet.service.hr.essodm.models.Essodm01400_X10005_UserInfoModel;
 import com.douzone.comet.service.hr.essodm.models.ResponseHashMap;
+import com.douzone.comet.service.hr.essodm.utils.GetInsertUpdateInfo;
 import com.douzone.gpd.restful.model.DzGridModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import com.douzone.gpd.components.exception.DzApplicationRuntimeException;
@@ -164,6 +165,10 @@ public class HREssodm01400_X10005Service extends DzCometService {
 			response = responseMap.hasContainSamePeriod(model, essodm01400_x10005DAO);
 
 			if (response.get("MSG").equals("OK")) {
+				GetInsertUpdateInfo userInfo = new GetInsertUpdateInfo();
+				parameters.put("P_UPDATE_ID", userInfo.getUserId() != null ? userInfo.getUserId() : this.getUserId());
+				parameters.put("P_UPDATE_IP", userInfo.getIp());
+				parameters.put("P_UPDATE_DTS", userInfo.getDate());
 				essodm01400_x10005DAO.updateEssodm01400_X10005Model(parameters);
 			}
 
@@ -178,6 +183,7 @@ public class HREssodm01400_X10005Service extends DzCometService {
 	public String insert_HR_OFFAPPLY_MST_X10005MST(
 			@DzParam(key = "company_cd", desc = "", paramType = DzParamType.QueryString) String company_cd,
 			@DzParam(key = "req_no", desc = "", paramType = DzParamType.QueryString) String req_no,
+			@DzParam(key = "dnlgb_cd", desc = "", paramType = DzParamType.QueryString) String dnlgb_cd,
 			@DzParam(key = "bizarea_cd", desc = "", paramType = DzParamType.QueryString) String bizarea_cd,
 			@DzParam(key = "dept_cd", desc = "", paramType = DzParamType.QueryString) String dept_cd,
 			@DzParam(key = "emp_no", desc = "", paramType = DzParamType.QueryString) String emp_no,
@@ -189,6 +195,7 @@ public class HREssodm01400_X10005Service extends DzCometService {
 			@DzParam(key = "start_dt", desc = "", paramType = DzParamType.QueryString) String start_dt,
 			@DzParam(key = "end_dt", desc = "", paramType = DzParamType.QueryString) String end_dt,
 			@DzParam(key = "req_dy", desc = "", paramType = DzParamType.QueryString) String req_dy,
+			@DzParam(key = "req_dt", desc = "", paramType = DzParamType.QueryString) String req_dt,
 			@DzParam(key = "reason_dc", desc = "", paramType = DzParamType.QueryString) String reason_dc)
 			throws Exception {
 		// 전부 단건 처리
@@ -211,6 +218,9 @@ public class HREssodm01400_X10005Service extends DzCometService {
 			parameters.put("P_END_DT", end_dt);
 			parameters.put("P_REQ_DY", req_dy);
 			parameters.put("P_REASON_DC", reason_dc);
+			parameters.put("P_DNLGB_CD", dnlgb_cd);
+			parameters.put("P_REQ_DT", req_dt);
+			
 
 			logger.info("parameter====>" + parameters);
 
@@ -223,11 +233,24 @@ public class HREssodm01400_X10005Service extends DzCometService {
 			model.setEnd_dt(end_dt);
 			HashMap<String, Object> response = new HashMap<String, Object>();
 			response = responseMap.hasContainSamePeriod(model, essodm01400_x10005DAO);
-
-//			if (response.get("MSG").equals("OK")) {
-//				essodm01400_x10005DAO.insertEssodm01400_X10005Model(parameters);
-//			}
-
+			
+			//유효성 검사 통과
+			if (response.get("MSG").equals("OK")) {
+				//채번 생성
+				response = responseMap.createReqNo(model, essodm01400_x10005DAO);
+				model.setReq_no((String)response.get("REQ_NO"));
+				logger.info("새로 생성된 req_no=========>"+model.getReq_no());
+				//모델로 넘기지 않고 파라미터로 넘긴다.
+				parameters.put("P_REQ_NO", model.getReq_no());
+				
+				//유저정보 추가
+				GetInsertUpdateInfo userInfo = new GetInsertUpdateInfo();
+				parameters.put("P_INSERT_ID", userInfo.getUserId() != null ? userInfo.getUserId() : this.getUserId());
+				parameters.put("P_INSERT_IP", userInfo.getIp());
+				parameters.put("P_INSERT_DTS", userInfo.getDate());
+				essodm01400_x10005DAO.insertEssodm01400_X10005Model(parameters);
+			}
+				response.put("MSG", model.getReq_no());
 			return (String) response.get("MSG");
 		} catch (Exception e) {
 			throw new DzApplicationRuntimeException(e);

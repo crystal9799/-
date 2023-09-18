@@ -6,14 +6,12 @@
 	namespace="com.douzone.comet.service.hr.essodm.dao.Essodm01400_x10005Dao">
 
 	<select id="selectMaxReqNo" resultType="int">
-		SELECT
-		MAX(TO_NUMBER(SUBSTR(REQ_NO, -4))) AS MAX_NUMBER
-		FROM
-		HR_OFFAPPLY_MST_X10005
-		WHERE TO_NUMBER(SUBSTR(REQ_NO, 4, 4)) =
-		EXTRACT(YEAR FROM SYSDATE)
-		AND TO_NUMBER(SUBSTR(REQ_NO, 8, 2)) =
-		EXTRACT(MONTH FROM SYSDATE)
+		SELECT COALESCE(MAX(TO_NUMBER(SUBSTR(REQ_NO, -4))), 0) AS MAX_NUMBER
+		FROM HR_OFFAPPLY_MST_X10005
+		WHERE TO_NUMBER(SUBSTR(REQ_NO, 4, 4)) = EXTRACT(YEAR FROM SYSDATE)
+		AND TO_NUMBER(SUBSTR(REQ_NO, 8, 2)) = EXTRACT(MONTH FROM SYSDATE)
+		AND TO_NUMBER(SUBSTR(REQ_NO, 6, 2)) = EXTRACT(DAY FROM SYSDATE)
+
 	</select>
 
 	<select id="hasContainSamePeriod" parameterType="HashMap"
@@ -35,40 +33,46 @@
 
 	<select id="getUserInfo" parameterType="HashMap"
 		resultType="com.douzone.comet.service.hr.essodm.models.Essodm01400_X10005_UserInfoModel">
-		SELECT EMP_NO, KOR_NM, PSTN_CD, OGRP_CD, BIZAREA_CD, BIZAREA_NM, ORG, POSI_CD, GRP_NM, DEPT_NM, PATH
-	FROM (
-		    	SELECT
-		        HEM.EMP_NO EMP_NO,
-		        HEM.KOR_NM KOR_NM,
-		        HEM.PSTN_CD PSTN_CD,
-		        HEM.OGRP_CD OGRP_CD,
-		        HEM.BIZAREA_CD BIZAREA_CD,
-		        MBM.BIZAREA_NM BIZAREA_NM,
-		        COMET.FN_HR_UP_DEPT_NM2(HEM.COMPANY_CD, HEM.DEPT_CD, SYSDATE) AS ORG,
-		        HEM.POSI_CD POSI_CD,
-		        MGM.GRP_NM GRP_NM,
-		        MDM.DEPT_NM DEPT_NM,
-		        MDM.DEPT_START_DT DEPT_START_DT,
-		        ORG_TB.PATH PATH
-		    FROM HR_EMP_MST HEM
-		    JOIN MA_BIZAREA_MST MBM ON HEM.COMPANY_CD = MBM.COMPANY_CD AND HEM.BIZAREA_CD = MBM.BIZAREA_CD
-		    JOIN MA_GROUP_MST MGM ON HEM.COMPANY_CD = MGM.COMPANY_CD AND MGM.MENUGRP_CD = HEM.BIZAREA_CD
-		    JOIN MA_DEPT_MST MDM ON HEM.COMPANY_CD = MDM.COMPANY_CD AND HEM.DEPT_CD = MDM.DEPT_CD
-		    LEFT OUTER JOIN (
-		        SELECT
-		            C.DEPT_NM || '/' || B.DEPT_NM || '/' || A.DEPT_NM AS PATH,
-		            A.DEPT_START_DT DEPT_START_DT,
-		            A.DEPT_CD DEPT_CD
-		        FROM MA_DEPT_MST A
-		        LEFT JOIN MA_DEPT_MST B ON A.UP_DEPT_CD = B.DEPT_CD AND B.COMPANY_CD = A.COMPANY_CD
-		        LEFT JOIN MA_DEPT_MST C ON B.UP_DEPT_CD = C.DEPT_CD AND C.COMPANY_CD = A.COMPANY_CD
-		        WHERE A.COMPANY_CD = #{P_COMPANY_CD}
-		    ) ORG_TB ON HEM.DEPT_CD = ORG_TB.DEPT_CD
-		    WHERE HEM.COMPANY_CD = #{P_COMPANY_CD}
-		    AND HEM.EMP_NO = #{P_EMP_NO}
-		    ORDER BY DEPT_START_DT DESC
-	)
-	WHERE ROWNUM = 1
+		SELECT EMP_NO, KOR_NM, PSTN_CD, OGRP_CD, BIZAREA_CD,
+		BIZAREA_NM, ORG, POSI_CD, GRP_NM, DEPT_NM, PATH
+		FROM (
+		SELECT
+		HEM.EMP_NO EMP_NO,
+		HEM.KOR_NM KOR_NM,
+		HEM.PSTN_CD PSTN_CD,
+		HEM.OGRP_CD OGRP_CD,
+		HEM.BIZAREA_CD BIZAREA_CD,
+		MBM.BIZAREA_NM BIZAREA_NM,
+		COMET.FN_HR_UP_DEPT_NM2(HEM.COMPANY_CD, HEM.DEPT_CD, SYSDATE) AS ORG,
+		HEM.POSI_CD POSI_CD,
+		MGM.GRP_NM GRP_NM,
+		MDM.DEPT_NM DEPT_NM,
+		MDM.DEPT_START_DT DEPT_START_DT,
+		ORG_TB.PATH PATH
+		FROM HR_EMP_MST HEM
+		JOIN MA_BIZAREA_MST MBM ON HEM.COMPANY_CD = MBM.COMPANY_CD AND
+		HEM.BIZAREA_CD = MBM.BIZAREA_CD
+		JOIN MA_GROUP_MST MGM ON HEM.COMPANY_CD = MGM.COMPANY_CD AND
+		MGM.MENUGRP_CD = HEM.BIZAREA_CD
+		JOIN MA_DEPT_MST MDM ON HEM.COMPANY_CD = MDM.COMPANY_CD AND HEM.DEPT_CD =
+		MDM.DEPT_CD
+		LEFT OUTER JOIN (
+		SELECT
+		C.DEPT_NM || '/' || B.DEPT_NM || '/' || A.DEPT_NM AS PATH,
+		A.DEPT_START_DT DEPT_START_DT,
+		A.DEPT_CD DEPT_CD
+		FROM MA_DEPT_MST A
+		LEFT JOIN MA_DEPT_MST B ON A.UP_DEPT_CD = B.DEPT_CD AND B.COMPANY_CD =
+		A.COMPANY_CD
+		LEFT JOIN MA_DEPT_MST C ON B.UP_DEPT_CD = C.DEPT_CD AND C.COMPANY_CD =
+		A.COMPANY_CD
+		WHERE A.COMPANY_CD = #{P_COMPANY_CD}
+		) ORG_TB ON HEM.DEPT_CD = ORG_TB.DEPT_CD
+		WHERE HEM.COMPANY_CD = #{P_COMPANY_CD}
+		AND HEM.EMP_NO = #{P_EMP_NO}
+		ORDER BY DEPT_START_DT DESC
+		)
+		WHERE ROWNUM = 1
 	</select>
 
 	<select id="selectEssodm01400_X10005ModelList"
@@ -130,10 +134,51 @@
 	</select>
 
 	<insert id="insertEssodm01400_X10005Model">
-		INSERT INTO @{dzparam_dbname}[tableName] (
-		[columnName]
-		) VALUES (
-		[columnValue]
+		INSERT INTO HR_OFFAPPLY_MST_X10005
+		(COMPANY_CD, REQ_NO,
+		<trim prefix="" suffixOverrides=",">
+			<if test='P_DNLGB_CD != null and P_DNLGB_CD != ""'>DNLGB_CD,</if>
+			<if test='P_BIZAREA_CD != null and P_BIZAREA_CD != ""'>BIZAREA_CD,</if>
+			<if test='P_DEPT_CD != null and P_DEPT_CD != ""'>DEPT_CD,</if>
+			<if test='P_EMP_NO != null and P_EMP_NO != ""'>EMP_NO,</if>
+			<if test='P_PSTN_CD != null and P_PSTN_CD != ""'>PSTN_CD,</if>
+			<if test='P_OGRP_CD != null and P_OGRP_CD != ""'>OGRP_CD,</if>
+			<if test='P_POSI_CD != null and P_POSI_CD != ""'>POSI_CD,</if>
+			<if test='P_DNL_CD != null and P_DNL_CD != ""'>DNL_CD,</if>
+			<if test='P_REQ_EMP_NO != null and P_REQ_EMP_NO != ""'>REQ_EMP_NO,</if>
+			<if test='P_START_DT != null and P_START_DT != ""'>START_DT,</if>
+			<if test='P_END_DT != null and P_END_DT != ""'>END_DT,</if>
+			<if test='P_REQ_DY != null and P_REQ_DY != ""'>REQ_DY,</if>
+			<if test='P_REQ_DT != null and P_REQ_DT != ""'>REQ_DT,</if>
+			<if test='P_REASON_DC != null and P_REASON_DC != ""'>REASON_DC,</if>
+			ATHZ_ST_CD,
+			<if test='P_INSERT_ID != null and P_INSERT_ID != ""'>INSERT_ID,</if>
+			<if test='P_INSERT_IP != null and P_INSERT_IP != ""'>INSERT_IP,</if>
+			<if test='P_INSERT_DTS != null and P_INSERT_DTS != ""'>INSERT_DTS</if>
+		</trim>
+		)
+		VALUES
+		(#{P_COMPANY_CD}, #{P_REQ_NO},
+		<trim prefix="" suffixOverrides=",">
+			<if test='P_DNLGB_CD != null and P_DNLGB_CD != ""'>#{P_DNLGB_CD},</if>
+			<if test='P_BIZAREA_CD != null and P_BIZAREA_CD != ""'>#{P_BIZAREA_CD},</if>
+			<if test='P_DEPT_CD != null and P_DEPT_CD != ""'>#{P_DEPT_CD},</if>
+			<if test='P_EMP_NO != null and P_EMP_NO != ""'>#{P_EMP_NO},</if>
+			<if test='P_PSTN_CD != null and P_PSTN_CD != ""'>#{P_PSTN_CD},</if>
+			<if test='P_OGRP_CD != null and P_OGRP_CD != ""'>#{P_OGRP_CD},</if>
+			<if test='P_POSI_CD != null and P_POSI_CD != ""'>#{P_POSI_CD},</if>
+			<if test='P_DNL_CD != null and P_DNL_CD != ""'>#{P_DNL_CD},</if>
+			<if test='P_REQ_EMP_NO != null and P_REQ_EMP_NO != ""'>#{P_REQ_EMP_NO},</if>
+			<if test='P_START_DT != null and P_START_DT != ""'>#{P_START_DT},</if>
+			<if test='P_END_DT != null and P_END_DT != ""'>#{P_END_DT},</if>
+			<if test='P_REQ_DY != null and P_REQ_DY != ""'>#{P_REQ_DY},</if>
+			<if test='P_REQ_DT != null and P_REQ_DT != ""'>#{P_REQ_DT},</if>
+			<if test='P_REASON_DC != null and P_REASON_DC != ""'>#{P_REASON_DC},</if>
+			1,
+			<if test='P_INSERT_ID != null and P_INSERT_ID != ""'>#{P_INSERT_ID},</if>
+			<if test='P_INSERT_IP != null and P_INSERT_IP != ""'>#{P_INSERT_IP},</if>
+			<if test='P_INSERT_DTS != null and P_INSERT_DTS != ""'>#{P_INSERT_DTS}</if>
+		</trim>
 		)
 	</insert>
 
@@ -153,6 +198,10 @@
 			<if test='P_END_DT != null and P_END_DT != ""'>END_DT = #{P_END_DT},</if>
 			<if test='P_REQ_DY != null and P_REQ_DY != ""'>REQ_DY = #{P_REQ_DY},</if>
 			<if test='P_REASON_DC != null and P_REASON_DC != ""'>REASON_DC = #{P_REASON_DC}</if>
+			<if test='P_UPDATE_ID != null and P_UPDATE_ID != ""'>UPDATE_ID = #{P_UPDATE_ID}</if>
+			<if test='P_UPDATE_IP != null and P_UPDATE_IP != ""'>UPDATE_IP = #{P_UPDATE_IP}</if>
+			<if test='P_UPDATE_DTS != null and P_UPDATE_DTS != ""'>UPDATE_DTS = #{P_UPDATE_DTS}</if>
+
 		</set>
 		WHERE
 		COMPANY_CD = #{P_COMPANY_CD}

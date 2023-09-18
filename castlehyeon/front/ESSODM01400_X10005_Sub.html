@@ -1,6 +1,6 @@
-<!--##022a07ee-a7be-46f3-9273-7cbcad8e1c29##-->
+<!--##b848e199-3f9f-4b63-9640-e5c027c2dce8##-->
 <!--##ESSODM01400_X10005_Sub##-->
-<!--##HEVYJdH/0x+g985B8ay9ve51CCHlctH/otlcpK94a92EersC+Hl6IHYwlEyClbcQ##-->
+<!--##A38MmKUC9joLWhauaLnzreTzZhAMfSMcBT2+7+z06SGYk0aIMkKxlveRAuZcl0B9##-->
 <!--
   DEWS UI/UX IDE - Build Result - v1.5
   # PageID: ESSODM01400_X10005_Sub
@@ -146,7 +146,7 @@
 
 
     /*b86609c9-3017-4aef-896e-65022e1080a4*/ //# sourceURL=ESSODM01400_x10005_Sub.js
-    self.COMPANY_CD.text('EWP');
+    self.COMPANY_CD.text(self.user.companyCode);
     
     
     
@@ -285,7 +285,7 @@
             dews.alert("결재완료 되었습니다.", "warning");
         } else {
             SaveTempData();
-            self.grid.commitCell();
+            grid.commitCell();
         }
     
     });
@@ -579,6 +579,7 @@
                 self.main_grid.setCellValue(0, 'DNLGB_CD', '400');
                 self.main_grid.setCellValue(0, 'REQ_DY', GetREQ_DY());
                 self.main_grid.setCellValue(0, 'BIZAREA_CD', self.user.bizAreaCode);
+                self.main_grid.setCellValue(0, 'REQ_NO', '');
     
                 //폼패널 데이터를 그리드에 바인딩
                 self.userInfo_formpanel.bindTo(self.main_grid);
@@ -756,6 +757,8 @@
                 dews.api.get(dews.url.getApiUrl("HR", "HREssodm01400_X10005Service", "insert_HR_OFFAPPLY_MST_X10005MST"), {
                     async: false,
                     data: {
+                        company_cd: self.COMPANY_CD.text(),
+                        req_no: self.main_grid.getCellValue(0, 'REQ_NO'), // 신청번호
                         req_dt: self.REQ_DT.value(),
                         start_dt: self.START_DT.value(),
                         end_dt: self.END_DT.value(),
@@ -768,20 +771,24 @@
                         dept_cd: self.main_grid.getCellValue(0, 'DEPT_CD'),
                         pstn_cd: self.main_grid.getCellValue(0, 'PSTN_CD'),
                         ogrp_cd: self.main_grid.getCellValue(0, 'OGRP_CD'),
-                        posi_cd: self.main_grid.getCellValue(0, 'POSI_CD')
+                        posi_cd: self.main_grid.getCellValue(0, 'POSI_CD'),
+                        dnlgb_cd: self.main_grid.getCellValue(0, 'DNLGB_CD')
                     }
                 }).done(function (data) {
-                    if (data[0] == 'already_existed') {
+                    if (data == 'already_existed') {
                         dews.ui.snackbar.warning("해당 기간에 근태내역이 있습니다.");
                         return;
                     }
-                    if (data[0] !== 'OK') {
-                        dews.ui.snackbar.warning(data[0].MSG);
-                        return;
-                    }
+                    // if (data !== 'OK') {
+                    //     dews.ui.snackbar.warning(data[0]);
+                    //     return;
+                    // }
                     dews.ui.snackbar.ok("임시 저장 되었습니다.");
-                    dews.ui.page.close(); // 페이지 닫기
-    
+                    self.main_grid.setCellValue(0, 'REQ_NO', data, false);
+                    self.main_grid.setCellValue(0, 'ATHZ_ST_CD', 1, false);
+                    self.ATHZ_ST_NM.text('임시저장');
+                    // dews.ui.page.close(); // 페이지 닫기
+                    isExist = true;
                 });
             }
         }

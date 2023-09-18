@@ -28,16 +28,16 @@ public class ResponseHashMap extends DzCometService {
 
 	// 유효성 검사
 	// 해당 DOC_NO이 존재하는지. 없다면 새로 생성해주기.
-	public Map<String, Object> createReqNo(Essodm01400_X10005Model parameter, Essodm01400_x10005Dao essodm01400_x10005DAO) {
+	public HashMap<String, Object> createReqNo(Essodm01400_X10005Model parameter, Essodm01400_x10005Dao essodm01400_x10005DAO) {
 		// 기존값이 있을 수도 있으니 clear
 		response.clear();
 		GenerateREQ_NO genNO = new GenerateREQ_NO();
 		int seq = 0;
 		String req_no = parameter.getReq_no();
 		// 만약 req_no가 없다면?
-		if (req_no == "") {
+		if (parameter.getReq_no() == null ||req_no.equals("") || req_no == null) {
 			seq = essodm01400_x10005DAO.selectMaxReqNo();
-			genNO.generateDocNoByMaxThisMonth(seq);
+			req_no = genNO.generateDocNoByMaxThisMonth(seq);
 			this.response.put("REQ_NO", req_no);
 			this.response.put("MSG", "OK");
 		} else

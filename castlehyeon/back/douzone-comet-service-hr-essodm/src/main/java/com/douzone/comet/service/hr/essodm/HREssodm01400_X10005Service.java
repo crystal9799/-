@@ -133,14 +133,18 @@ public class HREssodm01400_X10005Service extends DzCometService {
 			ResponseHashMap responseMap = new ResponseHashMap();
 			Essodm01400_X10005Model model = new Essodm01400_X10005Model();
 			HashMap<String, Object> response = new HashMap<String, Object>();
-			if (oldModel.getStart_dt() != parameters.get("P_START_DT")
-					&& oldModel.getEnd_dt() != parameters.get("P_END_DT")) {
+			logger.info("oldModel.getStart_dt()==>" + oldModel.getStart_dt() + "oldModel.getEnd_dt()===>"
+					+ oldModel.getEnd_dt());
+			if (!oldModel.getStart_dt().equals(parameters.get("P_START_DT"))
+					&& !oldModel.getEnd_dt().equals(parameters.get("P_END_DT"))) {
 				model.setCompany_cd(company_cd);
 				model.setEmp_no(emp_no);
 				model.setStart_dt(start_dt);
 				model.setEnd_dt(end_dt);
 				response = responseMap.hasContainSamePeriod(model, essodm01400_x10005DAO);
-			}
+			} else
+				response.put("MSG", "OK");
+
 			if (response.get("MSG").equals("OK")) {
 				GetInsertUpdateInfo userInfo = new GetInsertUpdateInfo();
 				parameters.put("P_UPDATE_ID", userInfo.getUserId() != null ? userInfo.getUserId() : this.getUserId());
@@ -226,6 +230,31 @@ public class HREssodm01400_X10005Service extends DzCometService {
 				essodm01400_x10005DAO.insertEssodm01400_X10005Model(parameters);
 			}
 			response.put("MSG", model.getReq_no());
+			return (String) response.get("MSG");
+		} catch (Exception e) {
+			throw new DzApplicationRuntimeException(e);
+		}
+	}
+
+	@Transactional(rollbackFor = Exception.class)
+	@DzApi(url = "/delete_HR_OFFAPPLY_MST_X10005MST", desc = "결근계 삭제", httpMethod = DzRequestMethod.GET)
+	public String delete_HR_OFFAPPLY_MST_X10005MST(
+			@DzParam(key = "company_cd", desc = "", paramType = DzParamType.QueryString) String company_cd,
+			@DzParam(key = "req_no", desc = "", paramType = DzParamType.QueryString) String req_no) throws Exception {
+		try {
+			HashMap<String, Object> parameters = new HashMap<>();
+			parameters.put("P_COMPANY_CD", company_cd);
+			parameters.put("P_REQ_NO", req_no);
+
+			logger.info("parameter====>" + parameters);
+			HashMap<String, Object> response = new HashMap<String, Object>();
+			try {
+				essodm01400_x10005DAO.deleteEssodm01400_X10005Model(parameters);
+				response.put("MSG", "OK");
+			} catch (Exception e) {
+				logger.info(e.getMessage());
+				response.put("MSG", "FAIL");
+			}
 			return (String) response.get("MSG");
 		} catch (Exception e) {
 			throw new DzApplicationRuntimeException(e);

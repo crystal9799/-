@@ -71,8 +71,8 @@ public class Essodm01400_x10005Dao  {
 	 * 단일 데이터 삭제 처리
 	 * @param essodm01400_X10005Model
 	 */
-	public void deleteEssodm01400_X10005Model(Essodm01400_X10005Model essodm01400_X10005Model) throws Exception {
-		this.mybatisSupport.delete(this.getClass().getName() + ".deleteEssodm01400_X10005Model", essodm01400_X10005Model);
+	public void deleteEssodm01400_X10005Model(HashMap<String, Object> parameters) throws Exception {
+		this.mybatisSupport.delete(this.getClass().getName() + ".deleteEssodm01400_X10005Model", parameters);
 	}
 	// 채번하여 기존에 가장 큰 값 구하기
 	public int selectMaxReqNo() {

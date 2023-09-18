@@ -1,6 +1,7 @@
 package com.douzone.comet.service.hr.cdmjim00100.dao;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -28,7 +29,7 @@ public class cdmjim00100_MainGrid_Dao  {
 	 * @param cdmjim00100_maingrid
 	 * @return List<cdmjim00100_maingrid>
 	 */
-	public List<cdmjim00100_maingrid> selectcdmjim00100_maingridList(cdmjim00100_maingrid cdmjim00100_maingrid) throws Exception {
+	public List<cdmjim00100_maingrid> selectcdmjim00100_maingridList(Map<String, Object> cdmjim00100_maingrid) throws Exception {
 		return this.mybatisSupport.selectList(this.getClass().getName() + ".selectcdmjim00100_maingridList", cdmjim00100_maingrid);
 	}
 

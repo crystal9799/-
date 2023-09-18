@@ -10,6 +10,18 @@ import com.google.gson.annotations.SerializedName;
 @DzModel(name = "cdmjim00100_maingrid", desc = "직무분류_메인그리드", tableName = "")
 public class cdmjim00100_maingrid extends DzAbstractModel {
 
+	@SerializedName("_uid")
+	@DzModelField(name = "_uid", desc = "uid", colName = "uid", colSize = "20", isKey = false)
+	private String _uid;
+	
+	public String get_uid() {
+		return _uid;
+	}
+
+	public void set_uid(String _uid) {
+		this._uid = _uid;
+	}
+
 	@SerializedName("USE_YN")
 	@DzModelField(name="use_yn", desc="사용여부", colName="USE_YN", colSize="1", isKey=false)
 	private String USE_YN;

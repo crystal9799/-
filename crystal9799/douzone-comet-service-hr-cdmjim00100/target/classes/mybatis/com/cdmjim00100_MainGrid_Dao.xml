@@ -23,6 +23,7 @@
 		     , ACLF_TXT    
 		FROM HR_JOBDIVBASE_MST hjm
 		<where>
+			<if test='lst_ver_yn != null and lst_ver_yn.equals("true")'>
 				AND HJM.VER_CD = (
 				    SELECT
 				        MAX(HJMD.VER_CD)
@@ -31,61 +32,20 @@
 				    WHERE
 				        HJMD.COMPANY_CD = #{COMPANY_CD}
 				        AND HJMD.ACLF_NO = HJM.ACLF_NO
-			    )
-			<if test='company_cd != null and company_cd != ""'>
+			    )			
+			</if>
+			<if test='COMPANY_CD != null and COMPANY_CD != ""'>
 				AND COMPANY_CD = #{COMPANY_CD}
 			</if>
-			<if test='use_yn != null and use_yn != ""'>
+			<if test='USE_YN != null and USE_YN != ""'>
 				AND USE_YN = #{USE_YN}
 			</if>
-			<if test='job_fg != null and job_fg != ""'>
+			<if test='JOB_FG != null and JOB_FG != ""'>
 				AND JOB_FG = #{JOB_FG}				
 			</if>
 		</where>
 		ORDER BY VER_CD
 	</select>
-
-	<!-- 세부분류 그리드 -->
-	<select id="selectcdmjim00100_left_grid" resultType="com.douzone.comet.service.hr.cdmjim00100.models.cdmjim00100_left_grid">		
-		SELECT DISTINCT ACLF_NO, VER_CD , ACLF_NO , VER_CD , AELM_CD , AELM_NM , AELM_LV
-		FROM HR_JOBDIVBASE_DTL hjd 
-		WHERE ACLF_NO = #{ACLF_NO}
-		AND VER_CD = #{VER_CD}
-	</select>
-	
-	<!-- 수행준거 내역 상단 그리드 -->
-	<select id="selectcdmjim00100_right_grid1" resultType="com.douzone.comet.service.hr.cdmjim00100.models.cdmjim00100_right_grid1">		
-		SELECT DISTINCT HJD.AELM_CD
-					  , HJD.ACLF_NO
-					  , HJD.VER_CD 
-					  , HJD.PCFM_CD 
-					  , HJD.PCFM_DC 
-		FROM HR_JOBDIVBASE_DTL hjd
-		WHERE ACLF_NO = #{ACLF_NO}
-		AND VER_CD = #{VER_CD}
-		AND COMPANY_CD = #{COMPANY_CD}
-	</select>
-	
-	<!-- 수행준거 내역 하단 그리드 -->
-	<select id="selectcdmjim00100_right_grid2" resultType="com.douzone.comet.service.hr.cdmjim00100.models.cdmjim00100_right_grid2">		
-		SELECT ACLF_NO,				
-			   VER_CD,				
-			   AELM_CD,				
-			   PCFM_CD,				
-			   NEED_RQISIT_FG,		
-			   NEED_RQISIT_CD, 		
-			   NEED_RQISIT_NM 		
-		FROM HR_JOBDIVBASE_SDTL
-		WHERE COMPANY_CD = #{COMPANY_CD}
-			AND ACLF_NO = #{ACLF_NO}
-			AND VER_CD = #{VER_CD}
-			AND AELM_CD = #{AELM_CD}
-			AND PCFM_CD = #{PCFM_CD}
-		ORDER BY NEED_RQISIT_CD, NEED_RQISIT_FG
-	</select>
-
-
-
 
 
 	<insert id="insertcdmjim00100_maingrid">		

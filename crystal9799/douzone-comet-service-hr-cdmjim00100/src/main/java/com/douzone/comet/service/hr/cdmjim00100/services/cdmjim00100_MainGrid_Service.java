@@ -4,6 +4,9 @@ import com.douzone.comet.components.DzCometService;
 import com.douzone.gpd.restful.annotation.DzApiService;
 import com.douzone.gpd.restful.enums.CometModule;
 import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+
 import com.douzone.gpd.restful.annotation.DzApi;
 import com.douzone.gpd.restful.annotation.DzParam;
 import com.douzone.gpd.restful.enums.DzParamType;
@@ -15,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.douzone.gpd.components.exception.DzApplicationRuntimeException;
 import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 /** 
   * @description :
@@ -31,17 +35,24 @@ public class cdmjim00100_MainGrid_Service extends DzCometService {
 	@DzApi(url="/cdmjim00100_MainGrid_List", desc="메인그리드_조회", httpMethod=DzRequestMethod.POST)
 	public List<cdmjim00100_maingrid> cdmjim00100_MainGrid_List(
 		@DzParam(key="JOB_FG", desc="직무구분", required = false, defaultValue = "", paramType = DzParamType.Body) String JOB_FG,
-		@DzParam(key="USE_YN", desc="사용여부", required = false, defaultValue = "", paramType = DzParamType.Body) String USE_YN
+		@DzParam(key="USE_YN", desc="사용여부", required = false, defaultValue = "", paramType = DzParamType.Body) String USE_YN,
+		@DzParam(key="lst_ver_yn", desc = "최종조건", required = false, defaultValue = "", paramType = DzParamType.Body) String lst_ver_yn
 	) throws Exception {
 		List<cdmjim00100_maingrid> cdmjim00100_maingridList =  new ArrayList<cdmjim00100_maingrid>();
 		try {
-	 		cdmjim00100_maingrid cdmjim00100_maingrid = new cdmjim00100_maingrid();
-	 		System.out.println("COMPANY_CD ======== > " + this.getCompanyCode());
-	 		cdmjim00100_maingrid.setCompany_cd(this.getCompanyCode());
-	 		System.out.println(cdmjim00100_maingrid.getCompany_cd());
-			cdmjim00100_maingrid.setJob_fg(JOB_FG);
-			cdmjim00100_maingrid.setUse_yn(USE_YN);
+	 		Map<String, Object> cdmjim00100_maingrid = new HashMap<>();
+	 		System.out.println("lst_ver_yn = " + lst_ver_yn);
+	 		System.out.println("COMPANY_CD = " + this.getCompanyCode());
+	 		System.out.println("JOB_FG = " + JOB_FG);
+	 		System.out.println("USE_YN = " + USE_YN);
+	 		cdmjim00100_maingrid.put("lst_ver_yn", "true".equals(lst_ver_yn) ? "true" : null);
+	 		cdmjim00100_maingrid.put("COMPANY_CD",this.getCompanyCode());
+			cdmjim00100_maingrid.put("JOB_FG",JOB_FG);
+			cdmjim00100_maingrid.put("USE_YN",USE_YN);
 	 		cdmjim00100_maingridList = cdmjim00100_maingridDAO.selectcdmjim00100_maingridList(cdmjim00100_maingrid);
+	 		for(cdmjim00100_maingrid mg: cdmjim00100_maingridList){
+	 			mg.set_uid(UUID.randomUUID().toString());
+	 		}
 	 	} catch(Exception e) {
 	        throw new DzApplicationRuntimeException(e);
 	    }

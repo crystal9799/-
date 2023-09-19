@@ -24,17 +24,29 @@ public class cdmjim00100_right_grid2 extends DzAbstractModel {
 	@DzModelField(name="pcfm_cd", desc="수행준거코드", colName="PCFM_CD", colSize="5", isKey=false)
 	private String pcfm_cd;
 	  
-	@SerializedName("NEED_RQISIT_FG")
-	@DzModelField(name="need_rqisit_fg", desc="필요요건구분", colName="NEED_RQISIT_FG", colSize="5", isKey=false)
-	private String need_rqisit_fg;
+	@SerializedName("NEED_RQISIT_NM1")
+	@DzModelField(name="NEED_RQISIT_NM1", desc="필요지식", colName="NEED_RQISIT_NM1", colSize="100", isKey=false)
+	private String need_rqisit_nm1;
 	  
+	@SerializedName("NEED_RQISIT_NM2")
+	@DzModelField(name="NEED_RQISIT_NM2", desc="필요기술", colName="NEED_RQISIT_NM2", colSize="100", isKey=false)
+	private String need_rqisit_nm2;
+	  
+	@SerializedName("NEED_RQISIT_NM3")
+	@DzModelField(name="NEED_RQISIT_NM3", desc="필요역량", colName="NEED_RQISIT_NM3", colSize="200", isKey=false)
+	private String need_rqisit_nm3;
+	
 	@SerializedName("NEED_RQISIT_CD")
-	@DzModelField(name="need_rqisit_cd", desc="필요요건코드", colName="NEED_RQISIT_CD", colSize="5", isKey=false)
+	@DzModelField(name="NEED_RQISIT_CD", desc="코드", colName="NEED_RQISIT_CD", colSize="200", isKey=false)
 	private String need_rqisit_cd;
-	  
-	@SerializedName("NEED_RQISIT_NM")
-	@DzModelField(name="need_rqisit_nm", desc="필요요건명", colName="NEED_RQISIT_NM", colSize="200", isKey=false)
-	private String need_rqisit_nm;
+
+	public String getNeed_rqisit_cd() {
+		return need_rqisit_cd;
+	}
+
+	public void setNeed_rqisit_cd(String need_rqisit_cd) {
+		this.need_rqisit_cd = need_rqisit_cd;
+	}
 
 	public String getAclf_no() {
 		return aclf_no;
@@ -67,40 +79,37 @@ public class cdmjim00100_right_grid2 extends DzAbstractModel {
 	public void setPcfm_cd(String pcfm_cd) {
 		this.pcfm_cd = pcfm_cd;
 	}
- 
-	public String getNeed_rqisit_fg() {
-		return need_rqisit_fg;
+
+	public String getNeed_rqisit_nm1() {
+		return need_rqisit_nm1;
 	}
 
-	public void setNeed_rqisit_fg(String need_rqisit_fg) {
-		this.need_rqisit_fg = need_rqisit_fg;
-	}
- 
-	public String getNeed_rqisit_cd() {
-		return need_rqisit_cd;
+	public void setNeed_rqisit_nm1(String need_rqisit_nm1) {
+		this.need_rqisit_nm1 = need_rqisit_nm1;
 	}
 
-	public void setNeed_rqisit_cd(String need_rqisit_cd) {
-		this.need_rqisit_cd = need_rqisit_cd;
-	}
- 
-	public String getNeed_rqisit_nm() {
-		return need_rqisit_nm;
+	public String getNeed_rqisit_nm2() {
+		return need_rqisit_nm2;
 	}
 
-	public void setNeed_rqisit_nm(String need_rqisit_nm) {
-		this.need_rqisit_nm = need_rqisit_nm;
+	public void setNeed_rqisit_nm2(String need_rqisit_nm2) {
+		this.need_rqisit_nm2 = need_rqisit_nm2;
 	}
+
+	public String getNeed_rqisit_nm3() {
+		return need_rqisit_nm3;
+	}
+
+	public void setNeed_rqisit_nm3(String need_rqisit_nm3) {
+		this.need_rqisit_nm3 = need_rqisit_nm3;
+	}
+
+	@Override
+	public String toString() {
+		return "cdmjim00100_right_grid2 [aclf_no=" + aclf_no + ", ver_cd=" + ver_cd + ", aelm_cd=" + aelm_cd
+				+ ", pcfm_cd=" + pcfm_cd + ", need_rqisit_nm1=" + need_rqisit_nm1 + ", need_rqisit_nm2="
+				+ need_rqisit_nm2 + ", need_rqisit_nm3=" + need_rqisit_nm3 + "]";
+	}
+ 
 	
-    @Override
-    public String toString() {
-      return
-        "aclf_no: ["+ aclf_no +"]\n"+
-        "ver_cd: ["+ ver_cd +"]\n"+
-        "aelm_cd: ["+ aelm_cd +"]\n"+
-        "pcfm_cd: ["+ pcfm_cd +"]\n"+
-        "need_rqisit_fg: ["+ need_rqisit_fg +"]\n"+
-        "need_rqisit_cd: ["+ need_rqisit_cd +"]\n"+
-        "need_rqisit_nm: ["+ need_rqisit_nm +"]";
-    }
 }

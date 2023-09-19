@@ -1,6 +1,6 @@
-<!--##76fc822f-303d-4bb3-8412-8bd78eb71719##-->
+<!--##39c51509-9cbb-4b92-81fa-816cf62c901e##-->
 <!--##PAMPRG00100_X10005##-->
-<!--##tHR8eJfIEeta1Ux1ah3Q/mcXadVNJtmQgWpTjXnnJTGBsCIIVIZD2sWGLdBYSRMV##-->
+<!--##imxxBruD6bvIwGnJsXatbdD7135j9ZXrJBHs49Y3t2mFGVMowsJrP62cKA0G+EQ7##-->
 <!--
   DEWS UI/UX IDE - Build Result - v1.5
   # PageID: PAMPRG00100_X10005
@@ -106,8 +106,8 @@
                     existingData.UGRD_GRD_CD == changeData1.UGRD_GRD_CD &&
                     existingData.MIN_BWRK_MY == changeData1.MIN_BWRK_MY
                 ) {
-                    isDuplicate = true;
-                    break; // 중복 발견, 반복 종료
+                    isDuplicate = true; //여기서 //여기에 빨간줄 
+                    break; // 중복 발견, 반복 종료 
                 }
     
                 if (changeData1 !== undefined) {
@@ -189,7 +189,10 @@
             dews.ui.snackbar.warning(message.responseJSON.message);
         });
     }
+    
+    
     function importExcel(e) {
+        var errMsg = [];
         // 데이터 소스 초기화
         self.ImportExcel_ds.data([]);
         // 엑셀 업로드 로딩바
@@ -201,7 +204,7 @@
             mapping: {
                 "BIZAREA_NM": "사업장명",
                 "STD_YM": "기준년월",
-                "PSTN_CD": "직급코드",
+                "PSTN_NM": "직급명",
                 "TRGT_GRD_CD": "대상등급",
                 "UGRD_GRD_CD": "승급등급",
                 "MIN_BWRK_MY": "최소근무월수",
@@ -211,6 +214,125 @@
                 "BWRK_MY_CALC_STD_DT": "산정기준일",
                 "RMK_NM": "비고",
             },
+            convertor: function (row) { //데이터 변환시 사용
+                if (row.BIZAREA_NM == null || row.BIZAREA_NM == undefined) {
+                    row.BIZAREA_CD = self.BIZAREA_CD.value(); // 현재 선택된 사업장으로 저장
+                }
+                return row;
+            },
+            vaildate: function (row) {
+                var msg = "";
+                try {
+                    console.log("row.BIZAREA_CD" + row.BIZAREA_CD);
+                    if ((row.STD_YM == undefined) || row.STD_YM.length > 6) {
+                        msg = dews.string.format("기준년월이 올바르지 않습니다.\n확인 후 업로드 하십시오.({0})", row.STD.YM);
+                        console.error(msg);
+                        return false;
+                    }
+                    if ((row.PSTN_CD == undefined) || row.PSTN_CD.length > 2) {
+                        msg = dews.string.format("직급코드이 올바르지 않습니다.\n확인 후 업로드 하십시오.({0})", row.STD.YM);
+                        console.error(msg);
+                        return false;
+                    }
+                    if (row.TRGT_GRD_CD == undefined || row.TRGT_GRD_CD.length > 2) {
+                        msg = dews.string.format("대상등급이 올바르지 않습니다.\n확인 후 업로드 하십시오.({0})", row.TRGT_GRD_CD);
+                        console.error(msg);
+                        return false;
+                    }
+                    if (row.UGRD_GRD_CD == undefined || row.UGRD_GRD_CD.length > 2) {
+                        msg = dews.string.format("승급등급이 올바르지 않습니다.\n확인 후 업로드 하십시오.({0})", row.UGRD_GRD_CD);
+                        console.error(msg);
+                        return false;
+                    }
+                    if (row.MIN_BWRK_MY == undefined || row.MIN_BWRK_MY.length > 100) {
+                        msg = dews.string.format("최소근무월수가 올바르지 않습니다.\n확인 후 업로드 하십시오.({0})", row.MIN_BWRK_MY);
+                        console.error(msg);
+                        return false;
+                    }
+                } finally {
+                    if (msg) errMsg.push(msg);
+                } return true;
+            }
+        }).done(function (result) {
+    
+            console.log("갯수" + result.totalCount);
+            dews.confirm('기존 데이터에 추가하시겠습니까?', "question").yes(function () {
+    
+                self.ImportExcelGrid.dataItems().length;
+                for (i = 0; i < self.ImportExcelGrid.dataItems().length; i++) {
+                    var rowNum = self.gridMaster.dataItems().length;
+                    self.gridMaster.addRow(rowNum);
+                    idx = self.gridMaster.select();
+                    self.gridMaster.setCellValue(idx, 'SEQ', rowNum += 1, false); // 순번 컬럼에 값 설정 데이터 갯수 4부터
+                    self.gridMaster.setCellValue(idx, 'BIZAREA_CD', self.BIZAREA_CD.value(), false); // 사업장코드 넣어주기 
+                    self.gridMaster.setCellValue(idx, 'PSTN_NM', self.ImportExcelGrid.getCellValue(i, 'PSTN_NM'), false);
+                    self.gridMaster.setCellValue(idx, 'STD_YM', self.ImportExcelGrid.getCellValue(i, 'STD_YM'), false); // 기준년월에 "승급년월" 저장
+                    self.gridMaster.setCellValue(idx, 'TRGT_GRD_CD', self.ImportExcelGrid.getCellValue(i, 'TRGT_GRD_CD'), false); // 기본값 설정
+                    self.gridMaster.setCellValue(idx, 'UGRD_GRD_CD', self.ImportExcelGrid.getCellValue(i, 'UGRD_GRD_CD'), false); // 기본값 설정
+                    self.gridMaster.setCellValue(idx, 'MIN_BWRK_MY', self.ImportExcelGrid.getCellValue(i, 'MIN_BWRK_MY'), false); // 기본값 설정
+                    self.gridMaster.setCellValue(idx, 'BWRK_MY_CALC_STD_DT', self.ImportExcelGrid.getCellValue(i, 'BWRK_MY_CALC_STD_DT'), false); // 산정기준일
+    
+                    switch (self.gridMaster.getCellValue(i, 'PSTN_NM')) {
+                        case '대표이사':
+                            self.gridMaster.setCellValue(idx, 'PSTN_CD', 11, false); // 대표이사 1도 있음...우선 11으로만 넣을 예정
+                            break;
+                        case '감사':
+                            self.gridMaster.setCellValue(idx, 'PSTN_CD', 11, false);
+                            break;
+                        case '전무이사':
+                            self.gridMaster.setCellValue(idx, 'PSTN_CD', 11, false);
+                            break;
+                        case '이사':
+                            self.gridMaster.setCellValue(idx, 'PSTN_CD', 11, false);
+                            break;
+                        case '부장':
+                            self.gridMaster.setCellValue(idx, 'PSTN_CD', 11, false);
+                            break;
+                        case '차장':
+                            self.gridMaster.setCellValue(idx, 'PSTN_CD', 11, false);
+                            break;
+                        case '과장':
+                            self.gridMaster.setCellValue(idx, 'PSTN_CD', 11, false);
+                            break;
+                        case '대리':
+                            self.gridMaster.setCellValue(idx, 'PSTN_CD', 11, false);
+                            break;
+                        case '사원':
+                            self.gridMaster.setCellValue(idx, 'PSTN_CD', 11, false);
+                            break;
+                    }
+                }
+            }).no(function () {
+                // var gridMaster = self.grid_ds;
+                // var ImportExcelGrid = self.ImportExcel_ds;
+                self.gridMaster.clearRows(); //모든행 삭제 
+                for (i = 0; i < self.ImportExcelGrid.dataItems().length; i++) {
+                    var rowNum = self.gridMaster.dataItems().length;
+                    self.gridMaster.addRow(rowNum);
+                    idx = self.gridMaster.select();
+                    self.gridMaster.setCellValue(idx, 'SEQ', rowNum += 1, false); // 순번 컬럼에 값 설정 데이터 갯수 4부터
+                    self.gridMaster.setCellValue(idx, 'PSTN_NM', self.ImportExcelGrid.getCellValue(i, 'PSTN_NM'), false);
+                    self.gridMaster.setCellValue(idx, 'STD_YM', self.ImportExcelGrid.getCellValue(i, 'STD_YM'), false); // 기준년월에 "승급년월" 저장
+                    self.gridMaster.setCellValue(idx, 'TRGT_GRD_CD', self.ImportExcelGrid.getCellValue(i, 'TRGT_GRD_CD'), false); // 기본값 설정
+                    self.gridMaster.setCellValue(idx, 'UGRD_GRD_CD', self.ImportExcelGrid.getCellValue(i, 'UGRD_GRD_CD'), false); // 기본값 설정
+                    self.gridMaster.setCellValue(idx, 'MIN_BWRK_MY', self.ImportExcelGrid.getCellValue(i, 'MIN_BWRK_MY'), false); // 기본값 설정
+                    self.gridMaster.setCellValue(idx, 'BWRK_MY_CALC_STD_DT', self.ImportExcelGrid.getCellValue(i, 'BWRK_MY_CALC_STD_DT'), false); // 산정기준일
+                }
+            });
+            if (result && result.totalCount == result.success.count) {
+                for (var i = 0; i < result.success.count; i++) {
+                    self.ImportExcelGrid.setRowState(i, "created");
+                }
+                dews.ui.snackbar.info("모든 데이터를 불러왔습니다.");
+            }
+            else {
+                self.grid_ds.data([]);  // 일부라도 불러오지 못하면 데이터 초기화.
+                if (errMsg && errMsg.length > 0) {
+                    dews.error(errMsg[0]);
+                }
+            }
+        }).fail(function (error) {
+            console.error(error);
         }).done(function (e) {
             dews.ui.snackbar.info("엑셀 업로드 완료했습니다.");
         }).fail(function (e) {
@@ -416,7 +538,7 @@
           fields: [
             { field: 'BIZAREA_NM', editable: false, dataType: 'string' }, 
             { field: 'STD_YM', editable: false, dataType: 'string' }, 
-            { field: 'PSTN_CD', editable: false, dataType: 'string' }, 
+            { field: 'PSTN_NM', editable: false, dataType: 'string' }, 
             { field: 'TRGT_GRD_CD', editable: false, dataType: 'string' }, 
             { field: 'UGRD_GRD_CD', editable: false, dataType: 'string' }, 
             { field: 'MIN_BWRK_MY', editable: false, dataType: 'number' }, 
@@ -438,7 +560,7 @@
           fields: [
             { field: 'BIZAREA_NM', editable: false, dataType: 'string' }, 
             { field: 'STD_YM', editable: false, dataType: 'string' }, 
-            { field: 'PSTN_CD', editable: false, dataType: 'string' }, 
+            { field: 'PSTN_NM', editable: false, dataType: 'string' }, 
             { field: 'TRGT_GRD_CD', editable: false, dataType: 'string' }, 
             { field: 'UGRD_GRD_CD', editable: false, dataType: 'string' }, 
             { field: 'MIN_BWRK_MY', editable: false, dataType: 'number' }, 
@@ -855,9 +977,10 @@
           width: 60
         },
         {
-          field: 'PSTN_CD',
-          title: '직급코드',
-          width: 80
+          field: 'PSTN_NM',
+          title: '직급명',
+          width: 90,
+          align: 'left'
         },
         {
           field: 'TRGT_GRD_CD',
@@ -933,9 +1056,10 @@
           width: 60
         },
         {
-          field: 'PSTN_CD',
-          title: '직급코드',
-          width: 80
+          field: 'PSTN_NM',
+          title: '직급명',
+          width: 90,
+          align: 'left'
         },
         {
           field: 'TRGT_GRD_CD',

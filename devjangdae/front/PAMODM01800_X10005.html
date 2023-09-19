@@ -1,6 +1,6 @@
-<!--##338459f2-b76b-446e-908f-b463914b025c##-->
+<!--##d34615a3-25bd-4a12-a3b8-b8ba19630156##-->
 <!--##PAMODM01800_X10005##-->
-<!--##OZlceua0bVRH2Wbpf9XOaZ07W+y5yzG+o6LW+CZTDerNAUbq2BlbUgrVIw9G4tL3##-->
+<!--##mEPW/RA9EqbO8n05DjZE0snZj46/6xEOHW7xVvIYggsek18Buu6q7UneAhDdhR9V##-->
 <!--
   DEWS UI/UX IDE - Build Result - v1.5
   # PageID: PAMODM01800_X10005
@@ -527,6 +527,10 @@
           formats: {
             type: 'time',
             format: 'HH:MM'
+          },
+          editor: {
+            type: 'time',
+            format: 'HH:mm'
           }
         },
         {
@@ -536,6 +540,10 @@
           formats: {
             type: 'time',
             format: 'HH:MM'
+          },
+          editor: {
+            type: 'time',
+            format: 'HH:mm'
           }
         },
         {
@@ -543,11 +551,16 @@
           title: '휴무\n시간',
           width: 60,
           formats: {
-            type: 'number'
+            type: 'number',
+            format: '###,###'
           },
           editor: {
             type: 'number',
-            max: 99999
+            format: '###,###',
+            min: 0,
+            max: 99998.99,
+            increaseType: 'plus',
+            increaseValue: 1
           }
         },
         {
@@ -555,20 +568,95 @@
           title: '이탈\n시간',
           width: 60,
           formats: {
-            type: 'number'
+            type: 'number',
+            format: '###,###'
           },
           editor: {
             type: 'number',
-            max: 99999
+            format: '###,###',
+            min: 0,
+            max: 99998.99,
+            increaseType: 'plus',
+            increaseValue: 1
           }
         }
       ],
       fixed: {
         colCount: 0,
         rightColCount: 0
-      }
+      },
+      save: /*30543e75-538d-43ed-b711-570a2e8757d6*/ function (e) {
+            var thisGrid = e.grid;
+    
+            var startDate = e.row.data.START_DT; // 시작일
+            var endDate = e.row.data.END_DT; // 종료일
+            var startTime = e.row.data.START_TM; // 시작시간
+            var endTime = e.row.data.END_TM; // 종료시간
+    
+            if (startDate != null) { // 시작일이 변경 되면
+                var p_startDate = getFormatDate(startDate);
+                thisGrid.setCellValue(e.row.index, 'START_DT', startDate, false);
+            }
+    
+            if (startDate != null && endDate != null) { // 둘 다 입력 되면
+                var dateDiff = ((endDate - startDate) / (60 * 60 * 24 * 1000)); // 시작일과 종료일의 일수 계산
+                if (dateDiff < 0) {
+                    var fieldName = e.cell.field;
+                    if (fieldName == 'START_DT') {
+                        dews.ui.snackbar.warning("시작일은 종료일과 같거나 이전 날짜이어야 합니다.");
+                    } else if (fieldName == 'END_DT') {
+                        dews.ui.snackbar.warning("종료일은 시작일과 같거나 이후 날짜이어야 합니다.");
+                    }
+                    thisGrid.setCellValue(e.row.index, fieldName, '', false); // 변경된 날짜 피커 초기화
+                } else if (dateDiff == 0) { // 같은 날짜를 선택하면
+                    if ((startTime != null && startTime != '' && startTime != undefined) && (endTime != null && endTime != '' && endTime != undefined)) { // 둘 다 입력 되면
+                        var timeDiff = (endTime - startTime);
+                        if (timeDiff <= 0) {
+                            var fieldName = e.cell.field;
+                            if (fieldName == 'START_TM') {
+                                dews.ui.snackbar.warning("시작시간은 반드시 종료시간 이전으로 설정되어야 합니다.");
+                                thisGrid.setCellValue(e.row.index, fieldName, '', false); // 현재 선택한 피커 초기화
+                            } else if (fieldName == 'END_TM') {
+                                dews.ui.snackbar.warning("종료시간은 반드시 시작시간 이후로 설정되어야 합니다.");
+                                thisGrid.setCellValue(e.row.index, fieldName, '', false); // 현재 선택한 피커 초기화
+                            } else {
+                                dews.ui.snackbar.warning("날짜를 변경했습니다. 시작시간과 종료시간을 다시 입력하세요.");
+                                thisGrid.setCellValue(e.row.index, 'START_TM', '', false); // 시간 피커 초기화
+                                thisGrid.setCellValue(e.row.index, 'END_TM', '', false); // 시간 피커 초기화
+                            }
+                        }
+                    }
+                } else {
+                    thisGrid.setCellValue(e.row.index, 'START_DT', startDate, false);
+                    thisGrid.setCellValue(e.row.index, 'END_DT', endDate, false);
+                }
+            }
+        }
+    
     });
     
+    
+    
+    
+    /*07b6a485-770a-4d2f-9798-f0234f07f1fb*/ 
+    function getFormatDate(date) {
+        var year = date.getFullYear();              //yyyy
+        console.log("year: " + year);
+    
+        var month = (1 + date.getMonth());          //M
+        console.log("month: " + month);
+        month = month >= 10 ? month : '0' + month;  //month 두자리로 저장
+        console.log("CC month: " + month);
+    
+        var day = date.getDate();                   //d
+        console.log("day" + day);
+        day = day >= 10 ? day : '0' + day;          //day 두자리로 저장
+        console.log("CCday: " + day);
+    
+        console.log("return: " + year + '' + month + '' + day);
+    
+        return year + '' + month + '' + day;
+    }
     
     
     

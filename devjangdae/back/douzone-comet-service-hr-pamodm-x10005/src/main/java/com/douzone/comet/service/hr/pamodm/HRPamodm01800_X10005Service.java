@@ -310,7 +310,7 @@ public class HRPamodm01800_X10005Service extends DzCometService {
 	    }
 	}
 	
-	@DzApi(url="/get_tm_cd_nm", desc="소속 조회", httpMethod=DzRequestMethod.GET)
+	@DzApi(url="/get_tm_cd_nm", desc="시간 코드 조회", httpMethod=DzRequestMethod.GET)
 	public String get_tm_cd_nm(
 			@DzParam(key = "emp_no", desc = "사원번호", paramType = DzParamType.QueryString) String emp_no,
 			@DzParam(key = "bwrk_dt", desc = "근무일", paramType = DzParamType.QueryString) String bwrk_dt) throws Exception {	    

@@ -1,6 +1,6 @@
-<!--##d06d709d-4561-42f0-a5d3-07eb9f00c6fa##-->
+<!--##f81eb2a7-d993-4252-a6e1-a0ecf722411c##-->
 <!--##ESSODM01400_X10005_Sub##-->
-<!--##gjfRfSw+nFQRA4TC3uClHqKokPIBofjngCn71vCjTg1W5skYVWya0VfF3yJ8ASsv##-->
+<!--##VTHg0mjguGf+WI2IDfIAZX+kJhZKnRhcv+Wfg65qnvhznUNTtcnE65Xv7Qiteuog##-->
 <!--
   DEWS UI/UX IDE - Build Result - v1.5
   # PageID: ESSODM01400_X10005_Sub
@@ -87,7 +87,7 @@
         <li class="col-3">
           <label>근태종류</label>
           <span>
-            <select id="DNL_CD" name="DNL_CD" class="dews-ui-dropdownlist required" data-dews-value-field="HR_CD" data-dews-text-field="HR_CD_NM" data-dews-show-tooltip="true" style="width: 204px;" data-dews-show-value-tooltip="true" data-dews-use-numkey="false"></select>
+            <select id="DNL_CD" name="DNL_CD" class="dews-ui-dropdownlist required" data-dews-value-field="HR_CD" data-dews-text-field="HR_CD_NM" data-dews-bind-value="DNL_CD" data-dews-show-tooltip="true" style="width: 204px;" data-dews-show-value-tooltip="true" data-dews-use-numkey="false"></select>
           </span>
         </li>
         <li>
@@ -105,7 +105,7 @@
         <li class="col-3">
           <label>사유</label>
           <span>
-            <input id="REASON_DC" name="REASON_DC" type="text" class="dews-ui-textbox required" style="width: 500px;" />
+            <textarea id="REASON_DC" name="REASON_DC" class="dews-ui-textbox required" style="width: 500px;" rows="0"></textarea>
           </span>
         </li>
         <li class="col-3">
@@ -538,6 +538,9 @@
     
     /*cdd3d4f4-7ecd-43e5-9538-0f8096f35ab0*/ InitData();
     
+    //isExist를 전역변수로 할당
+    var isExistSub = self.initialData.isExist;
+    
     function InitData() {
         try {
     
@@ -730,16 +733,17 @@
     
     //임시저장을 눌렀을 때 신규 || 기존에 따라 데이터 처리
     function SaveTempData() {
-        var userData = self.initialData.userData;
-        var isExist = self.initialData.isExist;
+        // var userData = self.initialData.userData;
+        // var isExist = self.initialData.isExist;
     
         if (self.sub_formpanel.validate({ tooltip: true, message: '필수 항목을 입력 해주세요.' })) {
             //드롭다운리스트의 날짜 기준에 맞게 시작일과 종료일이 설정되었는지 유효성 검사
             if (!CheckPeriod()) { return false; }
     
             //기존 데이터 조회 시
-            if (isExist === true) {
-                if (self.main_ds.getDirtyDataCount() <= 0) {
+            if (isExistSub === true && self.main_grid.getCellValue(0, 'REQ_NO') != null && self.main_grid.getCellValue(0, 'REQ_NO') != undefined && self.main_grid.getCellValue(0, 'REQ_NO') != '') {
+                // if (self.main_ds.getDirtyDataCount() <= 0) {
+                if (HasChanges() <= 0) {
                     dews.ui.snackbar.warning("변경된 내용이 없습니다.");
                 } else {
                     dews.api.get(dews.url.getApiUrl("HR", "HREssodm01400_X10005Service", "update_HR_OFFAPPLY_MST_X10005MST"), {
@@ -784,7 +788,7 @@
                         // dews.ui.page.close(); // 페이지 닫기
                     });
                 }
-            } else if (isExist === false) {
+            } else if (isExistSub === false) {
                 dews.api.get(dews.url.getApiUrl("HR", "HREssodm01400_X10005Service", "insert_HR_OFFAPPLY_MST_X10005MST"), {
                     async: false,
                     data: {
@@ -819,7 +823,7 @@
                     self.main_grid.setCellValue(0, 'ATHZ_ST_CD', 1, false);
                     self.ATHZ_ST_NM.text('임시저장');
                     // dews.ui.page.close(); // 페이지 닫기
-                    isExist = true;
+                    isExistSub = true;
                 });
             }
         }
@@ -830,6 +834,62 @@
     function GetOriginData() {
         self.main_grid.setCellValue(0, 'PSTN_CD', self.PSTN_CD.text() === '연구원' ? '' : self.PSTN_CD.text());
         self.main_grid.setCellValue(0, 'POSI_CD', self.POSI_CD.text() === '사원' ? '' : self.POSI_CD.text());
+    }
+    
+    //서브페이지로 갈 때 add로 무조건 들어가기 때문에 getDirtyData로 관리될 수 없음.
+    //데이터 상태관리를 위한 별도의 함수 구현
+    function HasChanges() {
+        var grid = self.main_grid;
+        // 변경 여부에 따라 0 또는 1을 반환
+        let hasChanges = 0;
+    
+        // 변경 여부를 확인할 데이터
+        const newData = {
+            ATHZ_DOC_CD: grid.getCellValue(0, 'ATHZ_DOC_CD'),
+            ATHZ_ST_CD: grid.getCellValue(0, 'ATHZ_ST_CD'),
+            BIZAREA_CD: grid.getCellValue(0, 'BIZAREA_CD'),
+            COMPANY_CD: grid.getCellValue(0, 'COMPANY_CD'),
+            DEPT_CD: grid.getCellValue(0, 'DEPT_CD'),
+            DNLGB_CD: grid.getCellValue(0, 'DNLGB_CD'),
+            DNL_CD: grid.getCellValue(0, 'DNL_CD'),
+            EMP_NO: grid.getCellValue(0, 'EMP_NO'),
+            END_DT: grid.getCellValue(0, 'END_DT'),
+            KOR_NM: grid.getCellValue(0, 'KOR_NM'),
+            OGRP_CD: grid.getCellValue(0, 'OGRP_CD'),
+            ORG: grid.getCellValue(0, 'ORG'),
+            POSI_CD: grid.getCellValue(0, 'POSI_CD'),
+            PSTN_CD: grid.getCellValue(0, 'PSTN_CD'),
+            REASON_DC: grid.getCellValue(0, 'REASON_DC'),
+            REQ_DT: grid.getCellValue(0, 'REQ_DT'),
+            //일수는 시작일과 종료일에 의해 자동계산 되므로 비교할 필요x
+            // REQ_DY: grid.getCellValue(0, 'REQ_DY'),
+            REQ_EMP_NO: grid.getCellValue(0, 'REQ_EMP_NO'),
+            REQ_KOR_NM: grid.getCellValue(0, 'REQ_KOR_NM'),
+            REQ_NO: grid.getCellValue(0, 'REQ_NO'),
+            START_DT: grid.getCellValue(0, 'START_DT')
+        };
+    
+        // 초기 데이터와 새 데이터의 각 키를 비교하여 변경 여부 확인
+        var dateRegex = /\w{3} \w{3} \d{2} \d{4} \d{2}:\d{2}:\d{2} GMT\+\d{4} \(.+\)/;
+    
+        for (const key in newData) {
+            if (newData.hasOwnProperty(key))
+                if (dateRegex.test(self.initialData.userData[key]) && dateRegex.test(newData[key])) {
+                    var oldDate = new Date(self.initialData.userData[key]);
+                    var newDate = new Date(newData[key]);
+                    if (oldDate.getTime() !== newDate.getTime()) {
+                        hasChanges = 1;
+                        break;
+                    }
+                } else {
+                    if (self.initialData.userData[key] !== newData[key]) {
+                        hasChanges = 1;
+                        break;
+                    }
+                }
+        }
+    
+        return hasChanges;
     }
     
     

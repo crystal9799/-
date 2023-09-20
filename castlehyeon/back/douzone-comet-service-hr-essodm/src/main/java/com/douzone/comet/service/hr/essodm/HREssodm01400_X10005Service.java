@@ -136,7 +136,8 @@ public class HREssodm01400_X10005Service extends DzCometService {
 			logger.info("oldModel.getStart_dt()==>" + oldModel.getStart_dt() + "oldModel.getEnd_dt()===>"
 					+ oldModel.getEnd_dt());
 			if (!oldModel.getStart_dt().equals(parameters.get("P_START_DT"))
-					&& !oldModel.getEnd_dt().equals(parameters.get("P_END_DT"))) {
+					&& !oldModel.getEnd_dt().equals(parameters.get("P_END_DT"))
+					&& oldModel.getReq_no().equals(parameters.get("P_REQ_NO"))) {
 				model.setCompany_cd(company_cd);
 				model.setEmp_no(emp_no);
 				model.setStart_dt(start_dt);

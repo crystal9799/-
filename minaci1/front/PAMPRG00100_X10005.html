@@ -1,6 +1,6 @@
-<!--##39c51509-9cbb-4b92-81fa-816cf62c901e##-->
+<!--##72754bdd-2b80-4054-aa27-699f2b74f2a2##-->
 <!--##PAMPRG00100_X10005##-->
-<!--##imxxBruD6bvIwGnJsXatbdD7135j9ZXrJBHs49Y3t2mFGVMowsJrP62cKA0G+EQ7##-->
+<!--##K/UG2xmLIsNDdf6da8OdY+zNg020g0ABO31rQC2wnw5decK4AhIm4xySvGgUPIh/##-->
 <!--
   DEWS UI/UX IDE - Build Result - v1.5
   # PageID: PAMPRG00100_X10005
@@ -190,6 +190,67 @@
         });
     }
     
+    function processImportData() {
+    
+        var importDataCount = self.ImportExcelGrid.dataItems().length;
+        var rowNum = self.gridMaster.dataItems().length;
+    
+        // 사업장 코드 처리
+        var bizareaCdMap = {
+            '본점': 1000,
+            '부산점': 2000,
+            '여수점': 4000,
+            '평화이즈': 522
+        };
+    
+        // PSTN_NM 처리
+        var pstnNmMap = {
+            '대표이사': 11,
+            '감사': 13,
+            '전무이사': 14,
+            '이사': 16,
+            '부장': 17,
+            '차장': 18,
+            '과장': 19,
+            '대리': 20,
+            '사원': 21
+        };
+    
+        for (var i = 0; i < importDataCount; i++) {
+            self.gridMaster.addRow(rowNum);
+            var idx = self.gridMaster.select();
+    
+            var bizareaCd = self.ImportExcelGrid.getCellValue(i, 'BIZAREA_NM');
+            self.gridMaster.setCellValue(idx, 'BIZAREA_CD', bizareaCdMap[bizareaCd] || bizareaCd, false);
+    
+            var pstnNm = self.ImportExcelGrid.getCellValue(i, 'PSTN_NM');
+            self.gridMaster.setCellValue(idx, 'PSTN_CD', pstnNmMap[pstnNm] || pstnNm, false);
+    
+            // TRGT_GRD_CD 처리 (기본값 'K1' 설정)
+            var trgtGrdCd = self.ImportExcelGrid.getCellValue(i, 'TRGT_GRD_CD');
+            trgtGrdCd = (trgtGrdCd == null || trgtGrdCd == undefined) ? 'K1' : trgtGrdCd;
+    
+            // UGRD_GRD_CD 처리 (기본값 'K2' 설정)
+            var ugrdGrdCd = self.ImportExcelGrid.getCellValue(i, 'UGRD_GRD_CD');
+            ugrdGrdCd = (ugrdGrdCd == null || ugrdGrdCd == undefined) ? 'K2' : ugrdGrdCd;
+    
+            // MIN_BWRK_MY 처리 (기본값 30 설정)
+            var minBwrkMy = parseInt(self.ImportExcelGrid.getCellValue(i, 'MIN_BWRK_MY'));
+            minBwrkMy = isNaN(minBwrkMy) ? 30 : minBwrkMy; // 숫자가 아니면 기본값 30으로 설정
+    
+            self.gridMaster.setCellValue(idx, 'SEQ', rowNum += 1, false); // 순번 컬럼에 값 설정
+            self.gridMaster.setCellValue(idx, 'PSTN_NM', self.ImportExcelGrid.getCellValue(i, 'PSTN_NM'), false);
+            self.gridMaster.setCellValue(idx, 'STD_YM', self.ImportExcelGrid.getCellValue(i, 'STD_YM'), false); // 기준년월에 "승급년월" 저장
+            self.gridMaster.setCellValue(idx, 'TRGT_GRD_CD', trgtGrdCd, false); // 대상등급
+            self.gridMaster.setCellValue(idx, 'UGRD_GRD_CD', ugrdGrdCd, false); // 승급등급
+            self.gridMaster.setCellValue(idx, 'MIN_BWRK_MY', minBwrkMy, false); // 최소근무월수
+            self.gridMaster.setCellValue(idx, 'BWRK_MY_CALC_STD_DT', self.mpPROMO_YEAR_MONTH.value() + "01", false); // 산정기준일
+        }
+    
+    
+    }
+    
+    
     
     function importExcel(e) {
         var errMsg = [];
@@ -216,7 +277,7 @@
             },
             convertor: function (row) { //데이터 변환시 사용
                 if (row.BIZAREA_NM == null || row.BIZAREA_NM == undefined) {
-                    row.BIZAREA_CD = self.BIZAREA_CD.value(); // 현재 선택된 사업장으로 저장
+                    row.BIZAREA_CD = self.BIZAREA_CD.value(); // 사업장 입력안했을 경우 , 현재 선택된 사업장으로 저장
                 }
                 return row;
             },
@@ -254,71 +315,6 @@
                 } return true;
             }
         }).done(function (result) {
-    
-            console.log("갯수" + result.totalCount);
-            dews.confirm('기존 데이터에 추가하시겠습니까?', "question").yes(function () {
-    
-                self.ImportExcelGrid.dataItems().length;
-                for (i = 0; i < self.ImportExcelGrid.dataItems().length; i++) {
-                    var rowNum = self.gridMaster.dataItems().length;
-                    self.gridMaster.addRow(rowNum);
-                    idx = self.gridMaster.select();
-                    self.gridMaster.setCellValue(idx, 'SEQ', rowNum += 1, false); // 순번 컬럼에 값 설정 데이터 갯수 4부터
-                    self.gridMaster.setCellValue(idx, 'BIZAREA_CD', self.BIZAREA_CD.value(), false); // 사업장코드 넣어주기 
-                    self.gridMaster.setCellValue(idx, 'PSTN_NM', self.ImportExcelGrid.getCellValue(i, 'PSTN_NM'), false);
-                    self.gridMaster.setCellValue(idx, 'STD_YM', self.ImportExcelGrid.getCellValue(i, 'STD_YM'), false); // 기준년월에 "승급년월" 저장
-                    self.gridMaster.setCellValue(idx, 'TRGT_GRD_CD', self.ImportExcelGrid.getCellValue(i, 'TRGT_GRD_CD'), false); // 기본값 설정
-                    self.gridMaster.setCellValue(idx, 'UGRD_GRD_CD', self.ImportExcelGrid.getCellValue(i, 'UGRD_GRD_CD'), false); // 기본값 설정
-                    self.gridMaster.setCellValue(idx, 'MIN_BWRK_MY', self.ImportExcelGrid.getCellValue(i, 'MIN_BWRK_MY'), false); // 기본값 설정
-                    self.gridMaster.setCellValue(idx, 'BWRK_MY_CALC_STD_DT', self.ImportExcelGrid.getCellValue(i, 'BWRK_MY_CALC_STD_DT'), false); // 산정기준일
-    
-                    switch (self.gridMaster.getCellValue(i, 'PSTN_NM')) {
-                        case '대표이사':
-                            self.gridMaster.setCellValue(idx, 'PSTN_CD', 11, false); // 대표이사 1도 있음...우선 11으로만 넣을 예정
-                            break;
-                        case '감사':
-                            self.gridMaster.setCellValue(idx, 'PSTN_CD', 11, false);
-                            break;
-                        case '전무이사':
-                            self.gridMaster.setCellValue(idx, 'PSTN_CD', 11, false);
-                            break;
-                        case '이사':
-                            self.gridMaster.setCellValue(idx, 'PSTN_CD', 11, false);
-                            break;
-                        case '부장':
-                            self.gridMaster.setCellValue(idx, 'PSTN_CD', 11, false);
-                            break;
-                        case '차장':
-                            self.gridMaster.setCellValue(idx, 'PSTN_CD', 11, false);
-                            break;
-                        case '과장':
-                            self.gridMaster.setCellValue(idx, 'PSTN_CD', 11, false);
-                            break;
-                        case '대리':
-                            self.gridMaster.setCellValue(idx, 'PSTN_CD', 11, false);
-                            break;
-                        case '사원':
-                            self.gridMaster.setCellValue(idx, 'PSTN_CD', 11, false);
-                            break;
-                    }
-                }
-            }).no(function () {
-                // var gridMaster = self.grid_ds;
-                // var ImportExcelGrid = self.ImportExcel_ds;
-                self.gridMaster.clearRows(); //모든행 삭제 
-                for (i = 0; i < self.ImportExcelGrid.dataItems().length; i++) {
-                    var rowNum = self.gridMaster.dataItems().length;
-                    self.gridMaster.addRow(rowNum);
-                    idx = self.gridMaster.select();
-                    self.gridMaster.setCellValue(idx, 'SEQ', rowNum += 1, false); // 순번 컬럼에 값 설정 데이터 갯수 4부터
-                    self.gridMaster.setCellValue(idx, 'PSTN_NM', self.ImportExcelGrid.getCellValue(i, 'PSTN_NM'), false);
-                    self.gridMaster.setCellValue(idx, 'STD_YM', self.ImportExcelGrid.getCellValue(i, 'STD_YM'), false); // 기준년월에 "승급년월" 저장
-                    self.gridMaster.setCellValue(idx, 'TRGT_GRD_CD', self.ImportExcelGrid.getCellValue(i, 'TRGT_GRD_CD'), false); // 기본값 설정
-                    self.gridMaster.setCellValue(idx, 'UGRD_GRD_CD', self.ImportExcelGrid.getCellValue(i, 'UGRD_GRD_CD'), false); // 기본값 설정
-                    self.gridMaster.setCellValue(idx, 'MIN_BWRK_MY', self.ImportExcelGrid.getCellValue(i, 'MIN_BWRK_MY'), false); // 기본값 설정
-                    self.gridMaster.setCellValue(idx, 'BWRK_MY_CALC_STD_DT', self.ImportExcelGrid.getCellValue(i, 'BWRK_MY_CALC_STD_DT'), false); // 산정기준일
-                }
-            });
             if (result && result.totalCount == result.success.count) {
                 for (var i = 0; i < result.success.count; i++) {
                     self.ImportExcelGrid.setRowState(i, "created");
@@ -331,6 +327,26 @@
                     dews.error(errMsg[0]);
                 }
             }
+    
+            console.log("갯수" + result.totalCount);
+    
+            dews.confirm(result.totalCount + "건의 데이터를 추가하셨습니다.\n '기존 데이터에 추가하시겠습니까?", "question").yes(function () {
+    
+                processImportData();
+    
+            }).no(function () { //여기서부터 시작 기존 메인 그리드 밀어버리고 데이터 추가 
+    
+                //self.gridMaster.clearRows(); getDirtyData 로 인식 못함
+                var rowCount = self.gridMaster.dataItems().length;
+                for (var i = rowCount - 1; i >= 0; i--) {
+                    self.gridMaster.removeRow(i); // 모든 행 삭제
+                }
+                console.log("getDirtyData" + self.grid_ds.getDirtyDataCount());
+    
+                processImportData();
+    
+            });
+    
         }).fail(function (error) {
             console.error(error);
         }).done(function (e) {
@@ -581,7 +597,7 @@
     dews.ui.mainbuttons.add.click(/*71614df6-9a67-4b0a-8f1b-7fb106ef6a8f*/ function () {
         // TODO: 그리드에 데이터를 추가합니다.
         self.gridMaster.addRow(0);  // 그리드 제일 위쪽에 추가
-        idx = self.gridMaster.select();
+        var idx = self.gridMaster.select();
         var allData = self.gridMaster.dataItems();
         var seq = allData.length > 0 ? allData.length : 0; // 데이터가 있을 경우 마지막 순번에서 +1, 없을 경우 1로 시작
     
@@ -1013,19 +1029,6 @@
           width: 80
         },
         {
-          field: 'BWRK_MY_CALC_STD_DT',
-          title: '산정기준일',
-          width: 80,
-          formats: {
-            type: 'date',
-            format: 'yyyy-MM-dd'
-          },
-          editor: {
-            type: 'date',
-            format: 'yyyy-MM-dd'
-          }
-        },
-        {
           field: 'RMK_NM',
           title: '비고',
           width: 90,
@@ -1090,19 +1093,6 @@
           field: 'LEDU_CD',
           title: '학력코드',
           width: 80
-        },
-        {
-          field: 'BWRK_MY_CALC_STD_DT',
-          title: '산정기준일',
-          width: 80,
-          formats: {
-            type: 'date',
-            format: 'yyyy-MM-dd'
-          },
-          editor: {
-            type: 'date',
-            format: 'yyyy-MM-dd'
-          }
         },
         {
           field: 'RMK_NM',

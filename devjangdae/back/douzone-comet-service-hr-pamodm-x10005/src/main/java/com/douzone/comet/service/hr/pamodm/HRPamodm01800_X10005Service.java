@@ -4,6 +4,8 @@ import com.douzone.comet.components.DzCometService;
 import com.douzone.gpd.restful.annotation.DzApiService;
 import com.douzone.gpd.restful.enums.CometModule;
 import java.util.List;
+import java.util.Map;
+
 import com.douzone.gpd.restful.annotation.DzApi;
 import com.douzone.gpd.restful.annotation.DzParam;
 import com.douzone.gpd.restful.enums.DzParamType;
@@ -12,9 +14,13 @@ import com.douzone.comet.service.hr.pamodm.dao.Pamodm01800_X10005Dao;
 import com.douzone.comet.service.hr.pamodm.models.Pamodm01800_X10005Model;
 import com.douzone.comet.service.util.StringUtil;
 import com.douzone.comet.service.util.exception.DzExceptionWrapper;
+import com.douzone.comet.service.util.mybatis.MyBatisUtil;
 import com.douzone.gpd.restful.model.DzGridModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import com.douzone.gpd.components.exception.DzApplicationRuntimeException;
+import com.douzone.gpd.jdbc.core.MapperType;
+import com.douzone.gpd.jdbc.objects.SqlPack;
+
 import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.Date;
@@ -185,5 +191,31 @@ public class HRPamodm01800_X10005Service extends DzCometService {
 		} catch (Exception e) {
 			throw DzExceptionWrapper.getDzApplicationRuntimeException(e);
 		}
+	}
+	
+	@DzApi(url="/list_bizarea_cd", desc="사업장", httpMethod=DzRequestMethod.GET)
+	public List<Map<String, Object>> list_bizarea_cd() throws Exception {	    
+	    try {
+			String sqlText;
+			SqlPack so = new SqlPack();
+			
+			HashMap<String, Object> parameters = new HashMap<String, Object>();
+			
+			parameters.put("P_COMPANY_CD", this.getCompanyCode());
+			
+			sqlText = MyBatisUtil.getId(this.getClass(), "dao.Pamodm01800_X10005Dao.list_bizarea_cd");
+			so = new SqlPack();
+			so.setStoreProcedure(false);
+			so.setMapperType(MapperType.MyBatis);
+			so.getInParameters().putAll(parameters);
+			so.setSqlText(sqlText);
+			
+			List<Map<String, Object>> checkSdtl = this.queryForList(so);
+			
+			return checkSdtl;
+	        
+	    } catch (Exception e) {
+	        throw new DzApplicationRuntimeException(e);
+	    }
 	}
 }

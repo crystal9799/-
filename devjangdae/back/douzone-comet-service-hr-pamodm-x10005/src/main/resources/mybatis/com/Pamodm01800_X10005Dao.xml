@@ -150,7 +150,7 @@
 		    AND A.EMP_NO = E.EMP_NO
 		    
 			LEFT OUTER JOIN (
-								SELECT X.COMPANY_CD, EMP_NO, TM_CD_NM, BIZAREA_CD
+								SELECT DISTINCT X.COMPANY_CD, EMP_NO, TM_CD_NM, BIZAREA_CD
 			    				FROM HR_OFFTIME_MST X
 			    				
 			    				INNER JOIN (
@@ -189,7 +189,7 @@
 		</if>
 		
 		<if test='P_DEPT_CD[0] != null and P_DEPT_CD[0] != ""'>
-			AND C.DEPT_CD IN
+			AND B.DEPT_CD IN
 			<foreach item="item" index="index" collection="P_DEPT_CD"
 				open="(" separator="," close=")"> #{item} </foreach>
 		</if>
@@ -290,5 +290,54 @@
 			AND EMP_NO = #{emp_no}
 			AND START_DT = #{start_dt}
 			AND END_DT = #{end_dt}
+	</select>
+	
+	<select id="list_bizarea_cd" parameterType="hashMap" resultType="hashMap">
+		SELECT 
+		    MBM.BIZAREA_CD,
+		    (
+		        CASE 
+		            WHEN MBL.BIZAREA_NM IS NULL OR MBL.BIZAREA_NM = '' THEN MBM.BIZAREA_NM 
+		            ELSE MBL.BIZAREA_NM 
+		        END 
+		    ) AS BIZAREA_NM,
+		    MBM.BIZR_NO,
+		    (
+		        CASE 
+		            WHEN MBL.BASE_ADDR IS NULL OR MBL.BASE_ADDR = '' THEN MBM.BASE_ADDR 
+		            ELSE MBL.BASE_ADDR 
+		        END 
+		    ) AS BASE_ADDR,
+		    (
+		        CASE 
+		            WHEN MBL.DTL_ADDR IS NULL OR MBL.DTL_ADDR = '' THEN MBM.DTL_ADDR 
+		            ELSE MBL.DTL_ADDR 
+		        END 
+		    ) AS DTL_ADDR,
+		    MBM.VAT_BIZAREA_VAT_CD   
+		FROM 
+		    MA_BIZAREA_MST MBM
+		    LEFT OUTER JOIN MA_BIZAREA_LDTL MBL 
+		        ON MBL.COMPANY_CD = MBM.COMPANY_CD
+		        AND MBL.BIZAREA_CD = MBM.BIZAREA_CD
+		        AND MBL.LANG_CD = 'KO'
+		WHERE 
+		    MBM.COMPANY_CD = #{P_COMPANY_CD}
+		    AND (
+		        (MBM.BIZ_BGN_DT IS NULL OR MBM.BIZ_BGN_DT = '' OR MBM.BIZ_BGN_DT &lt;= '20230920')
+		        AND (MBM.BIZ_END_DT IS NULL OR MBM.BIZ_END_DT = '' OR MBM.BIZ_END_DT &gt;= '20230920')
+		    )
+		    AND (
+		        'Y' = 'N'
+		        OR MBM.BIZAREA_CD IN ('1000')
+		    )
+		    AND (
+		        UPPER(MBM.BIZAREA_CD) LIKE CONCAT(CONCAT('%', UPPER('')), '%')
+		        OR UPPER(MBM.BIZAREA_NM) LIKE CONCAT(CONCAT('%', UPPER('')), '%')
+		        OR UPPER(MBL.BIZAREA_NM) LIKE CONCAT(CONCAT('%', UPPER('')), '%')
+		        OR UPPER(MBM.BIZR_NO) LIKE CONCAT(CONCAT('%', UPPER('')), '%')
+		    )
+		ORDER BY 
+		    MBM.BIZAREA_CD ASC
 	</select>
 </mapper>

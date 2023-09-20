@@ -1,6 +1,6 @@
-<!--##d3e0155e-f54f-411c-8b5b-e2ca57edc97d##-->
+<!--##7246c05f-0ed3-47c5-af03-82ab25ee25f9##-->
 <!--##PAMODM01800_X10005##-->
-<!--##RxMoCRAcMsXzqc8mIqefBEGd7jJUIwQTJ0h2TG68USYCaziiuMB/MWSWsXActafl##-->
+<!--##KYjkTzBpOppEj37J3mWUs1NX4HnJQS/EhfEUe5NUweummK7sx1OImmG9Z3r3uIqQ##-->
 <!--
   DEWS UI/UX IDE - Build Result - v1.5
   # PageID: PAMODM01800_X10005
@@ -348,15 +348,15 @@
     self.s_DOF_TP.setDataSource(self.pipeData_ZC01_10005);
     self.s_EMP_NO.on('codedialog', /*cb79863b-31a6-46cd-b298-9bc53ff1a028*/ function (e) {
         console.log(1);
-        // if (self.s_BIZAREA_CD.codes() == "" || self.s_BIZAREA_CD.codes() == undefined || self.s_BIZAREA_CD.codes() == null) {
-        //     dews.alert("사업장은 필수입력 항목입니다.", 'warning');
-        //     return false;
-        // }
+        if (self.s_BIZAREA_CD.codes() == "" || self.s_BIZAREA_CD.codes() == undefined || self.s_BIZAREA_CD.codes() == null) {
+            dews.alert("사업장은 필수입력 항목입니다.", 'warning');
+            return false;
+        }
     
-        // if (self.s_DEPT_CD.codes() == "" || self.s_DEPT_CD.codes() == undefined || self.s_DEPT_CD.codes() == null) {
-        //     dews.alert("부서는 필수입력 항목입니다.", 'warning');
-        //     return false;
-        // }
+        if (self.s_DEPT_CD.codes() == "" || self.s_DEPT_CD.codes() == undefined || self.s_DEPT_CD.codes() == null) {
+            dews.alert("부서는 필수입력 항목입니다.", 'warning');
+            return false;
+        }
         e.callback = function (data) {
             self.grid1.addRow();
             self.grid1.setCellValue(self.grid1.select(), 'EMP_NO', data.EMP_NO);

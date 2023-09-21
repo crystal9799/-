@@ -1,6 +1,6 @@
-<!--##3293c8c0-e125-4dad-97d7-71b89605de2e##-->
+<!--##d0353623-cf81-4987-b985-024162194657##-->
 <!--##PAMPRG00100_X10005##-->
-<!--##0BsACZ7queihAS4d2V+udFgJevYpGxhnrSPT3dtWG7FbbfN2pkJUmoV++S0O5WAa##-->
+<!--##hzOAhdLa+4PrXdnDuTLKjcBo0ej7HLZZ41w27+ZI6qhwqDkszdtWzEEjxbDrsjC8##-->
 <!--
   DEWS UI/UX IDE - Build Result - v1.5
   # PageID: PAMPRG00100_X10005
@@ -33,13 +33,16 @@
     </li>
   </ul>
 </div>
-<div id="containerpanel1" class="dews-ui-container-panel" data-dews-fit-bottom="true">
+<div id="containerpanel1" class="dews-ui-container-panel" data-dews-container-height="263" data-dews-fit-bottom="true">
   <div id="containerpanelitem1" class="dews-container-item" data-dews-position="normal">
     <div id="gridMaster" class="dews-ui-grid"></div>
-    <div id="excelFormGrid" class="dews-ui-grid"></div>
-    <div id="ImportExcelGrid" class="dews-ui-grid"></div>
+    <div id="containerpanel2" class="dews-ui-container-panel" data-dews-container-height="446" data-dews-fit-bottom="true">
+      <div id="containerpanelitem2" class="dews-container-item" data-dews-position="normal"></div>
+    </div>
   </div>
 </div>
+<div id="excelFormGrid" class="dews-ui-grid" style="display: none;"></div>
+<div id="ImportExcelGrid" class="dews-ui-grid" style="display: none;"></div>
 
 <style>
     
@@ -59,6 +62,7 @@
     self.mainButtons.delete.useDefaultConfirm = false;
     //사용자에게 기본으로 설정된 확인 메시지를 출력 후 확인 받았을 경우에만 핸들러를 실행합니다. (※ 생략가능 / 기본값: true)
     
+    
     function getCurrentMonth() {
         var date = new Date();
         var year = date.getFullYear();              //yyyy
@@ -68,10 +72,34 @@
         return year + '' + month;
     }
     
+    // 데이터를 로컬 스토리지에 저장하는 함수
+    function saveDataToLocalStorage(data) {
+        localStorage.setItem('gridData', JSON.stringify(data));
+    }
+    
+    // 데이터를 로컬 스토리지에서 가져오는 함수
+    function getDataFromLocalStorage() {
+        var storedData = localStorage.getItem('gridData');
+        return storedData ? JSON.parse(storedData) : [];
+    }
+    
     function searchData() {
         dews.ui.loading.show();
+        //self.grid_ds.read();
+        //로컬 스토리지에서 데이터 가져오기
+        var storedData = getDataFromLocalStorage();
     
-        self.grid_ds.read();
+        if (storedData && storedData.length > 0) {
+            // 로컬 스토리지에 데이터가 있을 경우, 그 데이터를 그리드 데이터로 설정
+            self.grid_ds.data(storedData);
+        } else {
+            // 로컬 스토리지에 데이터가 없을 경우, 빈 데이터를 그리드에 설정
+            self.grid_ds.data([]); // 빈 데이터 설정
+            // 그리드 데이터 로드
+            self.grid_ds.read();
+            saveDataToLocalStorage(self.grid_ds.data());
+        }
+    
         dews.ui.loading.hide();
     }
     
@@ -146,7 +174,6 @@
     
         return duplicateRows.size > 0; // 중복 발견 여부 반환
     }
-    
     
     function checkListExist() { // 데이터 삭제 전, 자료가 존재하는지 확인
         var existFlag = false;
@@ -705,7 +732,10 @@
       editable: true,
       selectable: true,
       sortable: false,
+      noData: true,
+      noDataMessage: '데이터가 없습니다',
       copyMode: 'cell',
+      movable: true,
       columns: [
         {
           field: 'STD_YM',
@@ -1064,6 +1094,7 @@
     
     /*534ba9e1-a845-40e6-8d1e-d324d5bfa4cc*/ self.mpPROMO_YEAR_MONTH.value(getCurrentMonth()); //데이터 있는 기준 날짜 확인해야 함 
     self.gridMaster.SEQ = 0;
+    
     
     
     

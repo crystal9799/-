@@ -1,6 +1,6 @@
-<!--##f81eb2a7-d993-4252-a6e1-a0ecf722411c##-->
+<!--##c3ec4aee-4bab-4d94-98ea-b8d8f7f61647##-->
 <!--##ESSODM01400_X10005_Sub##-->
-<!--##VTHg0mjguGf+WI2IDfIAZX+kJhZKnRhcv+Wfg65qnvhznUNTtcnE65Xv7Qiteuog##-->
+<!--##wSj1A8vaPrYbRqSGbv/Mr7+ia4B+mESmJWP6021stSYol06vzZgjr9aVJyDsbpiA##-->
 <!--
   DEWS UI/UX IDE - Build Result - v1.5
   # PageID: ESSODM01400_X10005_Sub
@@ -31,13 +31,13 @@
         <li>
           <label>직급</label>
           <span>
-            <input id="PSTN_CD" name="PSTN_CD" type="text" class="dews-ui-textbox basic" readonly="readonly" />
+            <input id="PSTN_NM" name="PSTN_NM" type="text" class="dews-ui-textbox basic" readonly="readonly" />
           </span>
         </li>
         <li>
           <label>직군</label>
           <span>
-            <input id="OGRP_CD" name="OGRP_CD" type="text" class="dews-ui-textbox basic" readonly="readonly" />
+            <input id="OGRP_NM" name="OGRP_NM" type="text" class="dews-ui-textbox basic" readonly="readonly" />
           </span>
         </li>
         <li class="col-3">
@@ -49,7 +49,7 @@
         <li>
           <label>직위</label>
           <span>
-            <input id="POSI_CD" name="POSI_CD" type="text" class="dews-ui-textbox basic" readonly="readonly" />
+            <input id="POSI_NM" name="POSI_NM" type="text" class="dews-ui-textbox basic" readonly="readonly" />
           </span>
         </li>
         <li style="display: none;">
@@ -128,7 +128,7 @@
         </li>
       </ul>
     </div>
-    <div id="main_grid" class="dews-ui-grid"></div>
+    <div id="main_grid" class="dews-ui-grid" style="display: none;"></div>
   </div>
 </div>
 
@@ -147,6 +147,23 @@
 
     /*b86609c9-3017-4aef-896e-65022e1080a4*/ //# sourceURL=ESSODM01400_x10005_Sub.js
     self.COMPANY_CD.text(self.user.companyCode);
+    // 직급, 직위 데이터
+    const positionData = [
+        { PSTN_CD: '11', PSTN_NM: '대표이사' },
+        { PSTN_CD: '13', PSTN_NM: '감사' },
+        { PSTN_CD: '14', PSTN_NM: '전무이사' },
+        { PSTN_CD: '16', PSTN_NM: '이사' },
+        { PSTN_CD: '17', PSTN_NM: '부장' },
+        { PSTN_CD: '18', PSTN_NM: '차장' },
+        { PSTN_CD: '19', PSTN_NM: '과장' },
+        { PSTN_CD: '20', PSTN_NM: '대리' },
+        { PSTN_CD: '21', PSTN_NM: '사원' },
+    ];
+    const ogrpData = [
+        { OGRP_CD: '1', OGRP_NM: '임원' },
+        { OGRP_CD: '2', OGRP_NM: '일반직' },
+        { OGRP_CD: '3', OGRP_NM: '생산직' }
+    ];
     
     
     
@@ -332,12 +349,12 @@
     self.$REQ_EMP_NO.on('change', /*1f1fac4a-039e-4381-8e09-422d31b52d2d*/ function (e) {
         self.userInfo_formpanel.bindTo(self.main_grid);
         self.sub_formpanel.bindTo(self.main_grid);
-        GetOriginData();
+        // GetOriginData();
     });
     self.$REQ_KOR_NM.on('change', /*7d0bb8eb-1fce-45ec-a9a2-7857091a706a*/ function (e) {
         self.userInfo_formpanel.bindTo(self.main_grid);
         self.sub_formpanel.bindTo(self.main_grid);
-        GetOriginData();
+        // GetOriginData();
     });
     self.$CHANGE_REQ_USERT.on('click', /*10c3134e-6820-4e85-a391-74ef74a1d7bd*/ function (e) {
         self.s_EMP_NO.open();
@@ -353,18 +370,18 @@
         self.main_grid.setCellValue(self.main_grid.select(), 'REQ_DY', GetREQ_DY());
         self.userInfo_formpanel.bindTo(self.main_grid);
         self.sub_formpanel.bindTo(self.main_grid);
-        GetOriginData();
+        // GetOriginData();
     });
     self.END_DT.on('change', /*a139e6fd-50ba-44f9-b311-e7d4e459801d*/ function (e) {
         self.main_grid.setCellValue(self.main_grid.select(), 'REQ_DY', GetREQ_DY());
         self.userInfo_formpanel.bindTo(self.main_grid);
         self.sub_formpanel.bindTo(self.main_grid);
-        GetOriginData();
+        // GetOriginData();
     });
     self.$REASON_DC.on('change', /*6fbf625f-c7be-46c0-973b-2fc0932200a0*/ function (e) {
         self.userInfo_formpanel.bindTo(self.main_grid);
         self.sub_formpanel.bindTo(self.main_grid);
-        GetOriginData();
+        // GetOriginData();
     });
     self.$ATHZ_ST_NM.on('change', /*1c610c93-aae0-41c7-acdf-94d47324e4d1*/ function (e) {
     
@@ -522,13 +539,13 @@
       change: /*c04e9cc0-71cf-4547-95b0-7d9c0086bb38*/ function (e) {
             self.userInfo_formpanel.bindTo(self.main_grid);
             self.sub_formpanel.bindTo(self.main_grid);
-            GetOriginData();
+            // GetOriginData();
         }
     ,
       dataBound: /*ed8e6da1-4b37-4159-9ad7-d1e40519430c*/ function (e) {
             self.userInfo_formpanel.bindTo(self.main_grid);
             self.sub_formpanel.bindTo(self.main_grid);
-            GetOriginData();
+            // GetOriginData();
         }
     
     });
@@ -540,6 +557,7 @@
     
     //isExist를 전역변수로 할당
     var isExistSub = self.initialData.isExist;
+    
     
     function InitData() {
         try {
@@ -565,8 +583,9 @@
                 }
     
                 //직급, 직위에 대한 기본값 설정
-                self.PSTN_CD.text(userData.PSTN_CD === undefined || userData.PSTN_CD === '' ? '연구원' : userData.PSTN_CD); //직급
-                self.POSI_CD.text(userData.POSI_CD === undefined || userData.POSI_CD === '' ? '사원' : userData.POSI_CD); // 직위
+                self.PSTN_NM.text(GetPSTNPOSI_NM(userData.PSTN_CD)); //직급
+                self.POSI_NM.text(GetPSTNPOSI_NM(userData.POSI_CD)); // 직위
+                self.OGRP_NM.text(GetOGRP_NM(userData.OGRP_CD)); // 직군
                 //데이터소스에서 조회된 값이 아닌 파라미터로 넘겨받은 데이터를 그리드에 바인딩.
                 self.main_grid.addRow();
                 self.userInfo_formpanel.bindTo(self.main_grid);
@@ -585,6 +604,7 @@
                 //직급, 직위는 undefined라면 보여지는 임시값이므로 공백으로 바로 넣어주어야함.
                 self.main_grid.setCellValue(0, 'PSTN_CD', userData.PSTN_CD);
                 self.main_grid.setCellValue(0, 'POSI_CD', userData.POSI_CD);
+                self.main_grid.setCellValue(0, 'OGRP_CD', userData.OGRP_CD);
             } else {
                 self.main_grid.addRow();
                 //기본정보 패널
@@ -621,6 +641,7 @@
                 //직급, 직위는 undefined라면 보여지는 임시값이므로 공백으로 바로 넣어주어야함.
                 self.main_grid.setCellValue(0, 'PSTN_CD', self.user.dutyRankCode);
                 self.main_grid.setCellValue(0, 'POSI_CD', self.user.dutyCode);
+                self.main_grid.setCellValue(0, 'OGRP_CD',self.user.gaapCode);
             }
         } catch (error) {
             dews.error(error);
@@ -690,17 +711,17 @@
             var grid = self.main_grid;
             grid.setCellValue(grid.select(), 'EMP_NO', data[0].EMP_NO, false); // 사원번호
             grid.setCellValue(grid.select(), 'KOR_NM', data[0].KOR_NM, false); // 한글명
-            grid.setCellValue(grid.select(), 'PSTN_CD', data[0].PSTN_CD === null ? '연구원' : data[0].PSTN_CD, false); // 직급코드
+            grid.setCellValue(grid.select(), 'PSTN_CD', data[0].PSTN_CD, false); // 직급코드
             grid.setCellValue(grid.select(), 'OGRP_CD', data[0].OGRP_CD, false); // 직군코드
             grid.setCellValue(grid.select(), 'ORG', data[0].ORG === null ? data[0].PATH : data[0].ORG, false); // 소속
-            grid.setCellValue(grid.select(), 'POSI_CD', data[0].POSI_CD === undefined ? '사원' : data[0].POSI_CD, false); // 직위코드
+            grid.setCellValue(grid.select(), 'POSI_CD', data[0].POSI_CD, false); // 직위코드
             grid.setCellValue(grid.select(), 'DEPT_CD', data[0].DEPT_CD, false);
             self.EMP_NO.text(data[0].EMP_NO);
             self.KOR_NM.text(data[0].KOR_NM);
-            self.PSTN_CD.text(data[0].PSTN_CD === null ? '연구원' : data[0].PSTN_CD);
-            self.OGRP_CD.text(data[0].OGRP_CD);
+            self.PSTN_NM.text(GetPSTNPOSI_NM(data[0].PSTN_CD));
+            self.OGRP_NM.text(GetOGRP_NM(data[0].OGRP_CD));
             self.ORG.text(data[0].ORG === null ? data[0].PATH : data[0].ORG);
-            self.POSI_CD.text(data[0].POSI_CD === null ? '사원' : data[0].POSI_CD);
+            self.POSI_NM.text(GetPSTNPOSI_NM(data[0].POSI_CD));
         }).fail(function (xhr, status, error) {
             dews.error(xhr.responseJSON.message);
         });
@@ -831,6 +852,7 @@
     
     //직군, 직위 등의 임시값 대신 원래값으로 그리드에 저장해놓는 메서드
     //데이터가 바인딩 될 때마다 넣어주어야함.
+    //0921 GetPSTNPOSI()함수로 필요없어짐.
     function GetOriginData() {
         self.main_grid.setCellValue(0, 'PSTN_CD', self.PSTN_CD.text() === '연구원' ? '' : self.PSTN_CD.text());
         self.main_grid.setCellValue(0, 'POSI_CD', self.POSI_CD.text() === '사원' ? '' : self.POSI_CD.text());
@@ -890,6 +912,29 @@
         }
     
         return hasChanges;
+    }
+    
+    // PSTN_CD에 해당하는 PSTN_NM을 반환하는 함수
+    function GetPSTNPOSI_NM(code) {
+        // PSTN_CD가 NULL인 경우 '사원'을 반환
+        if (code === null) {
+            return '';
+        }
+    
+        // PSTN_CD에 해당하는 PSTN_NM을 찾아 반환
+        const position = positionData.find((item) => item.PSTN_CD === code);
+    
+        // PSTN_CD가 데이터에 없는 경우에도 '사원'을 반환
+        return position ? position.PSTN_NM : '';
+    }
+    function GetOGRP_NM(code) {
+        if (code === null) {
+            return '';
+        }
+    
+        const ogrp = ogrpData.find((item) => item.OGRP_CD === code);
+    
+        return ogrp ? ogrp.OGRP_NM : '';
     }
     
     

@@ -1,6 +1,6 @@
-<!--##d0353623-cf81-4987-b985-024162194657##-->
+<!--##3cfa8146-99a6-4c82-8bd0-519397ab498f##-->
 <!--##PAMPRG00100_X10005##-->
-<!--##hzOAhdLa+4PrXdnDuTLKjcBo0ej7HLZZ41w27+ZI6qhwqDkszdtWzEEjxbDrsjC8##-->
+<!--##Hbk5YtYHHFJ3oP/1GQoYeoAex0+nzF/aB2FFcvO0HdLCVUYxgY9QBx22fEOhRBRe##-->
 <!--
   DEWS UI/UX IDE - Build Result - v1.5
   # PageID: PAMPRG00100_X10005
@@ -41,8 +41,8 @@
     </div>
   </div>
 </div>
-<div id="excelFormGrid" class="dews-ui-grid" style="display: none;"></div>
-<div id="ImportExcelGrid" class="dews-ui-grid" style="display: none;"></div>
+<div id="excelFormGrid" class="dews-ui-grid"></div>
+<div id="ImportExcelGrid" class="dews-ui-grid"></div>
 
 <style>
     
@@ -219,12 +219,12 @@
         var rowNum = self.gridMaster.dataItems().length;
     
         // 사업장 코드 처리
-        var bizareaCdMap = {
-            '본점': 1000,
-            '부산점': 2000,
-            '여수점': 4000,
-            '평화이즈': 522
-        };
+        // var bizareaCdMap = {
+        //     '본점': 1000,
+        //     '부산점': 2000,
+        //     '여수점': 4000,
+        //     '평화이즈': 522
+        // };
     
         // PSTN_NM 처리
         var pstnNmMap = {
@@ -238,17 +238,12 @@
             '대리': 20,
             '사원': 21
         };
+        console.log("importDataCount" + importDataCount);
     
         for (var i = 0; i < importDataCount; i++) {
             self.gridMaster.addRow(rowNum);
             var idx = self.gridMaster.select();
-    
-            var bizareaCd = self.ImportExcelGrid.getCellValue(i, 'BIZAREA_NM');
-            self.gridMaster.setCellValue(idx, 'BIZAREA_CD', bizareaCdMap[bizareaCd] || bizareaCd, false);
-    
             var pstnNm = self.ImportExcelGrid.getCellValue(i, 'PSTN_NM');
-            self.gridMaster.setCellValue(idx, 'PSTN_CD', pstnNmMap[pstnNm] || pstnNm, false);
-    
             // TRGT_GRD_CD 처리 (기본값 'K1' 설정)
             var trgtGrdCd = self.ImportExcelGrid.getCellValue(i, 'TRGT_GRD_CD');
             trgtGrdCd = (trgtGrdCd == null || trgtGrdCd == undefined) ? 'K1' : trgtGrdCd;
@@ -261,8 +256,10 @@
             var minBwrkMy = parseInt(self.ImportExcelGrid.getCellValue(i, 'MIN_BWRK_MY'));
             minBwrkMy = isNaN(minBwrkMy) ? 30 : minBwrkMy; // 숫자가 아니면 기본값 30으로 설정
     
-            self.gridMaster.setCellValue(idx, 'SEQ', rowNum += 1, false); // 순번 컬럼에 값 설정
             self.gridMaster.setCellValue(idx, 'PSTN_NM', self.ImportExcelGrid.getCellValue(i, 'PSTN_NM'), false);
+            self.gridMaster.setCellValue(idx, 'PSTN_CD', pstnNmMap[pstnNm], false);
+            self.gridMaster.setCellValue(idx, 'BIZAREA_CD', self.BIZAREA_CD.value(), false);
+            self.gridMaster.setCellValue(idx, 'SEQ', rowNum += 1, false); // 순번 컬럼에 값 설정
             self.gridMaster.setCellValue(idx, 'STD_YM', self.ImportExcelGrid.getCellValue(i, 'STD_YM'), false); // 기준년월에 "승급년월" 저장
             self.gridMaster.setCellValue(idx, 'TRGT_GRD_CD', trgtGrdCd, false); // 대상등급
             self.gridMaster.setCellValue(idx, 'UGRD_GRD_CD', ugrdGrdCd, false); // 승급등급
@@ -309,8 +306,8 @@
                     msg = dews.string.format("기준년월이 올바르지 않습니다.\n확인 후 업로드 하십시오.({0})", row.STD_YM);
                     console.error(msg); //콘솔에 값누락 확인 
                     return false;
-                } else if (!row.PSTN_CD || row.PSTN_CD.length > pstnCdMaxLength) {
-                    msg = dews.string.format("직급명이 올바르지 않습니다.\n확인 후 업로드 하십시오.({0}/{1})", row.STD_YM, row.PSTN_CD);
+                } else if (!row.PSTN_NM || row.PSTN_NM.length > pstnCdMaxLength) {
+                    msg = dews.string.format("직급명이 올바르지 않습니다.\n확인 후 업로드 하십시오.({0}/{1})", row.STD_YM, row.PSTN_NM);
                     console.error(msg);
                     return false;
                 } else if (!row.TRGT_GRD_CD || row.TRGT_GRD_CD.length > grdCdMaxLength) {

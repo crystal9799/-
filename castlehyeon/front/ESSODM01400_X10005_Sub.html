@@ -1,6 +1,6 @@
-<!--##c3ec4aee-4bab-4d94-98ea-b8d8f7f61647##-->
+<!--##e48bb2b2-bc7f-42d5-a89b-fbd6e4d784b6##-->
 <!--##ESSODM01400_X10005_Sub##-->
-<!--##wSj1A8vaPrYbRqSGbv/Mr7+ia4B+mESmJWP6021stSYol06vzZgjr9aVJyDsbpiA##-->
+<!--##T5VMuHIiCtlP6ZhALDFHO9OOil4tYJGY+sx2N6k6M4+/Vz6ChOZZWnJLW4XSiQ4A##-->
 <!--
   DEWS UI/UX IDE - Build Result - v1.5
   # PageID: ESSODM01400_X10005_Sub
@@ -266,6 +266,90 @@
     { DNL_CD: "3", DNL_NM: "반려"},
     { DNL_CD: "4", DNL_NM: "결재완료"}]
     });
+    dews.api.get(dews.url.getApiUrl('CM', 'CommonCodeDtlService', 'common_ci_codeDtl_list'),{
+      async: false,
+      data: {
+          end_dt: '',
+          foreign_yn: '',
+          field_cd_pipe: 'P00110|P00050|P00650|P00660|P41090|P00640',
+          module_cd: 'HR',
+          syscode_yn: '',
+          keyword: '',
+          base_yn: ''
+      }
+    }).done(function (data) {
+      var ar_P00110 = new Array();
+      var ar_P00050 = new Array();
+      var ar_P00650 = new Array();
+      var ar_P00660 = new Array();
+      var ar_P41090 = new Array();
+      var ar_P00640 = new Array();
+    
+      for (var i = 0; i < data.length; i++) {
+        if (data[i].FIELD_CD == "P00110") { 
+          ar_P00110.push(data[i]); 
+    
+        }
+        else if (data[i].FIELD_CD == "P00050") { 
+          ar_P00050.push(data[i]); 
+    
+        }
+        else if (data[i].FIELD_CD == "P00650") { 
+          ar_P00650.push(data[i]); 
+    
+        }
+        else if (data[i].FIELD_CD == "P00660") { 
+          ar_P00660.push(data[i]); 
+    
+        }
+        else if (data[i].FIELD_CD == "P41090") { 
+          ar_P41090.push(data[i]); 
+    
+        }
+        else if (data[i].FIELD_CD == "P00640") { 
+          ar_P00640.push(data[i]); 
+    
+        }
+      }
+      self.pipeDataSource1_P00110 = dews.ui.dataSource('pipeDataSource1_P00110',  { data: ar_P00110 });
+      self.pipeDataSource1_P00050 = dews.ui.dataSource('pipeDataSource1_P00050',  { data: ar_P00050 });
+      self.pipeDataSource1_P00650 = dews.ui.dataSource('pipeDataSource1_P00650',  { data: ar_P00650 });
+      self.pipeDataSource1_P00660 = dews.ui.dataSource('pipeDataSource1_P00660',  { data: ar_P00660 });
+      self.pipeDataSource1_P41090 = dews.ui.dataSource('pipeDataSource1_P41090',  { data: ar_P41090 });
+      self.pipeDataSource1_P00640 = dews.ui.dataSource('pipeDataSource1_P00640',  { data: ar_P00640 });
+      self.pipeDataSource1 = dews.ui.dataSource('pipeDataSource1', { data: data });
+      
+    });
+    dews.api.get(dews.url.getApiUrl('CM', 'CommonCodeDtlService', 'common_ci_codeDtl_list'),{
+      async: false,
+      data: {
+          end_dt: '',
+          foreign_yn: '',
+          field_cd_pipe: 'S00320|P00880',
+          module_cd: 'MA',
+          syscode_yn: '',
+          keyword: '',
+          base_yn: ''
+      }
+    }).done(function (data) {
+      var ar_S00320 = new Array();
+      var ar_P00880 = new Array();
+    
+      for (var i = 0; i < data.length; i++) {
+        if (data[i].FIELD_CD == "S00320") { 
+          ar_S00320.push(data[i]); 
+    
+        }
+        else if (data[i].FIELD_CD == "P00880") { 
+          ar_P00880.push(data[i]); 
+    
+        }
+      }
+      self.pipeDataSource2_S00320 = dews.ui.dataSource('pipeDataSource2_S00320',  { data: ar_S00320 });
+      self.pipeDataSource2_P00880 = dews.ui.dataSource('pipeDataSource2_P00880',  { data: ar_P00880 });
+      self.pipeDataSource2 = dews.ui.dataSource('pipeDataSource2', { data: data });
+      
+    });
     
     
     dews.ui.mainbuttons.localize.disable(true);
@@ -424,13 +508,7 @@
         {
           field: 'DNL_CD',
           title: '근태코드',
-          width: 80,
-          formats: {
-            type: 'dataSource',
-            dataSource: self.dnl_ds,
-            dataValueField: 'HR_CD',
-            dataTextField: 'HR_CD_NM'
-          }
+          width: 80
         },
         {
           field: 'START_DT',
@@ -536,17 +614,10 @@
         colCount: 0,
         rightColCount: 0
       },
-      change: /*c04e9cc0-71cf-4547-95b0-7d9c0086bb38*/ function (e) {
-            self.userInfo_formpanel.bindTo(self.main_grid);
-            self.sub_formpanel.bindTo(self.main_grid);
-            // GetOriginData();
+      dataBound: /*14b4f56a-681a-4065-a5b0-8d94ca678c80*/ function (e) {
+    
         }
-    ,
-      dataBound: /*ed8e6da1-4b37-4159-9ad7-d1e40519430c*/ function (e) {
-            self.userInfo_formpanel.bindTo(self.main_grid);
-            self.sub_formpanel.bindTo(self.main_grid);
-            // GetOriginData();
-        }
+    
     
     });
     
@@ -554,6 +625,7 @@
     
     
     /*cdd3d4f4-7ecd-43e5-9538-0f8096f35ab0*/ InitData();
+    InitBtns();
     
     //isExist를 전역변수로 할당
     var isExistSub = self.initialData.isExist;
@@ -641,7 +713,7 @@
                 //직급, 직위는 undefined라면 보여지는 임시값이므로 공백으로 바로 넣어주어야함.
                 self.main_grid.setCellValue(0, 'PSTN_CD', self.user.dutyRankCode);
                 self.main_grid.setCellValue(0, 'POSI_CD', self.user.dutyCode);
-                self.main_grid.setCellValue(0, 'OGRP_CD',self.user.gaapCode);
+                self.main_grid.setCellValue(0, 'OGRP_CD', self.user.gaapCode);
             }
         } catch (error) {
             dews.error(error);
@@ -935,6 +1007,57 @@
         const ogrp = ogrpData.find((item) => item.OGRP_CD === code);
     
         return ogrp ? ogrp.OGRP_NM : '';
+    }
+    
+    function InitBtns() {
+        var isExist = self.initialData.isExist;
+        var userData = self.initialData.userData;
+    
+    
+        //기존에 있는 데이터라면.
+        if (isExist == true) {
+            var athzStCd_val = self.main_grid.getCellValue(0, 'ATHZ_ST_CD');
+    
+            // 결재상태가 저장일 때 => 임시저장 버튼 활성화
+            if (athzStCd_val == '1') {
+                self.temp_save_button.enable(true);
+            } else {
+                self.temp_save_button.enable(false);
+            }
+    
+            // 결재상태가 저장 또는 반려 => 결재요청, 삭제 버튼 활성화
+            if (athzStCd_val == '1' || athzStCd_val == '3') {
+                self.req_button.enable(true);
+                self.delete_button.enable(true);
+            } else {
+                self.req_button.enable(false);
+                self.delete_button.enable(false);
+            }
+            // 결재상태가 임시저장, 결재완료 => 결재 취소 불가
+            if (athzStCd_val == '2' || athzStCd_val == '3') {
+                self.req_cancel_button.enable(true);
+            }
+            else {
+                self.req_cancel_button.enable(false);
+            }
+    
+            if (athzStCd_val == '2' || athzStCd_val == '3' || athzStCd_val == '4') {
+                self.DNL_CD.readonly(true);
+                self.START_DT.readonly(true);
+                self.END_DT.readonly(true);
+                self.REASON_DC.readonly(true);
+    
+            }
+        }
+        //신규신청이라면 삭제, 취소 비활성화
+        else if (isExist == false) {
+            self.req_cancel_button.enable(false);
+            self.delete_button.enable(false);
+            self.DNL_CD.readonly(false);
+            self.START_DT.readonly(false);
+            self.END_DT.readonly(false);
+            self.REASON_DC.readonly(false);
+        }
     }
     
     

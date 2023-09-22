@@ -86,7 +86,7 @@
 	</select>
 	
 	<select id="list_HR_STRK_INFO_X10005MST" resultType="com.douzone.comet.service.hr.pamodm.models.Pamodm01800_X10005Model">		
-		SELECT -- [동서발전]행사정보 조회
+		SELECT -- x10005 행사 참가 직원 테이블
 				  A.COMPANY_CD		-- A.회사코드
 		        , A.EMP_NO		 	-- A.사원번호
 		        , B.KOR_NM			-- B.성명
@@ -202,7 +202,7 @@
 		<if test=' P_DOF_TP != null and P_DOF_TP != "" '>
 			AND A.DOF_TP = #{P_DOF_TP} -- C.DEPT_CD ='1000200' -- A.DOF_TP = '0002'
 		</if>
-		ORDER BY START_DT, END_DT, INSERT_DTS 
+		ORDER BY START_DT, END_DT, EMP_NO 
 	</select>
 	
 	<select id="getCompanyCode" parameterType="com.douzone.comet.service.hr.pamodm.models.Pamodm01800_X10005Model" resultType="String">
@@ -339,5 +339,62 @@
 		    )
 		ORDER BY 
 		    MBM.BIZAREA_CD ASC
+	</select>
+	
+	<select id="get_org" parameterType="hashMap" resultType="hashMap">
+		SELECT C.DEPT_NM || '/' || B.DEPT_NM || '/' || A.DEPT_NM AS ORG
+		FROM MA_DEPT_MST A 
+			LEFT JOIN MA_DEPT_MST B ON A.UP_DEPT_CD = B.DEPT_CD AND B.COMPANY_CD = #{P_COMPANY_CD}
+			LEFT JOIN MA_DEPT_MST C ON B.UP_DEPT_CD = C.DEPT_CD AND C.COMPANY_CD = #{P_COMPANY_CD}
+		WHERE A.COMPANY_CD = #{P_COMPANY_CD}
+		AND A.DEPT_CD = #{P_DEPT_CD}
+	</select>
+	
+	<select id="get_ogrp_cd_pstn_cd" parameterType="hashMap" resultType="hashMap">
+		SELECT 
+		    SYSDEF_NM,
+		    CASE
+		        WHEN FIELD_CD = 'P00660' THEN 'OGRP_CD' 
+		        WHEN FIELD_CD = 'P00650' THEN 'PSTN_CD' 
+		    END AS CODE_TYPE
+		FROM MA_CODEDTL
+		WHERE 
+		    COMPANY_CD = #{P_COMPANY_CD}
+		    AND MODULE_CD = 'HR'
+		    AND (
+			    (FIELD_CD = 'P00660' AND SYSDEF_CD = #{P_OGRP_CD})
+		        OR 
+		        (FIELD_CD = 'P00650' AND SYSDEF_CD = #{P_PSTN_CD})
+		    	)
+		ORDER BY FIELD_CD DESC
+	</select>
+	
+	<select id="get_prmt_dt_retm_dt" parameterType="hashMap" resultType="hashMap">
+		SELECT 
+		    MNG_DC AS DATE_VALUE,
+		    CASE
+		        WHEN MCLS_CD = 'EWP93' THEN 'PRMT_DT' 
+		        WHEN MCLS_CD = 'EWP50' THEN 'RETM_DT'
+		    END AS DATE_TYPE
+		FROM HR_EMP_SDTL
+		WHERE 
+		    COMPANY_CD = #{P_COMPANY_CD}
+		    AND EMP_NO = #{P_EMP_NO}
+		    AND (MCLS_CD = 'EWP93' OR MCLS_CD = 'EWP50')
+		ORDER BY MCLS_CD DESC
+	</select>
+	
+	<select id="get_tm_cd_nm" parameterType="hashMap" resultType="hashMap">
+		SELECT TM_CD_NM
+		FROM HR_OFFTIME_MST
+		WHERE
+			COMPANY_CD = (SELECT COMPANY_CD FROM HR_EMP_MST WHERE EMP_NO = #{P_EMP_NO})
+			AND BIZAREA_CD = (SELECT BIZAREA_CD FROM HR_EMP_MST WHERE EMP_NO = #{P_EMP_NO})
+			AND WORKTM_CD = (SELECT TM_CD
+							 FROM HR_OFFDAILY_MST
+							 WHERE
+								COMPANY_CD = (SELECT COMPANY_CD FROM HR_EMP_MST WHERE EMP_NO = #{P_EMP_NO})
+								AND EMP_NO = #{P_EMP_NO}
+								AND BWRK_DT = #{P_BWRK_DT})
 	</select>
 </mapper>

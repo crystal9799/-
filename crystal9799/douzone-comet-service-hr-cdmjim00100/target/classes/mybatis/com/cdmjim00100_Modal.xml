@@ -44,6 +44,7 @@
 	        AS param_name
 		FROM HR_JOBDIVBASE_MST hjm 
 		<where>
+			<!-- JOB_FG = '2' -->
 			<if test='COMPANY_CD != null and COMPANY_CD != ""'>
 				AND HJM.COMPANY_CD = #{COMPANY_CD}
 			</if>

@@ -17,6 +17,9 @@ import com.douzone.gpd.restful.model.DzGridModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import com.douzone.gpd.components.exception.DzApplicationRuntimeException;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -60,15 +63,52 @@ public class cdmjim00100_MainGrid_Service extends DzCometService {
 	    return cdmjim00100_maingridList;
  	}
 
-	@Transactional(rollbackFor = Exception.class)
+//	@Transactional(rollbackFor = Exception.class)
 	@DzApi(url="/cdmjim00100_MainGrid_Save", desc="메인그리드_저장", httpMethod=DzRequestMethod.POST)
 	public void cdmjim00100_MainGrid_Save(
-		@DzParam(key="cdmjim00100_MainGrid", desc="메인그리드튜플", paramType = DzParamType.Body) DzGridModel<cdmjim00100_maingrid> cdmjim00100_MainGrid
+		@DzParam(key="MAIN_DS", desc="메인그리드튜플", paramType = DzParamType.Body) DzGridModel<cdmjim00100_maingrid> MAIN_DS
 	) throws Exception {	    
-	    try {	        	        
-
+		System.out.println("받아온 데이터 정보1 : ====== > " + MAIN_DS.toString());
+	    try {	        	
+	    	//Add List
+	    	List<cdmjim00100_maingrid> add_list = new ArrayList<>();
+	    	add_list = MAIN_DS.getAdded();
+	    	//Update List
+	    	List<cdmjim00100_maingrid> update_List = new ArrayList<>();
+	    	update_List = MAIN_DS.getUpdated();
+	    	//Delete List
+	    	List<cdmjim00100_maingrid> delete_List = new ArrayList<>();
+	    	delete_List = MAIN_DS.getDeleted();
+	    	
+	    	//Add
+	    	if(add_list != null) {
+	    		for(cdmjim00100_maingrid add_data: add_list) {
+	    			System.out.println("인서트 데이터 정보 : ====== > " + add_list.toString());
+	    			//능력분류번호 채번
+	    			String num = add_data.getLclas_cd() + add_data.getMlsfc_cd() + add_data.getS_csf_cd() + add_data.getTclf_cd() + add_data.getAclf_cd();
+	    			//채번한 값 모델에 set
+	    			add_data.setAclf_no(num);  	    		
+	    			cdmjim00100_maingridDAO.insertcdmjim00100_maingrid(add_data);
+	    		}	    		
+	    	}
+	    	if(update_List != null) {
+	    		for(cdmjim00100_maingrid update_data: update_List) {
+	    			System.out.println("업데이트 데이터 정보 : ====== > " + update_data.toString());
+	    			update_data.setCompany_cd(getCompanyCode());
+	    			cdmjim00100_maingridDAO.updatecdmjim00100_maingrid(update_data);
+	    		}	    		
+	    	}
+	    	if(delete_List != null) {
+	    		for(cdmjim00100_maingrid delete_data: delete_List) {
+	    			System.out.println("딜리트 데이터 정보 : ====== > " + delete_data.toString());
+	    			delete_data.setCompany_cd(getCompanyCode());
+	    			cdmjim00100_maingridDAO.deletecdmjim00100_maingrid(delete_data);
+	    		}	    		
+	    	}
 	    } catch (Exception e) {
+	    	e.printStackTrace(); // 예외의 스택 트레이스 출력
 	        throw new DzApplicationRuntimeException(e);
 	    }
 	}
+	
 }

@@ -1,6 +1,6 @@
-<!--##749cd7c7-e2bb-4193-971f-99c7a6b6874c##-->
+<!--##d1252da8-f5c5-4654-867c-ec1f60b7da26##-->
 <!--##CDMJIM00100_Main##-->
-<!--##zNcnsPeQss1Hxij57B0YvMLCrIrOvxUmTmLYMhZOPi34CUYokQOMaeL7tiQ8aFrz##-->
+<!--##psOyQ0Q/Ogz7FsXGqx6TfWvP21KIz/AYLtmUdgu0u019zO1dsuwyXegI8CGl32tf##-->
 <!--
   DEWS UI/UX IDE - Build Result - v1.5
   # PageID: CDMJIM00100_Main
@@ -123,7 +123,6 @@
     
     
     
-    
     self.use_yn = dews.ui.dataSource('use_yn', {
       schema: {
         model: {
@@ -208,6 +207,7 @@
       schema: {
         model: {
           fields: [
+            { field: 'AELM_CD', editable: false, dataType: 'string' }, 
             { field: 'ACLF_NO', editable: false, dataType: 'string' }, 
             { field: 'VER_CD', editable: false, dataType: 'string' }, 
             { field: 'AELM_NM', editable: false, dataType: 'string' }, 
@@ -223,11 +223,12 @@
       transport: {
         read: {
           type: 'post',
-          url: dews.url.getApiUrl('HR', 'cdmjim00100_right_grid2_List', 'cdmjim00100_right_grid2_List'),
+          url: dews.url.getApiUrl('HR', 'Cdmjim00100_SubGrid_Service', 'selectcdmjim00100_right_grid1List'),
           data: /*ce349233-d50a-4fc0-96ea-30945b1bcb4a*/ function() {
         return {
         ACLF_NO: self.left_grid.getCellValue(self.left_grid.select(), "ACLF_NO"),
-        VER_CD: self.left_grid.getCellValue(self.left_grid.select(), "VER_CD")
+        VER_CD: self.left_grid.getCellValue(self.left_grid.select(), "VER_CD"),
+        AELM_CD: self.left_grid.getCellValue(self.left_grid.select(), "AELM_CD")
         }
     }
         }
@@ -252,7 +253,7 @@
       transport: {
         read: {
           type: 'post',
-          url: dews.url.getApiUrl('HR', 'Cdmjim00100_SubGrid_Service', 'cdmjim00100_right_grid2_List'),
+          url: dews.url.getApiUrl('HR', 'Cdmjim00100_SubGrid_Service', 'selectcdmjim00100_right_grid2List'),
           data: /*272933d0-986d-40ab-bef4-f9c13e4259ff*/ function() {
         return {
             ACLF_NO: self.right1_grid.getCellValue(self.right1_grid.select(), "ACLF_NO"),
@@ -266,13 +267,10 @@
       schema: {
         model: {
           fields: [
-            { field: 'ACLF_NO', editable: false, dataType: 'string' }, 
-            { field: 'VER_CD', editable: false, dataType: 'string' }, 
-            { field: 'AELM_CD', editable: false, dataType: 'string' }, 
-            { field: 'PCFM_CD', editable: false, dataType: 'string' }, 
-            { field: 'NEED_RQISIT_FG', editable: false, dataType: 'string' }, 
             { field: 'NEED_RQISIT_CD', editable: false, dataType: 'string' }, 
-            { field: 'NEED_RQISIT_NM', editable: false, dataType: 'string' }
+            { field: 'NEED_RQISIT_NM1', editable: false, dataType: 'string' }, 
+            { field: 'NEED_RQISIT_NM2', editable: false, dataType: 'string' }, 
+            { field: 'NEED_RQISIT_NM3', editable: false, dataType: 'string' }
           ]
     
         }
@@ -283,6 +281,11 @@
     dews.ui.mainbuttons.information.disable(true);
     dews.ui.mainbuttons.localize.disable(true);
     dews.ui.mainbuttons.etnapproval.hide();
+    dews.ui.mainbuttons.add.click(/*0726422b-af2b-48f3-921d-2bdaf1c69db5*/ function () {
+        // TODO: 그리드에 데이터를 추가합니다.
+        self.main_grid.addRow();
+        self.main_grid.setCellValue(self.main_grid.select(), "USE_YN", 'Y');
+    });
     dews.ui.mainbuttons.search.click(/*57f1e984-d23f-421a-9d7b-eaff278f1930*/ function () {
     
         // TODO: 필수항목 입력을 체크한 후 데이터소스를 조회합니다.
@@ -308,6 +311,8 @@
     dews.ui.grid(self.$main_grid, {
       dataSource: self.MAIN_DS,
       height: 295,
+      editable: true,
+      selectable: true,
       sortable: false,
       copyMode: 'cell',
       columns: [
@@ -315,8 +320,9 @@
           field: 'USE_YN',
           title: '사용여부',
           width: 60,
-          formats: {
-            type: 'dataSource',
+          attributes: { class: 'required' },
+          editor: {
+            type: 'dropDown',
             dataSource: self.use_yn,
             dataValueField: 'USE_YN',
             dataTextField: 'USE_YN_NM'
@@ -325,12 +331,20 @@
         {
           field: 'JOB_FG',
           title: '직업구분',
-          width: 60
+          width: 50,
+          attributes: { class: 'required' },
+          editor: {
+            type: 'dropDown',
+            dataSource: self.job_fg,
+            autoOpen: true,
+            dataValueField: 'JOB_FG',
+            dataTextField: 'JOB_FG_NM'
+          }
         },
         {
           field: 'ACLF_NO',
           title: '능력분류번호',
-          width: 60
+          width: 120
         },
         {
           field: 'VER_CD',
@@ -345,8 +359,7 @@
         {
           field: 'LCLAS_NM',
           title: '대분류명',
-          width: 90,
-          align: 'left'
+          width: 90
         },
         {
           field: 'MLSFC_CD',
@@ -356,8 +369,7 @@
         {
           field: 'MLSFC_NM',
           title: '중분류명',
-          width: 90,
-          align: 'left'
+          width: 90
         },
         {
           field: 'S_CSF_CD',
@@ -367,8 +379,7 @@
         {
           field: 'S_CSF_NM',
           title: '소분류명',
-          width: 90,
-          align: 'left'
+          width: 90
         },
         {
           field: 'TCLF_CD',
@@ -378,8 +389,7 @@
         {
           field: 'TCLF_NM',
           title: '세분류명',
-          width: 90,
-          align: 'left'
+          width: 90
         },
         {
           field: 'ACLF_CD',
@@ -389,8 +399,7 @@
         {
           field: 'ACLF_NM',
           title: '능력분류명',
-          width: 90,
-          align: 'left'
+          width: 180
         },
         {
           field: 'ACLF_LV',
@@ -400,7 +409,8 @@
         {
           field: 'ACLF_TXT',
           title: '능력분류텍스트',
-          width: 60
+          width: 400,
+          align: 'left'
         },
         {
           field: 'COMPANY_CD',
@@ -423,8 +433,47 @@
             self.LEFT_DS.read();
         }
     ,
+      dataBound: /*7725c6bd-73cc-4c55-9926-45e7f49d03f3*/ function (e) {
+    
+        }
+    ,
       clicked: /*8bc71cbd-875f-47df-9a4b-3d22918465b0*/ function (e) {
             self.LEFT_DS.read();
+        }
+    ,
+      dblClicked: /*0cba9f99-3fc3-4569-b8c3-73a80486ac55*/ function (e) {
+            if ((self.main_grid.getCellValue(self.main_grid.select(), "VER_CD") == undefined) || self.main_grid.getCellValue(self.main_grid.select(), "VER_CD") === '2') {
+                // self.CDMJIM_PICKER.clearData();
+                // self.CDMJIM_PICKER.open();
+                var dialog = dews.ui.dialog('FG_Dialog',
+                    {
+                        url: '~/view/HR/CDMJIM00100_Modal.html',
+                        title: '직무분류 도움',
+                        size: 'large',
+                        height: 600,
+                        width: 800,
+                        button: 'applyAndClose',
+                        initData: "test",
+                        ok: function (data) {
+                            dialog.on('closed', function (e) {
+                                console.log(data);
+                                self.main_grid.setCellValue(self.main_grid.select(), "LCLAS_CD", data.LCLAS_CD);
+                                self.main_grid.setCellValue(self.main_grid.select(), "LCLAS_NM", data.LCLAS_NM);
+                                self.main_grid.setCellValue(self.main_grid.select(), "MLSFC_CD", data.MLSFC_CD);
+                                self.main_grid.setCellValue(self.main_grid.select(), "MLSFC_NM", data.MLSFC_NM);
+                                self.main_grid.setCellValue(self.main_grid.select(), "S_CSF_CD", data.S_CSF_CD);
+                                self.main_grid.setCellValue(self.main_grid.select(), "S_CSF_NM", data.S_CSF_NM);
+                                self.main_grid.setCellValue(self.main_grid.select(), "TCLF_CD", data.TCLF_CD);
+                                self.main_grid.setCellValue(self.main_grid.select(), "TCLF_NM", data.TCLF_NM);
+                                self.main_grid.setCellValue(self.main_grid.select(), "ACLF_CD", data.ACLF_CD);
+                                self.main_grid.setCellValue(self.main_grid.select(), "ACLF_NM", data.ACLF_NM);
+                            });
+                        }
+                    });
+                dialog.open();
+            } else {
+                dews.ui.snackbar.warning(dews.localize.get("NCS표준코드는 수정할 수 없습니다."));
+            }
         }
     
     });
@@ -438,23 +487,30 @@
         {
           field: 'ACLF_NO',
           title: '능력분류번호',
-          width: 60
+          width: 60,
+          visible: false
         },
         {
           field: 'VER_CD',
           title: '버전코드',
+          width: 80,
+          visible: false
+        },
+        {
+          field: 'AELM_CD',
+          title: '능력요소코드',
           width: 80
         },
         {
           field: 'AELM_NM',
           title: '능력요소명',
-          width: 90,
+          width: 70,
           align: 'left'
         },
         {
           field: 'AELM_LV',
           title: '능력요소레벨',
-          width: 60
+          width: 80
         },
         {
           field: '_uid',
@@ -466,7 +522,15 @@
       fixed: {
         colCount: 0,
         rightColCount: 0
-      }
+      },
+      change: /*e4623438-3537-4eb6-8ace-48d9a62c4026*/ function (e) {
+            self.RIGHT1_DS.read();
+        }
+    ,
+      clicked: /*2839dbf6-a23b-4478-80d2-8ed5bd2a5479*/ function (e) {
+            self.RIGHT1_DS.read();
+        }
+    
     });
     dews.ui.grid(self.$right1_grid, {
       dataSource: self.RIGHT1_DS,
@@ -478,23 +542,27 @@
         {
           field: 'ACLF_NO',
           title: '능력분류번호',
-          width: 60
+          width: 60,
+          visible: false
         },
         {
           field: 'VER_CD',
           title: '버전코드',
-          width: 80
+          width: 80,
+          visible: false
         },
         {
           field: 'AELM_CD',
           title: '능력요소코드',
-          width: 80
+          width: 80,
+          visible: false
         },
         {
           field: 'AELM_NM',
           title: '능력요소명',
           width: 90,
-          align: 'left'
+          align: 'left',
+          visible: false
         },
         {
           field: 'PCFM_CD',
@@ -527,40 +595,26 @@
       copyMode: 'cell',
       columns: [
         {
-          field: 'ACLF_NO',
-          title: '능력분류번호',
-          width: 60
-        },
-        {
-          field: 'VER_CD',
-          title: '버전코드',
-          width: 80
-        },
-        {
-          field: 'AELM_CD',
-          title: '능력요소코드',
-          width: 80
-        },
-        {
-          field: 'PCFM_CD',
-          title: '수행준거코드',
-          width: 80
-        },
-        {
-          field: 'NEED_RQISIT_FG',
-          title: '필요요건구분',
-          width: 60
-        },
-        {
           field: 'NEED_RQISIT_CD',
           title: '필요요건코드',
-          width: 80
+          width: 80,
+          visible: false
         },
         {
-          field: 'NEED_RQISIT_NM',
-          title: '필요요건명',
+          field: 'NEED_RQISIT_NM1',
+          title: '필요지식',
+          width: 60
+        },
+        {
+          field: 'NEED_RQISIT_NM2',
+          title: '필요기술',
           width: 90,
           align: 'left'
+        },
+        {
+          field: 'NEED_RQISIT_NM3',
+          title: '필요역량',
+          width: 60
         }
       ],
       fixed: {

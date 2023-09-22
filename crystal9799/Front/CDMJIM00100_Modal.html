@@ -1,6 +1,6 @@
-<!--##452fb7ca-9758-4978-804a-aafeaead7895##-->
+<!--##7ecfc3c8-357c-452f-adb2-1eeee51bfe30##-->
 <!--##CDMJIM00100_Modal##-->
-<!--##sJQ6RyiMhCGhs1FmSDN/CNGKO5+LB/zPh6pp0pf2QucptEQGYK+2PLg9eYwk7zAS##-->
+<!--##mp3pqCGBvleR6xc4I1pU1ZGrFBEF7B4nWURJHLu9ipg/DeLjSh2BIKDIXki1un2+##-->
 <!--
   DEWS UI/UX IDE - Build Result - v1.5
   # PageID: CDMJIM00100_Modal
@@ -81,18 +81,20 @@
 
 
     /*512dccf4-2d20-44e8-9a2c-4f4bf545c452*/ //# sourceURL=CDMJIM00100_Modal.js
-    var colum_arr = ["LCLAS_CD", "MLSFC_CD", "S_CSF_CD", "TCLF_CD", "ACLF_CD"];
+    var col_arr = ["LCLAS_CD", "MLSFC_CD", "S_CSF_CD", "TCLF_CD", "ACLF_CD"];
     function check_valid() {
-        colum_arr.forEach((element, index, arr) => {
-            var test = (self.INSERT_GRID.getCellValue(element) == null)
+        for (const [index, element] of col_arr.entries()) {
+            var test = (self.INSERT_GRID.getCellValue(0, element) == null || self.INSERT_GRID.getCellValue(0, element) == "")
+            console.log(self.INSERT_GRID.getCellValue(0, element));
             if (test) {
                 console.log(element);
                 self.KND_GRID.select(index);
                 self.FGINF_DS.read();
                 return element;
             }
-        })
+        }
     }
+    
     
     
     
@@ -512,6 +514,7 @@
     
     /*eb0b1ca3-2ef0-4599-af08-9fd274b0e976*/ console.log("dddddddddd" + self.INSERT_GRID.getCellValue(0, "LCLAS_CD"));
     console.log(self.INSERT_GRID.getCellValue(0, "MLSFC_CD"));
+    self.KND_GRID.select(0);
     
     
 

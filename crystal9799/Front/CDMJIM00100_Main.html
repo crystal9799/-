@@ -1,6 +1,6 @@
-<!--##d1252da8-f5c5-4654-867c-ec1f60b7da26##-->
+<!--##c97539cc-ff30-40c1-ba23-aa3f078a9b20##-->
 <!--##CDMJIM00100_Main##-->
-<!--##psOyQ0Q/Ogz7FsXGqx6TfWvP21KIz/AYLtmUdgu0u019zO1dsuwyXegI8CGl32tf##-->
+<!--##eaqVsOq22OUg/AFQfCzw5isZsM90BaIlPaq0kvSBHO9WmKfWD6UUM/1ma26ChKwa##-->
 <!--
   DEWS UI/UX IDE - Build Result - v1.5
   # PageID: CDMJIM00100_Main
@@ -120,6 +120,7 @@
 
     /*70cee10b-3521-442d-82f0-480b335cebfb*/ //# sourceURL=CDMJIM00100_Main.js
     self.USE_DROP.value("YES");
+    
     
     
     
@@ -306,6 +307,70 @@
             self.MAIN_DS.read();
         }
     });
+    dews.ui.mainbuttons.delete.click(/*73806b2e-5c88-44a2-8b38-ed42b61577ba*/ function () {
+        // TODO: 삭제시 강제 팝업에 대한 알림창을 끕니다.
+        self.mainButtons.delete.useDefaultConfirm = false;
+    
+        // TODO: 그리드에서 체크된 항목을 삭제합니다.
+        if (self.main_grid.getCheckedIndex().length == 0) {
+            dews.alert('선택된 데이터가 없습니다.', 'warning');
+            return false;
+        }
+        self.main_grid.removeRow(self.main_grid.getCheckedIndex());
+    
+        // TODO: 그리드에 선택된 항목을 삭제합니다.
+        self.main_grid.removeRow(self.main_grid.select());
+    });
+    dews.ui.mainbuttons.save.click(/*2d23a3b2-21fb-4697-8d65-5f7fc24ad853*/ function () {
+        // TODO: 데이터소스를 저장합니다.
+        if (self.MAIN_DS.getDirtyDataCount() == 0) {
+            dews.alert('변경된 데이터가 없습니다.');
+            return false;
+        }
+        //
+        if (self.main_grid.validate().result == false) {
+            dews.alert('필수 값이 입력되지 않은 항목이 있습니다.');
+            return false;
+        }
+        //
+        // 서비스 파라미터명과 데이터소스명이 같은경우
+        dews.confirm('저장하시겠습니까?', 'ico2').yes(function () {
+            self.MAIN_DS.batchSave(dews.url.getApiUrl('HR', 'Cdmjim00100_MainGrid_Service', 'cdmjim00100_MainGrid_Save'))
+                .done(function (data) {
+                    dews.ui.snackbar.ok('저장되었습니다.');
+                    dews.ui.loading.show({
+                        text: '조회중입니다.'
+                    });
+                    self.MAIN_DS.read();
+                }).fail(function (message) {
+                    dews.ui.snackbar.warning(message);
+                }).always(function () {
+                    dews.ui.loading.hide();
+                });
+        }).no(function () {
+            dews.ui.snackbar.warning('취소되었습니다.');
+        });
+        //
+        // 서비스 파라미터명과 데이터소스명이 다른경우
+        // dews.confirm('수정된 데이터를 저장하시겠습니까 ? ', 'question').yes(function () {
+        //     dews.api.post(dews.url.getApiUrl('HR', 'Cdmjim00100_MainGrid_Service', 'cdmjim00100_MainGrid_Save'), {
+        //         async: false,
+        //         data: {
+        //             //ServiceParameterName : ServiceParameterValue
+        //             saveData: JSON.stringify(self.MAIN_DS.getDirtyData()),
+        //             param1: self.cd_gaap.value(),
+        //             param2: 'value2'
+        //         }
+        //     }).done(function (data) {
+        //         dews.ui.snackbar.ok('자료가 정상적으로 저장되었습니다.');
+        //         // self.MAIN_DS.read();
+        //     }).fail(function (xhr, status, error) {
+        //         //dews.error('저장이 실패하였습니다.', 'ico1');
+        //         dews.ui.snackbar.error(error);
+        //     });
+        // });
+    
+    });
     self.FG_DROP.setDataSource(self.job_fg);
     self.USE_DROP.setDataSource(self.use_yn);
     dews.ui.grid(self.$main_grid, {
@@ -336,7 +401,6 @@
           editor: {
             type: 'dropDown',
             dataSource: self.job_fg,
-            autoOpen: true,
             dataValueField: 'JOB_FG',
             dataTextField: 'JOB_FG_NM'
           }
@@ -344,73 +408,177 @@
         {
           field: 'ACLF_NO',
           title: '능력분류번호',
-          width: 120
+          width: 120,
+          editor: { type: 'string', maxLength: 0, editable: false }
         },
         {
           field: 'VER_CD',
           title: '버전코드',
-          width: 80
+          width: 80,
+          editor: {
+            type: 'mask',
+            editable: false
+          }
         },
         {
           field: 'LCLAS_CD',
           title: '대분류코드',
-          width: 80
+          width: 80,
+          editor: {
+            type: 'mask',
+            editable: false
+          }
         },
         {
           field: 'LCLAS_NM',
           title: '대분류명',
-          width: 90
+          width: 90,
+          editor: { type: 'string', maxLength: 0, editable: /*68b5d288-e172-4414-948b-e8929ee03b32*/ function(e) {
+      if(this.getRowState(e.row.index) === "added"){
+        return true;
+      }
+      else {
+        var jobFg = self.main_grid.getCellValue(e.row.index, 'JOB_FG');
+        if(jobFg == '1') {
+          return false;
+        }else if(jobFg == '2') {
+          return true;
+        }
+      }
+    } }
         },
         {
           field: 'MLSFC_CD',
           title: '중분류코드',
-          width: 80
+          width: 80,
+          editor: { type: 'string', maxLength: 0, editable: false }
         },
         {
           field: 'MLSFC_NM',
           title: '중분류명',
-          width: 90
+          width: 90,
+          editor: { type: 'string', maxLength: 0, editable: /*4dd63d98-b957-4973-9713-5ee51e3a3815*/ function(e) {
+      if(this.getRowState(e.row.index) === "added"){
+        return true;
+      }
+      else {
+        var jobFg = self.main_grid.getCellValue(e.row.index, 'JOB_FG');
+        if(jobFg == '1') {
+          return false;
+        }else if(jobFg == '2') {
+          return true;
+        }
+      }
+    } }
         },
         {
           field: 'S_CSF_CD',
           title: '소분류코드',
-          width: 80
+          width: 80,
+          editor: { type: 'string', maxLength: 0, editable: false }
         },
         {
           field: 'S_CSF_NM',
           title: '소분류명',
-          width: 90
+          width: 90,
+          editor: { type: 'string', maxLength: 0, editable: /*dac1fb57-ab1a-414c-8e0e-0ae13af89b05*/ function(e) {
+      if(this.getRowState(e.row.index) === "added"){
+        return true;
+      }
+      else {
+        var jobFg = self.main_grid.getCellValue(e.row.index, 'JOB_FG');
+        if(jobFg == '1') {
+          return false;
+        }else if(jobFg == '2') {
+          return true;
+        }
+      }
+    } }
         },
         {
           field: 'TCLF_CD',
           title: '세분류코드',
-          width: 80
+          width: 80,
+          editor: { type: 'string', maxLength: 0, editable: false }
         },
         {
           field: 'TCLF_NM',
           title: '세분류명',
-          width: 90
+          width: 90,
+          editor: { type: 'string', maxLength: 0, editable: /*bd45edcc-2d83-4be5-9bbf-9cb1eafbc914*/ function(e) {
+      if(this.getRowState(e.row.index) === "added"){
+        return true;
+      }
+      else {
+        var jobFg = self.main_grid.getCellValue(e.row.index, 'JOB_FG');
+        if(jobFg == '1') {
+          return false;
+        }else if(jobFg == '2') {
+          return true;
+        }
+      }
+    } }
         },
         {
           field: 'ACLF_CD',
           title: '능력분류코드',
-          width: 80
+          width: 80,
+          editor: { type: 'string', maxLength: 0, editable: false }
         },
         {
           field: 'ACLF_NM',
           title: '능력분류명',
-          width: 180
+          width: 180,
+          editor: { type: 'string', maxLength: 0, editable: /*98710712-4a92-4ecc-a29f-0cc381758fc3*/ function(e) {
+      if(this.getRowState(e.row.index) === "added"){
+        return true;
+      }
+      else {
+        var jobFg = self.main_grid.getCellValue(e.row.index, 'JOB_FG');
+        if(jobFg == '1') {
+          return false;
+        }else if(jobFg == '2') {
+          return true;
+        }
+      }
+    } }
         },
         {
           field: 'ACLF_LV',
           title: '능력분류레벨',
-          width: 60
+          width: 60,
+          editor: { type: 'string', maxLength: 0, editable: /*62c1a0fb-acfd-4074-8441-6e97e99f28e3*/ function(e) {
+      if(this.getRowState(e.row.index) === "added"){
+        return true;
+      }
+      else {
+        var jobFg = self.main_grid.getCellValue(e.row.index, 'JOB_FG');
+        if(jobFg == '1') {
+          return false;
+        }else if(jobFg == '2') {
+          return true;
+        }
+      }
+    } }
         },
         {
           field: 'ACLF_TXT',
           title: '능력분류텍스트',
           width: 400,
-          align: 'left'
+          align: 'left',
+          editor: { type: 'string', maxLength: 0, editable: /*16f34412-ea8c-4b40-8408-8ff89c728083*/ function(e) {
+      if(this.getRowState(e.row.index) === "added"){
+        return true;
+      }
+      else {
+        var jobFg = self.main_grid.getCellValue(e.row.index, 'JOB_FG');
+        if(jobFg == '1') {
+          return false;
+        }else if(jobFg == '2') {
+          return true;
+        }
+      }
+    } }
         },
         {
           field: 'COMPANY_CD',
@@ -442,9 +610,7 @@
         }
     ,
       dblClicked: /*0cba9f99-3fc3-4569-b8c3-73a80486ac55*/ function (e) {
-            if ((self.main_grid.getCellValue(self.main_grid.select(), "VER_CD") == undefined) || self.main_grid.getCellValue(self.main_grid.select(), "VER_CD") === '2') {
-                // self.CDMJIM_PICKER.clearData();
-                // self.CDMJIM_PICKER.open();
+            if ((self.main_grid.getCellValue(self.main_grid.select(), "ACLF_NO") == undefined)) {
                 var dialog = dews.ui.dialog('FG_Dialog',
                     {
                         url: '~/view/HR/CDMJIM00100_Modal.html',
@@ -467,11 +633,12 @@
                                 self.main_grid.setCellValue(self.main_grid.select(), "TCLF_NM", data.TCLF_NM);
                                 self.main_grid.setCellValue(self.main_grid.select(), "ACLF_CD", data.ACLF_CD);
                                 self.main_grid.setCellValue(self.main_grid.select(), "ACLF_NM", data.ACLF_NM);
+                                self.main_grid.setCellValue(self.main_grid.select(), "COMPANY_CD", self.user.companyCode);
                             });
                         }
                     });
                 dialog.open();
-            } else {
+            } else if (self.main_grid.getCellValue(self.main_grid.select(), "JOB_FG") == 1) {
                 dews.ui.snackbar.warning(dews.localize.get("NCS표준코드는 수정할 수 없습니다."));
             }
         }

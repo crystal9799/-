@@ -1,6 +1,6 @@
-<!--##df973970-f3e1-403f-b46a-bec83f12c9bb##-->
+<!--##d3bb11c3-1129-42b8-b5e7-5c74b389e522##-->
 <!--##PAMPRG00100_X10005##-->
-<!--##i3TIim/MsBl0zvLADVe449YMaB8fyULpzwShZFS1L70eMr+LVaxZwPD9LEQKSegv##-->
+<!--##lSy+XBSVh5gJVK1YdMqkuoL+nHjlLXjiaUkIW6SQwhTFgyHihAoxhUsHpWJF2WJ0##-->
 <!--
   DEWS UI/UX IDE - Build Result - v1.5
   # PageID: PAMPRG00100_X10005
@@ -101,7 +101,7 @@
     
     
     
-    // 기본키 중복 확인 함수
+    // 중복데이터 정렬, 그룹화
     function handleDuplicateData() {
         var allData = self.gridMaster.dataItems();
         var groupedDataMap = new Map(); // 중복 데이터를 그룹화하는 Map
@@ -140,11 +140,11 @@
                         processedData.push(group[k]);
                         //최상위 행 css
                         var rowNo = self.gridMaster.getDataIndexFromItemIndex(group[k].SEQ - 1);
-                        self.gridMaster.setRowStyle(rowNo, { background: '#FFFFFF' });
+                        self.gridMaster.setRowStyle(rowNo, { background: '#FFFFFF' }); //최상위 데이터 하얀색. 원래는 테두리 입히고 싶었으나 함수 못찾음 
                     } else {
                         // 최상위 데이터를 제외한 나머지 데이터에 CSS 입히기
                         var rowIndex = self.gridMaster.getDataIndexFromItemIndex(group[k].SEQ - 1);
-                        self.gridMaster.setRowStyle(rowIndex, { background: '#FFE4E1' });
+                        self.gridMaster.setRowStyle(rowIndex, { background: '#FFE4E1' }); // 분홍색
                         self.gridMaster.setCheck(rowIndex, true, false);
                         processedData.push(group[k]);
                     }
@@ -159,8 +159,7 @@
         // 그리드에 바인딩
         self.grid_ds.data = processedData;
         self.gridMaster.setDataSource(self.grid_ds);
-        self.gridMaster.sort({ field: 'COMBINED_KEY', dir: 'asc' }); // 정렬 필드와 방향 설정
-    
+        self.gridMaster.sort({ field: 'COMBINED_KEY', dir: 'asc' }); // COMBINED_KEY 기준으로 정렬, 오름차순
     
     }
     

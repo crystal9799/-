@@ -1,6 +1,6 @@
-<!--##3cfa8146-99a6-4c82-8bd0-519397ab498f##-->
+<!--##df973970-f3e1-403f-b46a-bec83f12c9bb##-->
 <!--##PAMPRG00100_X10005##-->
-<!--##Hbk5YtYHHFJ3oP/1GQoYeoAex0+nzF/aB2FFcvO0HdLCVUYxgY9QBx22fEOhRBRe##-->
+<!--##i3TIim/MsBl0zvLADVe449YMaB8fyULpzwShZFS1L70eMr+LVaxZwPD9LEQKSegv##-->
 <!--
   DEWS UI/UX IDE - Build Result - v1.5
   # PageID: PAMPRG00100_X10005
@@ -28,7 +28,7 @@
     <li>
       <label class="dews-ui-multilingual">사업장</label>
       <span>
-        <select id="BIZAREA_CD" name="BIZAREA_CD" class="dews-ui-dropdownlist required" data-dews-value-field="BIZAREA_CD" data-dews-text-field="BIZAREA_NM" data-dews-show-tooltip="true" data-dews-auto-bind="false" data-dews-option-label-value="" data-dews-option-label-text="" data-dews-show-value-tooltip="true" data-dews-use-numkey="false"></select>
+        <select id="BIZAREA_CD" name="BIZAREA_CD" class="dews-ui-dropdownlist required" data-dews-value-field="BIZAREA_CD" data-dews-text-field="BIZAREA_NM" data-dews-show-tooltip="true" data-dews-show-value-tooltip="true" data-dews-use-numkey="false"></select>
       </span>
     </li>
   </ul>
@@ -36,9 +36,6 @@
 <div id="containerpanel1" class="dews-ui-container-panel" data-dews-container-height="263" data-dews-fit-bottom="true">
   <div id="containerpanelitem1" class="dews-container-item" data-dews-position="normal">
     <div id="gridMaster" class="dews-ui-grid"></div>
-    <div id="containerpanel2" class="dews-ui-container-panel" data-dews-container-height="446" data-dews-fit-bottom="true">
-      <div id="containerpanelitem2" class="dews-container-item" data-dews-position="normal"></div>
-    </div>
   </div>
 </div>
 <div id="excelFormGrid" class="dews-ui-grid"></div>
@@ -87,93 +84,86 @@
         dews.ui.loading.show();
         //self.grid_ds.read();
         //로컬 스토리지에서 데이터 가져오기
-        var storedData = getDataFromLocalStorage();
+        // var storedData = getDataFromLocalStorage();
     
-        if (storedData && storedData.length > 0) {
-            // 로컬 스토리지에 데이터가 있을 경우, 그 데이터를 그리드 데이터로 설정
-            self.grid_ds.data(storedData);
-        } else {
-            // 로컬 스토리지에 데이터가 없을 경우, 빈 데이터를 그리드에 설정
-            self.grid_ds.data([]); // 빈 데이터 설정
-            // 그리드 데이터 로드
-            self.grid_ds.read();
-            saveDataToLocalStorage(self.grid_ds.data());
-        }
-    
+        // if (storedData && storedData.length > 0) {
+        //     // 로컬 스토리지에 데이터가 있을 경우, 그 데이터를 그리드 데이터로 설정
+        //     self.grid_ds.data(storedData);
+        // } else {
+        //     // 로컬 스토리지에 데이터가 없을 경우, 빈 데이터를 그리드에 설정
+        //     self.grid_ds.data([]); // 빈 데이터 설정
+        // 그리드 데이터 로드
+        self.grid_ds.read();
         dews.ui.loading.hide();
+        //  saveDataToLocalStorage(self.grid_ds.data());
     }
+    
+    
+    
     
     // 기본키 중복 확인 함수
-    function hasDuplicates(grid_ds) {
-        var getChangeData = grid_ds.getDirtyData();
+    function handleDuplicateData() {
         var allData = self.gridMaster.dataItems();
-        var duplicateRows = new Set(); // 중복된 행의 인덱스를 저장하기 위한 Set
+        var groupedDataMap = new Map(); // 중복 데이터를 그룹화하는 Map
     
-        for (var i = 0; i < allData.length; i++) {
-            var existingData = allData[i];
-            var isDuplicate = false;
-    
-            for (var j = 0; j < getChangeData.Added.length; j++) {
-                var getAddedData = getChangeData.Added[j];
-    
-                if (getAddedData !== undefined && existingData.SEQ === getAddedData.SEQ) {
-                    continue; // 자기자신은 비교하지 않음
-                }
-    
-                if (
-                    getAddedData !== undefined &&
-                    existingData.STD_YM == getAddedData.STD_YM &&
-                    existingData.PSTN_CD == getAddedData.PSTN_CD &&
-                    existingData.TRGT_GRD_CD == getAddedData.TRGT_GRD_CD &&
-                    existingData.UGRD_GRD_CD == getAddedData.UGRD_GRD_CD &&
-                    existingData.MIN_BWRK_MY == getAddedData.MIN_BWRK_MY
-                ) {
-                    isDuplicate = true;
-                    var isDupRowNum1 = allData.length - parseInt(getAddedData.SEQ);
-                    duplicateRows.add(isDupRowNum1); // 중복된 행의 인덱스 저장
-                }
-            }
-    
-            for (var j = 0; j < getChangeData.Updated.length; j++) {
-                var getUpdateData = getChangeData.Updated[j];
-    
-                if (getUpdateData !== undefined && existingData.SEQ === getUpdateData.SEQ) {
-                    continue; // 자기자신은 비교하지 않음
-                }
-    
-                if (
-                    getUpdateData !== undefined &&
-                    existingData.STD_YM == getUpdateData.STD_YM &&
-                    existingData.PSTN_CD == getUpdateData.PSTN_CD &&
-                    existingData.TRGT_GRD_CD == getUpdateData.TRGT_GRD_CD &&
-                    existingData.UGRD_GRD_CD == getUpdateData.UGRD_GRD_CD &&
-                    existingData.MIN_BWRK_MY == getUpdateData.MIN_BWRK_MY
-                ) {
-                    isDuplicate = true;
-                    var dataIndex1 = self.gridMaster.getDataIndexFromItemIndex(getUpdateData.SEQ) - 1;
-                    duplicateRows.add(dataIndex1); // 중복된 행의 인덱스 저장
-                }
-            }
-    
-            if (isDuplicate) {
-                dews.ui.snackbar.warning('그리드에 동일한 정보가 있습니다. 다시 작성해주세요');
-            }
-        }
-    
-        // 중복된 행에 CSS 초기화
-        for (var k = 0; k < allData.length; k++) {
-            if (!duplicateRows.has(k)) {
-                self.gridMaster.resetRowStyle(k);
-            }
-        }
-    
-        // 중복된 행에 CSS 입히기
-        duplicateRows.forEach(function (rowIndex) {
-            self.gridMaster.setRowStyle(rowIndex, { background: '#FFE4E1' });
+        // 데이터를 combinedKey를 기준으로 정렬
+        allData.sort(function (a, b) {
+            return a.COMBINED_KEY.localeCompare(b.COMBINED_KEY);
         });
     
-        return duplicateRows.size > 0; // 중복 발견 여부 반환
+        console.log("allData" + allData);
+    
+        for (var i = 0; i < allData.length; i++) {
+            var rowData = allData[i];
+            var combinedKey = rowData.COMBINED_KEY; // 결합키로 중복확인
+    
+            if (!groupedDataMap.has(combinedKey)) { // key: 결합키, value: allData[i]
+                // 그룹이 없는 경우, 새로운 그룹 생성
+                groupedDataMap.set(combinedKey, [rowData]);
+            } else {
+                // 이미 그룹이 있는 경우, 해당 그룹에 추가
+                groupedDataMap.get(combinedKey).push(rowData);
+            }
+        }
+    
+        var processedData = [];
+        var sortedCombinedKeys = Array.from(groupedDataMap.keys()).sort();
+    
+        // 정렬된 combinedKey에 따라 데이터를 추가
+        for (var key of sortedCombinedKeys) {
+            var group = groupedDataMap.get(key);
+            if (group.length > 1) {
+                // 중복된 데이터가 있는 그룹 처리
+                for (var k = 0; k < group.length; k++) {
+                    if (k === 0) {
+                        // 최상위 데이터는 그룹에 추가
+                        processedData.push(group[k]);
+                        //최상위 행 css
+                        var rowNo = self.gridMaster.getDataIndexFromItemIndex(group[k].SEQ - 1);
+                        self.gridMaster.setRowStyle(rowNo, { background: '#FFFFFF' });
+                    } else {
+                        // 최상위 데이터를 제외한 나머지 데이터에 CSS 입히기
+                        var rowIndex = self.gridMaster.getDataIndexFromItemIndex(group[k].SEQ - 1);
+                        self.gridMaster.setRowStyle(rowIndex, { background: '#FFE4E1' });
+                        self.gridMaster.setCheck(rowIndex, true, false);
+                        processedData.push(group[k]);
+                    }
+                }
+            } else {
+                // 중복된 데이터가 없는 그룹 처리
+                processedData.push(group[0]);
+            }
+        }
+    
+        console.log("processedData" + processedData);
+        // 그리드에 바인딩
+        self.grid_ds.data = processedData;
+        self.gridMaster.setDataSource(self.grid_ds);
+        self.gridMaster.sort({ field: 'COMBINED_KEY', dir: 'asc' }); // 정렬 필드와 방향 설정
+    
+    
     }
+    
     
     function checkListExist() { // 데이터 삭제 전, 자료가 존재하는지 확인
         var existFlag = false;
@@ -218,14 +208,6 @@
         var importDataCount = self.ImportExcelGrid.dataItems().length;
         var rowNum = self.gridMaster.dataItems().length;
     
-        // 사업장 코드 처리
-        // var bizareaCdMap = {
-        //     '본점': 1000,
-        //     '부산점': 2000,
-        //     '여수점': 4000,
-        //     '평화이즈': 522
-        // };
-    
         // PSTN_NM 처리
         var pstnNmMap = {
             '대표이사': 11,
@@ -265,15 +247,19 @@
             self.gridMaster.setCellValue(idx, 'UGRD_GRD_CD', ugrdGrdCd, false); // 승급등급
             self.gridMaster.setCellValue(idx, 'MIN_BWRK_MY', minBwrkMy, false); // 최소근무월수
             self.gridMaster.setCellValue(idx, 'BWRK_MY_CALC_STD_DT', self.mpPROMO_YEAR_MONTH.value() + "01", false); // 산정기준일
+    
+            // 'STD_YM', 'BIZAREA_CD', 'PSTN_CD', 'TRGT_GRD_CD'를 결합하여 'COMBINED_KEY' 생성
+            var combinedKey = self.ImportExcelGrid.getCellValue(i, 'STD_YM') + '-' + self.BIZAREA_CD.value() + '-' + pstnNmMap[pstnNm] + '-' + trgtGrdCd + '-' + ugrdGrdCd + '-' + minBwrkMy;
+            self.gridMaster.setCellValue(idx, 'COMBINED_KEY', combinedKey, false);// 결합키 
         }
     }
     
     function importExcel(e) {
         var errMsg = [];
         var stdYmMaxLength = 6;
-        var pstnCdMaxLength = 2;
-        var grdCdMaxLength = 2;
-        var minBwrkMyMaxLength = 100;
+        var pstnCdMaxLength = 5;
+        var grdCdMaxLength = 5;
+        var minBwrkMyMaxLength = 1000000;
         var titleDepth = 1;
     
         // 데이터 소스 초기화
@@ -299,6 +285,7 @@
                 "RMK_NM": "비고",
             },
             validator: function (row) {
+                dews.ui.loading.hide();
                 var msg = '';
     
                 //기본키 누락시 업로드 실패
@@ -337,7 +324,7 @@
                 for (var i = 0; i < result.success.count; i++) {
                     self.ImportExcelGrid.setRowState(i, "created");
                 }
-                dews.ui.snackbar.info("모든 데이터를 불러왔습니다.");
+                dews.ui.snackbar.info(result.totalCount + "건 데이터를 불러왔습니다.");
             } else {
                 self.grid_ds.data([]); // 일부라도 불러오지 못하면 데이터 초기화
                 if (errMsg.length > 0) {
@@ -345,16 +332,19 @@
                 }
             }
     
-            dews.confirm(result.totalCount + "건의 데이터를 추가하셨습니다.\n 기존 데이터에 추가하시겠습니까?", "question")
-                .yes(function () { // 메인그리드 데이터 + 업로드 데이터 insert
-                    processImportData();
-                }).no(function () { // 메인 그리드 데이터 지우고 업로드 데이터 insert
-                    var rowCount = self.gridMaster.dataItems().length;
-                    for (var i = rowCount - 1; i >= 0; i--) {
-                        self.gridMaster.removeRow(i); // 모든 행 삭제
-                    }
-                    processImportData();
-                });
+            dews.ui.snackbar.info(result.totalCount + "건의 데이터를 입력하셨습니다.");
+            self.gridMaster.clearRows(); //fd에서 데이터 삭제
+            processImportData(); //업로드그리드 -> 마스터그리드로 데이터 전달
+            handleDuplicateData(); //마스터그리드 데이터 정렬 
+    
+            var checkedIndices = self.gridMaster.getCheckedIndex();
+            if (checkedIndices.length > 0) {
+                dews.ui.snackbar.info("중복된 데이터 삭제바랍니다.");
+                var rowIndex = checkedIndices[0]; // 첫 번째 선택된 행의 인덱스 가져오기
+                self.gridMaster.select(rowIndex, 'STD_YM'); // 해당 행 선택(focus효과)
+            }
+    
+    
         }).fail(function (error) {
             console.error(error);
             dews.ui.loading.hide();
@@ -403,7 +393,8 @@
             { field: 'ORIG_TRGT_GRD_CD', editable: false, dataType: 'string' }, 
             { field: 'ORIG_UGRD_GRD_CD', editable: false, dataType: 'string' }, 
             { field: 'ORIG_MIN_BWRK_MY', editable: false, dataType: 'string' }, 
-            { field: 'SEQ', editable: false, dataType: 'number' }
+            { field: 'SEQ', editable: false, dataType: 'number' }, 
+            { field: 'COMBINED_KEY', editable: false, dataType: 'string' }
           ]
     
         }
@@ -604,22 +595,12 @@
     dews.ui.mainbuttons.save.click(/*de6735b5-68c0-4785-bc2d-308bb03c399d*/ function () {
         self.gridMaster.commitCell(); // 수정모드 종료
     
-        if (self.grid_ds.getDirtyDataCount() === 0) {
-            dews.alert('변경된 데이터가 없습니다.');
-            return false;
-        }
+        var checkedIndices = self.gridMaster.getCheckedIndex();
     
-        if (!self.gridMaster.validate().result) {
-            dews.alert('필수 값이 입력되지 않은 항목이 있습니다.');
-            return false;
-        }
-        // 중복 확인
-        if (hasDuplicates(self.grid_ds)) {
-            return false;
-        }
-    
-        // 중복이 없을 때 저장 로직 실행
-        dews.confirm('데이터를 저장하시겠습니까 ? ', 'question').yes(function () {
+        if (checkedIndices.length > 0) {
+            dews.ui.snackbar.warning("중복값이 존재합니다. 체크된 데이터 삭제해주세요.");
+        } else {
+            // checkedIndices 배열이 비어있을 때 수행할 작업
             dews.api.post(
                 dews.url.getApiUrl('HR', 'HRPamprg00100_X10005Service', 'save_HR_URGDBASETBL_INFO_X10005MST'),
                 {
@@ -634,7 +615,20 @@
             }).fail(function (xhr, status, error) {
                 dews.ui.snackbar.error(error);
             });
-        });
+        }
+    
+    
+        // if (self.gridMaster.getCheckedIndex())
+        //     if (self.grid_ds.getDirtyDataCount() === 0) {
+        //         dews.alert('변경된 데이터가 없습니다.');
+        //         return false;
+        //     }
+    
+        if (!self.gridMaster.validate().result) {
+            dews.alert('필수 값이 입력되지 않은 항목이 있습니다.');
+            return false;
+        }
+    
     });
     self.$copybtnApply.on('click', /*df183ba1-b663-4f91-b5c4-39905db4b87c*/ function (e) {
         if (self.mpPROMO_YEAR_MONTH.value() == '' || self.BIZAREA_CD.value() == '') {
@@ -702,11 +696,20 @@
         }
         try {
             importExcel(e);
+            // 중복 확인
         }
         catch (error) {
             dews.error(error);
             console.error(error);
         }
+    });
+    self.mpPROMO_YEAR_MONTH.on('open', /*a95694a8-4f83-45f4-84a2-42ff15d9e0ac*/ function (e) {
+        var allData = self.gridMaster.dataItems();
+    
+        for (var k = 0; k < allData.length; k++) {
+            self.gridMaster.resetRowStyle(k);
+        }
+    
     });
     self.mpPROMO_YEAR_MONTH.on('change', /*25c08b4f-d1ef-457d-a433-739d1b7c8cf7*/ function (e) {
         // TODO: 필수항목 입력을 체크한 후 데이터소스를 조회합니다.
@@ -724,6 +727,9 @@
         }
     });
     self.BIZAREA_CD.setDataSource(self.bizareaCd_ds);
+    self.BIZAREA_CD.on('change', /*9d0c5005-009c-4935-bfac-11f9df587d44*/ function (e) {
+        self.grid_ds.read();
+    });
     dews.ui.grid(self.$gridMaster, {
       dataSource: self.grid_ds,
       editable: true,
@@ -901,9 +907,7 @@
           title: '순번',
           formats: {
             type: 'number',
-            predefined: true,
-            max: 100,
-            min: 0
+            predefined: true
           }
         },
         {
@@ -925,19 +929,16 @@
           field: 'ORIG_UGRD_GRD_CD',
           title: '수정이전 승급등급코드',
           visible: false
+        },
+        {
+          field: 'COMBINED_KEY',
+          title: '결합키'
         }
       ],
       fixed: {
         colCount: 0,
         rightColCount: 0
-      },
-      dataBound: /*e79fcd7e-9392-4123-8817-489aae742cc6*/ function (e) {
-            dews.ui.loading.hide();
-            if (self.gridMaster.dataItems().length === 0) {
-                dews.ui.snackbar.warning("조회된 내역이 없습니다.");
-            }
-        }
-    
+      }
     });
     dews.ui.grid(self.$excelFormGrid, {
       dataSource: self.forExcelDataSource,
@@ -1091,7 +1092,7 @@
     
     /*534ba9e1-a845-40e6-8d1e-d324d5bfa4cc*/ self.mpPROMO_YEAR_MONTH.value(getCurrentMonth()); //데이터 있는 기준 날짜 확인해야 함 
     self.gridMaster.SEQ = 0;
-    
+    self.grid_ds.read();
     
     
     

@@ -1,6 +1,6 @@
-<!--##b99fbdca-afa9-4668-a4b1-4f94d5ba86d4##-->
+<!--##9856e844-2a70-46c9-b8bd-9d5dea325f10##-->
 <!--##ESSODM01400_X10005_Sub##-->
-<!--##dHYjD2korZLAp5yfL2oa8RcFNJjPno7BPiyV/kX+s0PoQ1IONRoXQz96FO2K7xt4##-->
+<!--##EdXfqwhG16HvHw2S2ilN4xt7M1WDObVg7DxD3MFoI797Rpyzk9zy9GBpG1mgeQpq##-->
 <!--
   DEWS UI/UX IDE - Build Result - v1.5
   # PageID: ESSODM01400_X10005_Sub
@@ -817,8 +817,19 @@
     //파이프 데이터소스에서 생성한 것처럼 드롭다운리스트에서 값의 범위에 따라 유효성 검증
     function CheckPeriod() {
         var req_date = GetREQ_DY();
+        var startDateStr = self.START_DT.text(); // 예시: YYYYMMDD 형식
+        var endDateStr = self.END_DT.text();
+    
+        // 시작날짜와 종료날짜를 Date 객체로 변환
+        var startDate = new Date(startDateStr);
+        var endDate = new Date(endDateStr);
+        var today = new Date();
+    
         if (req_date < 0) {           // 신청가능일 < 10
             dews.ui.snackbar.warning("종료일은 시작일보다 작을 수 없습니다.");
+            return false;
+        } else if (startDate < today || endDate < today) {           // 신청 날짜는 오늘부터 가능하다.
+            dews.ui.snackbar.warning("시작일과 종료일은 오늘날짜보다 작을 수 없습니다.");
             return false;
         } else if (self.DNL_CD.value() === '5100') {           // 신청가능일 < 10
             if (req_date > 10) {

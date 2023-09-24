@@ -229,8 +229,9 @@ public class HREssodm01400_X10005Service extends DzCometService {
 				parameters.put("P_INSERT_IP", userInfo.getIp());
 				parameters.put("P_INSERT_DTS", userInfo.getDate());
 				essodm01400_x10005DAO.insertEssodm01400_X10005Model(parameters);
+				response.put("MSG", model.getReq_no());
 			}
-			response.put("MSG", model.getReq_no());
+			
 			return (String) response.get("MSG");
 		} catch (Exception e) {
 			throw new DzApplicationRuntimeException(e);

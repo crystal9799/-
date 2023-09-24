@@ -1,6 +1,6 @@
-<!--##d889c70e-d899-475e-93e6-b7caaf41410c##-->
+<!--##7e805f90-23e9-4250-8238-c9bbff480f27##-->
 <!--##ESSODM01400_x10005##-->
-<!--##q4YXjcW4EgQckU3LjPbVt8w1Iab2NfJQ9PxAoKfovD0VYWyD7BfHjL3ghk5sXiIr##-->
+<!--##H5eEkdhCeJUgSw68Dg9fWGjRfzqW+PAErHAhbNWy1kXNHyF3z5d9MxY8QzWM2G21##-->
 <!--
   DEWS UI/UX IDE - Build Result - v1.5
   # PageID: ESSODM01400_x10005
@@ -448,7 +448,14 @@
             grid.setCellValue(grid.select(), 'KOR_NM', data[0].KOR_NM, false); // 한글명
             grid.setCellValue(grid.select(), 'PSTN_CD', data[0].PSTN_CD, false); // 직급코드
             grid.setCellValue(grid.select(), 'OGRP_CD', data[0].OGRP_CD, false); // 직군코드
-            grid.setCellValue(grid.select(), 'ORG', data[0].ORG === null ? data[0].PATH : data[0].ORG, false); // 소속
+            //PATH 값 처리
+            var path = data[0].PATH === null ? '' : data[0].PATH;
+    
+            // 만약 path 값이 존재하고, 앞에 슬래시가 두 번 온다면 앞의 슬래시를 제외한 나머지 문자열을 출력
+            if (path && path.startsWith('//')) {
+                path = path.substring(2); // 앞의 두 슬래시를 제거
+            }
+            grid.setCellValue(grid.select(), 'ORG', data[0].ORG === null ? path : data[0].ORG, false); // 소속
             grid.setCellValue(grid.select(), 'POSI_CD', data[0].POSI_CD, false); // 직위코드
             self.EMP_NO.text(data[0].EMP_NO);
             self.KOR_NM.text(data[0].KOR_NM);

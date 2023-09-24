@@ -1,6 +1,6 @@
-<!--##d279b31d-bf1a-4dd4-a325-52c97e9f7184##-->
+<!--##08e05c32-b1a1-4115-8c0b-91e8e01302d2##-->
 <!--##ESSODM01400_X10005_Sub##-->
-<!--##zOMDLvK6fF9Q8+TrVYMgoduYvfeCn6qdM5JnCsrp5SJZXGPoSNnYsgHoxMp+4TtR##-->
+<!--##1cuIrsi+paP08ugSq6W/nK3+GDIIv73wvgpAdlmm0tYpBkKG3xWLOKdoPcx0Dq2S##-->
 <!--
   DEWS UI/UX IDE - Build Result - v1.5
   # PageID: ESSODM01400_X10005_Sub
@@ -657,6 +657,15 @@
                 self.REQ_DT.text(userData.REQ_DT);
                 GetUserInfo(self.EMP_NO.text(), self.COMPANY_CD.text());
     
+                //소속값 처리
+                //PATH 값 처리
+                var path = self.ORG.text();
+    
+                // 만약 path 값이 존재하고, 앞에 슬래시가 두 번 온다면 앞의 슬래시를 제외한 나머지 문자열을 출력
+                if (path && path.startsWith('//')) {
+                    path = path.substring(2); // 앞의 두 슬래시를 제거
+                }
+                self.ORG.text(path);
     
                 //만약 REQ_EMP_NO와 REQ_KOR_NM이 공백이라면 기본정보의 데이터 바인딩
                 if (self.REQ_EMP_NO.text() === '' && self.REQ_KOR_NM.text() === '') {
@@ -800,7 +809,14 @@
             grid.setCellValue(grid.select(), 'KOR_NM', data[0].KOR_NM, false); // 한글명
             grid.setCellValue(grid.select(), 'PSTN_CD', data[0].PSTN_CD, false); // 직급코드
             grid.setCellValue(grid.select(), 'OGRP_CD', data[0].OGRP_CD, false); // 직군코드
-            grid.setCellValue(grid.select(), 'ORG', data[0].ORG === null ? data[0].PATH : data[0].ORG, false); // 소속
+            //PATH 값 처리
+            var path = data[0].PATH === null ? '' : data[0].PATH;
+    
+            // 만약 path 값이 존재하고, 앞에 슬래시가 두 번 온다면 앞의 슬래시를 제외한 나머지 문자열을 출력
+            if (path && path.startsWith('//')) {
+                path = path.substring(2); // 앞의 두 슬래시를 제거
+            }
+            grid.setCellValue(grid.select(), 'ORG', data[0].ORG === null ? path : data[0].ORG, false); // 소속
             grid.setCellValue(grid.select(), 'POSI_CD', data[0].POSI_CD, false); // 직위코드
             grid.setCellValue(grid.select(), 'DEPT_CD', data[0].DEPT_CD, false);
             self.EMP_NO.text(data[0].EMP_NO);
@@ -809,6 +825,7 @@
             self.OGRP_NM.text(GetOGRP_NM(data[0].OGRP_CD));
             self.ORG.text(data[0].ORG === null ? data[0].PATH : data[0].ORG);
             self.POSI_NM.text(GetPSTNPOSI_NM(data[0].POSI_CD));
+            self.ORG.text(grid.getCellValue(grid.select(), 'ORG'));
         }).fail(function (xhr, status, error) {
             dews.error(xhr.responseJSON.message);
         });

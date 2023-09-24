@@ -1,6 +1,6 @@
-<!--##9856e844-2a70-46c9-b8bd-9d5dea325f10##-->
+<!--##d279b31d-bf1a-4dd4-a325-52c97e9f7184##-->
 <!--##ESSODM01400_X10005_Sub##-->
-<!--##EdXfqwhG16HvHw2S2ilN4xt7M1WDObVg7DxD3MFoI797Rpyzk9zy9GBpG1mgeQpq##-->
+<!--##zOMDLvK6fF9Q8+TrVYMgoduYvfeCn6qdM5JnCsrp5SJZXGPoSNnYsgHoxMp+4TtR##-->
 <!--
   DEWS UI/UX IDE - Build Result - v1.5
   # PageID: ESSODM01400_X10005_Sub
@@ -1109,17 +1109,25 @@
     }
     
     function IsPSTNPOSINULL() {
-        var pstn_cd = self.main_grid.getCellValue(0, 'PSTN_CD') === null ? '' : self.main_grid.getCellValue(0, 'PSTN_CD');
-        var posi_cd = self.main_grid.getCellValue(0, 'POSI_CD') === null ? '' : self.main_grid.getCellValue(0, 'POSI_CD');
-        if (pstn_cd === '' && posi_cd === '') {
+        var pstn_cd = self.main_grid.getCellValue(0, 'PSTN_CD');
+        var posi_cd = self.main_grid.getCellValue(0, 'POSI_CD');
+    
+        // 둘 다 null인 경우에는 아무 작업도 하지 않음
+        if (pstn_cd === null && posi_cd === null) {
             return;
         }
-        if (pstn_cd === '') {
-            self.POSI_NM.text(self.PSTN_NM.text());
-        } else if (posi_cd === '') {
+    
+        // pstn_cd가 null이면 posi_cd 값을 복사
+        if (pstn_cd === null) {
             self.PSTN_NM.text(self.POSI_NM.text());
         }
+    
+        // posi_cd가 null이면 pstn_cd 값을 복사
+        if (posi_cd === null) {
+            self.POSI_NM.text(self.PSTN_NM.text());
+        }
     }
+    
     
     function IsNewInputNewData() {
         //신규 신청 시 넘겨 받은 데이터가 없으므로 해당 페이지에서 변경사항을 비교할 수 있는 데이터 객체를 따로 만든다.

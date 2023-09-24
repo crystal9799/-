@@ -38,8 +38,8 @@ public class Pamprg00100_X10005Dao  {
 	 * 단일 데이터 입력 처리
 	 * @param Pamprg00100_X10005Model
 	 */
-	public void insertPAMPRG00100_Model(List<Pamprg00100_X10005Model> parameters) throws Exception {
-		this.mybatisSupport.insertBatch(this.getClass().getName() + ".insertPAMPRG00100_Model", parameters);
+	public void insertPAMPRG00100_Model(List<Pamprg00100_X10005Model> Pamprg00100_X10005Model) throws Exception {
+		this.mybatisSupport.insertBatch(this.getClass().getName() + ".insertPAMPRG00100_Model", Pamprg00100_X10005Model);
 	}
 
 	/**

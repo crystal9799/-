@@ -26,6 +26,7 @@
 			 ,MC2.SYSDEF_NM LEDU_NM                              -- 학력명
 			 ,HUI.BWRK_MY_CALC_STD_DT                            -- 산정기준일
 			 ,HUI.RMK_NM                                         -- 비고
+			 --,HUI.COMPANY_CD || HUI.STD_YM || HUI.BIZAREA_CD || HUI.PSTN_CD || HUI.TRGT_GRD_CD || HUI.UGRD_GRD_CD || HUI.MIN_BWRK_MY AS COMBINED_KEY -- 판별키
 		FROM 
 			HR_URGDBASETBL_INFO_X10005 HUI
 			LEFT OUTER JOIN MA_CODEDTL MC
@@ -47,8 +48,8 @@
 			LEFT OUTER JOIN MA_BIZAREA_MST MBM
 				ON (HUI.COMPANY_CD = MBM.COMPANY_CD)
 				AND (HUI.BIZAREA_CD = MBM.BIZAREA_CD)
-			WHERE 
-				 (HUI.COMPANY_CD = #{P_COMPANY_CD})
+			WHERE 1=1 AND 
+			(HUI.COMPANY_CD = #{P_COMPANY_CD})
 			AND (HUI.STD_YM = #{P_PROMO_YEAR_MONTH})
 				<if test="P_BIZAREA_CD != '' and P_BIZAREA_CD != null">
 				    AND (HUI.BIZAREA_CD = #{P_BIZAREA_CD})
@@ -122,27 +123,71 @@
 			AND (MIN_BWRK_MY = #{orig_min_bwrk_my})
 	</update>
 	
-	<insert id="insertPAMPRG00100_Model" parameterType="com.douzone.comet.service.hr.pamprg.models.Pamprg00100_X10005Model">
-		INSERT INTO 
-				   HR_URGDBASETBL_INFO_X10005
-											 (
-												 COMPANY_CD, STD_YM,BIZAREA_CD, PSTN_CD,TRGT_GRD_CD, 
-												 UGRD_GRD_CD,MIN_BWRK_MY, AGGR_TERM_CNT,
-												 BWRK_SGRAD_CD,LEDU_CD, BWRK_MY_CALC_STD_DT,
-												 RMK_NM,
-												 INSERT_ID, INSERT_IP, INSERT_DTS,
-												 UPDATE_ID, UPDATE_IP, UPDATE_DTS
-											  )
-										VALUES
-											  (
-											    #{company_cd}, #{std_ym}, #{bizarea_cd},
-											    #{pstn_cd}, #{trgt_grd_cd}, #{urgd_grd_cd}, 
-											    #{min_bwrk_my}, #{aggr_term_cnt},
-												#{bwrk_sgrad_cd}, #{ledu_cd}, #{bwrk_my_calc_std_dt}, #{rmk_nm},
-												#{insert_id}, #{insert_ip}, #{insert_dts},
-												#{insert_id}, #{insert_ip},  #{insert_dts}
-										)
-	</insert>
+	<!-- merge 사용하기 전엔 기존 데이터 delete -> insert 해줘야 했음 --> 
+	<!--  	<insert id="insertPAMPRG00100_Model" parameterType="com.douzone.comet.service.hr.pamprg.models.Pamprg00100_X10005Model">
+			INSERT INTO 
+					   HR_URGDBASETBL_INFO_X10005
+												 (
+													 COMPANY_CD, STD_YM,BIZAREA_CD, PSTN_CD,TRGT_GRD_CD, 
+													 UGRD_GRD_CD,MIN_BWRK_MY, AGGR_TERM_CNT,
+													 BWRK_SGRAD_CD,LEDU_CD, BWRK_MY_CALC_STD_DT,
+													 RMK_NM,
+													 INSERT_ID, INSERT_IP, INSERT_DTS,
+													 UPDATE_ID, UPDATE_IP, UPDATE_DTS
+												  )
+											VALUES
+												  (
+												    #{company_cd}, #{std_ym}, #{bizarea_cd},
+												    #{pstn_cd}, #{trgt_grd_cd}, #{urgd_grd_cd}, 
+												    #{min_bwrk_my}, #{aggr_term_cnt},
+													#{bwrk_sgrad_cd}, #{ledu_cd}, #{bwrk_my_calc_std_dt}, #{rmk_nm},
+													#{insert_id}, #{insert_ip}, #{insert_dts},
+													#{insert_id}, #{insert_ip},  #{insert_dts}
+											)
+	    </insert>-->
+	
+	
+	
+	<update id="insertPAMPRG00100_Model" parameterType="com.douzone.comet.service.hr.pamprg.models.Pamprg00100_X10005Model">
+		MERGE INTO HR_URGDBASETBL_INFO_X10005
+			USING DUAL
+			ON
+			(
+				COMPANY_CD = #{company_cd}
+				AND (STD_YM = #{std_ym})
+				AND (BIZAREA_CD = #{bizarea_cd})
+				AND (PSTN_CD = #{pstn_cd})
+				AND (TRGT_GRD_CD = #{trgt_grd_cd})
+				AND (UGRD_GRD_CD = #{ugrd_grd_cd})
+				AND (MIN_BWRK_MY = #{min_bwrk_my})
+			  )
+			WHEN MATCHED THEN 
+				 UPDATE SET
+						   update_id = #{insert_id}
+						   ,update_dts = #{insert_dts}
+			WHEN NOT MATCHED THEN 
+				INSERT 
+					  (
+						 COMPANY_CD, STD_YM, BIZAREA_CD, PSTN_CD,TRGT_GRD_CD, 
+						 UGRD_GRD_CD,MIN_BWRK_MY, AGGR_TERM_CNT,
+						 BWRK_SGRAD_CD,LEDU_CD, BWRK_MY_CALC_STD_DT,
+						 RMK_NM,
+						 INSERT_ID, INSERT_IP, INSERT_DTS,
+						 UPDATE_ID, UPDATE_IP, UPDATE_DTS
+					   )
+				VALUES
+					  (
+					    #{company_cd}, #{std_ym}, #{bizarea_cd},
+					    #{pstn_cd}, #{trgt_grd_cd}, #{urgd_grd_cd}, 
+					    #{min_bwrk_my}, #{aggr_term_cnt},
+						#{bwrk_sgrad_cd}, #{ledu_cd}, #{bwrk_my_calc_std_dt},
+						#{rmk_nm},
+						#{insert_id}, #{insert_ip}, #{insert_dts},
+						#{insert_id}, #{insert_ip}, #{insert_dts}
+						)
+	</update>
+	
+	
 	
 	<delete id="delete_BeforeList" parameterType="hashMap">
 		DELETE 
@@ -170,7 +215,8 @@
 			BWRK_MY_CALC_STD_DT, -- 산정기준일
 			RMK_NM,
 			INSERT_ID, INSERT_IP, INSERT_DTS,
-			UPDATE_ID, UPDATE_IP, UPDATE_DTS )
+			UPDATE_ID, UPDATE_IP, UPDATE_DTS 
+			)
 			SELECT HUI.COMPANY_CD,
 				   #{P_PROMO_YEAR_MONTH}, -- 기준년월
 				   HUI.BIZAREA_CD,
@@ -199,5 +245,7 @@
 				    AND HUI.BIZAREA_CD = #{P_BIZAREA_CD}
 				</if>
 	</insert>
+	
+	
 	
 </mapper>

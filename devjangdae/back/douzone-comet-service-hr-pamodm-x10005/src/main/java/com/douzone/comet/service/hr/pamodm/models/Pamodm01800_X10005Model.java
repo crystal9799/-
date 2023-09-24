@@ -57,6 +57,14 @@ public class Pamodm01800_X10005Model extends DzAbstractModel {
 	@SerializedName("END_DT")
 	@DzModelField(name = "end_dt", desc = "종료일", colName = "END_DT", colSize = "8", isKey = false)
 	private String end_dt;
+	
+	@SerializedName("ORIG_START_DT")
+	@DzModelField(name = "start_dt", desc = "ORIG_시작일", colName = "ORIG_START_DT", colSize = "8", isKey = false)
+	private String orig_start_dt;
+
+	@SerializedName("ORIG_END_DT")
+	@DzModelField(name = "end_dt", desc = "ORIG_종료일", colName = "ORIG_END_DT", colSize = "8", isKey = false)
+	private String orig_end_dt;
 
 	@SerializedName("TM_CD_NM")
 	@DzModelField(name = "tm_cd_nm", desc = "시간코드명", colName = "TM_CD_NM", colSize = "50", isKey = false)
@@ -210,6 +218,22 @@ public class Pamodm01800_X10005Model extends DzAbstractModel {
 		this.end_dt = end_dt;
 	}
 
+	public String getOrig_start_dt() {
+		return orig_start_dt;
+	}
+
+	public void setOrig_start_dt(String orig_start_dt) {
+		this.orig_start_dt = orig_start_dt;
+	}
+
+	public String getOrig_end_dt() {
+		return orig_end_dt;
+	}
+
+	public void setOrig_end_dt(String orig_end_dt) {
+		this.orig_end_dt = orig_end_dt;
+	}
+
 	public String getTm_cd_nm() {
 		return tm_cd_nm;
 	}
@@ -324,13 +348,14 @@ public class Pamodm01800_X10005Model extends DzAbstractModel {
 
 	@Override
 	public String toString() {
-		return "Pamodm01800_Model [company_cd=" + company_cd + ", emp_no=" + emp_no + ", org=" + org + ", kor_nm="
+		return "Pamodm01800_X10005Model [company_cd=" + company_cd + ", emp_no=" + emp_no + ", org=" + org + ", kor_nm="
 				+ kor_nm + ", dept_cd=" + dept_cd + ", ogrp_cd=" + ogrp_cd + ", pstn_cd=" + pstn_cd + ", jnco_dt="
 				+ jnco_dt + ", prmt_dt=" + prmt_dt + ", retm_dt=" + retm_dt + ", start_dt=" + start_dt + ", end_dt="
-				+ end_dt + ", tm_cd_nm=" + tm_cd_nm + ", dof_tp=" + dof_tp + ", start_tm=" + start_tm + ", end_tm="
-				+ end_tm + ", dof_tm_cnt=" + dof_tm_cnt + ", lve_tm_cnt=" + lve_tm_cnt + ", insert_id=" + insert_id
-				+ ", insert_ip=" + insert_ip + ", insert_dts=" + insert_dts + ", update_id=" + update_id
-				+ ", update_dts=" + update_dts + ", update_ip=" + update_ip + ", insert_mcaddr_nm=" + insert_mcaddr_nm
-				+ ", update_mcaddr_nm=" + update_mcaddr_nm + "]";
+				+ end_dt + ", orig_start_dt=" + orig_start_dt + ", orig_end_dt=" + orig_end_dt + ", tm_cd_nm="
+				+ tm_cd_nm + ", dof_tp=" + dof_tp + ", start_tm=" + start_tm + ", end_tm=" + end_tm + ", dof_tm_cnt="
+				+ dof_tm_cnt + ", lve_tm_cnt=" + lve_tm_cnt + ", insert_id=" + insert_id + ", insert_ip=" + insert_ip
+				+ ", insert_dts=" + insert_dts + ", update_id=" + update_id + ", update_dts=" + update_dts
+				+ ", update_ip=" + update_ip + ", insert_mcaddr_nm=" + insert_mcaddr_nm + ", update_mcaddr_nm="
+				+ update_mcaddr_nm + "]";
 	}
 }

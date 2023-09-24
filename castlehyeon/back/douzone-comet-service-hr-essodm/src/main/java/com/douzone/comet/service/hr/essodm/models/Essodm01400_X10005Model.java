@@ -91,6 +91,10 @@ public class Essodm01400_X10005Model extends DzAbstractModel {
 	@DzModelField(name="req_dy", desc="신청일수", colName="REQ_DY", colSize="5", isKey=false)
 	private BigDecimal req_dy;
 
+	@SerializedName("BIZAREA_CD")
+	@DzModelField(name="bizarea_cd", desc="사업장코드", colName="BIZAREA_CD", colSize="7", isKey=false)
+	private String bizarea_cd;
+	
 	public String getCompany_cd() {
 		return company_cd;
 	}
@@ -252,6 +256,15 @@ public class Essodm01400_X10005Model extends DzAbstractModel {
 		this.req_dy = req_dy;
 	}
 
+	
+	public String getBizarea_cd() {
+		return bizarea_cd;
+	}
+
+	public void setBizarea_cd(String bizarea_cd) {
+		this.bizarea_cd = bizarea_cd;
+	}
+
 	@Override
 	public String toString() {
 		return "Essodm01400_X10005Model [company_cd=" + company_cd + ", req_no=" + req_no + ", req_dt=" + req_dt
@@ -259,8 +272,10 @@ public class Essodm01400_X10005Model extends DzAbstractModel {
 				+ ", athz_doc_cd=" + athz_doc_cd + ", athz_st_cd=" + athz_st_cd + ", emp_no=" + emp_no + ", kor_nm="
 				+ kor_nm + ", pstn_cd=" + pstn_cd + ", ogrp_cd=" + ogrp_cd + ", dept_cd=" + dept_cd + ", org=" + org
 				+ ", posi_cd=" + posi_cd + ", req_emp_no=" + req_emp_no + ", req_kor_nm=" + req_kor_nm + ", reason_dc="
-				+ reason_dc + ", req_dy=" + req_dy + "]";
+				+ reason_dc + ", req_dy=" + req_dy + ", bizarea_cd=" + bizarea_cd + "]";
 	}
+
+	
 
 
 }

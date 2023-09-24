@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.douzone.comet.service.hr.cdmjim00100.dao.cdmjim00100_Modal">
+
+	<select id="selectFgList" resultType="hashMap">		
+		SELECT DISTINCT
+			<choose>
+	            <when test='param_cd == "LCLAS_CD"'>
+	                LCLAS_CD
+	            </when>
+	            <when test='param_cd == "MLSFC_CD"'>
+	                MLSFC_CD
+	            </when>
+	            <when test='param_cd == "S_CSF_CD"'>
+	                S_CSF_CD
+	            </when>
+	            <when test='param_cd == "TCLF_CD"'>
+	                TCLF_CD
+	            </when>
+	            <when test='param_cd == "ACLF_CD"'>
+	                ACLF_CD
+	            </when>           
+        	</choose>
+        	AS param_cd,
+        	<choose>
+	            <when test='param_name == "LCLAS_NM"'>
+	                LCLAS_NM
+	            </when>
+	            <when test='param_name == "MLSFC_NM"'>
+	                MLSFC_NM
+	            </when>
+	            <when test='param_name == "S_CSF_NM"'>
+	                S_CSF_NM
+	            </when>
+	            <when test='param_name == "TCLF_NM"'>
+	                TCLF_NM
+	            </when>
+	            <when test='param_name == "ACLF_NM"'>
+	                ACLF_NM
+	            </when>
+	        </choose>
+	        AS param_name
+		FROM HR_JOBDIVBASE_MST hjm 
+		<where>
+			<!-- JOB_FG = '2' -->
+			<if test='COMPANY_CD != null and COMPANY_CD != ""'>
+				AND HJM.COMPANY_CD = #{COMPANY_CD}
+			</if>
+			<if test='LCLAS_CD != null and LCLAS_CD != ""'>
+				AND HJM.LCLAS_CD = #{LCLAS_CD}
+			</if>
+			<if test='MLSFC_CD != null and MLSFC_CD != ""'>
+				AND HJM.MLSFC_CD = #{MLSFC_CD}
+			</if>
+			<if test='S_CSF_CD != null and S_CSF_CD != ""'>
+				AND HJM.S_CSF_CD = #{S_CSF_CD}
+			</if>
+			<if test='TCLF_CD != null and TCLF_CD != ""'>
+				AND HJM.TCLF_CD = #{TCLF_CD}
+			</if>
+		</where>				
+	</select>
+
+	<select id="selectObject" resultType="java.lang.Object">		
+		SELECT	*
+		FROM	@{dzparam_dbname}[tableName]
+		WHERE	[columnName] = [columnValue]		
+	</select>
+
+	<insert id="insertObject">		
+		INSERT INTO @{dzparam_dbname}[tableName] (
+				[columnName]
+		) VALUES (
+				[columnValue]
+		)		
+	</insert>
+
+	<update id="updateObject" >		
+		UPDATE	@{dzparam_dbname}[tableName]
+		SET		[columnName] = [columnValue]
+		WHERE	[columnName] = [columnValue]		
+	</update>
+
+	<delete id="deleteObject">		
+		DELETE
+		FROM	@{dzparam_dbname}[tableName]
+		WHERE	[columnName] = [columnValue]		
+	</delete>
+
+</mapper>

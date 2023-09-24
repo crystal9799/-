@@ -1,10 +1,10 @@
-<!--##f9500dea-8263-4897-9055-6153c0b9d342##-->
+<!--##61c32430-5819-4ead-87cf-a8885707e580##-->
 <!--##PAMODM01800_X10005##-->
-<!--##SAtl4j1Y1YS5WBnXXgw1SLpyyvrF4Sx7WC3lHqYs3rTn78+1EMW3HpBn6/1KNYUr##-->
+<!--##MnR8KkUNFkFFziD/XKWAvqAlCIDPz8FuxWzM6uEGBAik5xob41Of5x3Bya/nPp1g##-->
 <!--
   DEWS UI/UX IDE - Build Result - v1.5
   # PageID: PAMODM01800_X10005
-  # PageTitle: [한국동서발전]행사참가직원등록
+  # PageTitle: 행사참가직원등록
   # Server: http://localhost:8090/
 -->
 <!--
@@ -14,9 +14,9 @@
 <div id="conditionpanel1" class="dews-ui-condition-panel">
   <ul class="required-area">
     <li>
-      <label class="dews-ui-multilingual">회사</label>
+      <label class="dews-ui-multilingual">사업장</label>
       <span>
-        <select id="s_COMPANY_CD" name="s_COMPANY_CD" class="dews-ui-multicodepicker basic" data-dews-help-code="H_MA_COMPANY_S" data-dews-code-field="COMPANY_CD" data-dews-text-field="COMPANY_NM" data-dews-help-title="회사 도움창" data-dews-help-custom="false" data-dews-help-size="medium" />
+        <select id="s_BIZAREA_CD" name="s_BIZAREA_CD" class="dews-ui-multicodepicker basic" data-dews-help-code="custom" data-dews-code-field="BIZAREA_CD" data-dews-text-field="BIZAREA_NM" data-dews-help-title="사업장 도움창" data-dews-help-custom="true" data-dews-help-view-url="~/view/HR/PAMODM01800_bizCode_X10005" data-dews-help-size="medium" />
       </span>
     </li>
     <li>
@@ -80,6 +80,9 @@
     // 메인버튼 삭제 버튼의 기본 확인 메시지 사용 여부 설정 
     self.mainButtons.delete.useDefaultConfirm = false;
     
+    var self = this;
+    self.version.view = '1.0.23091501';
+    self.version.service = 'HRPamodm01800_X10005Service';
     
     
     
@@ -96,7 +99,7 @@
               start_dt: self.s_START_DT.getStartDate(),
               end_dt: self.s_START_DT.getEndDate(),
               dept_cd: self.s_DEPT_CD.codes().join('|'),
-              company_cd: self.s_COMPANY_CD.codes().join('|')
+              bizarea_cd: self.s_BIZAREA_CD.codes().join('|')
             };
           }
         }
@@ -115,7 +118,9 @@
             { field: 'PRMT_DT', editable: false, dataType: 'string' }, 
             { field: 'RETM_DT', editable: false, dataType: 'string' }, 
             { field: 'START_DT', editable: false, dataType: 'string' }, 
+            { field: 'ORIG_START_DT', editable: false, dataType: 'string' }, 
             { field: 'END_DT', editable: false, dataType: 'string' }, 
+            { field: 'ORIG_END_DT', editable: false, dataType: 'string' }, 
             { field: 'TM_CD_NM', editable: false, dataType: 'string' }, 
             { field: 'DOF_TP', editable: false, dataType: 'string' }, 
             { field: 'START_TM', editable: false, dataType: 'string' }, 
@@ -198,9 +203,11 @@
     
     
     dews.ui.mainbuttons.localize.disable(true);
+    dews.ui.mainbuttons.approval.hide();
+    dews.ui.mainbuttons.etnapproval.hide();
     dews.ui.mainbuttons.add.click(/*d1cbdcb0-8f4b-4a3e-9937-683f712ca116*/ function () {
         try {
-            self.grid1.addRow();
+    
             self.s_EMP_NO.open(); // 행 추가 후 사원도움창 오픈
             //self.grid1.setCellValue(self.grid1.select(), "COMPANY_CD", '5000');
             // self.grid1.setCellValue(self.grid1.select(), "EMP_NO", 'jueunp'); // 사원번호
@@ -288,6 +295,7 @@
             dews.error(error);
         }
     });
+    dews.ui.mainbuttons.print.hide();
     dews.ui.mainbuttons.save.click(/*78e0612d-4142-4edb-9167-158e5496e7a0*/ function () {
         // // TODO: 데이터소스를 저장합니다.
         if (self.ds1.getDirtyDataCount() == 0) {
@@ -329,7 +337,7 @@
             dews.error(error);
         }
     });
-    self.s_COMPANY_CD.setHelpParams(function () {
+    self.s_BIZAREA_CD.setHelpParams(function () {
       return {
         company_cd: '',
         cd_company_exc: '',
@@ -339,10 +347,26 @@
     });
     self.s_DOF_TP.setDataSource(self.pipeData_ZC01_10005);
     self.s_EMP_NO.on('codedialog', /*cb79863b-31a6-46cd-b298-9bc53ff1a028*/ function (e) {
-        e.callback = function (s) {
-            self.grid1.setCellValue(self.grid1.select(), 'EMP_NO', s.EMP_NO)
-            self.grid1.setCellValue(self.grid1.select(), 'KOR_NM', s.KOR_NM)
-            self.grid1.setCellValue(self.grid1.select(), 'JNCO_DT', s.JNCO_DT)
+        console.log(1);
+        if (self.s_BIZAREA_CD.codes() == "" || self.s_BIZAREA_CD.codes() == undefined || self.s_BIZAREA_CD.codes() == null) {
+            dews.alert("사업장은 필수입력 항목입니다.", 'warning');
+            return false;
+        }
+    
+        if (self.s_DEPT_CD.codes() == "" || self.s_DEPT_CD.codes() == undefined || self.s_DEPT_CD.codes() == null) {
+            dews.alert("부서는 필수입력 항목입니다.", 'warning');
+            return false;
+        }
+        e.callback = function (data) {
+            self.grid1.addRow();
+            self.grid1.setCellValue(self.grid1.select(), 'EMP_NO', data.EMP_NO);
+            self.grid1.setCellValue(self.grid1.select(), 'KOR_NM', data.KOR_NM);
+            self.grid1.setCellValue(self.grid1.select(), 'JNCO_DT', data.JNCO_DT);
+    
+            //추가 행 데이터 setCellValue
+            get_org(data.COMPANY_CD, data.DEPT_CD);
+            get_ogrp_cd_pstn_cd(data.COMPANY_CD, data.OGRP_CD, data.PSTN_CD);
+            get_prmt_dt_retm_dt(data.COMPANY_CD, data.EMP_NO);
         }
     });
     dews.ui.grid(self.$grid1, {
@@ -469,6 +493,12 @@
           }
         },
         {
+          field: 'ORIG_START_DT',
+          title: 'ORIG_시작일',
+          width: 60,
+          visible: false
+        },
+        {
           field: 'END_DT',
           title: '종료일',
           width: 80,
@@ -481,6 +511,12 @@
             type: 'date',
             format: 'yyyy-MM-dd'
           }
+        },
+        {
+          field: 'ORIG_END_DT',
+          title: 'ORIG_종료일',
+          width: 60,
+          visible: false
         },
         {
           field: 'TM_CD_NM',
@@ -506,6 +542,10 @@
           formats: {
             type: 'time',
             format: 'HH:MM'
+          },
+          editor: {
+            type: 'time',
+            format: 'HH:mm'
           }
         },
         {
@@ -515,6 +555,10 @@
           formats: {
             type: 'time',
             format: 'HH:MM'
+          },
+          editor: {
+            type: 'time',
+            format: 'HH:mm'
           }
         },
         {
@@ -522,11 +566,16 @@
           title: '휴무\n시간',
           width: 60,
           formats: {
-            type: 'number'
+            type: 'number',
+            format: '###,###'
           },
           editor: {
             type: 'number',
-            max: 99999
+            format: '###,###',
+            min: 0,
+            max: 99998.99,
+            increaseType: 'plus',
+            increaseValue: 1
           }
         },
         {
@@ -534,20 +583,160 @@
           title: '이탈\n시간',
           width: 60,
           formats: {
-            type: 'number'
+            type: 'number',
+            format: '###,###'
           },
           editor: {
             type: 'number',
-            max: 99999
+            format: '###,###',
+            min: 0,
+            max: 99998.99,
+            increaseType: 'plus',
+            increaseValue: 1
           }
         }
       ],
       fixed: {
         colCount: 0,
         rightColCount: 0
-      }
+      },
+      save: /*30543e75-538d-43ed-b711-570a2e8757d6*/ function (e) {
+            var thisGrid = e.grid;
+    
+            var startDate = e.row.data.START_DT; // 시작일
+            var endDate = e.row.data.END_DT; // 종료일
+            var startTime = e.row.data.START_TM; // 시작시간
+            var endTime = e.row.data.END_TM; // 종료시간
+    
+            if (startDate != null) { // 시작일이 변경 되면
+    
+                thisGrid.setCellValue(e.row.index, 'START_DT', startDate, false);
+    
+                //추가 행 시작일 변경 시간코드 setCellValue
+                //console.log(thisGrid.getCellValue(self.grid1.select(), 'START_DT'));
+                var bwrk_dt = getFormatDate(thisGrid.getCellValue(self.grid1.select(), 'START_DT'));
+                // data.COMPANY_CD   data.BIZAREA_CD 모름 이거 해결해야함.
+                get_tm_cd_nm(e.row.data.EMP_NO, bwrk_dt);
+            }
+    
+            if (startDate != null && endDate != null) { // 둘 다 입력 되면
+                var dateDiff = ((endDate - startDate) / (60 * 60 * 24 * 1000)); // 시작일과 종료일의 일수 계산
+                if (dateDiff < 0) {
+                    var fieldName = e.cell.field;
+                    if (fieldName == 'START_DT') {
+                        dews.ui.snackbar.warning("시작일은 종료일과 같거나 이전 날짜이어야 합니다.");
+                    } else if (fieldName == 'END_DT') {
+                        dews.ui.snackbar.warning("종료일은 시작일과 같거나 이후 날짜이어야 합니다.");
+                    }
+                    thisGrid.setCellValue(e.row.index, fieldName, '', false); // 변경된 날짜 피커 초기화
+                } else if (dateDiff == 0) { // 같은 날짜를 선택하면
+                    if ((startTime != null && startTime != '' && startTime != undefined) && (endTime != null && endTime != '' && endTime != undefined)) { // 둘 다 입력 되면
+                        var timeDiff = (endTime - startTime);
+                        if (timeDiff <= 0) {
+                            var fieldName = e.cell.field;
+                            if (fieldName == 'START_TM') {
+                                dews.ui.snackbar.warning("시작시간은 반드시 종료시간 이전으로 설정되어야 합니다.");
+                                thisGrid.setCellValue(e.row.index, fieldName, '', false); // 현재 선택한 피커 초기화
+                            } else if (fieldName == 'END_TM') {
+                                dews.ui.snackbar.warning("종료시간은 반드시 시작시간 이후로 설정되어야 합니다.");
+                                thisGrid.setCellValue(e.row.index, fieldName, '', false); // 현재 선택한 피커 초기화
+                            } else {
+                                dews.ui.snackbar.warning("날짜를 변경했습니다. 시작시간과 종료시간을 다시 입력하세요.");
+                                thisGrid.setCellValue(e.row.index, 'START_TM', '', false); // 시간 피커 초기화
+                                thisGrid.setCellValue(e.row.index, 'END_TM', '', false); // 시간 피커 초기화
+                            }
+                        }
+                    }
+                } else {
+                    thisGrid.setCellValue(e.row.index, 'START_DT', startDate, false);
+                    thisGrid.setCellValue(e.row.index, 'END_DT', endDate, false);
+                }
+            }
+        }
+    
     });
     
+    
+    
+    
+    /*07b6a485-770a-4d2f-9798-f0234f07f1fb*/ 
+    function getFormatDate(date) {
+        var year = date.getFullYear();              //yyyy
+        //console.log("year: " + year);
+    
+        var month = (1 + date.getMonth());          //M
+        //console.log("month: " + month);
+        month = month >= 10 ? month : '0' + month;  //month 두자리로 저장
+        //console.log("CC month: " + month);
+    
+        var day = date.getDate();                   //d
+        //console.log("day" + day);
+        day = day >= 10 ? day : '0' + day;          //day 두자리로 저장
+        //console.log("CCday: " + day);
+    
+        //console.log("return: " + year + '' + month + '' + day);
+    
+        return year + '' + month + '' + day;
+    }
+    
+    function get_org(company_cd, dept_cd) {
+        dews.api.get(dews.url.getApiUrl("HR", "HRPamodm01800_X10005Service", "get_org"), {
+            async: false,
+            data: {
+                company_cd: company_cd,
+                dept_cd: dept_cd
+            }
+        }).done(function (data) {
+            self.grid1.setCellValue(self.grid1.select(), 'ORG', data);
+        }).fail(function (xhr, status, error) {
+            dews.error(xhr.responseJSON.message);
+        });
+    }
+    
+    function get_ogrp_cd_pstn_cd(company_cd, ogrp_cd, pstn_cd) {
+        dews.api.get(dews.url.getApiUrl("HR", "HRPamodm01800_X10005Service", "get_ogrp_cd_pstn_cd"), {
+            async: false,
+            data: {
+                company_cd: company_cd,
+                ogrp_cd: ogrp_cd,
+                pstn_cd: pstn_cd
+            }
+        }).done(function (data) {
+            self.grid1.setCellValue(self.grid1.select(), 'OGRP_CD', data[0].SYSDEF_NM);
+            self.grid1.setCellValue(self.grid1.select(), 'PSTN_CD', data[1].SYSDEF_NM);
+        }).fail(function (xhr, status, error) {
+            dews.error(xhr.responseJSON.message);
+        });
+    }
+    
+    function get_prmt_dt_retm_dt(company_cd, emp_no) {
+        dews.api.get(dews.url.getApiUrl("HR", "HRPamodm01800_X10005Service", "get_prmt_dt_retm_dt"), {
+            async: false,
+            data: {
+                company_cd: company_cd,
+                emp_no: emp_no
+            }
+        }).done(function (data) {
+            self.grid1.setCellValue(self.grid1.select(), 'PRMT_DT', data[0].DATE_VALUE);
+            self.grid1.setCellValue(self.grid1.select(), 'RETM_DT', data[1].DATE_VALUE);
+        }).fail(function (xhr, status, error) {
+            dews.error(xhr.responseJSON.message);
+        });
+    }
+    
+    function get_tm_cd_nm(emp_no, bwrk_dt) {
+        dews.api.get(dews.url.getApiUrl("HR", "HRPamodm01800_X10005Service", "get_tm_cd_nm"), {
+            async: false,
+            data: {
+                emp_no: emp_no,
+                bwrk_dt: bwrk_dt
+            }
+        }).done(function (data) {
+            self.grid1.setCellValue(self.grid1.select(), 'TM_CD_NM', data);
+        }).fail(function (xhr, status, error) {
+            dews.error(xhr.responseJSON.message);
+        });
+    }
     
     
     

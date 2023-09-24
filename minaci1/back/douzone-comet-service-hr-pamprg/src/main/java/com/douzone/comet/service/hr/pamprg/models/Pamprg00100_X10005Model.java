@@ -9,6 +9,8 @@ import com.google.gson.annotations.SerializedName;
 
 @DzModel(name = "Pamprg00100_X10005Model", desc = "승급기준표등록", tableName = "")
 public class Pamprg00100_X10005Model extends DzAbstractModel {
+	
+	
 	@SerializedName("COMPANY_CD")
 	@DzModelField(name = "company_cd", desc = "회사코드", colName = "COMPANY_CD", colSize = "7", isKey = false)
 	private String company_cd;
@@ -42,7 +44,7 @@ public class Pamprg00100_X10005Model extends DzAbstractModel {
 	private String orig_trgt_grd_cd;
 
 	@SerializedName("UGRD_GRD_CD")
-	@DzModelField(name = "urgd_grd_cd", desc = "승급등급코드", colName = "UGRD_GRD_CD", colSize = "5", isKey = false)
+	@DzModelField(name = "ugrd_grd_cd", desc = "승급등급코드", colName = "UGRD_GRD_CD", colSize = "5", isKey = false)
 	private String ugrd_grd_cd;
 
 	@SerializedName("ORIG_UGRD_GRD_CD")
@@ -117,6 +119,11 @@ public class Pamprg00100_X10005Model extends DzAbstractModel {
 	@SerializedName("UPDATE_IP")
 	@DzModelField(name = "update_ip", desc = "수정IP", colName = "UPDATE_IP", colSize = "200", isKey = false)
 	private String update_ip;
+	
+	@SerializedName("COMBINED_KEY")
+	@DzModelField(name = "combined_key", desc = "회사코드", colName = "COMBINED_KEY", colSize = "7", isKey = false)
+	private String combined_key;
+	
 
 	public String getCompany_cd() {
 		return company_cd;
@@ -225,10 +232,7 @@ public class Pamprg00100_X10005Model extends DzAbstractModel {
 	public String getUrgd_grd_cd() {
 		return ugrd_grd_cd;
 	}
-
-	public void setUrgd_grd_cd(String ugrd_grd_cd) {
-		this.ugrd_grd_cd = ugrd_grd_cd;
-	}
+ 
 
 	public String getBizarea_nm() {
 		return bizarea_nm;
@@ -342,16 +346,32 @@ public class Pamprg00100_X10005Model extends DzAbstractModel {
 		this.update_ip = update_ip;
 	}
 
+	public String getOrig_ugrd_grd_cd() {
+		return orig_ugrd_grd_cd;
+	}
+
+	public void setOrig_ugrd_grd_cd(String orig_ugrd_grd_cd) {
+		this.orig_ugrd_grd_cd = orig_ugrd_grd_cd;
+	}
+
+	public String getCombined_key() {
+		return combined_key;
+	}
+
+	public void setCombined_key(String combined_key) {
+		this.combined_key = combined_key;
+	}
+
 	@Override
 	public String toString() {
 		return "Pamprg00100_X10005Model [company_cd=" + company_cd + ", seq=" + seq + ", std_ym=" + std_ym
 				+ ", pstn_cd=" + pstn_cd + ", pstn_nm=" + pstn_nm + ", orig_pstn_cd=" + orig_pstn_cd + ", trgt_grd_cd="
 				+ trgt_grd_cd + ", orig_trgt_grd_cd=" + orig_trgt_grd_cd + ", ugrd_grd_cd=" + ugrd_grd_cd
-				+ ", orig_urgd_grd_cd=" + orig_ugrd_grd_cd + ", min_bwrk_my=" + min_bwrk_my + ", orig_min_bwrk_my="
+				+ ", orig_ugrd_grd_cd=" + orig_ugrd_grd_cd + ", min_bwrk_my=" + min_bwrk_my + ", orig_min_bwrk_my="
 				+ orig_min_bwrk_my + ", aggr_term_cnt=" + aggr_term_cnt + ", bwrk_sgrad_cd=" + bwrk_sgrad_cd
 				+ ", ledu_cd=" + ledu_cd + ", bwrk_my_calc_std_dt=" + bwrk_my_calc_std_dt + ", bizarea_cd=" + bizarea_cd
 				+ ", ledu_nm=" + ledu_nm + ", rmk_nm=" + rmk_nm + ", bizarea_nm=" + bizarea_nm + ", insert_id="
 				+ insert_id + ", insert_dts=" + insert_dts + ", insert_ip=" + insert_ip + ", update_id=" + update_id
-				+ ", update_dts=" + update_dts + ", update_ip=" + update_ip + "]";
+				+ ", update_dts=" + update_dts + ", update_ip=" + update_ip + ", combined_key=" + combined_key + "]";
 	}
 }

@@ -1,0 +1,524 @@
+<!--##7ecfc3c8-357c-452f-adb2-1eeee51bfe30##-->
+<!--##CDMJIM00100_Modal##-->
+<!--##mp3pqCGBvleR6xc4I1pU1ZGrFBEF7B4nWURJHLu9ipg/DeLjSh2BIKDIXki1un2+##-->
+<!--
+  DEWS UI/UX IDE - Build Result - v1.5
+  # PageID: CDMJIM00100_Modal
+  # PageTitle: 직무분류등록
+  # Server: http://localhost:8080/
+-->
+<!--
+
+-->
+
+<div id="INF_PANEL" class="dews-ui-condition-panel" data-dews-item-width="500">
+  <ul class="required-area">
+    <li>
+      <label class="dews-ui-multilingual">검색어</label>
+      <span>
+        <input id="textbox1" name="textbox1" type="text" class="dews-ui-textbox basic" />
+      </span>
+    </li>
+  </ul>
+</div>
+<div class="dews-button-group" style="text-align: right;">
+  <button id="add_btn" class="dews-ui-button">추가</button>
+  <button id="delete_btn" class="dews-ui-button">삭제</button>
+  <h2 class="dews-ui-title">직무분류선택</h2>
+</div>
+<div class="dews-ui-container-panel">
+  <div class="dews-container-item" data-dews-position="left" data-dews-width="213px">
+    <div id="KND_GRID" class="dews-ui-grid"></div>
+  </div>
+  <div class="dews-container-item" data-dews-position="normal">
+    <div id="detail_grid" class="dews-ui-grid"></div>
+  </div>
+</div>
+<div class="dews-button-group" style="text-align: right;">
+  <h2 class="dews-ui-title">선택내역</h2>
+</div>
+<div class="dews-ui-container-panel">
+  <div class="dews-container-item" data-dews-position="normal">
+    <div id="INSERT_GRID" class="dews-ui-grid"></div>
+  </div>
+</div>
+<div id="containerpanel1" class="dews-ui-container-panel" style="overflow: hidden; display: none;">
+  <div id="containerpanelitem1" class="dews-container-item" data-dews-position="normal">
+    <div id="formpanel1" class="dews-ui-form-panel">
+      <ul>
+        <li>
+          <label>코드</label>
+          <span>
+            <input id="CD_TXT" name="CD_TXT" type="text" data-dews-bind-column="INSERT_CD" class="dews-ui-textbox basic" />
+          </span>
+        </li>
+        <li>
+          <label>이름</label>
+          <span>
+            <input id="NM_TXT" name="NM_TXT" type="text" data-dews-bind-column="INSERT_NM" class="dews-ui-textbox basic" />
+          </span>
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>
+<div class="dews-dialog-button-group bottom" style="text-align: center;">
+  <button id="ok_btn" class="dews-ui-button">아니면좋은데</button>
+  <button id="close_btn" class="dews-ui-button">닫기</button>
+</div>
+
+<style>
+    
+</style>
+
+
+
+<script>
+  dews.ready(function () {
+    var self = this;
+    self.version = self.version || {};
+    self.version.view='1.0';
+
+
+    /*512dccf4-2d20-44e8-9a2c-4f4bf545c452*/ //# sourceURL=CDMJIM00100_Modal.js
+    var col_arr = ["LCLAS_CD", "MLSFC_CD", "S_CSF_CD", "TCLF_CD", "ACLF_CD"];
+    function check_valid() {
+        for (const [index, element] of col_arr.entries()) {
+            var test = (self.INSERT_GRID.getCellValue(0, element) == null || self.INSERT_GRID.getCellValue(0, element) == "")
+            console.log(self.INSERT_GRID.getCellValue(0, element));
+            if (test) {
+                console.log(element);
+                self.KND_GRID.select(index);
+                self.FGINF_DS.read();
+                return element;
+            }
+        }
+    }
+    
+    
+    
+    
+    self.KND_DS = dews.ui.dataSource('KND_DS', {
+      grid: true,
+      schema: {
+        model: {
+          fields: [
+            { field: 'INSERT_FG', editable: false, dataType: 'string' }, 
+            { field: 'INSERT_CD', editable: false, dataType: 'string' }, 
+            { field: 'INSERT_NM', editable: false, dataType: 'string' }
+          ]
+    
+        }
+      },
+      data: [
+      {
+        "INSERT_FG": "대분류",
+        "INSERT_CD": "LCLAS_CD",
+        "INSERT_NM": "LCLAS_NM"
+      },
+      {
+        "INSERT_FG": "중분류",
+        "INSERT_CD": "MLSFC_CD",
+        "INSERT_NM": "MLSFC_NM"
+      },
+      {
+        "INSERT_FG": "소분류",
+        "INSERT_CD": "S_CSF_CD",
+        "INSERT_NM": "S_CSF_NM"
+      },
+      {
+        "INSERT_FG": "세분류",
+        "INSERT_CD": "TCLF_CD",
+        "INSERT_NM": "TCLF_NM"
+      },
+      {
+        "INSERT_FG": "능력단위",
+        "INSERT_CD": "ACLF_CD",
+        "INSERT_NM": "ACLF_NM"
+      }
+    ]
+    });
+    dews.api.get(dews.url.getApiUrl('CM', 'CommonCodeDtlService', 'common_ci_codeDtl_list'),{
+      async: false,
+      data: {
+          end_dt: '',
+          foreign_yn: '',
+          field_cd_pipe: 'P04100',
+          module_cd: 'PS',
+          syscode_yn: '',
+          keyword: '',
+          base_yn: ''
+      }
+    }).done(function (data) {
+      var ar_P04100 = new Array();
+    
+      for (var i = 0; i < data.length; i++) {
+        if (data[i].FIELD_CD == "P04100") { 
+          ar_P04100.push(data[i]); 
+    
+        }
+      }
+      self.pipeDataSource1_P04100 = dews.ui.dataSource('pipeDataSource1_P04100',  { data: ar_P04100 });
+      self.pipeDataSource1 = dews.ui.dataSource('pipeDataSource1', { data: data });
+      
+    });
+    self.FGINF_DS = dews.ui.dataSource('FGINF_DS', {
+      grid: true,
+      transport: {
+        read: {
+          type: 'post',
+          url: dews.url.getApiUrl('HR', 'Cdmjim00100_Modal_Service', 'selectFgList'),
+          data: /*84c040ff-2324-4245-8a6f-c838a726182a*/ function() {
+        //   let LCLAS_CD = self.INSERT_GRID.getCellValue(0,"LCLAS_CD");
+        // let MLSFC_CD = self.INSERT_GRID.getCellValue(0,"MLSFC_CD");
+        // let S_CSF_CD = self.INSERT_GRID.getCellValue(0,"S_CSF_CD");
+        // let TCLF_CD = self.INSERT_GRID.getCellValue(0,"TCLF_CD");   
+    	
+    	// if(LCLAS_CD == null){
+    	// 	LCLAS_CD = "";
+    	// }
+    	// if(MLSFC_CD == null){
+    	// 	MLSFC_CD = "";
+    	// }
+    	// if(S_CSF_CD == null){
+    	// 	S_CSF_CD = "";
+    	// }
+    	// if(TCLF_CD == null){
+    	// 	TCLF_CD = "";
+    	// }
+    	
+        return {
+            param_cd: self.CD_TXT.text(),
+            param_name: self.NM_TXT.text(),
+            LCLAS_CD: self.INSERT_GRID == null ? "" : self.INSERT_GRID.getCellValue(0,"LCLAS_CD"),
+            MLSFC_CD: self.INSERT_GRID == null ? "" : self.INSERT_GRID.getCellValue(0,"MLSFC_CD"),
+            S_CSF_CD: self.INSERT_GRID == null ? "" : self.INSERT_GRID.getCellValue(0,"S_CSF_CD"),
+            TCLF_CD: self.INSERT_GRID == null ? "" : self.INSERT_GRID.getCellValue(0,"TCLF_CD")
+        }
+    }
+        }
+      },
+      schema: {
+        model: {
+          fields: [
+            { field: 'PARAM_CD', editable: false, dataType: 'string' }, 
+            { field: 'PARAM_NAME', editable: false, dataType: 'string' }
+          ]
+    
+        }
+      }
+    });
+    dews.api.get(dews.url.getApiUrl('CM', 'CommonCodeDtlService', 'common_ci_codeDtl_list'),{
+      async: false,
+      data: {
+          end_dt: '',
+          foreign_yn: '',
+          field_cd_pipe: 'P02360',
+          module_cd: 'HR',
+          syscode_yn: '',
+          keyword: '',
+          base_yn: ''
+      }
+    }).done(function (data) {
+      var ar_P02360 = new Array();
+    
+      for (var i = 0; i < data.length; i++) {
+        if (data[i].FIELD_CD == "P02360") { 
+          ar_P02360.push(data[i]); 
+    
+        }
+      }
+      self.pipeDataSource2_P02360 = dews.ui.dataSource('pipeDataSource2_P02360',  { data: ar_P02360 });
+      self.pipeDataSource2 = dews.ui.dataSource('pipeDataSource2', { data: data });
+      
+    });
+    self.INSERT_DS = dews.ui.dataSource('INSERT_DS', {
+      grid: true,
+      schema: {
+        model: {
+          fields: [
+            { field: 'LCLAS_CD', editable: false, dataType: 'string' }, 
+            { field: 'LCLAS_NM', editable: false, dataType: 'string' }, 
+            { field: 'MLSFC_CD', editable: false, dataType: 'string' }, 
+            { field: 'MLSFC_NM', editable: false, dataType: 'string' }, 
+            { field: 'S_CSF_CD', editable: false, dataType: 'string' }, 
+            { field: 'S_CSF_NM', editable: false, dataType: 'string' }, 
+            { field: 'TCLF_CD', editable: false, dataType: 'string' }, 
+            { field: 'TCLF_NM', editable: false, dataType: 'string' }, 
+            { field: 'ACLF_CD', editable: false, dataType: 'string' }, 
+            { field: 'ACLF_NM', editable: false, dataType: 'string' }
+          ]
+    
+        }
+      },
+      data: [
+      {
+        "LCLAC_CD": "",
+        "MCLAS_CD": "",
+        "S_CSF_CD": "",
+        "N_CSF_CD": "",
+        "ABILITY_CD": ""
+      }
+    ]
+    });
+    dews.api.get(dews.url.getApiUrl('CM', 'CommonCodeDtlService', 'common_ci_codeDtl_list'),{
+      async: false,
+      data: {
+          end_dt: '',
+          foreign_yn: '',
+          field_cd_pipe: 'P00260|P00680|P00390',
+          module_cd: 'MA',
+          syscode_yn: '',
+          keyword: '',
+          base_yn: ''
+      }
+    }).done(function (data) {
+      var ar_P00260 = new Array();
+      var ar_P00680 = new Array();
+      var ar_P00390 = new Array();
+    
+      for (var i = 0; i < data.length; i++) {
+        if (data[i].FIELD_CD == "P00260") { 
+          ar_P00260.push(data[i]); 
+    
+        }
+        else if (data[i].FIELD_CD == "P00680") { 
+          ar_P00680.push(data[i]); 
+    
+        }
+        else if (data[i].FIELD_CD == "P00390") { 
+          ar_P00390.push(data[i]); 
+    
+        }
+      }
+      self.pipeDataSource3_P00260 = dews.ui.dataSource('pipeDataSource3_P00260',  { data: ar_P00260 });
+      self.pipeDataSource3_P00680 = dews.ui.dataSource('pipeDataSource3_P00680',  { data: ar_P00680 });
+      self.pipeDataSource3_P00390 = dews.ui.dataSource('pipeDataSource3_P00390',  { data: ar_P00390 });
+      self.pipeDataSource3 = dews.ui.dataSource('pipeDataSource3', { data: data });
+      
+    });
+    
+    
+    self.$add_btn.on('click', /*c4ef9a55-d674-40d2-aaaa-133eb1ce97ac*/ function (e) {
+        self.detail_grid.addRow();
+    });
+    self.$delete_btn.on('click', /*86fc1b80-97e1-40ba-9184-970f08d5dee5*/ function (e) {
+        self.detail_grid.removeRow(self.detail_grid.select());
+    });
+    dews.ui.grid(self.$KND_GRID, {
+      dataSource: self.KND_DS,
+      height: 277,
+      sortable: false,
+      checkable: false,
+      copyMode: 'cell',
+      columns: [
+        {
+          field: 'INSERT_FG',
+          title: '등록구분',
+          width: 60
+        },
+        {
+          field: 'INSERT_CD',
+          title: '조회코드',
+          width: 80,
+          visible: false
+        },
+        {
+          field: 'INSERT_NM',
+          title: '조회이름',
+          width: 90,
+          align: 'left',
+          visible: false
+        }
+      ],
+      fixed: {
+        colCount: 0,
+        rightColCount: 0
+      },
+      change: /*e733bba3-e498-48a0-bc81-a91bf2ddb348*/ function (e) {
+            self.KND_GRID.bindPanel(self.formpanel1);
+        }
+    ,
+      dataBound: /*48f465fc-2934-44e1-adbf-e29ece5879b2*/ function (e) {
+            self.KND_GRID.bindPanel(self.formpanel1);
+            self.FGINF_DS.read();
+        }
+    ,
+      clicked: /*a21d6154-498c-438e-b485-c36b82d8ef28*/ function (e) {
+    
+            var index = self.KND_GRID.select();
+    
+            var grid_cd = self.KND_GRID.getCellValue(index - 1, "INSERT_CD");
+            var check_cd = self.INSERT_GRID.getCellValue(0, grid_cd);
+    
+            if (check_cd != undefined && check_cd != "") {
+                self.FGINF_DS.read();
+            } else {
+                index == 0 ?
+                    self.FGINF_DS.read()
+                    :
+                    (
+                        dews.ui.snackbar.warning(dews.localize.get("상위 분류를 모두 선택 해 주세요.")),
+                        // 상위분류를 채우지 않았다면, 채우지 않은 분류로 이동
+                        check_valid()
+                    )
+            }
+        }
+    
+    });
+    dews.ui.grid(self.$detail_grid, {
+      dataSource: self.FGINF_DS,
+      height: 275,
+      editable: true,
+      sortable: false,
+      copyMode: 'cell',
+      columns: [
+        {
+          field: 'param_cd',
+          title: '코드',
+          width: 60,
+          editor: { type: 'string', maxLength: 0, editable: /*18503f9c-a9dd-4c6d-a1de-4333722cc560*/ function(e) {
+        var index = e.row.index;
+    
+        console.log(e.row.data.PARAM_CD);
+        var result;
+        if(e.row.data.PARAM_CD == null){
+            result = true;
+        }else{
+            result = false;
+        }
+    
+        return result;
+    } }
+        },
+        {
+          field: 'param_name',
+          title: '명',
+          width: 60,
+          editor: { type: 'string', maxLength: 0, editable: /*e9d61642-57d9-454d-a147-b878cc79548d*/ function(e) {
+        var index = e.row.index;
+    
+        console.log(e.row.data.PARAM_CD);
+        var result;
+        if(e.row.data.PARAM_CD == null){
+            result = true;
+        }else{
+            result = false;
+        }
+    
+        return result;
+    } }
+        }
+      ],
+      fixed: {
+        colCount: 0,
+        rightColCount: 0
+      },
+      clicked: /*71d45bb7-edc9-472f-b0fe-262216e84425*/ function (e) {
+    
+            let insertcd = self.KND_GRID.getCellValue(self.KND_GRID.select(), "INSERT_CD");
+            let insertnm = self.KND_GRID.getCellValue(self.KND_GRID.select(), "INSERT_NM");
+            var select_cd = self.detail_grid.getCellValue(self.detail_grid.select(), "PARAM_CD");
+            var select_nm = self.detail_grid.getCellValue(self.detail_grid.select(), "PARAM_NAME");
+    
+            self.INSERT_GRID.setCellValue(0, insertcd, select_cd);
+            self.INSERT_GRID.setCellValue(0, insertnm, select_nm);
+        }
+    
+    });
+    dews.ui.grid(self.$INSERT_GRID, {
+      dataSource: self.INSERT_DS,
+      rowNo: false,
+      sortable: false,
+      checkable: false,
+      copyMode: 'cell',
+      columns: [
+        {
+          field: 'LCLAS_CD',
+          title: '대분류',
+          width: 80,
+          visible: false
+        },
+        {
+          field: 'LCLAS_NM',
+          title: '대분류명',
+          width: 90,
+          align: 'left'
+        },
+        {
+          field: 'MLSFC_CD',
+          title: '중분류',
+          width: 80,
+          visible: false
+        },
+        {
+          field: 'MLSFC_NM',
+          title: '중분류명',
+          width: 90,
+          align: 'left'
+        },
+        {
+          field: 'S_CSF_CD',
+          title: '소분류',
+          width: 80,
+          visible: false
+        },
+        {
+          field: 'S_CSF_NM',
+          title: '소분류명',
+          width: 90,
+          align: 'left'
+        },
+        {
+          field: 'TCLF_CD',
+          title: '세분류',
+          width: 80,
+          visible: false
+        },
+        {
+          field: 'TCLF_NM',
+          title: '세분류명',
+          width: 90,
+          align: 'left'
+        },
+        {
+          field: 'ACLF_CD',
+          title: '능력단위',
+          width: 80,
+          visible: false
+        },
+        {
+          field: 'ACLF_NM',
+          title: '능력분류명',
+          width: 90,
+          align: 'left'
+        }
+      ],
+      fixed: {
+        colCount: 0,
+        rightColCount: 0
+      }
+    });
+    self.formpanel1.on('change', /*9e33df96-98ba-4558-ba89-d83a9b17f2b5*/ function (e) {
+        self.formpanel1.bindTo(self.KND_GRID);
+    });
+    self.$ok_btn.on('click', /*772e0812-5733-4d84-a57b-1078b3ef123f*/ function (e) {
+        self.ok(self.INSERT_GRID.dataItems(self.INSERT_GRID.select()));
+    });
+    self.$close_btn.on('click', /*d532e0e1-9de9-4a9d-81ed-b6058a2aca78*/ function (e) {
+        self.close();
+    });
+    
+    
+    
+    
+    /*eb0b1ca3-2ef0-4599-af08-9fd274b0e976*/ console.log("dddddddddd" + self.INSERT_GRID.getCellValue(0, "LCLAS_CD"));
+    console.log(self.INSERT_GRID.getCellValue(0, "MLSFC_CD"));
+    self.KND_GRID.select(0);
+    
+    
+
+  
+  });
+
+</script>

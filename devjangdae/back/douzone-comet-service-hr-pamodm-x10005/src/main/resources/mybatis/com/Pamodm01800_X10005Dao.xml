@@ -82,50 +82,55 @@
 			) E
 			ON A.COMPANY_CD = E.COMPANY_CD
 			AND A.EMP_NO = E.EMP_NO
+			WHERE A.COMPANY_CD = '0126'
 	</select>
 	
 	<select id="list_HR_STRK_INFO_X10005MST" resultType="com.douzone.comet.service.hr.pamodm.models.Pamodm01800_X10005Model">		
-		SELECT -- [동서발전]행사정보 조회
-				A.COMPANY_CD		-- A.회사코드
+		SELECT -- x10005 행사 참가 직원 테이블
+				  A.COMPANY_CD		-- A.회사코드
 		        , A.EMP_NO		 	-- A.사원번호
 		        , B.KOR_NM			-- B.성명
-		       	, (
-		       		SELECT
-		       		COMET.FN_HR_UP_DEPT_NM2(A.COMPANY_CD, C.DEPT_CD , A.START_DT)
-		       		FROM DUAL L
-		       	  ) AS ORG 			-- L.소속
-		        , C.DEPT_CD			-- C.레벨
-		        , C.OGRP_CD			-- C.직군
-		        , C.PSTN_CD			-- C.직급
+		       	, G.ORG				-- G.소속
+        		, C1.OGRP_CD		-- C1.직군
+        		, C2.PSTN_CD		-- C2.직급
 		        , B.JNCO_DT			-- B.입사일
 		        , D.PRMT_DT			-- D.승격일
 		        , E.RETM_DT			-- E.퇴직예정일
 		        , A.START_DT		-- A.시작일
+		        , A.START_DT ORIG_START_DT
 		        , A.END_DT		 	-- A.종료일
-		        , E.TM_CD_NM		-- E.시간코드
+				, A.END_DT ORIG_END_DT
+		        , F.TM_CD_NM		-- E.시간코드 근태시간코드마스터 HR_OFFTIME_MST 일근태마스터의 근무일
 		        , A.DOF_TP		 	-- A.휴무유형
 		        , A.START_TM		-- A.시작시간
 		        , A.END_TM		 	-- A.종료시간
 		        , A.DOF_TM_CNT		-- A.휴무시간
-		        , A.LVE_TM_CNT 	-- A.이탈시간
+		        , A.LVE_TM_CNT 		-- A.이탈시간
 		FROM
 			HR_STRK_INFO_X10005 A
 		
 		    LEFT OUTER JOIN  (
-		    					SELECT COMPANY_CD, EMP_NO, KOR_NM, JNCO_DT, DEPT_CD FROM HR_EMP_MST
+		    					SELECT COMPANY_CD, EMP_NO, KOR_NM, JNCO_DT, DEPT_CD, BIZAREA_CD, OGRP_CD, PSTN_CD FROM HR_EMP_MST
 		    ) B
 		    ON A.COMPANY_CD = B.COMPANY_CD
 		    AND A.EMP_NO = B.EMP_NO
 		        
 		    LEFT OUTER JOIN  (
-		                        SELECT 
-		                        RANK () OVER (PARTITION BY EMP_NO ORDER BY GNFD_DT DESC) AS ROW_IDX,
-		                        COMPANY_CD, EMP_NO, DEPT_CD, OGRP_CD, PSTN_CD, GNFD_DT FROM HR_HUAN_DTL
-		    ) C
-		    ON A.COMPANY_CD = C.COMPANY_CD
-		    AND A.EMP_NO = C.EMP_NO
-		    AND C.ROW_IDX = 1
-		        
+					    		SELECT SYSDEF_NM AS OGRP_CD	, COMPANY_CD, MODULE_CD, FIELD_CD, SYSDEF_CD  FROM MA_CODEDTL
+			) C1
+			ON A.COMPANY_CD = C1.COMPANY_CD
+			AND C1.MODULE_CD = 'HR'
+			AND C1.FIELD_CD = 'P00660'
+			AND C1.SYSDEF_CD = B.OGRP_CD
+			
+			LEFT OUTER JOIN  (
+							    SELECT SYSDEF_NM AS PSTN_CD	, COMPANY_CD, MODULE_CD, FIELD_CD, SYSDEF_CD  FROM MA_CODEDTL
+			) C2
+			ON A.COMPANY_CD = C2.COMPANY_CD
+			AND C2.MODULE_CD = 'HR'
+			AND C2.FIELD_CD = 'P00650'
+			AND C2.SYSDEF_CD = B.PSTN_CD
+			
 		    LEFT OUTER JOIN (   
 		        				SELECT MNG_DC AS PRMT_DT, COMPANY_CD, EMP_NO
 		                        FROM HR_EMP_SDTL 
@@ -145,7 +150,7 @@
 		    AND A.EMP_NO = E.EMP_NO
 		    
 			LEFT OUTER JOIN (
-								SELECT DISTINCT X.COMPANY_CD, W.EMP_NO, TM_CD_NM
+								SELECT DISTINCT X.COMPANY_CD, EMP_NO, TM_CD_NM, BIZAREA_CD
 			    				FROM HR_OFFTIME_MST X
 			    				
 			    				INNER JOIN (
@@ -159,19 +164,32 @@
 						        				AND Y.COMPANY_CD = Z.COMPANY_CD
 			    				) W
 			    				ON (X.WORKTM_CD = W.TM_CD)
-			) E
-			ON A.COMPANY_CD = E.COMPANY_CD
-			AND A.EMP_NO = E.EMP_NO
-		WHERE 1=1
-        
-		<if test=' P_COMPANY_CD[0] != null and P_COMPANY_CD[0] != "" '>
-			AND A.COMPANY_CD IN
-			<foreach item="item" index="index" collection="P_COMPANY_CD"
+			) F
+			ON A.COMPANY_CD = F.COMPANY_CD
+			AND A.EMP_NO = F.EMP_NO
+			AND B.BIZAREA_CD = F.BIZAREA_CD
+			
+			LEFT OUTER JOIN (
+								SELECT A.DEPT_CD, C.DEPT_NM || '/' || B.DEPT_NM || '/' || A.DEPT_NM AS ORG
+								FROM MA_DEPT_MST A 
+									LEFT JOIN MA_DEPT_MST B ON A.UP_DEPT_CD = B.DEPT_CD AND B.COMPANY_CD = #{P_COMPANY_CD}
+									LEFT JOIN MA_DEPT_MST C ON B.UP_DEPT_CD = C.DEPT_CD AND C.COMPANY_CD = #{P_COMPANY_CD}
+								WHERE A.COMPANY_CD = #{P_COMPANY_CD}
+			) G
+			ON B.DEPT_CD = G.DEPT_CD
+		WHERE
+			1 = 1
+		
+		AND A.COMPANY_CD = #{P_COMPANY_CD}
+		
+		<if test="P_BIZAREA_CD != null and P_BIZAREA_CD.length > 0 and !P_BIZAREA_CD[0].isEmpty()">
+			AND B.BIZAREA_CD IN
+			<foreach item="item" index="index" collection="P_BIZAREA_CD"
 				open="(" separator="," close=")"> #{item} </foreach>
 		</if>
 		
-		<if test=' P_DEPT_CD[0] != null and P_DEPT_CD[0] != "" '>
-			AND C.DEPT_CD IN
+		<if test='P_DEPT_CD[0] != null and P_DEPT_CD[0] != ""'>
+			AND B.DEPT_CD IN
 			<foreach item="item" index="index" collection="P_DEPT_CD"
 				open="(" separator="," close=")"> #{item} </foreach>
 		</if>
@@ -184,7 +202,7 @@
 		<if test=' P_DOF_TP != null and P_DOF_TP != "" '>
 			AND A.DOF_TP = #{P_DOF_TP} -- C.DEPT_CD ='1000200' -- A.DOF_TP = '0002'
 		</if>
-		ORDER BY START_DT
+		ORDER BY START_DT, END_DT, EMP_NO 
 	</select>
 	
 	<select id="getCompanyCode" parameterType="com.douzone.comet.service.hr.pamodm.models.Pamodm01800_X10005Model" resultType="String">
@@ -211,20 +229,22 @@
 		UPDATE
 			HR_STRK_INFO_X10005	
 		SET
-			  DOF_TP = #{dof_tp} 			--휴무유형
-			, START_TM = #{start_tm} 		--시작시간
-			, END_TM = #{end_tm} 			--종료시간
-			, DOF_TM_CNT = #{dof_tm_cnt} 	--휴무시간
-			, LVE_TM_CNT = #{lve_tm_cnt} 	--이탈시간
-			, UPDATE_ID = #{update_id} 		--수정ID
-			, UPDATE_IP = #{update_ip} 		--수정IP
-			, UPDATE_MCADDR_NM = '' 		--수정맥어드레스명
-			, UPDATE_DTS = #{update_dts} 	--수정일시
+			  DOF_TP = #{dof_tp}            --휴무유형
+			, START_TM = #{start_tm}        --시작시간
+			, END_TM = #{end_tm}            --종료시간
+			, DOF_TM_CNT = #{dof_tm_cnt}    --휴무시간
+			, LVE_TM_CNT = #{lve_tm_cnt}    --이탈시간
+			, UPDATE_ID = #{update_id}      --수정ID
+			, UPDATE_IP = #{update_ip}      --수정IP
+			, UPDATE_MCADDR_NM = ''         --수정맥어드레스명
+			, UPDATE_DTS = #{update_dts}    --수정일시
+			, START_DT = #{start_dt}        --PK시작일
+			, END_DT = #{end_dt}            --PK시작일
 		WHERE
 			COMPANY_CD = #{company_cd}
 			AND EMP_NO = #{emp_no}
-			AND START_DT = #{start_dt}
-			AND END_DT = #{end_dt}
+			AND START_DT = #{orig_start_dt} --변경PK시작일
+			AND END_DT = #{orig_end_dt}     --변경PK종료일
 	</update>
 	
 	<insert id="insert_HR_STRK_INFO_X10005MST" parameterType="com.douzone.comet.service.hr.pamodm.models.Pamodm01800_X10005Model">
@@ -270,5 +290,111 @@
 			AND EMP_NO = #{emp_no}
 			AND START_DT = #{start_dt}
 			AND END_DT = #{end_dt}
+	</select>
+	
+	<select id="list_bizarea_cd" parameterType="hashMap" resultType="hashMap">
+		SELECT 
+		    MBM.BIZAREA_CD,
+		    (
+		        CASE 
+		            WHEN MBL.BIZAREA_NM IS NULL OR MBL.BIZAREA_NM = '' THEN MBM.BIZAREA_NM 
+		            ELSE MBL.BIZAREA_NM 
+		        END 
+		    ) AS BIZAREA_NM,
+		    MBM.BIZR_NO,
+		    (
+		        CASE 
+		            WHEN MBL.BASE_ADDR IS NULL OR MBL.BASE_ADDR = '' THEN MBM.BASE_ADDR 
+		            ELSE MBL.BASE_ADDR 
+		        END 
+		    ) AS BASE_ADDR,
+		    (
+		        CASE 
+		            WHEN MBL.DTL_ADDR IS NULL OR MBL.DTL_ADDR = '' THEN MBM.DTL_ADDR 
+		            ELSE MBL.DTL_ADDR 
+		        END 
+		    ) AS DTL_ADDR,
+		    MBM.VAT_BIZAREA_VAT_CD   
+		FROM 
+		    MA_BIZAREA_MST MBM
+		    LEFT OUTER JOIN MA_BIZAREA_LDTL MBL 
+		        ON MBL.COMPANY_CD = MBM.COMPANY_CD
+		        AND MBL.BIZAREA_CD = MBM.BIZAREA_CD
+		        AND MBL.LANG_CD = 'KO'
+		WHERE 
+		    MBM.COMPANY_CD = #{P_COMPANY_CD}
+		    AND (
+		        (MBM.BIZ_BGN_DT IS NULL OR MBM.BIZ_BGN_DT = '' OR MBM.BIZ_BGN_DT &lt;= '20230920')
+		        AND (MBM.BIZ_END_DT IS NULL OR MBM.BIZ_END_DT = '' OR MBM.BIZ_END_DT &gt;= '20230920')
+		    )
+		    AND (
+		        'Y' = 'N'
+		        OR MBM.BIZAREA_CD IN ('1000')
+		    )
+		    AND (
+		        UPPER(MBM.BIZAREA_CD) LIKE CONCAT(CONCAT('%', UPPER('')), '%')
+		        OR UPPER(MBM.BIZAREA_NM) LIKE CONCAT(CONCAT('%', UPPER('')), '%')
+		        OR UPPER(MBL.BIZAREA_NM) LIKE CONCAT(CONCAT('%', UPPER('')), '%')
+		        OR UPPER(MBM.BIZR_NO) LIKE CONCAT(CONCAT('%', UPPER('')), '%')
+		    )
+		ORDER BY 
+		    MBM.BIZAREA_CD ASC
+	</select>
+	
+	<select id="get_org" parameterType="hashMap" resultType="hashMap">
+		SELECT C.DEPT_NM || '/' || B.DEPT_NM || '/' || A.DEPT_NM AS ORG
+		FROM MA_DEPT_MST A 
+			LEFT JOIN MA_DEPT_MST B ON A.UP_DEPT_CD = B.DEPT_CD AND B.COMPANY_CD = #{P_COMPANY_CD}
+			LEFT JOIN MA_DEPT_MST C ON B.UP_DEPT_CD = C.DEPT_CD AND C.COMPANY_CD = #{P_COMPANY_CD}
+		WHERE A.COMPANY_CD = #{P_COMPANY_CD}
+		AND A.DEPT_CD = #{P_DEPT_CD}
+	</select>
+	
+	<select id="get_ogrp_cd_pstn_cd" parameterType="hashMap" resultType="hashMap">
+		SELECT 
+		    SYSDEF_NM,
+		    CASE
+		        WHEN FIELD_CD = 'P00660' THEN 'OGRP_CD' 
+		        WHEN FIELD_CD = 'P00650' THEN 'PSTN_CD' 
+		    END AS CODE_TYPE
+		FROM MA_CODEDTL
+		WHERE 
+		    COMPANY_CD = #{P_COMPANY_CD}
+		    AND MODULE_CD = 'HR'
+		    AND (
+			    (FIELD_CD = 'P00660' AND SYSDEF_CD = #{P_OGRP_CD})
+		        OR 
+		        (FIELD_CD = 'P00650' AND SYSDEF_CD = #{P_PSTN_CD})
+		    	)
+		ORDER BY FIELD_CD DESC
+	</select>
+	
+	<select id="get_prmt_dt_retm_dt" parameterType="hashMap" resultType="hashMap">
+		SELECT 
+		    MNG_DC AS DATE_VALUE,
+		    CASE
+		        WHEN MCLS_CD = 'EWP93' THEN 'PRMT_DT' 
+		        WHEN MCLS_CD = 'EWP50' THEN 'RETM_DT'
+		    END AS DATE_TYPE
+		FROM HR_EMP_SDTL
+		WHERE 
+		    COMPANY_CD = #{P_COMPANY_CD}
+		    AND EMP_NO = #{P_EMP_NO}
+		    AND (MCLS_CD = 'EWP93' OR MCLS_CD = 'EWP50')
+		ORDER BY MCLS_CD DESC
+	</select>
+	
+	<select id="get_tm_cd_nm" parameterType="hashMap" resultType="hashMap">
+		SELECT TM_CD_NM
+		FROM HR_OFFTIME_MST
+		WHERE
+			COMPANY_CD = (SELECT COMPANY_CD FROM HR_EMP_MST WHERE EMP_NO = #{P_EMP_NO})
+			AND BIZAREA_CD = (SELECT BIZAREA_CD FROM HR_EMP_MST WHERE EMP_NO = #{P_EMP_NO})
+			AND WORKTM_CD = (SELECT TM_CD
+							 FROM HR_OFFDAILY_MST
+							 WHERE
+								COMPANY_CD = (SELECT COMPANY_CD FROM HR_EMP_MST WHERE EMP_NO = #{P_EMP_NO})
+								AND EMP_NO = #{P_EMP_NO}
+								AND BWRK_DT = #{P_BWRK_DT})
 	</select>
 </mapper>

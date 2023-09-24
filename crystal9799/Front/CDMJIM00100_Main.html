@@ -1,0 +1,804 @@
+<!--##c97539cc-ff30-40c1-ba23-aa3f078a9b20##-->
+<!--##CDMJIM00100_Main##-->
+<!--##eaqVsOq22OUg/AFQfCzw5isZsM90BaIlPaq0kvSBHO9WmKfWD6UUM/1ma26ChKwa##-->
+<!--
+  DEWS UI/UX IDE - Build Result - v1.5
+  # PageID: CDMJIM00100_Main
+  # PageTitle: 직무분류관리
+  # Server: http://localhost:8080/
+-->
+<!--
+
+-->
+
+<div class="dews-button-group" style="text-align: right;">
+  <button class="dews-ui-button">양식받기</button>
+  <button class="dews-ui-button">엑셀업로드</button>
+</div>
+<div class="dews-ui-condition-panel">
+  <ul class="required-area">
+    <li>
+      <label class="dews-ui-multilingual">조회구분</label>
+      <span>
+        <select id="FG_DROP" name="FG_DROP" class="dews-ui-dropdownlist basic" data-dews-value-field="JOB_FG" data-dews-text-field="JOB_FG_NM" data-dews-show-tooltip="true" data-dews-option-label-value="" data-dews-option-label-text="" data-dews-show-value-tooltip="true" data-dews-use-numkey="false"></select>
+      </span>
+    </li>
+    <li>
+      <label class="dews-ui-multilingual">사용여부</label>
+      <span>
+        <select id="USE_DROP" name="USE_DROP" class="dews-ui-dropdownlist basic" data-dews-value-field="USE_YN" data-dews-text-field="USE_YN_NM" data-dews-show-tooltip="true" data-dews-show-value-tooltip="true" data-dews-use-numkey="false"></select>
+      </span>
+    </li>
+    <li>
+      <label class="dews-ui-multilingual">조회조건</label>
+      <span>
+        <input id="lst_ver_yn" name="lst_ver_yn" type="checkbox" class="dews-ui-checkbox" checked="checked" />
+        <label for="lst_ver_yn">최종버전 조회</label>
+      </span>
+    </li>
+  </ul>
+  <ul class="optional-area">
+    <li>
+      <label class="dews-ui-multilingual">대분류코드</label>
+      <span>
+        <select id="multicodepicker1" name="multicodepicker1" class="dews-ui-multicodepicker basic" data-dews-help-custom="false" data-dews-help-size="medium" />
+      </span>
+    </li>
+    <li>
+      <label class="dews-ui-multilingual">중분류코드</label>
+      <span>
+        <select id="multicodepicker2" name="multicodepicker2" class="dews-ui-multicodepicker basic" data-dews-help-custom="false" data-dews-help-size="medium" />
+      </span>
+    </li>
+    <li>
+      <label class="dews-ui-multilingual">소분류코드</label>
+      <span>
+        <select id="multicodepicker3" name="multicodepicker3" class="dews-ui-multicodepicker basic" data-dews-help-custom="false" data-dews-help-size="medium" />
+      </span>
+    </li>
+    <li>
+      <label class="dews-ui-multilingual">세분류코드</label>
+      <span>
+        <select id="multicodepicker4" name="multicodepicker4" class="dews-ui-multicodepicker basic" data-dews-help-custom="false" data-dews-help-size="medium" />
+      </span>
+    </li>
+    <li>
+      <label class="dews-ui-multilingual">능력단위코드</label>
+      <span>
+        <select id="multicodepicker5" name="multicodepicker5" class="dews-ui-multicodepicker basic" data-dews-help-custom="false" data-dews-help-size="medium" />
+      </span>
+    </li>
+    <li>
+      <label class="dews-ui-multilingual">능력단위요소</label>
+      <span>
+        <select id="multicodepicker6" name="multicodepicker6" class="dews-ui-multicodepicker basic" data-dews-help-custom="false" data-dews-help-size="medium" />
+      </span>
+    </li>
+  </ul>
+</div>
+<div class="dews-button-group" style="text-align: right;">
+  <h2 class="dews-ui-title">직무분류</h2>
+</div>
+<div class="dews-ui-container-panel" data-dews-fit-bottom="true">
+  <div class="dews-container-item" data-dews-position="normal">
+    <div id="main_grid" class="dews-ui-grid"></div>
+  </div>
+</div>
+<div class="dews-button-group" style="text-align: right;">
+  <h2 class="dews-ui-title">세부분류</h2>
+  <button class="dews-ui-button">추가</button>
+  <button class="dews-ui-button">삭제</button>
+</div>
+<div class="dews-ui-container-panel">
+  <div class="dews-container-item" data-dews-position="left" data-dews-width="574px">
+    <div id="left_grid" class="dews-ui-grid"></div>
+  </div>
+  <div class="dews-container-item" data-dews-position="normal">
+    <div class="dews-ui-arcodien" data-dews-arcodien-height="0" data-dews-item-height="0">
+      <ul>
+        <li class="dews-arcodien-item" data-dews-item-title="수행준거내역" data-dews-item-height="0">
+          <div id="right1_grid" class="dews-ui-grid"></div>
+        </li>
+      </ul>
+    </div>
+    <div id="right2_grid" class="dews-ui-grid"></div>
+  </div>
+</div>
+
+<style>
+    
+</style>
+
+
+
+<script>
+  dews.ready(function () {
+    var self = this;
+    self.version = self.version || {};
+    self.version.view='1.0';
+
+
+    /*70cee10b-3521-442d-82f0-480b335cebfb*/ //# sourceURL=CDMJIM00100_Main.js
+    self.USE_DROP.value("YES");
+    
+    
+    
+    
+    self.use_yn = dews.ui.dataSource('use_yn', {
+      schema: {
+        model: {
+          fields: [
+            { field: 'USE_YN', editable: false, type: 'string' }, 
+            { field: 'USE_YN_NM', editable: false, type: 'string' }
+          ]
+    
+        }
+      },
+      data: [{USE_YN: 'Y', USE_YN_NM: 'YES'},
+    {USE_YN: 'N', USE_YN_NM: 'NO'}]
+    });
+    self.job_fg = dews.ui.dataSource('job_fg', {
+      schema: {
+        model: {
+          fields: [
+            { field: 'JOB_FG', editable: false, type: 'string' }, 
+            { field: 'JOB_FG_NM', editable: false, type: 'string' }
+          ]
+    
+        }
+      },
+      data: [{JOB_FG:"1", JOB_FG_NM:"NCS직무"},
+    {JOB_FG:"2", JOB_FG_NM:"회사고유직무"}]
+    });
+    self.MAIN_DS = dews.ui.dataSource('MAIN_DS', {
+      grid: true,
+      transport: {
+        read: {
+          type: 'post',
+          url: dews.url.getApiUrl('HR', 'Cdmjim00100_MainGrid_Service', 'cdmjim00100_MainGrid_List'),
+          data: function () {
+            return {
+              USE_YN: self.USE_DROP.value(),
+              JOB_FG: self.FG_DROP.value(),
+              lst_ver_yn: self.$lst_ver_yn.prop('checked')
+            };
+          }
+        }
+      },
+      schema: {
+        model: {
+          fields: [
+            { field: '_uid', editable: false, dataType: 'string' }, 
+            { field: 'USE_YN', editable: false, dataType: 'string' }, 
+            { field: 'JOB_FG', editable: false, dataType: 'string' }, 
+            { field: 'ACLF_NO', editable: false, dataType: 'string' }, 
+            { field: 'VER_CD', editable: false, dataType: 'string' }, 
+            { field: 'LCLAS_CD', editable: false, dataType: 'string' }, 
+            { field: 'LCLAS_NM', editable: false, dataType: 'string' }, 
+            { field: 'MLSFC_CD', editable: false, dataType: 'string' }, 
+            { field: 'MLSFC_NM', editable: false, dataType: 'string' }, 
+            { field: 'S_CSF_CD', editable: false, dataType: 'string' }, 
+            { field: 'S_CSF_NM', editable: false, dataType: 'string' }, 
+            { field: 'TCLF_CD', editable: false, dataType: 'string' }, 
+            { field: 'TCLF_NM', editable: false, dataType: 'string' }, 
+            { field: 'ACLF_CD', editable: false, dataType: 'string' }, 
+            { field: 'ACLF_NM', editable: false, dataType: 'string' }, 
+            { field: 'ACLF_LV', editable: false, dataType: 'number' }, 
+            { field: 'ACLF_TXT', editable: false, dataType: 'string' }, 
+            { field: 'COMPANY_CD', editable: false, dataType: 'string' }
+          ]
+    
+        }
+      }
+    });
+    self.LEFT_DS = dews.ui.dataSource('LEFT_DS', {
+      grid: true,
+      transport: {
+        read: {
+          type: 'post',
+          url: dews.url.getApiUrl('HR', 'Cdmjim00100_SubGrid_Service', 'selectcdmjim00100_left_gridList'),
+          data: /*18bdd294-f1da-4fea-847b-d4f5bc1356de*/ function() {
+        return {
+            ACLF_NO: self.main_grid.getCellValue(self.main_grid.select(), "ACLF_NO"),
+            VER_CD: self.main_grid.getCellValue(self.main_grid.select(), "VER_CD")
+        }
+    }
+        }
+      },
+      schema: {
+        model: {
+          fields: [
+            { field: 'AELM_CD', editable: false, dataType: 'string' }, 
+            { field: 'ACLF_NO', editable: false, dataType: 'string' }, 
+            { field: 'VER_CD', editable: false, dataType: 'string' }, 
+            { field: 'AELM_NM', editable: false, dataType: 'string' }, 
+            { field: 'AELM_LV', editable: false, dataType: 'number' }, 
+            { field: '_uid', editable: false, dataType: 'string' }
+          ]
+    
+        }
+      }
+    });
+    self.RIGHT1_DS = dews.ui.dataSource('RIGHT1_DS', {
+      grid: true,
+      transport: {
+        read: {
+          type: 'post',
+          url: dews.url.getApiUrl('HR', 'Cdmjim00100_SubGrid_Service', 'selectcdmjim00100_right_grid1List'),
+          data: /*ce349233-d50a-4fc0-96ea-30945b1bcb4a*/ function() {
+        return {
+        ACLF_NO: self.left_grid.getCellValue(self.left_grid.select(), "ACLF_NO"),
+        VER_CD: self.left_grid.getCellValue(self.left_grid.select(), "VER_CD"),
+        AELM_CD: self.left_grid.getCellValue(self.left_grid.select(), "AELM_CD")
+        }
+    }
+        }
+      },
+      schema: {
+        model: {
+          fields: [
+            { field: 'ACLF_NO', editable: false, dataType: 'string' }, 
+            { field: 'VER_CD', editable: false, dataType: 'string' }, 
+            { field: 'AELM_CD', editable: false, dataType: 'string' }, 
+            { field: 'AELM_NM', editable: false, dataType: 'string' }, 
+            { field: 'PCFM_CD', editable: false, dataType: 'string' }, 
+            { field: 'PCFM_DC', editable: false, dataType: 'string' }, 
+            { field: '_uid', editable: false, dataType: 'string' }
+          ]
+    
+        }
+      }
+    });
+    self.RIGHT2_DS = dews.ui.dataSource('RIGHT2_DS', {
+      grid: true,
+      transport: {
+        read: {
+          type: 'post',
+          url: dews.url.getApiUrl('HR', 'Cdmjim00100_SubGrid_Service', 'selectcdmjim00100_right_grid2List'),
+          data: /*272933d0-986d-40ab-bef4-f9c13e4259ff*/ function() {
+        return {
+            ACLF_NO: self.right1_grid.getCellValue(self.right1_grid.select(), "ACLF_NO"),
+            VER_CD: self.right1_grid.getCellValue(self.right1_grid.select(), "VER_CD"),
+            PCFM_CD: self.right1_grid.getCellValue(self.right1_grid.select(), "PCFM_CD"),
+            AELM_CD: self.right1_grid.getCellValue(self.right1_grid.select(), "AELM_CD")
+        }
+    }
+        }
+      },
+      schema: {
+        model: {
+          fields: [
+            { field: 'NEED_RQISIT_CD', editable: false, dataType: 'string' }, 
+            { field: 'NEED_RQISIT_NM1', editable: false, dataType: 'string' }, 
+            { field: 'NEED_RQISIT_NM2', editable: false, dataType: 'string' }, 
+            { field: 'NEED_RQISIT_NM3', editable: false, dataType: 'string' }
+          ]
+    
+        }
+      }
+    });
+    
+    
+    dews.ui.mainbuttons.information.disable(true);
+    dews.ui.mainbuttons.localize.disable(true);
+    dews.ui.mainbuttons.etnapproval.hide();
+    dews.ui.mainbuttons.add.click(/*0726422b-af2b-48f3-921d-2bdaf1c69db5*/ function () {
+        // TODO: 그리드에 데이터를 추가합니다.
+        self.main_grid.addRow();
+        self.main_grid.setCellValue(self.main_grid.select(), "USE_YN", 'Y');
+    });
+    dews.ui.mainbuttons.search.click(/*57f1e984-d23f-421a-9d7b-eaff278f1930*/ function () {
+    
+        // TODO: 필수항목 입력을 체크한 후 데이터소스를 조회합니다.
+        // if (self.searchCondition.validate({tooltip:true,message:'필수 항목을 입력해 주십시요.'}))
+        // {
+        //     self.dataSource1.read();
+        // }
+    
+        // TODO: 저장여부를 확인한 후 데이터소스를 조회합니다.
+        if (self.MAIN_DS.getDirtyDataCount() != 0) {
+            dews.confirm('저장하지 않은 데이터가 있습니다. 조회를 계속하시겠습니까?', 'ico2').yes(function () {
+                self.MAIN_DS.read();
+            }).no(function () {
+                dews.ui.snackbar.warning('취소되었습니다.');
+                return false;
+            });
+        } else {
+            self.MAIN_DS.read();
+        }
+    });
+    dews.ui.mainbuttons.delete.click(/*73806b2e-5c88-44a2-8b38-ed42b61577ba*/ function () {
+        // TODO: 삭제시 강제 팝업에 대한 알림창을 끕니다.
+        self.mainButtons.delete.useDefaultConfirm = false;
+    
+        // TODO: 그리드에서 체크된 항목을 삭제합니다.
+        if (self.main_grid.getCheckedIndex().length == 0) {
+            dews.alert('선택된 데이터가 없습니다.', 'warning');
+            return false;
+        }
+        self.main_grid.removeRow(self.main_grid.getCheckedIndex());
+    
+        // TODO: 그리드에 선택된 항목을 삭제합니다.
+        self.main_grid.removeRow(self.main_grid.select());
+    });
+    dews.ui.mainbuttons.save.click(/*2d23a3b2-21fb-4697-8d65-5f7fc24ad853*/ function () {
+        // TODO: 데이터소스를 저장합니다.
+        if (self.MAIN_DS.getDirtyDataCount() == 0) {
+            dews.alert('변경된 데이터가 없습니다.');
+            return false;
+        }
+        //
+        if (self.main_grid.validate().result == false) {
+            dews.alert('필수 값이 입력되지 않은 항목이 있습니다.');
+            return false;
+        }
+        //
+        // 서비스 파라미터명과 데이터소스명이 같은경우
+        dews.confirm('저장하시겠습니까?', 'ico2').yes(function () {
+            self.MAIN_DS.batchSave(dews.url.getApiUrl('HR', 'Cdmjim00100_MainGrid_Service', 'cdmjim00100_MainGrid_Save'))
+                .done(function (data) {
+                    dews.ui.snackbar.ok('저장되었습니다.');
+                    dews.ui.loading.show({
+                        text: '조회중입니다.'
+                    });
+                    self.MAIN_DS.read();
+                }).fail(function (message) {
+                    dews.ui.snackbar.warning(message);
+                }).always(function () {
+                    dews.ui.loading.hide();
+                });
+        }).no(function () {
+            dews.ui.snackbar.warning('취소되었습니다.');
+        });
+        //
+        // 서비스 파라미터명과 데이터소스명이 다른경우
+        // dews.confirm('수정된 데이터를 저장하시겠습니까 ? ', 'question').yes(function () {
+        //     dews.api.post(dews.url.getApiUrl('HR', 'Cdmjim00100_MainGrid_Service', 'cdmjim00100_MainGrid_Save'), {
+        //         async: false,
+        //         data: {
+        //             //ServiceParameterName : ServiceParameterValue
+        //             saveData: JSON.stringify(self.MAIN_DS.getDirtyData()),
+        //             param1: self.cd_gaap.value(),
+        //             param2: 'value2'
+        //         }
+        //     }).done(function (data) {
+        //         dews.ui.snackbar.ok('자료가 정상적으로 저장되었습니다.');
+        //         // self.MAIN_DS.read();
+        //     }).fail(function (xhr, status, error) {
+        //         //dews.error('저장이 실패하였습니다.', 'ico1');
+        //         dews.ui.snackbar.error(error);
+        //     });
+        // });
+    
+    });
+    self.FG_DROP.setDataSource(self.job_fg);
+    self.USE_DROP.setDataSource(self.use_yn);
+    dews.ui.grid(self.$main_grid, {
+      dataSource: self.MAIN_DS,
+      height: 295,
+      editable: true,
+      selectable: true,
+      sortable: false,
+      copyMode: 'cell',
+      columns: [
+        {
+          field: 'USE_YN',
+          title: '사용여부',
+          width: 60,
+          attributes: { class: 'required' },
+          editor: {
+            type: 'dropDown',
+            dataSource: self.use_yn,
+            dataValueField: 'USE_YN',
+            dataTextField: 'USE_YN_NM'
+          }
+        },
+        {
+          field: 'JOB_FG',
+          title: '직업구분',
+          width: 50,
+          attributes: { class: 'required' },
+          editor: {
+            type: 'dropDown',
+            dataSource: self.job_fg,
+            dataValueField: 'JOB_FG',
+            dataTextField: 'JOB_FG_NM'
+          }
+        },
+        {
+          field: 'ACLF_NO',
+          title: '능력분류번호',
+          width: 120,
+          editor: { type: 'string', maxLength: 0, editable: false }
+        },
+        {
+          field: 'VER_CD',
+          title: '버전코드',
+          width: 80,
+          editor: {
+            type: 'mask',
+            editable: false
+          }
+        },
+        {
+          field: 'LCLAS_CD',
+          title: '대분류코드',
+          width: 80,
+          editor: {
+            type: 'mask',
+            editable: false
+          }
+        },
+        {
+          field: 'LCLAS_NM',
+          title: '대분류명',
+          width: 90,
+          editor: { type: 'string', maxLength: 0, editable: /*68b5d288-e172-4414-948b-e8929ee03b32*/ function(e) {
+      if(this.getRowState(e.row.index) === "added"){
+        return true;
+      }
+      else {
+        var jobFg = self.main_grid.getCellValue(e.row.index, 'JOB_FG');
+        if(jobFg == '1') {
+          return false;
+        }else if(jobFg == '2') {
+          return true;
+        }
+      }
+    } }
+        },
+        {
+          field: 'MLSFC_CD',
+          title: '중분류코드',
+          width: 80,
+          editor: { type: 'string', maxLength: 0, editable: false }
+        },
+        {
+          field: 'MLSFC_NM',
+          title: '중분류명',
+          width: 90,
+          editor: { type: 'string', maxLength: 0, editable: /*4dd63d98-b957-4973-9713-5ee51e3a3815*/ function(e) {
+      if(this.getRowState(e.row.index) === "added"){
+        return true;
+      }
+      else {
+        var jobFg = self.main_grid.getCellValue(e.row.index, 'JOB_FG');
+        if(jobFg == '1') {
+          return false;
+        }else if(jobFg == '2') {
+          return true;
+        }
+      }
+    } }
+        },
+        {
+          field: 'S_CSF_CD',
+          title: '소분류코드',
+          width: 80,
+          editor: { type: 'string', maxLength: 0, editable: false }
+        },
+        {
+          field: 'S_CSF_NM',
+          title: '소분류명',
+          width: 90,
+          editor: { type: 'string', maxLength: 0, editable: /*dac1fb57-ab1a-414c-8e0e-0ae13af89b05*/ function(e) {
+      if(this.getRowState(e.row.index) === "added"){
+        return true;
+      }
+      else {
+        var jobFg = self.main_grid.getCellValue(e.row.index, 'JOB_FG');
+        if(jobFg == '1') {
+          return false;
+        }else if(jobFg == '2') {
+          return true;
+        }
+      }
+    } }
+        },
+        {
+          field: 'TCLF_CD',
+          title: '세분류코드',
+          width: 80,
+          editor: { type: 'string', maxLength: 0, editable: false }
+        },
+        {
+          field: 'TCLF_NM',
+          title: '세분류명',
+          width: 90,
+          editor: { type: 'string', maxLength: 0, editable: /*bd45edcc-2d83-4be5-9bbf-9cb1eafbc914*/ function(e) {
+      if(this.getRowState(e.row.index) === "added"){
+        return true;
+      }
+      else {
+        var jobFg = self.main_grid.getCellValue(e.row.index, 'JOB_FG');
+        if(jobFg == '1') {
+          return false;
+        }else if(jobFg == '2') {
+          return true;
+        }
+      }
+    } }
+        },
+        {
+          field: 'ACLF_CD',
+          title: '능력분류코드',
+          width: 80,
+          editor: { type: 'string', maxLength: 0, editable: false }
+        },
+        {
+          field: 'ACLF_NM',
+          title: '능력분류명',
+          width: 180,
+          editor: { type: 'string', maxLength: 0, editable: /*98710712-4a92-4ecc-a29f-0cc381758fc3*/ function(e) {
+      if(this.getRowState(e.row.index) === "added"){
+        return true;
+      }
+      else {
+        var jobFg = self.main_grid.getCellValue(e.row.index, 'JOB_FG');
+        if(jobFg == '1') {
+          return false;
+        }else if(jobFg == '2') {
+          return true;
+        }
+      }
+    } }
+        },
+        {
+          field: 'ACLF_LV',
+          title: '능력분류레벨',
+          width: 60,
+          editor: { type: 'string', maxLength: 0, editable: /*62c1a0fb-acfd-4074-8441-6e97e99f28e3*/ function(e) {
+      if(this.getRowState(e.row.index) === "added"){
+        return true;
+      }
+      else {
+        var jobFg = self.main_grid.getCellValue(e.row.index, 'JOB_FG');
+        if(jobFg == '1') {
+          return false;
+        }else if(jobFg == '2') {
+          return true;
+        }
+      }
+    } }
+        },
+        {
+          field: 'ACLF_TXT',
+          title: '능력분류텍스트',
+          width: 400,
+          align: 'left',
+          editor: { type: 'string', maxLength: 0, editable: /*16f34412-ea8c-4b40-8408-8ff89c728083*/ function(e) {
+      if(this.getRowState(e.row.index) === "added"){
+        return true;
+      }
+      else {
+        var jobFg = self.main_grid.getCellValue(e.row.index, 'JOB_FG');
+        if(jobFg == '1') {
+          return false;
+        }else if(jobFg == '2') {
+          return true;
+        }
+      }
+    } }
+        },
+        {
+          field: 'COMPANY_CD',
+          title: '회사코드',
+          width: 80,
+          visible: false
+        },
+        {
+          field: '_uid',
+          title: 'UID',
+          width: 60,
+          visible: false
+        }
+      ],
+      fixed: {
+        colCount: 0,
+        rightColCount: 0
+      },
+      change: /*6fa43097-3321-45f2-b6e7-23d35427e057*/ function (e) {
+            self.LEFT_DS.read();
+        }
+    ,
+      dataBound: /*7725c6bd-73cc-4c55-9926-45e7f49d03f3*/ function (e) {
+    
+        }
+    ,
+      clicked: /*8bc71cbd-875f-47df-9a4b-3d22918465b0*/ function (e) {
+            self.LEFT_DS.read();
+        }
+    ,
+      dblClicked: /*0cba9f99-3fc3-4569-b8c3-73a80486ac55*/ function (e) {
+            if ((self.main_grid.getCellValue(self.main_grid.select(), "ACLF_NO") == undefined)) {
+                var dialog = dews.ui.dialog('FG_Dialog',
+                    {
+                        url: '~/view/HR/CDMJIM00100_Modal.html',
+                        title: '직무분류 도움',
+                        size: 'large',
+                        height: 600,
+                        width: 800,
+                        button: 'applyAndClose',
+                        initData: "test",
+                        ok: function (data) {
+                            dialog.on('closed', function (e) {
+                                console.log(data);
+                                self.main_grid.setCellValue(self.main_grid.select(), "LCLAS_CD", data.LCLAS_CD);
+                                self.main_grid.setCellValue(self.main_grid.select(), "LCLAS_NM", data.LCLAS_NM);
+                                self.main_grid.setCellValue(self.main_grid.select(), "MLSFC_CD", data.MLSFC_CD);
+                                self.main_grid.setCellValue(self.main_grid.select(), "MLSFC_NM", data.MLSFC_NM);
+                                self.main_grid.setCellValue(self.main_grid.select(), "S_CSF_CD", data.S_CSF_CD);
+                                self.main_grid.setCellValue(self.main_grid.select(), "S_CSF_NM", data.S_CSF_NM);
+                                self.main_grid.setCellValue(self.main_grid.select(), "TCLF_CD", data.TCLF_CD);
+                                self.main_grid.setCellValue(self.main_grid.select(), "TCLF_NM", data.TCLF_NM);
+                                self.main_grid.setCellValue(self.main_grid.select(), "ACLF_CD", data.ACLF_CD);
+                                self.main_grid.setCellValue(self.main_grid.select(), "ACLF_NM", data.ACLF_NM);
+                                self.main_grid.setCellValue(self.main_grid.select(), "COMPANY_CD", self.user.companyCode);
+                            });
+                        }
+                    });
+                dialog.open();
+            } else if (self.main_grid.getCellValue(self.main_grid.select(), "JOB_FG") == 1) {
+                dews.ui.snackbar.warning(dews.localize.get("NCS표준코드는 수정할 수 없습니다."));
+            }
+        }
+    
+    });
+    dews.ui.grid(self.$left_grid, {
+      dataSource: self.LEFT_DS,
+      height: 200,
+      sortable: false,
+      checkable: false,
+      copyMode: 'cell',
+      columns: [
+        {
+          field: 'ACLF_NO',
+          title: '능력분류번호',
+          width: 60,
+          visible: false
+        },
+        {
+          field: 'VER_CD',
+          title: '버전코드',
+          width: 80,
+          visible: false
+        },
+        {
+          field: 'AELM_CD',
+          title: '능력요소코드',
+          width: 80
+        },
+        {
+          field: 'AELM_NM',
+          title: '능력요소명',
+          width: 70,
+          align: 'left'
+        },
+        {
+          field: 'AELM_LV',
+          title: '능력요소레벨',
+          width: 80
+        },
+        {
+          field: '_uid',
+          title: '_uid',
+          width: 60,
+          visible: false
+        }
+      ],
+      fixed: {
+        colCount: 0,
+        rightColCount: 0
+      },
+      change: /*e4623438-3537-4eb6-8ace-48d9a62c4026*/ function (e) {
+            self.RIGHT1_DS.read();
+        }
+    ,
+      clicked: /*2839dbf6-a23b-4478-80d2-8ed5bd2a5479*/ function (e) {
+            self.RIGHT1_DS.read();
+        }
+    
+    });
+    dews.ui.grid(self.$right1_grid, {
+      dataSource: self.RIGHT1_DS,
+      height: 200,
+      sortable: false,
+      checkable: false,
+      copyMode: 'cell',
+      columns: [
+        {
+          field: 'ACLF_NO',
+          title: '능력분류번호',
+          width: 60,
+          visible: false
+        },
+        {
+          field: 'VER_CD',
+          title: '버전코드',
+          width: 80,
+          visible: false
+        },
+        {
+          field: 'AELM_CD',
+          title: '능력요소코드',
+          width: 80,
+          visible: false
+        },
+        {
+          field: 'AELM_NM',
+          title: '능력요소명',
+          width: 90,
+          align: 'left',
+          visible: false
+        },
+        {
+          field: 'PCFM_CD',
+          title: '수행준거코드',
+          width: 80
+        },
+        {
+          field: 'PCFM_DC',
+          title: '수행준거내역',
+          width: 120,
+          align: 'left'
+        },
+        {
+          field: '_uid',
+          title: '_uid',
+          width: 60,
+          visible: false
+        }
+      ],
+      fixed: {
+        colCount: 0,
+        rightColCount: 0
+      }
+    });
+    dews.ui.grid(self.$right2_grid, {
+      dataSource: self.RIGHT2_DS,
+      height: 161,
+      sortable: false,
+      checkable: false,
+      copyMode: 'cell',
+      columns: [
+        {
+          field: 'NEED_RQISIT_CD',
+          title: '필요요건코드',
+          width: 80,
+          visible: false
+        },
+        {
+          field: 'NEED_RQISIT_NM1',
+          title: '필요지식',
+          width: 60
+        },
+        {
+          field: 'NEED_RQISIT_NM2',
+          title: '필요기술',
+          width: 90,
+          align: 'left'
+        },
+        {
+          field: 'NEED_RQISIT_NM3',
+          title: '필요역량',
+          width: 60
+        }
+      ],
+      fixed: {
+        colCount: 0,
+        rightColCount: 0
+      }
+    });
+    
+    
+    self.main_grid.setDetail(self.left_grid);
+    self.left_grid.setDetail(self.right1_grid);
+    self.right1_grid.setDetail(self.right2_grid);
+    
+    
+    
+
+  
+  });
+
+</script>

@@ -1,0 +1,108 @@
+<!--##3a0c4763-0f89-4278-b4a4-138cb03a701c##-->
+<!--##PAMPRG00100_YM##-->
+<!--##CD/+9UvUSL/y0rwW1DOFQ4NBQ0UbT2LxxmwdD3Jtga8=##-->
+<!--
+  DEWS UI/UX IDE - Build Result - v1.5
+  # PageID: PAMPRG00100_YM
+  # PageTitle: 승급년월
+  # Server: http://localhost:8090/
+-->
+<!--
+
+-->
+
+<div id="grid" class="dews-ui-grid"></div>
+<div class="dews-dialog-button-group bottom" style="text-align: center;"></div>
+
+<style>
+    
+</style>
+
+
+
+<script>
+  dews.ready(function () {
+    var self = this;
+    self.version = self.version || {};
+    self.version.view='1.0';
+
+
+    /*63f38599-a175-42f8-bc82-efb862c979d3*/ //# sourceURL=PAMPRG00100_YM.js
+    
+    // var self = dews.ui.dialog("PAMPRG00100_YM")
+    var bizarea_cd = self.initData.bizarea_cd;
+    
+    console.log("bizarea_cd" + bizarea_cd);
+    
+    
+    
+    
+    self.dataSource = dews.ui.dataSource('dataSource', {
+      grid: true,
+      transport: {
+        read: {
+          url: dews.url.getApiUrl('HR', 'HRPamprg00100_X10005Service', 'list_ym'),
+          data: /*e3b27cc1-3d4e-457d-958a-305c7ff3a992*/ function() {
+        return{
+        bizarea_cd: self.initData.bizarea_cd
+      }
+    }
+    
+        }
+      },
+      schema: {
+        model: {
+          fields: [
+            { field: 'STD_YM', editable: false, dataType: 'string' }
+          ]
+    
+        }
+      }
+    });
+    
+    
+    dews.ui.grid(self.$grid, {
+      dataSource: self.dataSource,
+      height: 347,
+      selectable: true,
+      checkable: false,
+      copyMode: 'cell',
+      columns: [
+        {
+          field: 'STD_YM',
+          title: '기준년월',
+          width: 60,
+          formats: {
+            type: 'date',
+            format: 'yyyy-MM'
+          }
+        }
+      ],
+      fixed: {
+        colCount: 0,
+        rightColCount: 0
+      },
+      dblClicked: /*7cf34c3a-2e6e-4a99-8bf3-531660e166d2*/ function (e) {
+            self.ok(e.row.data);
+        }
+    
+    });
+    
+    
+    
+    
+    /*54ec40aa-8296-48d8-8477-03a02ca7db3d*/ self.buttons.ok.on('click', function (e) {
+        var index = self.grid.select();
+        if (index > -1) {
+            self.ok(self.grid.dataItem(index));
+        } else {
+            dews.ui.snackbar.warning('선택된 데이터가 없습니다.');
+        }
+    });
+    
+    
+
+  
+  });
+
+</script>

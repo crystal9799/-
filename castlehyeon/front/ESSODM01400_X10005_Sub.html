@@ -1,6 +1,6 @@
-<!--##661f634d-0852-4c25-8230-67dd68f240ed##-->
+<!--##1e84a3ec-8d9c-480e-a25b-36800fd9c838##-->
 <!--##ESSODM01400_X10005_Sub##-->
-<!--##/0ZTbAhkz6MWSfcaxqtmq2HyTvaauE2f2qCSXjOiLK9hvuT+7OHfClELhc4C7P7x##-->
+<!--##xGnpJJtJQtyCv+kwb+hPa8ZQ+U2pvlw4QoEEKiXrX8FptKD5JE4EApkWvkZLJCvH##-->
 <!--
   DEWS UI/UX IDE - Build Result - v1.5
   # PageID: ESSODM01400_X10005_Sub
@@ -434,6 +434,28 @@
                 alert('결재신청 되었습니다.');
                 self.main_grid.setCellValue(self.main_grid.select(), 'ATHZ_ST_CD', '2');
                 self.ATHZ_ST_NM.text(GetATHZ_ST_NM('2'));
+                InitBtns();
+            });
+        });
+    });
+    self.$req_cancel_button.on('click', /*d1d1abf1-bdb2-4e1e-876d-2cf45aa12988*/ function (e) {
+        dews.alert('결재요청을 취소 하시겠습니까?', "question").done(function () {
+            dews.api.get(dews.url.getApiUrl("HR", "HREssodm01400_X10005Service", "approve_HR_OFFAPPLY_MST_X10005MST"), {
+                async: false,
+                data: {
+                    //기본키
+                    company_cd: self.main_grid.getCellValue(0, 'COMPANY_CD'),//회사코드
+                    req_no: self.main_grid.getCellValue(0, 'REQ_NO'), // 신청번호
+    
+                    //결재상태코드
+                    athz_st_cd: '1'
+                    //한번에 모델로 보내기 => dirtyData 상에서 added로 들어가는 문제점
+                    // main_ds: main_ds
+                }
+            }).done(function (data) {
+                alert('결재요청이 취소 되었습니다.');
+                self.main_grid.setCellValue(self.main_grid.select(), 'ATHZ_ST_CD', '1');
+                self.ATHZ_ST_NM.text(GetATHZ_ST_NM('1'));
                 InitBtns();
             });
         });

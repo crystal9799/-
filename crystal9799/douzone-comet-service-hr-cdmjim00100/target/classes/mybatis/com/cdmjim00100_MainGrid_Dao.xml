@@ -72,20 +72,35 @@
 	        #{use_yn},
 	        #{job_fg},
 	        #{lclas_cd} || #{mlsfc_cd} || #{s_csf_cd} || #{tclf_cd} || #{aclf_cd},
-	        (CASE
-	            WHEN EXISTS (
-	                SELECT 1
-	                FROM HR_JOBDIVBASE_MST
-	                WHERE ACLF_NO = #{lclas_cd} || #{mlsfc_cd} || #{s_csf_cd} || #{tclf_cd} || #{aclf_cd}
-	                AND company_cd = #{company_cd}
-	            ) THEN
-	                (SELECT TO_CHAR(SYSDATE, 'YY')||'V'||(MAX(SUBSTR(ver_cd ,4,5))+1)
-	                FROM HR_JOBDIVBASE_MST
-	                WHERE SUBSTR(ver_cd,1,3) = TO_CHAR(SYSDATE, 'YY')||'V'
-	                AND company_cd = #{company_cd})
-	            ELSE
-	                (SELECT TO_CHAR(SYSDATE, 'YY')||'V'||'1' FROM DUAL)
-	        END),
+	        (
+				CASE
+					<!-- 중복되는 ACLF_NO가 존재할 경우 TRUE 아니면 FALSE-->
+					WHEN EXISTS (
+									SELECT
+										1
+									FROM
+										HR_JOBDIVBASE_MST
+									WHERE
+										ACLF_NO = #{lclas_cd} || #{mlsfc_cd} || #{s_csf_cd} || #{tclf_cd} || #{aclf_cd}
+										AND company_cd = #{company_cd}
+					            )
+					<!-- 중복 ACLF_NO가 존재할 경우 채번 -->
+					THEN
+							(
+								SELECT
+									(TO_CHAR(SYSDATE, 'YY')|| 'V' || NVL(MAX(SUBSTR(ver_cd , 4, 5))+ 1, 1))
+								FROM HR_JOBDIVBASE_MST
+								WHERE
+									<!-- insert 년도와 ACLF_NO가 모두 같을 존재할 경우 -->
+									SUBSTR(ver_cd, 1, 3) = TO_CHAR(SYSDATE, 'YY')|| 'V'
+								AND ACLF_NO = #{lclas_cd} || #{mlsfc_cd} || #{s_csf_cd} || #{tclf_cd} || #{aclf_cd}
+								AND company_cd = #{company_cd}
+							)
+					<!-- 중복 ACLF_NO가 없을 경우 채번 -->
+					ELSE
+							(SELECT TO_CHAR(SYSDATE, 'YY')|| 'V' || '1' FROM DUAL)
+				END
+			),
 	        #{lclas_cd},
 	        #{lclas_nm},
 	        #{mlsfc_cd},

@@ -1,6 +1,6 @@
-<!--##1e84a3ec-8d9c-480e-a25b-36800fd9c838##-->
+<!--##46eea0cb-0c10-40ee-8972-caa7c6392adc##-->
 <!--##ESSODM01400_X10005_Sub##-->
-<!--##xGnpJJtJQtyCv+kwb+hPa8ZQ+U2pvlw4QoEEKiXrX8FptKD5JE4EApkWvkZLJCvH##-->
+<!--##PDo3cB6a/vWwsNXyrTprDbJiEQeOZqToEU30TJe5HJP/MnN1BDxwnUWLXXriWYup##-->
 <!--
   DEWS UI/UX IDE - Build Result - v1.5
   # PageID: ESSODM01400_X10005_Sub
@@ -1208,14 +1208,24 @@
             // 결재상태가 저장일 때 => 임시저장 버튼 활성화, 결재 페이지 비활성화
             if (athzStCd_val == '1') {
                 self.temp_save_button.enable(true);
-                self.approve_button.enable(false);
+                self.DNL_CD.readonly(false);
+                self.START_DT.readonly(false);
+                self.END_DT.readonly(false);
+                self.REASON_DC.readonly(false);
+                self.CHANGE_REQ_USERT.enable(false);
             } else {
                 self.temp_save_button.enable(false);
             }
     
-            // 결재상태가 결재완료일 때 => 결재 페이지 비활성화
-            if (athzStCd_val == '4') {
+            // 결재상태가 반려, 임시저장, 일 때 => 결재 페이지 비활성화
+            if (athzStCd_val == '3') {
+                self.req_cancel_button.enable(true);
                 self.approve_button.enable(false);
+                self.DNL_CD.readonly(false);
+                self.START_DT.readonly(false);
+                self.END_DT.readonly(false);
+                self.REASON_DC.readonly(false);
+                self.CHANGE_REQ_USERT.enable(false);
             }
     
     
@@ -1227,12 +1237,14 @@
                 self.req_button.enable(false);
                 self.delete_button.enable(false);
             }
-            // 결재상태가 임시저장, 결재완료 => 결재 취소 불가
-            if (athzStCd_val == '2' || athzStCd_val == '3') {
+            // 결재상태가 임시저장, 결재완료 => 결재 취소 불가, 결재페이지 활성화
+            if (athzStCd_val == '2') {
                 self.req_cancel_button.enable(true);
+                self.approve_button.enable(true);
             }
-            else {
+            else if (athzStCd_val == '1' || athzStCd_val == '4') {
                 self.req_cancel_button.enable(false);
+                self.approve_button.enable(false);
             }
             // 결재상태가 결재대기이거나 결재완료인 상태는 readonly => 반려일 때도 바로 수정가능하다.
             if (athzStCd_val == '2' || athzStCd_val == '4') {

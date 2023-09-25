@@ -1,6 +1,6 @@
-<!--##ef6b8ec1-f8ae-4ed8-9b09-2577864b0fee##-->
+<!--##661f634d-0852-4c25-8230-67dd68f240ed##-->
 <!--##ESSODM01400_X10005_Sub##-->
-<!--##DAVHQuizUgQv5/KvGMtKcvAXB79Pdzxq7sdoWMCwfru4uo7IMdWrbMlscUoV199Q##-->
+<!--##/0ZTbAhkz6MWSfcaxqtmq2HyTvaauE2f2qCSXjOiLK9hvuT+7OHfClELhc4C7P7x##-->
 <!--
   DEWS UI/UX IDE - Build Result - v1.5
   # PageID: ESSODM01400_X10005_Sub
@@ -1191,6 +1191,12 @@
                 self.temp_save_button.enable(false);
             }
     
+            // 결재상태가 결재완료일 때 => 결재 페이지 비활성화
+            if (athzStCd_val == '4') {
+                self.approve_button.enable(false);
+            }
+    
+    
             // 결재상태가 저장 또는 반려 => 결재요청, 삭제 버튼 활성화
             if (athzStCd_val == '1' || athzStCd_val == '3') {
                 self.req_button.enable(true);
@@ -1206,8 +1212,8 @@
             else {
                 self.req_cancel_button.enable(false);
             }
-    
-            if (athzStCd_val == '2' || athzStCd_val == '3' || athzStCd_val == '4') {
+            // 결재상태가 결재대기이거나 결재완료인 상태는 readonly => 반려일 때도 바로 수정가능하다.
+            if (athzStCd_val == '2' || athzStCd_val == '4') {
                 self.DNL_CD.readonly(true);
                 self.START_DT.readonly(true);
                 self.END_DT.readonly(true);

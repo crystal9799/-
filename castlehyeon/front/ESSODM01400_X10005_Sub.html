@@ -1,6 +1,6 @@
-<!--##5bbd6584-e82f-454d-856a-32ceb566b0d2##-->
+<!--##0d5832fc-0ccf-4233-9f28-95bc73242aa2##-->
 <!--##ESSODM01400_X10005_Sub##-->
-<!--##EYrP2EiqPGxqUrRntqWSJZNC6czzPOVJEx1ma/0CplJpa2SadC2I6tlCt0pRcC5v##-->
+<!--##VZqtWVkzKHJwnx+IKqcBRTSgamGMUG5+usIffamLaEha+j9pIbCzg88vXtBf1M3I##-->
 <!--
   DEWS UI/UX IDE - Build Result - v1.5
   # PageID: ESSODM01400_X10005_Sub
@@ -1286,7 +1286,7 @@
                 //,대화상자(모달창) 정상적으로 종료되었을 때 전달받은 데이터를 처리하는 콜백 함수
                 ok: function (modalData) {
                     self.main_grid.setCellValue(self.main_grid.select(), 'ATHZ_ST_CD', modalData);
-                    self.ATHZ_ST_NM.text(GetATHZ_ST_NM());
+                    self.ATHZ_ST_NM.text(GetATHZ_ST_NM(modalData));
                 }
             });
             // 대화 상자(모달창) 열기

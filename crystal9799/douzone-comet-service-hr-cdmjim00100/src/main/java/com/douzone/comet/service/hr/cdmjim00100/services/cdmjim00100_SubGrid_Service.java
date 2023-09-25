@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.douzone.comet.components.DzCometService;
 import com.douzone.comet.service.hr.cdmjim00100.dao.cdmjim00100_SubGrid_Dao;
 import com.douzone.comet.service.hr.cdmjim00100.models.cdmjim00100_left_grid;
+import com.douzone.comet.service.hr.cdmjim00100.models.cdmjim00100_maingrid;
 import com.douzone.comet.service.hr.cdmjim00100.models.cdmjim00100_right_grid1;
 import com.douzone.comet.service.hr.cdmjim00100.models.cdmjim00100_right_grid2;
 import com.douzone.gpd.components.exception.DzApplicationRuntimeException;
@@ -20,6 +21,7 @@ import com.douzone.gpd.restful.annotation.DzParam;
 import com.douzone.gpd.restful.enums.CometModule;
 import com.douzone.gpd.restful.enums.DzParamType;
 import com.douzone.gpd.restful.enums.DzRequestMethod;
+import com.douzone.gpd.restful.model.DzGridModel;
 
 /** 
   * @description :
@@ -107,5 +109,56 @@ public class cdmjim00100_SubGrid_Service extends DzCometService {
 			throw new DzApplicationRuntimeException(e);
 		}
 		return right_grid2_List;
+	}
+	
+	@DzApi(url="/cdmjim00100_SubGrid_Save", desc="서브그리드_저장", httpMethod=DzRequestMethod.POST)
+	public void cdmjim00100_SubGrid_Save(
+		@DzParam(key="MAIN_DS", desc="메인그리드튜플", paramType = DzParamType.Body) DzGridModel<cdmjim00100_maingrid> MAIN_DS,
+		@DzParam(key="LEFT_DS", desc="세부분류", paramType = DzParamType.Body) DzGridModel<cdmjim00100_left_grid> LEFT_DS,
+		@DzParam(key="RIGHT1_DS", desc="수행준거1", paramType = DzParamType.Body) DzGridModel<cdmjim00100_right_grid1> RIGHT1_DS,		
+		@DzParam(key="RIGHT2_DS", desc="수행준거2", paramType = DzParamType.Body) DzGridModel<cdmjim00100_right_grid2> RIGHT2_DS
+
+	) throws Exception {	    
+		System.out.println("받아온 데이터 정보1 : ====== > " + MAIN_DS.toString());
+	    try {	        	
+	    	//Add List
+	    	List<cdmjim00100_maingrid> add_list = new ArrayList<>();
+	    	add_list = MAIN_DS.getAdded();
+	    	//Update List
+	    	List<cdmjim00100_maingrid> update_List = new ArrayList<>();
+	    	update_List = MAIN_DS.getUpdated();
+	    	//Delete List
+	    	List<cdmjim00100_maingrid> delete_List = new ArrayList<>();
+	    	delete_List = MAIN_DS.getDeleted();
+	    	
+	    	//Add
+	    	if(add_list != null) {
+	    		for(cdmjim00100_maingrid add_data: add_list) {
+	    			System.out.println("인서트 데이터 정보 : ====== > " + add_list.toString());
+	    			//능력분류번호 채번
+	    			String num = add_data.getLclas_cd() + add_data.getMlsfc_cd() + add_data.getS_csf_cd() + add_data.getTclf_cd() + add_data.getAclf_cd();
+	    			//채번한 값 모델에 set
+	    			add_data.setAclf_no(num);  	    		
+//	    			cdmjim00100_SubGrid_Dao.insert(add_data);
+	    		}	    		
+	    	}
+	    	if(update_List != null) {
+	    		for(cdmjim00100_maingrid update_data: update_List) {
+	    			System.out.println("업데이트 데이터 정보 : ====== > " + update_data.toString());
+	    			update_data.setCompany_cd(getCompanyCode());
+//	    			cdmjim00100_maingridDAO.updatecdmjim00100_maingrid(update_data);
+	    		}	    		
+	    	}
+	    	if(delete_List != null) {
+	    		for(cdmjim00100_maingrid delete_data: delete_List) {
+	    			System.out.println("딜리트 데이터 정보 : ====== > " + delete_data.toString());
+	    			delete_data.setCompany_cd(getCompanyCode());
+//	    			cdmjim00100_maingridDAO.deletecdmjim00100_maingrid(delete_data);
+	    		}	    		
+	    	}
+	    } catch (Exception e) {
+	    	e.printStackTrace(); // 예외의 스택 트레이스 출력
+	        throw new DzApplicationRuntimeException(e);
+	    }
 	}
 }

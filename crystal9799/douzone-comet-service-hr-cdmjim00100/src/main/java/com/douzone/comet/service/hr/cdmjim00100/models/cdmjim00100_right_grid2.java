@@ -39,7 +39,7 @@ public class cdmjim00100_right_grid2 extends DzAbstractModel {
 	@SerializedName("NEED_RQISIT_CD")
 	@DzModelField(name="NEED_RQISIT_CD", desc="코드", colName="NEED_RQISIT_CD", colSize="200", isKey=false)
 	private String need_rqisit_cd;
-
+	
 	public String getNeed_rqisit_cd() {
 		return need_rqisit_cd;
 	}

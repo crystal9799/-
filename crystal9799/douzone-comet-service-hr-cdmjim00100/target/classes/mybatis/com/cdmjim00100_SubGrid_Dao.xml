@@ -16,6 +16,7 @@
 	<!-- 수행준거 내역 상단 그리드 -->
 	<select id="selectcdmjim00100_right_grid1List" resultType="com.douzone.comet.service.hr.cdmjim00100.models.cdmjim00100_right_grid1">		
 		SELECT DISTINCT HJD.AELM_CD
+					  , HJD.AELM_NM
 					  , HJD.ACLF_NO
 					  , HJD.VER_CD 
 					  , HJD.PCFM_CD 
@@ -46,9 +47,13 @@
 		    a.NEED_RQISIT_CD,
 		    a.NEED_RQISIT_NM AS NEED_RQISIT_NM1,
 		    b.NEED_RQISIT_NM AS NEED_RQISIT_NM2,
-		    c.NEED_RQISIT_NM AS NEED_RQISIT_NM3
+		    c.NEED_RQISIT_NM AS NEED_RQISIT_NM3,
+		    a.ACLF_NO ,
+		    a.VER_CD ,
+		    a.AELM_CD ,
+		    a.PCFM_CD 
 		FROM 
-		    (SELECT NEED_RQISIT_CD, NEED_RQISIT_NM FROM Filtered WHERE NEED_RQISIT_FG = 1) a
+		    (SELECT ACLF_NO, VER_CD, AELM_CD ,PCFM_CD ,NEED_RQISIT_CD, NEED_RQISIT_NM FROM Filtered WHERE NEED_RQISIT_FG = 1) a
 		LEFT JOIN 
 		    (SELECT NEED_RQISIT_CD, NEED_RQISIT_NM FROM Filtered WHERE NEED_RQISIT_FG = 2) b
 		ON a.NEED_RQISIT_CD = b.NEED_RQISIT_CD

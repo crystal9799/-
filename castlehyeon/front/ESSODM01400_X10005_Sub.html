@@ -1,6 +1,6 @@
-<!--##f4426ad6-78c3-4a72-87de-880a12ef342c##-->
+<!--##ef6b8ec1-f8ae-4ed8-9b09-2577864b0fee##-->
 <!--##ESSODM01400_X10005_Sub##-->
-<!--##WG9KkIefQ2RVnBp1UcpImlmJ9DDS1bt8RjkseVpI7bIMMg+Hywk2jzKjGRegiZs8##-->
+<!--##DAVHQuizUgQv5/KvGMtKcvAXB79Pdzxq7sdoWMCwfru4uo7IMdWrbMlscUoV199Q##-->
 <!--
   DEWS UI/UX IDE - Build Result - v1.5
   # PageID: ESSODM01400_X10005_Sub
@@ -86,8 +86,9 @@
     </div>
     <div class="dews-button-group" style="text-align: right;">
       <button id="temp_save_button" class="dews-ui-button">임시 저장</button>
-      <button id="req_button" class="dews-ui-button">결재 요청</button>
+      <button id="req_button" class="dews-ui-button">결재요청</button>
       <button id="req_cancel_button" class="dews-ui-button">결재요청 취소</button>
+      <button id="approve_button" class="dews-ui-button">결재 페이지</button>
       <button id="delete_button" class="dews-ui-button">삭제</button>
       <button id="sub_close_button" class="dews-ui-button">목록</button>
     </div>
@@ -415,7 +416,29 @@
         }
     
     });
-    self.$req_button.on('click', /*ff94b48d-1e4f-4be1-aa8b-c8c89538591b*/ function (e) {
+    self.$req_button.on('click', /*f56047f2-5d5e-4010-8581-246f5c29f3b3*/ function (e) {
+        dews.alert('결재신청 하시겠습니까?', "question").done(function () {
+            dews.api.get(dews.url.getApiUrl("HR", "HREssodm01400_X10005Service", "approve_HR_OFFAPPLY_MST_X10005MST"), {
+                async: false,
+                data: {
+                    //기본키
+                    company_cd: self.main_grid.getCellValue(0, 'COMPANY_CD'),//회사코드
+                    req_no: self.main_grid.getCellValue(0, 'REQ_NO'), // 신청번호
+    
+                    //결재상태코드
+                    athz_st_cd: '2'
+                    //한번에 모델로 보내기 => dirtyData 상에서 added로 들어가는 문제점
+                    // main_ds: main_ds
+                }
+            }).done(function (data) {
+                alert('결재신청 되었습니다.');
+                self.main_grid.setCellValue(self.main_grid.select(), 'ATHZ_ST_CD', '2');
+                self.ATHZ_ST_NM.text(GetATHZ_ST_NM('2'));
+                InitBtns();
+            });
+        });
+    });
+    self.$approve_button.on('click', /*ff94b48d-1e4f-4be1-aa8b-c8c89538591b*/ function (e) {
         try {
             OpenReqPage(self.main_grid.dataItem(self.main_grid.select()));
         } catch (error) {
@@ -1160,9 +1183,10 @@
         if (isExist == true || (isReq_no !== null && isReq_no !== '' && isReq_no !== undefined)) {
             var athzStCd_val = self.main_grid.getCellValue(0, 'ATHZ_ST_CD');
     
-            // 결재상태가 저장일 때 => 임시저장 버튼 활성화
+            // 결재상태가 저장일 때 => 임시저장 버튼 활성화, 결재 페이지 비활성화
             if (athzStCd_val == '1') {
                 self.temp_save_button.enable(true);
+                self.approve_button.enable(false);
             } else {
                 self.temp_save_button.enable(false);
             }
@@ -1194,6 +1218,7 @@
         }
         //신규신청이라면 결제요청, 삭제, 취소 비활성화
         else if (isExist == false) {
+            self.approve_button.enable(false);
             self.req_cancel_button.enable(false);
             self.delete_button.enable(false);
             self.req_button.enable(false);

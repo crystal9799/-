@@ -1,6 +1,6 @@
-<!--##7b782f92-54ae-4f34-9a74-96bfe5ee03dd##-->
+<!--##8bba0ad1-4242-442e-bf07-ad19c0d87d85##-->
 <!--##ESSODM01400_X10005_Modal##-->
-<!--##/RrJEJZU7kGlDEcX4j6t+Fmm9C+EFAYaKFcwn0G70CMIjSNxup3Qdt68bSLkAcfz7MGHV/LaW4MbN7VduOagzQ==##-->
+<!--##uvnTeiMVKUMDRN8c0UmDTPP2wIDCtnXGLy+Bmi6XYSOEdjC1biSUHe+gJyIz4g4d9wflTJB7z/2HhtIAKoyf+Q==##-->
 <!--
   DEWS UI/UX IDE - Build Result - v1.5
   # PageID: ESSODM01400_X10005_Modal
@@ -362,49 +362,45 @@
       }
     });
     self.$btnConfirm.on('click', /*cd33d044-101a-40ee-8c6a-ea4106d8ad84*/ function () {
-        dews.api.get(dews.url.getApiUrl("HR", "HREssodm01400_X10005Service", "approve_HR_OFFAPPLY_MST_X10005MST"), {
-            async: false,
-            data: {
-                //기본키
-                company_cd: dialog.main_grid.getCellValue(0, 'COMPANY_CD'),//회사코드
-                req_no: dialog.main_grid.getCellValue(0, 'REQ_NO'), // 신청번호
+        dews.alert('결재를 하시겠습니까?', "question").done(function () {
+            dews.api.get(dews.url.getApiUrl("HR", "HREssodm01400_X10005Service", "approve_HR_OFFAPPLY_MST_X10005MST"), {
+                async: false,
+                data: {
+                    //기본키
+                    company_cd: dialog.main_grid.getCellValue(0, 'COMPANY_CD'),//회사코드
+                    req_no: dialog.main_grid.getCellValue(0, 'REQ_NO'), // 신청번호
     
-                //결재상태코드
-                athz_st_cd: '4'
-                //한번에 모델로 보내기 => dirtyData 상에서 added로 들어가는 문제점
-                // main_ds: main_ds
-            }
-        }).done(function (data) {
-            dews.alert('결재를 하시겠습니까?', "question").done(function () {
+                    //결재상태코드
+                    athz_st_cd: '4'
+                    //한번에 모델로 보내기 => dirtyData 상에서 added로 들어가는 문제점
+                    // main_ds: main_ds
+                }
+            }).done(function (data) {
                 alert('결재완료 되었습니다.');
+                applyClose('3');
             });
-            applyClose('3');
-    
-            // dews.ui.page.close(); // 페이지 닫기
         });
     });
     
     //applyClose();
     self.$btnCancel.on('click', /*d560c36b-4877-4b39-ae3f-e3f4227fc888*/ function (e) {
-    dews.api.get(dews.url.getApiUrl("HR", "HREssodm01400_X10005Service", "approve_HR_OFFAPPLY_MST_X10005MST"), {
-            async: false,
-            data: {
-                //기본키
-                company_cd: dialog.main_grid.getCellValue(0, 'COMPANY_CD'),//회사코드
-                req_no: dialog.main_grid.getCellValue(0, 'REQ_NO'), // 신청번호
+        dews.alert('반려를 하시겠습니까?', "question").done(function () {
+            dews.api.get(dews.url.getApiUrl("HR", "HREssodm01400_X10005Service", "approve_HR_OFFAPPLY_MST_X10005MST"), {
+                async: false,
+                data: {
+                    //기본키
+                    company_cd: dialog.main_grid.getCellValue(0, 'COMPANY_CD'),//회사코드
+                    req_no: dialog.main_grid.getCellValue(0, 'REQ_NO'), // 신청번호
     
-                //결재상태코드
-                athz_st_cd: '3'
-                //한번에 모델로 보내기 => dirtyData 상에서 added로 들어가는 문제점
-                // main_ds: main_ds
-            }
-        }).done(function (data) {
-            dews.alert('반려를 하시겠습니까?', "question").done(function () {
+                    //결재상태코드
+                    athz_st_cd: '3'
+                    //한번에 모델로 보내기 => dirtyData 상에서 added로 들어가는 문제점
+                    // main_ds: main_ds
+                }
+            }).done(function (data) {
                 alert('반려 되었습니다.');
+                applyClose('3');
             });
-            applyClose('3');
-    
-            // dews.ui.page.close(); // 페이지 닫기
         });
     });
     

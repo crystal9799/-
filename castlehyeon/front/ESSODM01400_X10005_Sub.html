@@ -1,6 +1,6 @@
-<!--##2d4f150a-321f-4427-b0ef-4fab48206630##-->
+<!--##5bbd6584-e82f-454d-856a-32ceb566b0d2##-->
 <!--##ESSODM01400_X10005_Sub##-->
-<!--##aK13AsmLdsyc5ZHdMvoV/oTbLiEdnYgKG8za27Jg1CnJJ2zmovsNfqIq0Ifi0rg2##-->
+<!--##EYrP2EiqPGxqUrRntqWSJZNC6czzPOVJEx1ma/0CplJpa2SadC2I6tlCt0pRcC5v##-->
 <!--
   DEWS UI/UX IDE - Build Result - v1.5
   # PageID: ESSODM01400_X10005_Sub
@@ -865,33 +865,70 @@
     }
     
     //파이프 데이터소스에서 생성한 것처럼 드롭다운리스트에서 값의 범위에 따라 유효성 검증
+    // function CheckPeriod() {
+    //     var req_date = GetREQ_DY();
+    //     var startDateStr = self.START_DT.text(); // 예시: YYYYMMDD 형식
+    //     var endDateStr = self.END_DT.text();
+    
+    //     // 시작날짜와 종료날짜를 Date 객체로 변환
+    //     var startDate = new Date(startDateStr);
+    //     var endDate = new Date(endDateStr);
+    //     var today = new Date();
+    
+    //     if (req_date < 0) {           // 신청가능일 < 10
+    //         dews.ui.snackbar.warning("종료일은 시작일보다 작을 수 없습니다.");
+    //         return false;
+    //     } else if (startDate < today || endDate < today) {           // 신청 날짜는 오늘부터 가능하다.
+    //         dews.ui.snackbar.warning("시작일과 종료일은 오늘날짜보다 작을 수 없습니다.");
+    //         return false;
+    //     } else if (self.DNL_CD.value() === '5100') {           // 신청가능일 < 10
+    //         if (req_date > 10) {
+    //             dews.ui.snackbar.warning("10일 이내로 신청해야 합니다. 현재 신청일 : " + req_date + "일");
+    //             return false;
+    //         }
+    //     } else if (self.DNL_CD.value() === '5101') {           // 11 < 신청가능일 < 30
+    //         if (req_date < 11 || req_date > 30) {
+    //             dews.ui.snackbar.warning("11~30일 이내로 신청해야 합니다. 현재 신청일 : " + req_date + "일");
+    //             return false;
+    //         }
+    //     } else if (self.DNL_CD.value() === '5102') {    // 신청가능일 < 30 
+    //         if (req_date < 31) {
+    //             dews.ui.snackbar.warning("31일 이상 신청해야 합니다. 현재 신청일 : " + req_date + "일");
+    //             return false;
+    //         }
+    //     }
+    //     return true;
+    // }
+    
+    //위의 코드는 시간까지 비교하므로 적절하지 않음. 시간은 무시하고 날짜까지만 비교할 수 있도록 로직 수정
     function CheckPeriod() {
         var req_date = GetREQ_DY();
         var startDateStr = self.START_DT.text(); // 예시: YYYYMMDD 형식
         var endDateStr = self.END_DT.text();
     
         // 시작날짜와 종료날짜를 Date 객체로 변환
-        var startDate = new Date(startDateStr);
-        var endDate = new Date(endDateStr);
+        var startDate = new Date(startDateStr.substring(0, 4), startDateStr.substring(4, 6) - 1, startDateStr.substring(6, 8));
+        var endDate = new Date(endDateStr.substring(0, 4), endDateStr.substring(4, 6) - 1, endDateStr.substring(6, 8));
         var today = new Date();
+        today.setHours(0, 0, 0, 0); // 시간을 00:00:00으로 설정
     
-        if (req_date < 0) {           // 신청가능일 < 10
+        if (req_date < 0) { // 신청가능일 < 10
             dews.ui.snackbar.warning("종료일은 시작일보다 작을 수 없습니다.");
             return false;
-        } else if (startDate < today || endDate < today) {           // 신청 날짜는 오늘부터 가능하다.
+        } else if (startDate < today || endDate < today) { // 신청 날짜는 오늘부터 가능하다.
             dews.ui.snackbar.warning("시작일과 종료일은 오늘날짜보다 작을 수 없습니다.");
             return false;
-        } else if (self.DNL_CD.value() === '5100') {           // 신청가능일 < 10
+        } else if (self.DNL_CD.value() === '5100') { // 신청가능일 < 10
             if (req_date > 10) {
                 dews.ui.snackbar.warning("10일 이내로 신청해야 합니다. 현재 신청일 : " + req_date + "일");
                 return false;
             }
-        } else if (self.DNL_CD.value() === '5101') {           // 11 < 신청가능일 < 30
+        } else if (self.DNL_CD.value() === '5101') { // 11 < 신청가능일 < 30
             if (req_date < 11 || req_date > 30) {
                 dews.ui.snackbar.warning("11~30일 이내로 신청해야 합니다. 현재 신청일 : " + req_date + "일");
                 return false;
             }
-        } else if (self.DNL_CD.value() === '5102') {    // 신청가능일 < 30 
+        } else if (self.DNL_CD.value() === '5102') { // 신청가능일 < 30 
             if (req_date < 31) {
                 dews.ui.snackbar.warning("31일 이상 신청해야 합니다. 현재 신청일 : " + req_date + "일");
                 return false;
@@ -899,6 +936,8 @@
         }
         return true;
     }
+    
+    
     
     //임시저장을 눌렀을 때 신규 || 기존에 따라 데이터 처리
     function SaveTempData() {
@@ -954,6 +993,7 @@
                             return;
                         }
                         dews.ui.snackbar.ok("임시 저장 되었습니다.");
+                        InitBtns();
                         // dews.ui.page.close(); // 페이지 닫기
                     });
                 }
@@ -997,6 +1037,8 @@
                     isExistSub = true;
                     //신규신청 데이터의 상태관리를 위한 데이터 객체
                     inputData = IsNewInputNewData();
+                    //임시저장 후 버튼 활성화
+                    InitBtns();
                 });
             }
         }
@@ -1111,9 +1153,11 @@
         var isExist = self.initialData.isExist;
         var userData = self.initialData.userData;
     
+        var isReq_no = self.main_grid.getCellValue(0, 'REQ_NO');
     
         //기존에 있는 데이터라면.
-        if (isExist == true) {
+        ////신규신청 후 임시저장을 눌렀다면 req_no가 있는지 체크해서 임시저장과 동일하게 세팅해주기.
+        if (isExist == true || (isReq_no !== null && isReq_no !== '' && isReq_no !== undefined)) {
             var athzStCd_val = self.main_grid.getCellValue(0, 'ATHZ_ST_CD');
     
             // 결재상태가 저장일 때 => 임시저장 버튼 활성화

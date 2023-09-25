@@ -1,6 +1,6 @@
-<!--##b0bb04d2-4910-4364-8352-2dc0bffffa90##-->
+<!--##7b782f92-54ae-4f34-9a74-96bfe5ee03dd##-->
 <!--##ESSODM01400_X10005_Modal##-->
-<!--##cbnfUfvxgUSdAgwtegjiilGLR47OcHNRGfKeb4q+aXtg9AkgUwf/eTkw/vbcd7fG4zYWyGtKjtsgkUOE8TXdtw==##-->
+<!--##/RrJEJZU7kGlDEcX4j6t+Fmm9C+EFAYaKFcwn0G70CMIjSNxup3Qdt68bSLkAcfz7MGHV/LaW4MbN7VduOagzQ==##-->
 <!--
   DEWS UI/UX IDE - Build Result - v1.5
   # PageID: ESSODM01400_X10005_Modal
@@ -140,10 +140,10 @@
     // });
     
     
-    function applyClose() {
+    function applyClose(param) {
         // 메인 화면에 데이터전달 및 화면 닫기
-        // var name = self.grid1.getCellValue(self.grid1.select(), "KOR_NM");
-        // dialog.ok(name);
+        var athz_st_cd = param;
+        dialog.ok(athz_st_cd);
         dialog.close();
     }
     
@@ -375,15 +375,38 @@
                 // main_ds: main_ds
             }
         }).done(function (data) {
-            dews.alert('결재를 하시겠습니까?',"question").done(function () {
-                dews.alert("결재완료 되었습니다.", "success");
+            dews.alert('결재를 하시겠습니까?', "question").done(function () {
+                alert('결재완료 되었습니다.');
             });
-            
+            applyClose('3');
+    
             // dews.ui.page.close(); // 페이지 닫기
         });
     });
     
     //applyClose();
+    self.$btnCancel.on('click', /*d560c36b-4877-4b39-ae3f-e3f4227fc888*/ function (e) {
+    dews.api.get(dews.url.getApiUrl("HR", "HREssodm01400_X10005Service", "approve_HR_OFFAPPLY_MST_X10005MST"), {
+            async: false,
+            data: {
+                //기본키
+                company_cd: dialog.main_grid.getCellValue(0, 'COMPANY_CD'),//회사코드
+                req_no: dialog.main_grid.getCellValue(0, 'REQ_NO'), // 신청번호
+    
+                //결재상태코드
+                athz_st_cd: '3'
+                //한번에 모델로 보내기 => dirtyData 상에서 added로 들어가는 문제점
+                // main_ds: main_ds
+            }
+        }).done(function (data) {
+            dews.alert('반려를 하시겠습니까?', "question").done(function () {
+                alert('반려 되었습니다.');
+            });
+            applyClose('3');
+    
+            // dews.ui.page.close(); // 페이지 닫기
+        });
+    });
     
     
     

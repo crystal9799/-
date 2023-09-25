@@ -1,6 +1,6 @@
-<!--##c2a9f633-efd6-45ba-ba31-edeccdb4931d##-->
+<!--##2d4f150a-321f-4427-b0ef-4fab48206630##-->
 <!--##ESSODM01400_X10005_Sub##-->
-<!--##U0SfRTASEG4DrUtfjXqOvcKbhzfOVHWB8vpJoTfEc5IDjpNg5muo83MwKx8Jt1r6##-->
+<!--##aK13AsmLdsyc5ZHdMvoV/oTbLiEdnYgKG8za27Jg1CnJJ2zmovsNfqIq0Ifi0rg2##-->
 <!--
   DEWS UI/UX IDE - Build Result - v1.5
   # PageID: ESSODM01400_X10005_Sub
@@ -70,6 +70,18 @@
             <input id="DEPT_CD" name="DEPT_CD" type="text" class="dews-ui-textbox basic" />
           </span>
         </li>
+        <li style="display: none;">
+          <label>라벨</label>
+          <span>
+            <input id="REQ_DEPT_CD" name="REQ_DEPT_CD" type="text" class="dews-ui-textbox basic" />
+          </span>
+        </li>
+        <li style="display: none;">
+          <label>라벨</label>
+          <span>
+            <input id="REQ_BIZAREA_CD" name="REQ_BIZAREA_CD" type="text" class="dews-ui-textbox basic" />
+          </span>
+        </li>
       </ul>
     </div>
     <div class="dews-button-group" style="text-align: right;">
@@ -132,6 +144,10 @@
             <input id="ATHZ_ST_CD" name="ATHZ_ST_CD" type="text" class="dews-ui-textbox basic" />
           </span>
         </li>
+        <li>
+          <label>라벨</label>
+          <span></span>
+        </li>
       </ul>
     </div>
     <div id="main_grid" class="dews-ui-grid"></div>
@@ -152,7 +168,10 @@
 
 
     /*b86609c9-3017-4aef-896e-65022e1080a4*/ //# sourceURL=ESSODM01400_x10005_Sub.js
+    // 대상자 변경 시 접속유저 기준으로 파라미터 바인딩
     self.COMPANY_CD.text(self.user.companyCode);
+    self.REQ_DEPT_CD.text(self.user.deptCode);
+    self.REQ_BIZAREA_CD.text(self.user.bizAreaCode);
     // 직급, 직위 데이터
     const positionData = [
         { PSTN_CD: '11', PSTN_NM: '대표이사' },
@@ -370,7 +389,7 @@
     self.s_EMP_NO.setHelpParams(function () {
       return {
         company_cd: self.COMPANY_CD.text() || 'auth',
-        auth_dept: self.DEPT_CD.text()
+        auth_dept: self.REQ_DEPT_CD.text()
       };
     });
     self.$temp_save_button.on('click', /*e07a479f-2584-47d9-9db3-60a574b7f674*/ function (e) {
@@ -656,7 +675,7 @@
                 //파라미터로 넘겨 받은 데이터를 폼패널에 바인딩
                 self.userInfo_formpanel.bindData(userData);
                 self.sub_formpanel.bindData(userData);
-                self.ATHZ_ST_NM.text(GetATHZ_ST_NM());
+                self.ATHZ_ST_NM.text(GetATHZ_ST_NM(self.initialData.userData.ATHZ_ST_CD));
                 self.REQ_DT.text(userData.REQ_DT);
                 GetUserInfo(self.EMP_NO.text(), self.COMPANY_CD.text());
     
@@ -712,7 +731,9 @@
                 // self.POSI_CD.text(self.user.dutyCode === undefined ? '사원' : self.user.dutyCode); // 직위
                 // self.COMPANY_CD.text(self.user.companyCode); //회사코드
                 GetUserInfo(self.user.empCode, self.user.companyCode);
-    
+                self.PSTN_NM.text(GetPSTNPOSI_NM(self.user.dutyRankCode)); //직급
+                self.POSI_NM.text(GetPSTNPOSI_NM(self.user.dutyCode)); // 직위
+                self.OGRP_NM.text(GetOGRP_NM('2')); // 직군
                 //신청자 패널
                 self.REQ_EMP_NO.text(self.user.empCode); //사원번호
                 self.REQ_KOR_NM.text(self.user.username); //이름
@@ -735,9 +756,13 @@
                 self.sub_formpanel.bindTo(self.main_grid);
     
                 //직급, 직위는 undefined라면 보여지는 임시값이므로 공백으로 바로 넣어주어야함.
-                self.main_grid.setCellValue(0, 'PSTN_CD', self.user.dutyRankCode);
-                self.main_grid.setCellValue(0, 'POSI_CD', self.user.dutyCode);
-                self.main_grid.setCellValue(0, 'OGRP_CD', self.user.gaapCode);
+                self.main_grid.setCellValue(0, 'PSTN_CD', self.user.dutyRankCode === undefined ? '' : self.user.dutyRankCode);
+                self.main_grid.setCellValue(0, 'POSI_CD', self.user.dutyCode === undefined ? '' : self.user.dutyCode);
+                self.main_grid.setCellValue(0, 'OGRP_CD', self.user.gaapCode === undefined ? '' : self.user.gaapCode);
+    
+                //부서코드
+                // self.DEPT_CD.text(self.user.deptCode);
+                // self.main_grid.setCellValue(0, 'DETP_CD', self.user.deptCode);
             }
             //신규든, 기존 데이터든 직급이나 직위는 동일하기 때문에 한쪽이 공백이면 다른 값을 가져온다.
             IsPSTNPOSINULL();
@@ -748,10 +773,10 @@
         }
     }
     
-    function GetATHZ_ST_NM() {
+    function GetATHZ_ST_NM(param) {
         var status = '';
     
-        switch (self.initialData.userData.ATHZ_ST_CD) {
+        switch (param) {
             case '1':
                 status = '임시저장';
                 break;
@@ -821,7 +846,8 @@
             }
             grid.setCellValue(grid.select(), 'ORG', data[0].ORG === null ? path : data[0].ORG, false); // 소속
             grid.setCellValue(grid.select(), 'POSI_CD', data[0].POSI_CD, false); // 직위코드
-            grid.setCellValue(grid.select(), 'DEPT_CD', data[0].DEPT_CD, false);
+            // grid.setCellValue(grid.select(), 'DEPT_CD', data[0].DEPT_CD, false);
+            self.DEPT_CD.text(data[0].DEPT_CD);
             self.EMP_NO.text(data[0].EMP_NO);
             self.KOR_NM.text(data[0].KOR_NM);
             self.PSTN_NM.text(GetPSTNPOSI_NM(data[0].PSTN_CD));
@@ -829,6 +855,10 @@
             self.ORG.text(data[0].ORG === null ? data[0].PATH : data[0].ORG);
             self.POSI_NM.text(GetPSTNPOSI_NM(data[0].POSI_CD));
             self.ORG.text(grid.getCellValue(grid.select(), 'ORG'));
+    
+            //대상자가 변경되었다면 패널 정보를 바인딩 해주기.
+            self.userInfo_formpanel.bindTo(self.main_grid);
+            self.sub_formpanel.bindTo(self.main_grid);
         }).fail(function (xhr, status, error) {
             dews.error(xhr.responseJSON.message);
         });
@@ -1114,13 +1144,15 @@
                 self.START_DT.readonly(true);
                 self.END_DT.readonly(true);
                 self.REASON_DC.readonly(true);
+                self.CHANGE_REQ_USERT.enable(false);
     
             }
         }
-        //신규신청이라면 삭제, 취소 비활성화
+        //신규신청이라면 결제요청, 삭제, 취소 비활성화
         else if (isExist == false) {
             self.req_cancel_button.enable(false);
             self.delete_button.enable(false);
+            self.req_button.enable(false);
             self.DNL_CD.readonly(false);
             self.START_DT.readonly(false);
             self.END_DT.readonly(false);
@@ -1138,12 +1170,12 @@
         }
     
         // pstn_cd가 null이면 posi_cd 값을 복사
-        if (pstn_cd === null) {
+        if (pstn_cd === null || pstn_cd === '') {
             self.PSTN_NM.text(self.POSI_NM.text());
         }
     
         // posi_cd가 null이면 pstn_cd 값을 복사
-        if (posi_cd === null) {
+        if (posi_cd === null || posi_cd === '') {
             self.POSI_NM.text(self.PSTN_NM.text());
         }
     }
@@ -1209,7 +1241,8 @@
                 },
                 //,대화상자(모달창) 정상적으로 종료되었을 때 전달받은 데이터를 처리하는 콜백 함수
                 ok: function (modalData) {
-                    dews.alert(modalData);
+                    self.main_grid.setCellValue(self.main_grid.select(), 'ATHZ_ST_CD', modalData);
+                    self.ATHZ_ST_NM.text(GetATHZ_ST_NM());
                 }
             });
             // 대화 상자(모달창) 열기

@@ -83,4 +83,8 @@ public class Essodm01400_x10005Dao  {
 		return this.mybatisSupport.selectOne(this.getClass().getName() + ".hasContainSamePeriod", parameters);
 	}
 
+	public void approveEssodm01400_X10005Model(HashMap<String, Object> parameters) {
+		this.mybatisSupport.update(this.getClass().getName() + ".approveEssodm01400_X10005Model", parameters);
+	}
+
 }

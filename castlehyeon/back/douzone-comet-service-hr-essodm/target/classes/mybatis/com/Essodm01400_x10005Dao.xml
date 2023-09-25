@@ -277,6 +277,20 @@
 		AND REQ_NO = #{P_REQ_NO}
 	</update>
 
+<update parameterType="HashMap"
+		id="approveEssodm01400_X10005Model">
+		UPDATE HR_OFFAPPLY_MST_X10005
+		<set>
+			<if test='P_ATHZ_ST_CD != null and P_ATHZ_ST_CD != ""'>ATHZ_ST_CD = #{P_ATHZ_ST_CD},</if>
+			<if test='P_UPDATE_ID != null and P_UPDATE_ID != ""'>UPDATE_ID = #{P_UPDATE_ID},</if>
+			<if test='P_UPDATE_IP != null and P_UPDATE_IP != ""'>UPDATE_IP = #{P_UPDATE_IP},</if>
+			<if test='P_UPDATE_DTS != null and P_UPDATE_DTS != ""'>UPDATE_DTS = #{P_UPDATE_DTS}</if>
+		</set>
+		WHERE
+		COMPANY_CD = #{P_COMPANY_CD}
+		AND REQ_NO = #{P_REQ_NO}
+	</update>
+
 	<delete id="deleteEssodm01400_X10005Model"
 		parameterType="HashMap">
 		DELETE FROM HR_OFFAPPLY_MST_X10005

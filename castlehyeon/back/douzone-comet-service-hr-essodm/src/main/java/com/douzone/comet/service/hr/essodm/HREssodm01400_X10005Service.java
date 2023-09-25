@@ -101,7 +101,8 @@ public class HREssodm01400_X10005Service extends DzCometService {
 			@DzParam(key = "start_dt", desc = "", paramType = DzParamType.QueryString) String start_dt,
 			@DzParam(key = "end_dt", desc = "", paramType = DzParamType.QueryString) String end_dt,
 			@DzParam(key = "req_dy", desc = "", paramType = DzParamType.QueryString) String req_dy,
-			@DzParam(key = "reason_dc", desc = "", paramType = DzParamType.QueryString) String reason_dc)
+			@DzParam(key = "reason_dc", desc = "", paramType = DzParamType.QueryString) String reason_dc,
+			@DzParam(key = "athz_st_cd", desc = "", paramType = DzParamType.QueryString) String athz_st_cd)
 			throws Exception {
 		// 전부 단건 처리
 		// 1. 파라미터로 들어온 기간이 기존에 있는지 검사
@@ -124,6 +125,7 @@ public class HREssodm01400_X10005Service extends DzCometService {
 			parameters.put("P_END_DT", end_dt);
 			parameters.put("P_REQ_DY", req_dy);
 			parameters.put("P_REASON_DC", reason_dc);
+
 
 			logger.info("parameter====>" + parameters);
 
@@ -229,14 +231,43 @@ public class HREssodm01400_X10005Service extends DzCometService {
 				parameters.put("P_INSERT_IP", userInfo.getIp());
 				parameters.put("P_INSERT_DTS", userInfo.getDate());
 				essodm01400_x10005DAO.insertEssodm01400_X10005Model(parameters);
+				response.put("MSG", model.getReq_no());
 			}
-			response.put("MSG", model.getReq_no());
+			
 			return (String) response.get("MSG");
 		} catch (Exception e) {
 			throw new DzApplicationRuntimeException(e);
 		}
 	}
 
+	
+	@Transactional(rollbackFor = Exception.class)
+	@DzApi(url = "/approve_HR_OFFAPPLY_MST_X10005MST", desc = "결근계 결재", httpMethod = DzRequestMethod.GET)
+	public void approve_HR_OFFAPPLY_MST_X10005MST(
+			@DzParam(key = "company_cd", desc = "", paramType = DzParamType.QueryString) String company_cd,
+			@DzParam(key = "req_no", desc = "", paramType = DzParamType.QueryString) String req_no,
+			@DzParam(key = "athz_st_cd", desc = "", paramType = DzParamType.QueryString) String athz_st_cd)
+			throws Exception {
+		try {
+			HashMap<String, Object> parameters = new HashMap<>();
+			parameters.put("P_COMPANY_CD", company_cd);
+			parameters.put("P_REQ_NO", req_no);
+			parameters.put("P_ATHZ_ST_CD", athz_st_cd);
+			logger.info("parameter====>" + parameters);
+			
+			
+			GetInsertUpdateInfo userInfo = new GetInsertUpdateInfo();
+			parameters.put("P_UPDATE_ID", userInfo.getUserId() != null ? userInfo.getUserId() : this.getUserId());
+			parameters.put("P_UPDATE_IP", userInfo.getIp());
+			parameters.put("P_UPDATE_DTS", userInfo.getDate());
+			essodm01400_x10005DAO.approveEssodm01400_X10005Model(parameters);
+			
+			
+		} catch (Exception e) {
+			throw new DzApplicationRuntimeException(e);
+		}
+	}
+	
 	@Transactional(rollbackFor = Exception.class)
 	@DzApi(url = "/delete_HR_OFFAPPLY_MST_X10005MST", desc = "결근계 삭제", httpMethod = DzRequestMethod.GET)
 	public String delete_HR_OFFAPPLY_MST_X10005MST(

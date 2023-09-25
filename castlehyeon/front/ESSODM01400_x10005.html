@@ -1,6 +1,6 @@
-<!--##308f3312-2b6e-4927-80ad-cce6b50f854d##-->
+<!--##a4c8cbdb-45a6-4976-90fb-b82350d2629a##-->
 <!--##ESSODM01400_x10005##-->
-<!--##U85wCbiLkfwXHI+2O3irPWekSGr+9ncBn2KX8ENSO6lHnaUJ2mGtm7Fmpg/r5eMs##-->
+<!--##WxqviOlxwsIUpwMQvPDa+cDM/50ObFkEP5FHBbZsSHugEuA8sk1oZh+H2BagYDhU##-->
 <!--
   DEWS UI/UX IDE - Build Result - v1.5
   # PageID: ESSODM01400_x10005
@@ -448,7 +448,14 @@
             grid.setCellValue(grid.select(), 'KOR_NM', data[0].KOR_NM, false); // 한글명
             grid.setCellValue(grid.select(), 'PSTN_CD', data[0].PSTN_CD, false); // 직급코드
             grid.setCellValue(grid.select(), 'OGRP_CD', data[0].OGRP_CD, false); // 직군코드
-            grid.setCellValue(grid.select(), 'ORG', data[0].ORG === null ? data[0].PATH : data[0].ORG, false); // 소속
+            //PATH 값 처리
+            var path = data[0].PATH === null ? '' : data[0].PATH;
+    
+            // 만약 path 값이 존재하고, 앞에 슬래시가 두 번 온다면 앞의 슬래시를 제외한 나머지 문자열을 출력
+            if (path && path.startsWith('//')) {
+                path = path.substring(2); // 앞의 두 슬래시를 제거
+            }
+            grid.setCellValue(grid.select(), 'ORG', data[0].ORG === null ? path : data[0].ORG, false); // 소속
             grid.setCellValue(grid.select(), 'POSI_CD', data[0].POSI_CD, false); // 직위코드
             self.EMP_NO.text(data[0].EMP_NO);
             self.KOR_NM.text(data[0].KOR_NM);
@@ -456,6 +463,7 @@
             self.OGRP_NM.text(GetOGRP_NM(data[0].OGRP_CD));
             self.ORG.text(data[0].ORG === null ? data[0].PATH : data[0].ORG);
             self.POSI_NM.text(GetPSTNPOSI_NM(data[0].POSI_CD));
+            IsPSTNPOSINULL();
         }).fail(function (xhr, status, error) {
             dews.error(xhr.responseJSON.message);
         });
@@ -527,15 +535,15 @@
     ]
     // PSTN_CD에 해당하는 PSTN_NM을 반환하는 함수
     function GetPSTNPOSI_NM(code) {
-        // PSTN_CD가 NULL인 경우 '사원'을 반환
+        // PSTN_CD가 NULL인 경우 ''을 반환
         if (code === null) {
-            return '사원';
+            return '';
         }
     
         // PSTN_CD에 해당하는 PSTN_NM을 찾아 반환
         const position = positionData.find((item) => item.PSTN_CD === code);
     
-        // PSTN_CD가 데이터에 없는 경우에도 '사원'을 반환
+        // PSTN_CD가 데이터에 없는 경우에도 ''을 반환
         return position ? position.PSTN_NM : '';
     }
     
@@ -547,6 +555,25 @@
         const ogrp = ogrpData.find((item) => item.OGRP_CD === code);
     
         return ogrp ? ogrp.OGRP_NM : '';
+    }
+    function IsPSTNPOSINULL() {
+        var pstn_cd = self.main_grid.getCellValue(self.main_grid.select(), 'PSTN_CD');
+        var posi_cd = self.main_grid.getCellValue(self.main_grid.select(), 'POSI_CD');
+    
+        // 둘 다 null인 경우에는 아무 작업도 하지 않음
+        if (pstn_cd === null && posi_cd === null) {
+            return;
+        }
+    
+        // pstn_cd가 null이면 posi_cd 값을 복사
+        if (pstn_cd === null) {
+            self.PSTN_NM.text(self.POSI_NM.text());
+        }
+    
+        // posi_cd가 null이면 pstn_cd 값을 복사
+        if (posi_cd === null) {
+            self.POSI_NM.text(self.PSTN_NM.text());
+        }
     }
     
     

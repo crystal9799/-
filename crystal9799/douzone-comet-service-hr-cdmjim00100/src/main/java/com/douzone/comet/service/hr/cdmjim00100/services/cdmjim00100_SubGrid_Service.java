@@ -111,49 +111,41 @@ public class cdmjim00100_SubGrid_Service extends DzCometService {
 		return right_grid2_List;
 	}
 	
-	@DzApi(url="/cdmjim00100_SubGrid_Save", desc="서브그리드_저장", httpMethod=DzRequestMethod.POST)
-	public void cdmjim00100_SubGrid_Save(
-		@DzParam(key="MAIN_DS", desc="메인그리드튜플", paramType = DzParamType.Body) DzGridModel<cdmjim00100_maingrid> MAIN_DS,
-		@DzParam(key="LEFT_DS", desc="세부분류", paramType = DzParamType.Body) DzGridModel<cdmjim00100_left_grid> LEFT_DS,
-		@DzParam(key="RIGHT1_DS", desc="수행준거1", paramType = DzParamType.Body) DzGridModel<cdmjim00100_right_grid1> RIGHT1_DS,		
-		@DzParam(key="RIGHT2_DS", desc="수행준거2", paramType = DzParamType.Body) DzGridModel<cdmjim00100_right_grid2> RIGHT2_DS
+	@DzApi(url="/cdmjim00100_Leftgrid_Save", desc="서브그리드_저장", httpMethod=DzRequestMethod.POST)
+	public void cdmjim00100_Leftgrid_Save(
+		@DzParam(key="LEFT_DS", desc="세부분류", paramType = DzParamType.Body) DzGridModel<cdmjim00100_left_grid> LEFT_DS
 
 	) throws Exception {	    
-		System.out.println("받아온 데이터 정보1 : ====== > " + MAIN_DS.toString());
+		System.out.println("받아온 데이터 정보1 : ====== > " + LEFT_DS.toString());
 	    try {	        	
 	    	//Add List
-	    	List<cdmjim00100_maingrid> add_list = new ArrayList<>();
-	    	add_list = MAIN_DS.getAdded();
+	    	List<cdmjim00100_left_grid> add_list = new ArrayList<>();
+	    	add_list = LEFT_DS.getAdded();
 	    	//Update List
-	    	List<cdmjim00100_maingrid> update_List = new ArrayList<>();
-	    	update_List = MAIN_DS.getUpdated();
+	    	List<cdmjim00100_left_grid> update_List = new ArrayList<>();
+	    	update_List = LEFT_DS.getUpdated();
 	    	//Delete List
-	    	List<cdmjim00100_maingrid> delete_List = new ArrayList<>();
-	    	delete_List = MAIN_DS.getDeleted();
+	    	List<cdmjim00100_left_grid> delete_List = new ArrayList<>();
+	    	delete_List = LEFT_DS.getDeleted();
 	    	
 	    	//Add
 	    	if(add_list != null) {
-	    		for(cdmjim00100_maingrid add_data: add_list) {
-	    			System.out.println("인서트 데이터 정보 : ====== > " + add_list.toString());
-	    			//능력분류번호 채번
-	    			String num = add_data.getLclas_cd() + add_data.getMlsfc_cd() + add_data.getS_csf_cd() + add_data.getTclf_cd() + add_data.getAclf_cd();
-	    			//채번한 값 모델에 set
-	    			add_data.setAclf_no(num);  	    		
-//	    			cdmjim00100_SubGrid_Dao.insert(add_data);
+	    		for(cdmjim00100_left_grid add_data: add_list) {
+	    			System.out.println("인서트 데이터 정보 : ====== > " + add_list.toString());	 
+	    			add_data.setCompany_cd(this.getCompanyCode());
+	    			subgrid_dao.insertcdmjim00100_leftgrid(add_data);
 	    		}	    		
 	    	}
 	    	if(update_List != null) {
-	    		for(cdmjim00100_maingrid update_data: update_List) {
+	    		for(cdmjim00100_left_grid update_data: update_List) {
 	    			System.out.println("업데이트 데이터 정보 : ====== > " + update_data.toString());
-	    			update_data.setCompany_cd(getCompanyCode());
-//	    			cdmjim00100_maingridDAO.updatecdmjim00100_maingrid(update_data);
+	    			
 	    		}	    		
 	    	}
 	    	if(delete_List != null) {
-	    		for(cdmjim00100_maingrid delete_data: delete_List) {
+	    		for(cdmjim00100_left_grid delete_data: delete_List) {
 	    			System.out.println("딜리트 데이터 정보 : ====== > " + delete_data.toString());
-	    			delete_data.setCompany_cd(getCompanyCode());
-//	    			cdmjim00100_maingridDAO.deletecdmjim00100_maingrid(delete_data);
+	    			
 	    		}	    		
 	    	}
 	    } catch (Exception e) {

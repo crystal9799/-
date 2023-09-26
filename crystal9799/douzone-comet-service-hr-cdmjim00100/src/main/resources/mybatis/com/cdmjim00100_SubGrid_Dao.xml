@@ -35,7 +35,11 @@
 						    SELECT 
 						        NEED_RQISIT_CD, 
 						        NEED_RQISIT_NM, 
-						        NEED_RQISIT_FG
+						        NEED_RQISIT_FG,
+						        ACLF_NO ,
+						        VER_CD ,
+						        AELM_CD ,
+						        PCFM_CD 
 						    FROM HR_JOBDIVBASE_SDTL 
 						    WHERE COMPANY_CD = #{COMPANY_CD}
 						          AND ACLF_NO = #{ACLF_NO}
@@ -67,12 +71,36 @@
 
 
 
-	<insert id="insertcdmjim00100_maingrid">		
-		INSERT INTO @{dzparam_dbname}[tableName] (
-				[columnName]
-		) VALUES (
-				[columnValue]
-		)		
+	<insert id="insertcdmjim00100_leftgrid" parameterType="com.douzone.comet.service.hr.cdmjim00100.models.cdmjim00100_left_grid">		
+		INSERT INTO HR_JOBDIVBASE_DTL(
+			COMPANY_CD,
+			AELM_CD,
+			ACLF_NO,
+			VER_CD,
+			AELM_NM,
+			AELM_LV,
+			PCFM_CD
+		)
+		VALUES (
+			#{company_cd},
+			#{aelm_cd},
+			#{aclf_no},
+			(
+			SELECT MAX(VER_CD) 
+			FROM HR_JOBDIVBASE_MST hjm 
+			WHERE ACLF_NO = #{aclf_no}
+			),
+			#{AELM_NM},
+			#{AELM_LV},
+			<choose>
+	            <when test="PCFM_CD != null">
+	                #{PCFM_CD}
+	            </when>
+	            <otherwise>
+	                ' '
+	            </otherwise>
+	        </choose>
+		)
 	</insert>
 
 	<update id="updatecdmjim00100_maingrid" >		

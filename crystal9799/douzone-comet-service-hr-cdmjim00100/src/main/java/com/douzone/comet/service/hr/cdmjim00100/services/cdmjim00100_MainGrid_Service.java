@@ -12,6 +12,8 @@ import com.douzone.gpd.restful.annotation.DzParam;
 import com.douzone.gpd.restful.enums.DzParamType;
 import com.douzone.gpd.restful.enums.DzRequestMethod;
 import com.douzone.comet.service.hr.cdmjim00100.dao.cdmjim00100_MainGrid_Dao;
+import com.douzone.comet.service.hr.cdmjim00100.dao.cdmjim00100_SubGrid_Dao;
+import com.douzone.comet.service.hr.cdmjim00100.models.cdmjim00100_left_grid;
 import com.douzone.comet.service.hr.cdmjim00100.models.cdmjim00100_maingrid;
 import com.douzone.gpd.restful.model.DzGridModel;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,6 +36,7 @@ public class cdmjim00100_MainGrid_Service extends DzCometService {
 
 	@Autowired
 	cdmjim00100_MainGrid_Dao cdmjim00100_maingridDAO; 
+	cdmjim00100_SubGrid_Dao cdmjim00100_subgridDAO;
 
 	@DzApi(url="/cdmjim00100_MainGrid_List", desc="메인그리드_조회", httpMethod=DzRequestMethod.POST)
 	public List<cdmjim00100_maingrid> cdmjim00100_MainGrid_List(
@@ -66,13 +69,14 @@ public class cdmjim00100_MainGrid_Service extends DzCometService {
 //	@Transactional(rollbackFor = Exception.class)
 	@DzApi(url="/cdmjim00100_MainGrid_Save", desc="메인그리드_저장", httpMethod=DzRequestMethod.POST)
 	public void cdmjim00100_MainGrid_Save(
-		@DzParam(key="MAIN_DS", desc="메인그리드튜플", paramType = DzParamType.Body) DzGridModel<cdmjim00100_maingrid> MAIN_DS
+		@DzParam(key="MAIN_DS", desc="메인그리드튜플", paramType = DzParamType.Body, required = false) DzGridModel<cdmjim00100_maingrid> MAIN_DS
 	) throws Exception {	    
 		System.out.println("받아온 데이터 정보1 : ====== > " + MAIN_DS.toString());
 	    try {	        	
 	    	//Add List
 	    	List<cdmjim00100_maingrid> add_list = new ArrayList<>();
 	    	add_list = MAIN_DS.getAdded();
+	    	
 	    	//Update List
 	    	List<cdmjim00100_maingrid> update_List = new ArrayList<>();
 	    	update_List = MAIN_DS.getUpdated();
@@ -82,14 +86,14 @@ public class cdmjim00100_MainGrid_Service extends DzCometService {
 	    	
 	    	//Add
 	    	if(add_list != null) {
-	    		for(cdmjim00100_maingrid add_data: add_list) {
+	    		for(cdmjim00100_maingrid add_data: add_list) {	    			
 	    			System.out.println("인서트 데이터 정보 : ====== > " + add_list.toString());
 	    			//능력분류번호 채번
 	    			String num = add_data.getLclas_cd() + add_data.getMlsfc_cd() + add_data.getS_csf_cd() + add_data.getTclf_cd() + add_data.getAclf_cd();
 	    			//채번한 값 모델에 set
 	    			add_data.setAclf_no(num);  	    		
 	    			cdmjim00100_maingridDAO.insertcdmjim00100_maingrid(add_data);
-	    		}	    		
+	    		}
 	    	}
 	    	if(update_List != null) {
 	    		for(cdmjim00100_maingrid update_data: update_List) {

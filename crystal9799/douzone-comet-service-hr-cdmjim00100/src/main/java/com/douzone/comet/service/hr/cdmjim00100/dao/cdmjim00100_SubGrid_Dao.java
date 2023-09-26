@@ -58,8 +58,8 @@ public class cdmjim00100_SubGrid_Dao  {
 	 * 단일 데이터 입력 처리
 	 * @param cdmjim00100_left_grid
 	 */
-	public void insertcdmjim00100_left_grid(cdmjim00100_left_grid cdmjim00100_left_grid) throws Exception {
-		this.mybatisSupport.insert(this.getClass().getName() + ".insertcdmjim00100_left_grid", cdmjim00100_left_grid);
+	public void insertcdmjim00100_leftgrid(cdmjim00100_left_grid cdmjim00100_left_grid) throws Exception {
+		this.mybatisSupport.insert(this.getClass().getName() + ".insertcdmjim00100_leftgrid", cdmjim00100_left_grid);
 	}
 
 	/**

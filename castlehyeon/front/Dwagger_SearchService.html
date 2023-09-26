@@ -1,0 +1,307 @@
+<!--##5abaa410-7179-4b06-8e52-671a85aac2ee##-->
+<!--##Dwagger_SearchService##-->
+<!--##N1arWIwFGDz6vHMPUiRUK6j0XHBxFKRlhpBZ1sY8qm24RTg58GgU+hIPrqnTFKdd##-->
+<!--
+  DEWS UI/UX IDE - Build Result - v1.5
+  # PageID: Dwagger_SearchService
+  # PageTitle: 등록 서비스 조회
+  # Server: http://localhost:8080/
+-->
+<!--
+
+-->
+
+<div id="containerpanel1" class="dews-ui-container-panel" data-dews-fit-bottom="true">
+  <div id="containerpanelitem1" class="dews-container-item" data-dews-position="normal">
+    <div id="formpanel1" class="dews-ui-form-panel">
+      <ul>
+        <li class="col-2">
+          <label>검색</label>
+          <span>
+            <input id="SearchKeyword" name="SearchKeyword" type="text" class="dews-ui-textbox" style="width: 200px;" />
+            <button id="SearchBtn" class="dews-ui-button">조회</button>
+          </span>
+        </li>
+      </ul>
+    </div>
+    <h2 id="tit1" class="dews-ui-title">등록 API</h2>
+    <div id="metadata_grid" class="dews-ui-grid"></div>
+    <div id="containerpanel2" class="dews-ui-container-panel">
+      <div id="containerpanelitem2" class="dews-container-item" data-dews-position="left" data-dews-width="800px">
+        <h2 id="tit2" class="dews-ui-title">파라미터</h2>
+        <div id="param_grid" class="dews-ui-grid"></div>
+      </div>
+      <div id="containerpanelitem3" class="dews-container-item" data-dews-position="normal">
+        <h2 id="tit3" class="dews-ui-title">스키마</h2>
+        <div id="schema_grid" class="dews-ui-grid"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+    
+</style>
+
+
+
+<script>
+  dews.ready(function () {
+    var self = this;
+    self.version = self.version || {};
+    self.version.view='1.0';
+
+
+    
+    
+    self.metadata_ds = dews.ui.dataSource('metadata_ds', {
+      grid: true,
+      schema: {
+        model: {
+          fields: [
+            { field: 'module', editable: false, dataType: 'string' }, 
+            { field: 'moduleDesc', editable: false, dataType: 'string' }, 
+            { field: 'service', editable: false, dataType: 'string' }, 
+            { field: 'serviceDesc', editable: false, dataType: 'string' }, 
+            { field: 'serviceVersion', editable: false, dataType: 'string' }, 
+            { field: 'urlPattern', editable: false, dataType: 'string' }, 
+            { field: 'patternDesc', editable: false, dataType: 'string' }, 
+            { field: 'security', editable: false, dataType: 'string' }
+          ]
+    
+        }
+      },
+      data: []
+    });
+    self.param_ds = dews.ui.dataSource('param_ds', {
+      grid: true,
+      schema: {
+        model: {
+          fields: [
+            { field: 'key', editable: false, dataType: 'string' }, 
+            { field: 'description', editable: false, dataType: 'string' }, 
+            { field: 'parameterType', editable: false, dataType: 'string' }, 
+            { field: 'declareParameterType', editable: false, dataType: 'string' }, 
+            { field: 'encryption', editable: false, dataType: 'string' }, 
+            { field: 'service', editable: false, dataType: 'string' }, 
+            { field: 'urlPattern', editable: false, dataType: 'string' }
+          ]
+    
+        }
+      },
+      data: []
+    });
+    self.schema_ds = dews.ui.dataSource('schema_ds', {
+      grid: true,
+      schema: {
+        model: {
+          fields: [
+            { field: 'col', editable: false, dataType: 'string' }, 
+            { field: 'type', editable: false, dataType: 'string' }, 
+            { field: 'desc', editable: false, dataType: 'string' }, 
+            { field: 'service', editable: false, dataType: 'string' }, 
+            { field: 'urlPattern', editable: false, dataType: 'string' }
+          ]
+    
+        }
+      },
+      data: []
+    });
+    self.total_ds = dews.ui.dataSource('total_ds', {
+      schema: {
+        model: {
+          fields: [
+            { field: 'module', editable: false, type: 'string' }, 
+            { field: 'moduleDesc', editable: false, type: 'string' }, 
+            { field: 'service', editable: false, type: 'string' }, 
+            { field: 'serviceDesc', editable: false, type: 'string' }, 
+            { field: 'serviceVersion', editable: false, type: 'string' }, 
+            { field: 'urlPattern', editable: false, type: 'string' }, 
+            { field: 'patternDesc', editable: false, type: 'string' }, 
+            { field: 'security', editable: false, type: 'string' }, 
+            { field: 'params', editable: false, type: 'object' }, 
+            { field: 'schemas', editable: false, type: 'object' }
+          ]
+    
+        }
+      },
+      data: []
+    });
+    
+    
+    dews.ui.mainbuttons.information.hide();
+    dews.ui.mainbuttons.localize.disable(true);
+    dews.ui.mainbuttons.approval.hide();
+    dews.ui.mainbuttons.etnapproval.hide();
+    dews.ui.mainbuttons.add.hide();
+    dews.ui.mainbuttons.search.hide();
+    dews.ui.mainbuttons.delete.hide();
+    dews.ui.mainbuttons.print.hide();
+    dews.ui.mainbuttons.save.hide();
+    dews.ui.grid(self.$metadata_grid, {
+      dataSource: self.metadata_ds,
+      sortable: false,
+      autoBind: false,
+      checkable: false,
+      copyMode: 'cell',
+      columns: [
+        {
+          field: 'module',
+          title: '모듈명',
+          width: 60
+        },
+        {
+          field: 'moduleDesc',
+          title: '모듈설명',
+          width: 60
+        },
+        {
+          field: 'service',
+          title: '서비스명',
+          width: 60
+        },
+        {
+          field: 'serviceDesc',
+          title: '서비스설명',
+          width: 60
+        },
+        {
+          field: 'serviceVersion',
+          title: '서비스버전',
+          width: 60
+        },
+        {
+          field: 'urlPattern',
+          title: 'URL주소',
+          width: 60
+        },
+        {
+          field: 'patternDesc',
+          title: 'URL주소설명',
+          width: 60
+        },
+        {
+          field: 'security',
+          title: '시큐리티설정여부',
+          width: 60
+        }
+      ],
+      fixed: {
+        colCount: 0,
+        rightColCount: 0
+      }
+    });
+    dews.ui.grid(self.$param_grid, {
+      dataSource: self.param_ds,
+      sortable: false,
+      autoBind: false,
+      checkable: false,
+      copyMode: 'cell',
+      columns: [
+        {
+          field: 'key',
+          title: '파라미터키명',
+          width: 60
+        },
+        {
+          field: 'description',
+          title: '파라미터설명',
+          width: 60
+        },
+        {
+          field: 'parameterType',
+          title: '파라미터타입',
+          width: 60
+        },
+        {
+          field: 'declareParameterType',
+          title: '파라미터데이터타입',
+          width: 60
+        },
+        {
+          field: 'encryption',
+          title: '암호화여부',
+          width: 60
+        },
+        {
+          field: 'service',
+          title: '서비스명',
+          width: 60
+        },
+        {
+          field: 'urlPattern',
+          title: 'URL주소',
+          width: 60
+        }
+      ],
+      fixed: {
+        colCount: 0,
+        rightColCount: 0
+      }
+    });
+    dews.ui.grid(self.$schema_grid, {
+      dataSource: self.schema_ds,
+      sortable: false,
+      autoBind: false,
+      checkable: false,
+      copyMode: 'cell',
+      columns: [
+        {
+          field: 'col',
+          title: '컬럼코드',
+          width: 60
+        },
+        {
+          field: 'type',
+          title: '컬럼타입',
+          width: 60
+        },
+        {
+          field: 'desc',
+          title: '컬럼설명',
+          width: 60
+        },
+        {
+          field: 'service',
+          title: '서비스명',
+          width: 60
+        },
+        {
+          field: 'urlPattern',
+          title: 'URL주소',
+          width: 60
+        }
+      ],
+      fixed: {
+        colCount: 0,
+        rightColCount: 0
+      }
+    });
+    
+    
+    
+    
+    /*721d425c-12b9-49a3-b2f0-44c9d0fe0dd7*/ //# sourceURL=Dwagger_SearchService.js
+    self.total_ds.read();
+    
+    var apiDatas = '';
+    
+    function CallApiDatas() {
+        dews.api.get(dews.url.getApiUrl("HR", "DwaggerService", "dwagger_list"), {
+            async: false,
+            data: {
+                serviceName:'',
+                langCd:'KR'
+            }
+        }).done(function (data) {
+            apiDatas = data;
+            // dews.ui.page.close(); // 페이지 닫기
+        });
+    }
+    
+    
+
+  
+  });
+
+</script>

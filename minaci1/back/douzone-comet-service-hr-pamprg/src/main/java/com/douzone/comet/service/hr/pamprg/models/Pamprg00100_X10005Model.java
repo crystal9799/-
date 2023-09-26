@@ -90,11 +90,6 @@ public class Pamprg00100_X10005Model extends DzAbstractModel {
 	@SerializedName("BIZAREA_NM")
 	@DzModelField(name = "bizarea_nm", desc = "사업장명", colName = "BIZAREA_NM", colSize = "8", isKey = false)
 	private String bizarea_nm;
-	
-	@SerializedName("RMK_NM")
-	@DzModelField(name="rmk_nm", desc="비고", colName="rmk_nm")
-	private String rmk_nm;
-	
 
 	@SerializedName("INSERT_ID")
 	@DzModelField(name = "insert_id", desc = "INSERT_ID", colName = "INSERT_ID")
@@ -121,8 +116,9 @@ public class Pamprg00100_X10005Model extends DzAbstractModel {
 	private String update_ip;
 	
 	@SerializedName("COMBINED_KEY")
-	@DzModelField(name = "combined_key", desc = "회사코드", colName = "COMBINED_KEY", colSize = "7", isKey = false)
+	@DzModelField(name = "combined_key", desc = "결합키", colName = "COMBINED_KEY", colSize = "7", isKey = false)
 	private String combined_key;
+	 
 	
 
 	public String getCompany_cd() {

@@ -32,7 +32,11 @@ public class Pamprg00100_X10005Dao  {
 	public List<Pamprg00100_X10005Model> selectPamprg00100_X10005ModelList(HashMap<String, Object> parameters) throws Exception {
 		return this.mybatisSupport.selectList(this.getClass().getName() + ".selectPamprg00100_X10005ModelList", parameters);
 	}
-
+	
+	//종전데이터 있는지 여부 확인 
+	public int checkListExist(HashMap<String, Object> parameters) throws Exception {
+		return this.mybatisSupport.selectOne(this.getClass().getName() + ".checkListExist", parameters);
+	}
 	 
 	/**
 	 * 단일 데이터 입력 처리
@@ -57,6 +61,8 @@ public class Pamprg00100_X10005Dao  {
 	public void deletePAMPRG00100_Model(List<Pamprg00100_X10005Model> parameters) throws Exception {
 		this.mybatisSupport.deleteBatch(this.getClass().getName() + ".deletePAMPRG00100_Model", parameters);
 	}
+
+	  
 
 	 
  

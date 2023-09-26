@@ -208,6 +208,21 @@ public class HRPamodm01800_X10005Service extends DzCometService {
 	    }
 	}
 	
+	@DzApi(url="/list_HR_EMP_MST", desc="사원 도움창 조회", httpMethod=DzRequestMethod.GET)
+	public List<Map<String, Object>> list_HR_EMP_MST() throws Exception {	    
+	    try {
+			HashMap<String, Object> parameters = new HashMap<String, Object>();
+			parameters.put("P_COMPANY_CD", this.getCompanyCode());
+
+			List<Map<String, Object>> checkSdtl = executeQuery("dao.Pamodm01800_X10005Dao.list_HR_EMP_MST", parameters);
+			
+			return checkSdtl;
+	        
+	    } catch (Exception e) {
+	        throw new DzApplicationRuntimeException(e);
+	    }
+	}
+	
 	@DzApi(url="/get_org", desc="소속 조회", httpMethod=DzRequestMethod.GET)
 	public String get_org(
 			@DzParam(key = "company_cd", desc = "회사코드", paramType = DzParamType.QueryString) String company_cd,
@@ -218,8 +233,13 @@ public class HRPamodm01800_X10005Service extends DzCometService {
 			parameters.put("P_DEPT_CD", dept_cd);
 			
 			List<Map<String, Object>> checkSdtl = executeQuery("dao.Pamodm01800_X10005Dao.get_org", parameters);
-			String org = (String) checkSdtl.get(0).get("ORG");
 			
+			if (checkSdtl == null || checkSdtl.isEmpty()) {
+				// 리스트가 비어있는 경우에 대한 처리
+				return null;
+			}
+			
+			String org = (String) checkSdtl.get(0).get("ORG");
 			return org;
 	        
 	    } catch (Exception e) {
@@ -272,12 +292,17 @@ public class HRPamodm01800_X10005Service extends DzCometService {
 			@DzParam(key = "bwrk_dt", desc = "근무일", paramType = DzParamType.QueryString) String bwrk_dt) throws Exception {	    
 	    try {
 			HashMap<String, Object> parameters = new HashMap<String, Object>();
+			parameters.put("P_COMPANY_CD", this.getCompanyCode());
 			parameters.put("P_EMP_NO", emp_no);
 			parameters.put("P_BWRK_DT", bwrk_dt);
 			
 			List<Map<String, Object>> checkSdtl = executeQuery("dao.Pamodm01800_X10005Dao.get_tm_cd_nm", parameters);
-			String tm_cd_nm = (String) checkSdtl.get(0).get("TM_CD_NM");
 			
+			if (checkSdtl == null || checkSdtl.isEmpty()) {
+				return null;
+			}
+			
+			String tm_cd_nm = (String) checkSdtl.get(0).get("TM_CD_NM");
 			return tm_cd_nm;
 	        
 	    } catch (Exception e) {

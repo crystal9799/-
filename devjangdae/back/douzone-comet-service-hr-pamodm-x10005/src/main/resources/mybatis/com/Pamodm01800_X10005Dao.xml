@@ -341,6 +341,132 @@
 		    MBM.BIZAREA_CD ASC
 	</select>
 	
+	<select id="list_HR_EMP_MST" parameterType="hashMap" resultType="hashMap">
+		SELECT HEM.COMPANY_CD, 
+	           ( CASE WHEN MCL.COMPANY_NM IS NULL OR MCL.COMPANY_NM ='' THEN MCM.COMPANY_NM ELSE MCL.COMPANY_NM END ) COMPANY_NM, 
+	           HEM.BIZAREA_CD, 
+	           ( CASE WHEN MBL.BIZAREA_NM IS NULL OR MBL.BIZAREA_NM ='' THEN MBM.BIZAREA_NM ELSE MBL.BIZAREA_NM END ) BIZAREA_NM, 
+	           HEM.DEPT_CD, 
+	           ( CASE WHEN MDL.DEPT_NM IS NULL OR MDL.DEPT_NM ='' THEN MDM.DEPT_NM ELSE MDL.DEPT_NM END ) DEPT_NM, 
+	           HEM.EMP_NO, 
+	           HEM.KOR_NM, 
+	           HEM.POSI_CD, 
+	           ( CASE WHEN MC1S.SYSDEF_NM IS NULL OR MC1S.SYSDEF_NM ='' THEN MC1.SYSDEF_NM ELSE MC1S.SYSDEF_NM END ) NM_DUTY_RANK, 
+	           HEM.JNCO_DT, 
+	           HEM.JNCO_DT AS DT_ENTER_DISP, 
+	           HEM.RETR_DT, 
+	           HEM.RETIRESTDR_DT, 
+	           HEM.DUTY_CD, 
+	           ( CASE WHEN MC2S.SYSDEF_NM IS NULL OR MC2S.SYSDEF_NM ='' THEN MC2.SYSDEF_NM ELSE MC2S.SYSDEF_NM END ) NM_DUTY_WORK, 
+	           HEM.PSTN_CD, 
+	           ( CASE WHEN MC3S.SYSDEF_NM IS NULL OR MC3S.SYSDEF_NM ='' THEN MC3.SYSDEF_NM ELSE MC3S.SYSDEF_NM END ) NM_DUTY_STEP, 
+	           HEM.GEMP_NO, 
+	           HEM.EMP_TP, 
+	           HEM.EMPY_TP_CD, 
+	           HED.EMAIL_NM, 
+	           HED.EMGNC_CNTC_NO AS HP_NO, 
+	           HEM.GROUPECNY_DT, 
+	           HEM.RES_NO,
+	           HEM.RES_UPPT_BIRYYMM_DT,
+	           HED.RES_POST_NO,
+	           HED.BASE_RES_ADDR,
+	           HED.DTL_RES_ADDR,
+	           HED.TEL_NO,
+	           HEM.ENG_LNM_NM2,
+	           HEM.ENG_FNM_NM2,
+	           HEM.OGRP_CD,
+	           HEM.ODTY_CD,
+	           HEM.PSN_EMP_NO,
+	           ( CASE WHEN MC4S.SYSDEF_NM IS NULL OR MC4S.SYSDEF_NM ='' THEN MC4.SYSDEF_NM ELSE MC4S.SYSDEF_NM END ) ODTY_NM
+
+	      FROM HR_EMP_MST HEM
+	                INNER JOIN MA_COMPANY MCM ON MCM.COMPANY_CD = '0126' 
+	                LEFT OUTER JOIN MA_COMPANY_LDTL MCL ON MCL.COMPANY_CD = '0126'
+	                                                                    AND MCL.LANG_CD    = 'KO'
+	           LEFT OUTER JOIN HR_EMPINFO_DTL HED ON HED.COMPANY_CD = '0126' 
+	                                                              AND HED.EMP_NO     = HEM.EMP_NO
+	           LEFT OUTER JOIN (
+	                             SELECT B.DEPT_CD, B.DEPT_NM, B.DEPT_START_DT
+	                               FROM (
+	                                      SELECT MAX(DEPT_START_DT) DEPT_START_DT, DEPT_CD 
+			                                 FROM MA_DEPT_MST
+			                                WHERE COMPANY_CD = '0126'
+	
+			                                GROUP BY DEPT_CD
+	                                    ) A
+	                                     INNER JOIN MA_DEPT_MST B ON B.DEPT_CD       = A.DEPT_CD
+	                                                                              AND B.DEPT_START_DT = A.DEPT_START_DT 
+	                                                                              AND B.COMPANY_CD    = '0126'
+	                           ) MDM ON MDM.DEPT_CD = HEM.DEPT_CD
+	           LEFT OUTER JOIN MA_BIZAREA_MST MBM ON MBM.COMPANY_CD = '0126' 
+	                                                              AND MBM.BIZAREA_CD = HEM.BIZAREA_CD
+	           LEFT OUTER JOIN MA_DEPT_LDTL MDL ON MDL.COMPANY_CD    = '0126'
+	                                                            AND MDL.DEPT_CD       = MDM.DEPT_CD
+	                                                            AND MDL.DEPT_START_DT = MDM.DEPT_START_DT
+	                                                            AND MDL.LANG_CD       = 'KO'
+	           LEFT OUTER JOIN MA_BIZAREA_LDTL MBL ON MBL.COMPANY_CD = '0126' 
+	                                                               AND MBL.BIZAREA_CD = MBM.BIZAREA_CD
+	                                                               AND MBL.LANG_CD    = 'KO'
+	           LEFT OUTER JOIN MA_CODEDTL MC1 ON MC1.COMPANY_CD = '0126'  
+	                                                          AND MC1.MODULE_CD  = 'HR' 
+	                                                          AND MC1.FIELD_CD   = 'P00640' 
+	                                                          AND MC1.SYSDEF_CD  = HEM.POSI_CD  
+	           LEFT OUTER JOIN MA_CODEDTL_SDTL MC1S ON MC1S.COMPANY_CD = '0126'  
+	                                                                AND MC1S.MODULE_CD  = 'HR' 
+	                                                                AND MC1S.FIELD_CD   = 'P00640'
+	                                                                AND MC1S.SYSDEF_CD  = HEM.POSI_CD  
+	                                                                AND MC1S.LANG_CD    = 'KO' 
+	           LEFT OUTER JOIN MA_CODEDTL MC2 ON MC2.COMPANY_CD = '0126'  
+	                                                          AND MC2.MODULE_CD  = 'HR' 
+	                                                          AND MC2.FIELD_CD   = 'P00920' 
+	                                                          AND MC2.SYSDEF_CD  = HEM.DUTY_CD  
+	           LEFT OUTER JOIN MA_CODEDTL_SDTL MC2S ON MC2S.COMPANY_CD = '0126'
+	                                                                AND MC2S.MODULE_CD  = 'HR'          
+	                                                                AND MC2S.FIELD_CD   = 'P00920'
+	                                                                AND MC2S.SYSDEF_CD  = HEM.DUTY_CD
+	                                                                AND MC2S.LANG_CD    = 'KO'                                                                
+	           LEFT OUTER JOIN MA_CODEDTL MC3 ON MC3.COMPANY_CD = '0126'  
+	                                                          AND MC3.MODULE_CD  = 'HR' 
+	                                                          AND MC3.FIELD_CD   = 'P00650'
+	                                                          AND MC3.SYSDEF_CD  = HEM.PSTN_CD  
+	           LEFT OUTER JOIN MA_CODEDTL_SDTL MC3S ON MC3S.COMPANY_CD = '0126'  
+	                                                                AND MC3S.MODULE_CD  = 'HR' 
+	                                                                AND MC3S.FIELD_CD   = 'P00650'
+	                                                                AND MC3S.SYSDEF_CD  = HEM.PSTN_CD  
+	                                                                AND MC3S.LANG_CD    = 'KO'
+	           LEFT OUTER JOIN MA_CODEDTL MC4 ON MC4.COMPANY_CD = '0126'  
+	                                                          AND MC4.MODULE_CD  = 'HR' 
+	                                                          AND MC4.FIELD_CD   = 'P00980'
+	                                                          AND MC4.SYSDEF_CD  = HEM.ODTY_CD  
+	           LEFT OUTER JOIN MA_CODEDTL_SDTL MC4S ON MC4S.COMPANY_CD = '0126'  
+	                                                                AND MC4S.MODULE_CD  = 'HR' 
+	                                                                AND MC4S.FIELD_CD   = 'P00980'
+	                                                                AND MC4S.SYSDEF_CD  = HEM.ODTY_CD  
+	                                                                AND MC4S.LANG_CD    = 'KO'
+	
+	     WHERE HEM.COMPANY_CD = '0126' 
+	       AND 'C' = 'C' 
+	
+	       AND ('N' = 'N'  OR MBM.BIZAREA_CD IN  (  'DETAIL_AUTH_NOT_USED' ) )
+	
+	       AND	('N' = 'N' OR HEM.DEPT_CD IN ('DETAIL_AUTH_NOT_USED') )
+	
+	       AND HEM.HLOF_FG_CD = '1'
+	
+	       AND HEM.EMPY_TP_CD = '1'
+	
+	       AND ( HEM.DEPT_CD IN  (  '1000100' )  )
+	
+	       AND (  
+	             UPPER(MDM.DEPT_NM)  LIKE CONCAT(CONCAT('%', UPPER('')), '%') OR  
+	             UPPER(MDL.DEPT_NM)  LIKE CONCAT(CONCAT('%', UPPER('')), '%') OR  
+	             UPPER(HEM.EMP_NO)   LIKE CONCAT(CONCAT('%', UPPER('')), '%') OR  
+	             UPPER(HEM.KOR_NM)   LIKE CONCAT(CONCAT('%', UPPER('')), '%') OR
+	             UPPER(HEM.DEPT_CD)  LIKE CONCAT(CONCAT('%', UPPER('')), '%')
+	           ) 
+	    ORDER BY HEM.COMPANY_CD ASC, HEM.EMP_NO ASC
+	</select>
+	
 	<select id="get_org" parameterType="hashMap" resultType="hashMap">
 		SELECT C.DEPT_NM || '/' || B.DEPT_NM || '/' || A.DEPT_NM AS ORG
 		FROM MA_DEPT_MST A 
@@ -388,12 +514,12 @@
 		SELECT TM_CD_NM
 		FROM HR_OFFTIME_MST
 		WHERE
-			COMPANY_CD = (SELECT COMPANY_CD FROM HR_EMP_MST WHERE EMP_NO = #{P_EMP_NO})
-			AND BIZAREA_CD = (SELECT BIZAREA_CD FROM HR_EMP_MST WHERE EMP_NO = #{P_EMP_NO})
+			COMPANY_CD = #{P_COMPANY_CD}
+			AND BIZAREA_CD = (SELECT BIZAREA_CD FROM HR_EMP_MST WHERE EMP_NO = #{P_EMP_NO} AND COMPANY_CD = #{P_COMPANY_CD})
 			AND WORKTM_CD = (SELECT TM_CD
 							 FROM HR_OFFDAILY_MST
 							 WHERE
-								COMPANY_CD = (SELECT COMPANY_CD FROM HR_EMP_MST WHERE EMP_NO = #{P_EMP_NO})
+								COMPANY_CD = #{P_COMPANY_CD}
 								AND EMP_NO = #{P_EMP_NO}
 								AND BWRK_DT = #{P_BWRK_DT})
 	</select>

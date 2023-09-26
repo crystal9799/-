@@ -1,0 +1,250 @@
+<!--##47433e1a-79ac-4dec-814d-9d7ea9129c5f##-->
+<!--##PAMODM01800_X10005_EMP_POP##-->
+<!--##8TfkyhAMPb6fFmcBlawRO4oaFFoSFeXv3jDjuoJoxhPzazjS8BJA0rngrzw1Ls5jmHjik4hB/J4mwEFUacuPTA==##-->
+<!--
+  DEWS UI/UX IDE - Build Result - v1.5
+  # PageID: PAMODM01800_X10005_EMP_POP
+  # PageTitle: ...
+  # Server: http://localhost:8090/
+-->
+<!--
+
+-->
+
+<div id="conditionpanel1" class="dews-ui-condition-panel">
+  <ul class="required-area">
+    <li>
+      <label class="dews-ui-multilingual">고용형태</label>
+      <span>
+        <select id="ddl2" name="ddl2" class="dews-ui-dropdownlist basic" data-dews-value-field="SYSDEF_CD" data-dews-text-field="SYSDEF_NM" data-dews-show-tooltip="true" data-dews-show-value-tooltip="true" data-dews-use-numkey="false"></select>
+      </span>
+    </li>
+    <li>
+      <label class="dews-ui-multilingual">검색어</label>
+      <span>
+        <input id="txt1" name="txt1" type="text" class="dews-ui-textbox" />
+      </span>
+    </li>
+  </ul>
+</div>
+<div class="dews-ui-container-panel" data-dews-fit-bottom="true">
+  <div class="dews-container-item" data-dews-position="normal">
+    <div id="grid1" class="dews-ui-grid"></div>
+  </div>
+</div>
+<div class="dews-dialog-button-group bottom" style="text-align: center;">
+  <button id="btnOk" class="dews-ui-button confirm">적용</button>
+  <button id="btnCancel" class="dews-ui-button confirm">취소</button>
+</div>
+
+<style>
+    #pamphm00500_emp_pop_cp{
+    margin-top: 5px;
+  }
+</style>
+
+
+
+<script>
+  dews.ready(function () {
+    var self = this;
+    self.version = self.version || {};
+    self.version.view='1.0';
+
+
+    /*25897ac1-d699-43a6-b2af-9120138d91ca*/ var dialog = dews.ui.dialog(self.$content.prop("id"));
+    
+    
+    
+    
+    
+    self.ds1 = dews.ui.dataSource('ds1', {
+      grid: true,
+      transport: {
+        read: {
+          url: dews.url.getApiUrl('HR', 'HRPamodm01800_X10005Service', 'list_HR_EMP_MST')
+        }
+      },
+      schema: {
+        model: {
+          fields: [
+            { field: 'DEPT_CD', editable: false, dataType: 'string' }, 
+            { field: 'EMP_NO', editable: false, dataType: 'string' }, 
+            { field: 'KOR_NM', editable: false, dataType: 'string' }, 
+            { field: 'JNCO_DT', editable: false, dataType: 'string' }, 
+            { field: 'COMPANY_CD', editable: false, dataType: 'string' }, 
+            { field: 'OGRP_CD', editable: false, dataType: 'string' }, 
+            { field: 'PSTN_CD', editable: false, dataType: 'string' }
+          ]
+    
+        }
+      }
+    });
+    dews.api.get(dews.url.getApiUrl('CM', 'CommonCodeDtlService', 'common_ci_codeDtl_list'),{
+      async: false,
+      data: {
+          end_dt: '',
+          foreign_yn: '',
+          field_cd_pipe: 'P00750|P00010|P00660|P00650',
+          module_cd: 'HR',
+          syscode_yn: '',
+          keyword: '',
+          base_yn: ''
+      }
+    }).done(function (data) {
+      var ar_P00750 = new Array();
+      var ar_P00010 = new Array();
+      var ar_P00660 = new Array();
+      var ar_P00650 = new Array();
+    
+      for (var i = 0; i < data.length; i++) {
+        if (data[i].FIELD_CD == "P00750") { 
+          ar_P00750.push(data[i]); 
+    
+        }
+        else if (data[i].FIELD_CD == "P00010") { 
+          ar_P00010.push(data[i]); 
+    
+        }
+        else if (data[i].FIELD_CD == "P00660") { 
+          ar_P00660.push(data[i]); 
+    
+        }
+        else if (data[i].FIELD_CD == "P00650") { 
+          ar_P00650.push(data[i]); 
+    
+        }
+      }
+      self.pipeDataSource1_P00750 = dews.ui.dataSource('pipeDataSource1_P00750',  { data: ar_P00750 });
+      self.pipeDataSource1_P00010 = dews.ui.dataSource('pipeDataSource1_P00010',  { data: ar_P00010 });
+      self.pipeDataSource1_P00660 = dews.ui.dataSource('pipeDataSource1_P00660',  { data: ar_P00660 });
+      self.pipeDataSource1_P00650 = dews.ui.dataSource('pipeDataSource1_P00650',  { data: ar_P00650 });
+      self.pipeDataSource1 = dews.ui.dataSource('pipeDataSource1', { data: data });
+      
+    });
+    
+    
+    self.ddl2.setDataSource(self.pipeDataSource1_P00010);
+    dews.ui.grid(self.$grid1, {
+      dataSource: self.ds1,
+      height: 400,
+      sortable: 'multiple',
+      autoBind: false,
+      copyMode: 'cell',
+      columns: [
+        {
+          field: 'DEPT_CD',
+          title: '부서코드',
+          width: 0,
+          visible: false,
+          editor: {
+            type: 'codepicker',
+            helpCode: 'H_MA_DEPT_MST_S',
+            codeField: 'DEPT_CD',
+            textField: 'DEPT_NM',
+            helpTitle: '부서 도움창',
+            helpSize: 'big'
+          }
+        },
+        {
+          field: 'EMP_NO',
+          title: '사번코드',
+          width: 60,
+          editor: {
+            type: 'codepicker',
+            helpCode: 'H_ME_SHEMP_MST_C',
+            codeField: 'EMP_NO',
+            textField: 'KOR_NM',
+            helpTitle: '작업자별 레시피 조회 도움창',
+            helpSize: 'largebig'
+          }
+        },
+        {
+          field: 'KOR_NM',
+          title: '사원성명',
+          width: 90,
+          align: 'left'
+        },
+        {
+          field: 'JNCO_DT',
+          title: '입사일',
+          width: 80,
+          formats: {
+            type: 'date',
+            format: 'yyyy-MM-dd'
+          },
+          editor: {
+            type: 'date',
+            format: 'yyyy-MM-dd'
+          }
+        },
+        {
+          field: 'COMPANY_CD',
+          title: '회사명',
+          width: 0,
+          visible: false,
+          editor: {
+            type: 'codepicker',
+            helpCode: 'H_MA_COMPANY_S01',
+            codeField: 'COMPANY_CD',
+            textField: 'COMPANY_NM',
+            helpTitle: '회사 도움창',
+            helpSize: 'medium'
+          }
+        },
+        {
+          field: 'OGRP_CD',
+          title: '직군코드',
+          width: 0,
+          visible: false,
+          editor: {
+            type: 'dropDown',
+            dataSource: self.pipeDataSource1_P00660,
+            dataValueField: 'SYSDEF_CD',
+            dataTextField: 'SYSDEF_NM'
+          }
+        },
+        {
+          field: 'PSTN_CD',
+          title: '직급코드',
+          width: 0,
+          visible: false,
+          editor: {
+            type: 'dropDown',
+            dataSource: self.pipeDataSource1_P00650,
+            dataValueField: 'SYSDEF_CD',
+            dataTextField: 'SYSDEF_NM'
+          }
+        }
+      ],
+      fixed: {
+        colCount: 0,
+        rightColCount: 0
+      }
+    });
+    self.$btnOk.on('click', /*5ac68ab0-80a6-4576-8f00-61644be37c66*/ function (e) {
+        if (self.grid1.getCheckedRows().length < 1) {
+            dews.alert('체크된 데이터가 없습니다.', 'warning');
+            return false;
+        } else {
+            dialog.ok(self.grid1.dataItems(self.grid1.getCheckedIndex()));
+        }
+        dialog.close();
+    });
+    self.$btnCancel.on('click', /*ebb87b32-f156-4d04-8f78-a2f27ecdb7b8*/ function (e) {
+        dialog.close();
+    });
+    
+    
+    
+    
+    /*0c171119-0e8c-41e0-b1b6-31697718e20d*/ self.ds1.read();
+    
+    
+    
+    
+
+  
+  });
+
+</script>

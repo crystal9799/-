@@ -39,7 +39,7 @@ public class HRPamprg00100_X10005Service extends DzCometService {
 	@DzApi(url = "/list_HR_URGDBASETBL_INFO_X10005MST", desc = "승급기준표-조회", httpMethod = DzRequestMethod.GET)
 	public List<Pamprg00100_X10005Model> list_HR_URGDBASETBL_INFO_X10005MST(
 			@DzParam(key = "mpPROMO_YEAR_MONTH", desc = "승급년월", required = false, paramType = DzParamType.QueryString) String mpPROMO_YEAR_MONTH,
-			@DzParam(key = "BIZAREA_CD", desc = "사업장", required = false, paramType = DzParamType.QueryString) String BIZAREA_CD)
+			@DzParam(key = "bizarea_cd", desc = "사업장", required = false, paramType = DzParamType.QueryString) String bizarea_cd)
 			throws Exception {
 		List<Pamprg00100_X10005Model> pamprg00100_X10005ModelList = new ArrayList<Pamprg00100_X10005Model>();
 
@@ -48,7 +48,7 @@ public class HRPamprg00100_X10005Service extends DzCometService {
 			HashMap<String, Object> parameters = new HashMap<String, Object>();
 
 			parameters.put("P_COMPANY_CD", this.getCompanyCode());
-			parameters.put("P_BIZAREA_CD", BIZAREA_CD);
+			parameters.put("P_BIZAREA_CD", bizarea_cd);
 			parameters.put("P_PROMO_YEAR_MONTH", mpPROMO_YEAR_MONTH);
 
 			pamprg00100_X10005ModelList = pamprg00100_X10005Dao.selectPamprg00100_X10005ModelList(parameters);
@@ -119,7 +119,7 @@ public class HRPamprg00100_X10005Service extends DzCometService {
 				logger.info("updateRow" + updateRow.toString());
 			}
 
-			// [insert] : 일괄 저장  merge into 
+			// [insert] : 일괄 저장 merge into
 			for (Pamprg00100_X10005Model insertRow : grid_ds.getAdded()) {
 				insertRow.setCompany_cd(this.getCompanyCode());
 				insertRow.setInsert_id(this.getUserId());
@@ -147,19 +147,49 @@ public class HRPamprg00100_X10005Service extends DzCometService {
 		}
 	}
 
+	// [종전자료 전 기존데이터 조회]
+	@Transactional
+	@DzApi(url = "/checkListExist", desc = "종전자료복사 전 기존데이터 조회", httpMethod = DzRequestMethod.GET)
+	public boolean checkListExist(
+			@DzParam(key = "targetYearMonth", desc = "승급년월", paramType = DzParamType.QueryString) String targetYearMonth,
+			@DzParam(key = "bizarea_cd", desc = "사업장", paramType = DzParamType.QueryString) String bizarea_cd)
+			throws Exception {
+
+		try {
+
+			HashMap<String, Object> parameters = new HashMap<String, Object>();
+
+			parameters.put("P_COMPANY_CD", this.getCompanyCode());
+			parameters.put("P_BIZAREA_CD", bizarea_cd);
+			parameters.put("P_TARGET_YEAR_MONTH", targetYearMonth);
+
+			int result = pamprg00100_X10005Dao.checkListExist(parameters);
+			logger.info("result"+result);
+			
+			if(result > 0) {
+				return false; // 있으면 false 
+			}
+			return true;
+
+		} catch (Exception e) {
+			throw new DzApplicationRuntimeException(e);
+		}
+
+	}
+
 	// [종전자료 전 기존데이터 삭제]
 	@Transactional
 	@DzApi(url = "/delete_BeforeList", desc = "종전자료복사 전 기존데이터 삭제", httpMethod = DzRequestMethod.GET)
 	public boolean delete_BeforeList(
-			@DzParam(key = "mpPROMO_YEAR_MONTH", desc = "승급년월", paramType = DzParamType.QueryString) String mpPROMO_YEAR_MONTH,
-			@DzParam(key = "BIZAREA_CD", desc = "사업장", paramType = DzParamType.QueryString) String BIZAREA_CD)
+			@DzParam(key = "targetYearMonth", desc = "승급년월", paramType = DzParamType.QueryString) String targetYearMonth,
+			@DzParam(key = "bizarea_cd", desc = "사업장", paramType = DzParamType.QueryString) String bizarea_cd)
 			throws Exception {
 
 		try {
 			HashMap<String, Object> parameters = new HashMap<String, Object>();
 			parameters.put("P_COMPANY_CD", this.getCompanyCode()); // required
-			parameters.put("P_PROMO_YEAR_MONTH", mpPROMO_YEAR_MONTH);
-			parameters.put("P_BIZAREA_CD", BIZAREA_CD);
+			parameters.put("P_TARGET_YEAR_MONTH", targetYearMonth);
+			parameters.put("P_BIZAREA_CD", bizarea_cd);
 
 			String sqlText = MyBatisUtil.getId(this.getClass(), "dao.Pamprg00100_X10005Dao.delete_BeforeList");
 			SqlPack so = new SqlPack();
@@ -182,15 +212,17 @@ public class HRPamprg00100_X10005Service extends DzCometService {
 	@DzApi(url = "/copy_BeforeList", desc = "종전자료복사", httpMethod = DzRequestMethod.GET)
 	public boolean copy_BeforeList(
 			@DzParam(key = "mpPROMO_YEAR_MONTH", desc = "승급년월", paramType = DzParamType.QueryString) String mpPROMO_YEAR_MONTH,
-			@DzParam(key = "BIZAREA_CD", desc = "사업장", paramType = DzParamType.QueryString) String BIZAREA_CD)
+			@DzParam(key = "targetYearMonth", desc = "승급년월", paramType = DzParamType.QueryString) String targetYearMonth,
+			@DzParam(key = "bizarea_cd", desc = "사업장", paramType = DzParamType.QueryString) String bizarea_cd)
 			throws Exception {
 
 		try {
 			HashMap<String, Object> parameters = new HashMap<String, Object>();
 			parameters.put("P_COMPANY_CD", this.getCompanyCode()); // required
-			parameters.put("P_PROMO_YEAR_MONTH", mpPROMO_YEAR_MONTH); // 승급년월
-			parameters.put("P_BIZAREA_CD", BIZAREA_CD);
-			parameters.put("P_BWRK_MY_CALC_STD_DT", mpPROMO_YEAR_MONTH + "01"); // -- 산정기준일 (승급년월의 1일)
+			parameters.put("P_TARGET_YEAR_MONTH", targetYearMonth); // 대상년월
+			parameters.put("P_PROMO_YEAR_MONTH", mpPROMO_YEAR_MONTH); // 승급년월			
+			parameters.put("P_BIZAREA_CD", bizarea_cd);
+			parameters.put("P_BWRK_MY_CALC_STD_DT", targetYearMonth + "01"); // -- 산정기준일 (승급년월의 1일)
 
 			parameters.put("P_INSERT_ID", this.getUserId()); // 등록ID
 			parameters.put("P_INSERT_IP", this.getRemoteHost()); // 등록 IP
@@ -219,6 +251,35 @@ public class HRPamprg00100_X10005Service extends DzCometService {
 		}
 
 		return true;
+	}
+
+	@Transactional
+	@DzApi(url = "/list_ym", desc = "년월조회", httpMethod = DzRequestMethod.GET)
+	public List<Map<String, Object>> list_ym(
+			@DzParam(key = "bizarea_cd", desc = "사업장", paramType = DzParamType.QueryString) String bizarea_cd)
+			throws Exception {
+		List<Map<String, Object>> list = new ArrayList<>();
+		try {
+			HashMap<String, Object> parameters = new HashMap<String, Object>();
+			parameters.put("P_COMPANY_CD", this.getCompanyCode());
+			parameters.put("P_BIZAREA_CD", bizarea_cd);
+
+			String sqlText = MyBatisUtil.getId(this.getClass(), "dao.Pamprg00100_X10005Dao.list_ym");
+			SqlPack so = new SqlPack();
+			so.setStoreProcedure(false);
+			so.setMapperType(MapperType.MyBatis);
+			so.setSqlText(sqlText);
+			so.getInParameters().putAll(parameters);
+
+			list = this.queryForList(so);
+			System.out.println("list" + list.toString());
+
+		} catch (DzApplicationRuntimeException e) {
+			throw e;
+		} catch (Exception e) {
+			throw e;
+		}
+		return list;
 	}
 
 }

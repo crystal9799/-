@@ -1,6 +1,6 @@
-<!--##be5588fd-c26b-4744-a415-802b008ae4b2##-->
+<!--##288ac01f-883f-473d-b94d-49538fd50e47##-->
 <!--##PAMPRG00100_X10005##-->
-<!--##42MtyM4KB7IkwlgI6esnSZjA/dLnrRM7YwrDjkmsouM+RAVwxU3GQhIoG1do6TaY##-->
+<!--##jthLZjA6gVAtPaqCvMDaxIPbZ+NwRGkabKefuBOfTDVi8peLNZYRW1yCkLD6fxSm##-->
 <!--
   DEWS UI/UX IDE - Build Result - v1.5
   # PageID: PAMPRG00100_X10005
@@ -23,14 +23,14 @@
     <li>
       <label class="dews-ui-multilingual">승급년월</label>
       <span>
-        <input type="text" id="mpPROMO_YEAR_MONTH" name="mpPROMO_YEAR_MONTH" class="dews-ui-monthpicker required" style="width: 145px;" />
+        <input type="text" id="mpPROMO_YEAR_MONTH" name="mpPROMO_YEAR_MONTH" class="dews-ui-monthpicker required" style="width: 207px;" />
         <button id="aply_ym_btn" class="dews-ui-button ico-search"></button>
       </span>
     </li>
     <li>
       <label class="dews-ui-multilingual">사업장</label>
       <span>
-        <select id="bizarea_cd" name="bizarea_cd" class="dews-ui-dropdownlist required" data-dews-value-field="BIZAREA_CD" data-dews-text-field="BIZAREA_NM" data-dews-show-tooltip="true" data-dews-show-value-tooltip="true" data-dews-use-numkey="false"></select>
+        <select id="bizarea_cd" name="bizarea_cd" class="dews-ui-dropdownlist required" data-dews-value-field="BIZAREA_CD" data-dews-text-field="BIZAREA_NM" data-dews-show-tooltip="true" style="width: 181px;" data-dews-show-value-tooltip="true" data-dews-use-numkey="false"></select>
       </span>
     </li>
   </ul>
@@ -51,17 +51,6 @@
  
 </div>
   </div>
-</div>
-<div id="conditionpanel2" class="dews-ui-condition-panel" data-dews-label-align="left">
-  <ul class="required-area">
-    <li>
-      <label class="dews-ui-multilingual">라벨</label>
-      <span>
-        <input id="ssss" name="ssss" type="text" class="dews-ui-textbox" style="width: 100px;" />
-        <button id="sssss" class="dews-ui-button"></button>
-      </span>
-    </li>
-  </ul>
 </div>
 
 <style>
@@ -95,7 +84,6 @@
         '사원': 21
     };
     
-    
     function getCurrentMonth() {
         var date = new Date();
         var year = date.getFullYear();              //yyyy
@@ -105,33 +93,11 @@
         return year + '' + month;
     }
     
-    // 데이터를 로컬 스토리지에 저장하는 함수
-    function saveDataToLocalStorage(data) {
-        localStorage.setItem('gridData', JSON.stringify(data));
-    }
-    
-    // 데이터를 로컬 스토리지에서 가져오는 함수
-    function getDataFromLocalStorage() {
-        var storedData = localStorage.getItem('gridData');
-        return storedData ? JSON.parse(storedData) : [];
-    }
     
     function searchData() {
         dews.ui.loading.show();
-        //self.grid_ds.read();
-        //로컬 스토리지에서 데이터 가져오기
-        // var storedData = getDataFromLocalStorage();
-    
-        // if (storedData && storedData.length > 0) {
-        //     // 로컬 스토리지에 데이터가 있을 경우, 그 데이터를 그리드 데이터로 설정
-        //     self.grid_ds.data(storedData);
-        // } else {
-        //     // 로컬 스토리지에 데이터가 없을 경우, 빈 데이터를 그리드에 설정
-        //     self.grid_ds.data([]); // 빈 데이터 설정
-        // 그리드 데이터 로드
         self.grid_ds.read();
         dews.ui.loading.hide();
-        //  saveDataToLocalStorage(self.grid_ds.data());
     }
     
     // 중복데이터 정렬, 그룹화
@@ -187,8 +153,7 @@
                 processedData.push(group[0]);
             }
         }
-    
-        console.log("processedData" + processedData);
+        //console.log("processedData" + processedData);
         // 그리드에 바인딩
         self.grid_ds.data = processedData;
         self.gridMaster.setDataSource(self.grid_ds);
@@ -196,44 +161,6 @@
     
     }
     
-    
-    function checkListExist() { // 데이터 삭제 전, 자료가 존재하는지 확인
-        var existFlag = false;
-        var allData = self.gridMaster.dataItems();
-    
-        if (allData.length > 0) {
-            existFlag = true;
-        }
-        return existFlag;
-    }
-    
-    function deleteBeforeList() {
-        dews.api.get(dews.url.getApiUrl("HR", "HRPamprg00100_X10005Service", "delete_BeforeList"), {
-            async: false,
-            data: {
-                mpPROMO_YEAR_MONTH: self.mpPROMO_YEAR_MONTH.value(),
-                bizarea_cd: self.bizarea_cd.value()
-            }
-        }).done(function (data) {
-        }).fail(function (message) {
-            dews.ui.snackbar.warning(message.responseJSON.message);
-        });
-    }
-    
-    function copyBeforeList() {
-        dews.api.get(dews.url.getApiUrl("HR", "HRPamprg00100_X10005Service", "copy_BeforeList"), {
-            async: false,
-            data: {
-                mpPROMO_YEAR_MONTH: self.mpPROMO_YEAR_MONTH.value(),
-                bizarea_cd: self.bizarea_cd.value()
-            }
-        }).done(function (data) {
-            dews.ui.snackbar.ok("종전자료복사가 완료되었습니다.");
-            searchData();
-        }).fail(function (message) {
-            dews.ui.snackbar.warning(message.responseJSON.message);
-        });
-    }
     
     function processImportData() {
     
@@ -352,7 +279,6 @@
                     dews.error(errMsg[0]);
                 }
             }
-    
             dews.ui.snackbar.info(result.totalCount + "건의 데이터를 입력하셨습니다.");
             self.gridMaster.clearRows(); //fd에서 데이터 삭제
             processImportData(); //업로드그리드 -> 마스터그리드로 데이터 전달
@@ -378,15 +304,31 @@
     function OpenDialogYm() {
         var dialog = dews.ui.dialog("PAMPRG00100_YM", {
             url: "/view/HR/PAMPRG00100_YM",
-            title: '년월',
+            title: '년월조회',
             initData: { bizarea_cd: self.bizarea_cd.value() },
             size: "small",
             height: 420,
             buttons: 'applyAndClose',
             ok: function (data) {
-                console.log("여기 돌이오냐");
                 self.mpPROMO_YEAR_MONTH.value(data.STD_YM);
                 dews.ui.mainbuttons.search.click();
+            }
+        });
+        dialog.open();
+    }
+    
+    function OpenDialogCopy() {
+    
+        var dialog = dews.ui.dialog("PAMPRG00100_COPY", {
+            url: "/view/HR/PAMPRG00100_COPY",
+            title: '종전복사',
+            initData: { mpPROMO_YEAR_MONTH: self.mpPROMO_YEAR_MONTH.value(), bizarea_cd: self.bizarea_cd.value() },
+            size: "small",
+            height: 390,
+            buttons: 'applyAndClose',
+            ok: function (data) {
+                self.mpPROMO_YEAR_MONTH.value(data); //대상년월 전달받아 바인딩
+                self.grid_ds.read();
             }
         });
         dialog.open();
@@ -597,20 +539,16 @@
     
     });
     dews.ui.mainbuttons.search.click(/*37fe89ce-9f9d-444b-a3a3-dfe45a8e42e2*/ function () {
-        if (self.conditionpanel.validate({ tooltip: true, message: '필수 항목을 입력해 주십시요.' })) {
-            if (self.grid_ds.getDirtyDataCount() != 0) {
-                dews.confirm('저장하지 않은 데이터가 있습니다. 조회를 계속하시겠습니까?', "question")
-                    .yes(function () {
-                        searchData();
-                    }).no(function () {
-                        dews.ui.snackbar.warning('취소되었습니다.');
-                        return false;
-                    });
-            } else {
-                searchData();
-            }
+        if (self.grid_ds.getDirtyDataCount() != 0) {
+            dews.confirm('저장하지 않은 데이터가 있습니다. 조회를 계속하시겠습니까?', "question")
+                .yes(function () {
+                    searchData();
+                }).no(function () {
+                    dews.ui.snackbar.warning('취소되었습니다.');
+                    return false;
+                });
         } else {
-            dews.ui.snackbar.warning("누락된 필수값이 있습니다.");
+            searchData();
         }
     });
     dews.ui.mainbuttons.delete.click(/*da329bef-6f06-4958-bb9d-489a5d95db95*/ function () {
@@ -655,13 +593,6 @@
             });
         }
     
-    
-        // if (self.gridMaster.getCheckedIndex())
-        //     if (self.grid_ds.getDirtyDataCount() === 0) {
-        //         dews.alert('변경된 데이터가 없습니다.');
-        //         return false;
-        //     }
-    
         if (!self.gridMaster.validate().result) {
             dews.alert('필수 값이 입력되지 않은 항목이 있습니다.');
             return false;
@@ -669,20 +600,8 @@
     
     });
     self.$copybtnApply.on('click', /*df183ba1-b663-4f91-b5c4-39905db4b87c*/ function (e) {
-        if (self.mpPROMO_YEAR_MONTH.value() == '' || self.bizarea_cd.value() == '') {
-            dews.ui.snackbar.warning("누락된 필수값이 있습니다.");
-            return false;
-        }
-        if (checkListExist() == false) { // 등록된 데이터가 없으면
-            copyBeforeList();
-        } else { // 등록된 데이터가 있으면
-            dews.confirm('기존 등록된 데이터가 삭제되고 등록됩니다.\n계속하시겠습니까?', "question")
-                .yes(function () {
-                    deleteBeforeList();
-                    copyBeforeList();
-                }).no(function () {
-                });
-        }
+        OpenDialogCopy();
+    
     });
     self.$downloadBtnTemplet.on('click', /*481962ba-2461-4e07-81cc-b0b656c4f1aa*/ function (e) {
         try {
@@ -743,20 +662,6 @@
     });
     self.$bulkExcelUpload.on('click', /*a6e64b8b-e8f6-4d3f-a5f5-b9f42e60b0e4*/ function (e) {
         self.$content.find("#uploader").click();
-    });
-    self.mpPROMO_YEAR_MONTH.on('open', /*baa6b78f-2b01-4c43-bfd0-b48659d0162c*/ function (e) {
-        if (self.conditionItem.validate({ tooltip: true, message: '필수 항목을 입력해 주십시요.' })) {
-            if (self.grid_ds.getDirtyDataCount() >= 1) {
-                dews.confirm('저장되지 않은 데이터가 있습니다.\n그래도 조회 하시겠습니까?', "question").yes(function () {
-                    searchData();
-                }).no(function () {
-                });
-            } else {
-                searchData();
-            }
-        } else {
-            dews.ui.snackbar.warning("누락된 필수값이 있습니다.");
-        }
     });
     self.mpPROMO_YEAR_MONTH.on('change', /*9cd054b6-b7e2-4b3e-b457-5bc434526e95*/ function (e) {
         if (self.conditionpanel.validate({ tooltip: true, message: '필수 항목을 입력해 주십시요.' })) {

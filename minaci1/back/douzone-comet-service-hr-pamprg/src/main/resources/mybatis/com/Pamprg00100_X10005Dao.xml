@@ -187,14 +187,22 @@
 						)
 	</update>
 	
-	
+	<select id="checkListExist" parameterType="hashMap" resultType="int" >
+		SELECT COUNT(*)
+			  FROM HR_URGDBASETBL_INFO_X10005
+		WHERE COMPANY_CD = #{P_COMPANY_CD} 
+		AND STD_YM = #{P_TARGET_YEAR_MONTH}
+		<if test="P_BIZAREA_CD != '' and P_BIZAREA_CD != null">
+		    AND BIZAREA_CD = #{P_BIZAREA_CD}
+		</if>
+	</select>
 	
 	<delete id="delete_BeforeList" parameterType="hashMap">
 		DELETE 
 			  FROM
 			  	  HR_URGDBASETBL_INFO_X10005
 		WHERE COMPANY_CD = #{P_COMPANY_CD}
-		AND STD_YM = #{P_PROMO_YEAR_MONTH}
+		AND STD_YM = #{P_TARGET_YEAR_MONTH}
 		<if test="P_BIZAREA_CD != '' and P_BIZAREA_CD != null">
 		    AND BIZAREA_CD = #{P_BIZAREA_CD}
 		</if>
@@ -202,7 +210,8 @@
 		
 	<insert id="copy_BeforeList"  parameterType="hashMap">
 		INSERT INTO HR_URGDBASETBL_INFO_X10005
-			( COMPANY_CD,
+			( 
+			COMPANY_CD,
 			STD_YM,
 			BIZAREA_CD,
 			PSTN_CD,
@@ -218,7 +227,7 @@
 			UPDATE_ID, UPDATE_IP, UPDATE_DTS 
 			)
 			SELECT HUI.COMPANY_CD,
-				   #{P_PROMO_YEAR_MONTH}, -- 기준년월
+				   #{P_TARGET_YEAR_MONTH}, -- 기준년월
 				   HUI.BIZAREA_CD,
 				   HUI.PSTN_CD, -- 직급코드
 				   HUI.TRGT_GRD_CD, -- 대상등급코드
@@ -245,6 +254,16 @@
 				    AND HUI.BIZAREA_CD = #{P_BIZAREA_CD}
 				</if>
 	</insert>
+	
+	<select id = "list_ym" parameterType="hashMap" resultType="hashMap">
+		SELECT DISTINCT STD_YM 
+ 				FROM 
+ 					HR_URGDBASETBL_INFO_X10005
+ 		WHERE COMPANY_CD = #{P_COMPANY_CD}
+ 		AND   BIZAREA_CD = #{P_BIZAREA_CD}
+ 		GROUP BY STD_YM
+ 		ORDER BY STD_YM 
+	</select>
 	
 	
 	

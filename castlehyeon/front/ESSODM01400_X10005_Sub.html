@@ -1,6 +1,6 @@
-<!--##46eea0cb-0c10-40ee-8972-caa7c6392adc##-->
+<!--##bdbbeda4-a8fc-4c98-87b5-b748a9320fe4##-->
 <!--##ESSODM01400_X10005_Sub##-->
-<!--##PDo3cB6a/vWwsNXyrTprDbJiEQeOZqToEU30TJe5HJP/MnN1BDxwnUWLXXriWYup##-->
+<!--##Ayu/2sW1Z/q62QuDnY+TJ0H/ytg22PctxGO5uh2RkI/Q4VaaqD3kH/l9Rz/Q99gh##-->
 <!--
   DEWS UI/UX IDE - Build Result - v1.5
   # PageID: ESSODM01400_X10005_Sub
@@ -145,13 +145,9 @@
             <input id="ATHZ_ST_CD" name="ATHZ_ST_CD" type="text" class="dews-ui-textbox basic" />
           </span>
         </li>
-        <li>
-          <label>라벨</label>
-          <span></span>
-        </li>
       </ul>
     </div>
-    <div id="main_grid" class="dews-ui-grid"></div>
+    <div id="main_grid" class="dews-ui-grid" style="display: none;"></div>
   </div>
 </div>
 
@@ -952,10 +948,16 @@
         var endDateStr = self.END_DT.text();
     
         // 시작날짜와 종료날짜를 Date 객체로 변환
-        var startDate = new Date(startDateStr.substring(0, 4), startDateStr.substring(4, 6) - 1, startDateStr.substring(6, 8));
-        var endDate = new Date(endDateStr.substring(0, 4), endDateStr.substring(4, 6) - 1, endDateStr.substring(6, 8));
+        var startDateParts = startDateStr.split('-');
+        var endDateParts = endDateStr.split('-');
         var today = new Date();
+    
+        // 입력된 날짜를 YYYY, MM, DD로 분리하여 Date 객체 생성
+        var startDate = new Date(startDateParts[0], startDateParts[1] - 1, startDateParts[2]);
+        var endDate = new Date(endDateParts[0], endDateParts[1] - 1, endDateParts[2]);
+    
         today.setHours(0, 0, 0, 0); // 시간을 00:00:00으로 설정
+    
     
         if (req_date < 0) { // 신청가능일 < 10
             dews.ui.snackbar.warning("종료일은 시작일보다 작을 수 없습니다.");
@@ -1205,14 +1207,14 @@
         if (isExist == true || (isReq_no !== null && isReq_no !== '' && isReq_no !== undefined)) {
             var athzStCd_val = self.main_grid.getCellValue(0, 'ATHZ_ST_CD');
     
-            // 결재상태가 저장일 때 => 임시저장 버튼 활성화, 결재 페이지 비활성화
+            // 결재상태가 저장일 때 => 임시저장 버튼, 신청자 변경 버튼 활성화, 결재 페이지 비활성화
             if (athzStCd_val == '1') {
                 self.temp_save_button.enable(true);
                 self.DNL_CD.readonly(false);
                 self.START_DT.readonly(false);
                 self.END_DT.readonly(false);
                 self.REASON_DC.readonly(false);
-                self.CHANGE_REQ_USERT.enable(false);
+                self.CHANGE_REQ_USERT.enable(true);
             } else {
                 self.temp_save_button.enable(false);
             }

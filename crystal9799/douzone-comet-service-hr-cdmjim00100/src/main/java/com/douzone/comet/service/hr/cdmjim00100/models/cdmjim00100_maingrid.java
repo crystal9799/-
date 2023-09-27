@@ -90,6 +90,29 @@ public class cdmjim00100_maingrid extends DzAbstractModel {
 	@DzModelField(name="company_cd", desc="회사코드", colName="COMPANY_CD", colSize="1000", isKey=false)
 	private String COMPANY_CD;
 	
+	@SerializedName("USER_ID")
+	@DzModelField(name="USER_ID", desc = "유저아이디" , colName = "USER_ID", colSize = "1000", isKey = false)
+	private String USER_ID;
+	
+	@SerializedName("IP")
+	@DzModelField(name="IP", desc = "아이피" , colName = "IP", colSize = "1000", isKey = false)
+	private String IP;
+
+	public String getIP() {
+		return IP;
+	}
+
+	public void setIP(String iP) {
+		IP = iP;
+	}
+
+	public String getUSER_ID() {
+		return USER_ID;
+	}
+
+	public void setUSER_ID(String uSER_ID) {
+		USER_ID = uSER_ID;
+	}
 
 	public String getCompany_cd() {
 		return COMPANY_CD;

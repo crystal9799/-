@@ -1,6 +1,6 @@
-<!--##d762b689-fc8f-4efd-babd-9ab99bc59c94##-->
+<!--##bfe2569b-588a-4caf-ae15-88a63438b3f4##-->
 <!--##PAMODM01800_X10005##-->
-<!--##LBc2IM5jPYmrHxu+mhRGel+KKViP9SwkuPTuPrmzbYjAysP4MpSiNbIaZbOfSEza##-->
+<!--##xcK666G8JuzwKlIEtvqP4k+Z2pQhFZWVSp/xvWy05nwXz4rJ1qar+hVU7f12VrAK##-->
 <!--
   DEWS UI/UX IDE - Build Result - v1.5
   # PageID: PAMODM01800_X10005
@@ -214,28 +214,40 @@
             title: '사원 도움창',
             width: 650,
             height: 600,
-            //initData: initData,
             ok: function (data) {
                 console.log("시간체크1");
-                dews.ui.loading.show({ // 로딩화면 보여주기
-                    text: '조회중입니다.'
+                dews.ui.loading.show({ text: '조회중입니다.' });
+    
+                // 각 데이터 아이템에 대한 Promise들을 저장할 배열
+                const promises = data.map(item => {
+                    return Promise.all([
+                        get_org(item.COMPANY_CD, item.DEPT_CD),
+                        get_ogrp_cd_pstn_cd(item.COMPANY_CD, item.OGRP_CD, item.PSTN_CD),
+                        get_prmt_dt_retm_dt(item.COMPANY_CD, item.EMP_NO)
+                    ]).then(([orgData, ogrpData, prmtData]) => {
+                        // 각 Promise의 결과를 여기에서 처리
+                        self.grid1.addRow();
+                        self.grid1.setCellValue(self.grid1.select(), 'EMP_NO', item.EMP_NO);
+                        self.grid1.setCellValue(self.grid1.select(), 'KOR_NM', item.KOR_NM);
+                        self.grid1.setCellValue(self.grid1.select(), 'JNCO_DT', item.JNCO_DT);
+                        self.grid1.setCellValue(self.grid1.select(), 'ORG', orgData);
+                        self.grid1.setCellValue(self.grid1.select(), 'OGRP_CD', ogrpData[0]);
+                        self.grid1.setCellValue(self.grid1.select(), 'PSTN_CD', ogrpData[1]);
+                        self.grid1.setCellValue(self.grid1.select(), 'PRMT_DT', prmtData[0]);
+                        self.grid1.setCellValue(self.grid1.select(), 'RETM_DT', prmtData[1]);
+                        // 추가로 다른 cell 값들도 여기에서 설정할 수 있습니다.
+                    });
                 });
     
-                console.log(data);
-    
-                for (i = 0; i < data.length; i++) {
-                    self.grid1.addRow();
-                    self.grid1.setCellValue(self.grid1.select(), 'EMP_NO', data[i].EMP_NO);
-                    self.grid1.setCellValue(self.grid1.select(), 'KOR_NM', data[i].KOR_NM);
-                    self.grid1.setCellValue(self.grid1.select(), 'JNCO_DT', data[i].JNCO_DT);
-    
-                    //추가 행 데이터 setCellValue
-                    get_org(data[i].COMPANY_CD, data[i].DEPT_CD);
-                    get_ogrp_cd_pstn_cd(data[i].COMPANY_CD, data[i].OGRP_CD, data[i].PSTN_CD);
-                    get_prmt_dt_retm_dt(data[i].COMPANY_CD, data[i].EMP_NO);
-                }
-                dews.ui.loading.hide();
-                console.log("시간체크2");
+                // 모든 Promise들이 완료되었을 때 로딩 화면을 숨깁니다.
+                Promise.all(promises).then(() => {
+                    dews.ui.loading.hide();
+                    console.log("시간체크2");
+                }).catch(error => {
+                    // 오류 발생 시 처리 로직
+                    dews.ui.loading.hide();
+                    console.error(error);
+                });
             }
         });
         dialog.open();
@@ -662,49 +674,54 @@
     }
     
     function get_org(company_cd, dept_cd) {
-        dews.api.get(dews.url.getApiUrl("HR", "HRPamodm01800_X10005Service", "get_org"), {
-            async: true,
-            data: {
-                company_cd: company_cd,
-                dept_cd: dept_cd
-            }
-        }).done(function (data) {
-            self.grid1.setCellValue(self.grid1.select(), 'ORG', data);
-        }).fail(function (xhr, status, error) {
-            dews.error(xhr.responseJSON.message);
+        return new Promise((resolve, reject) => {
+            dews.api.get(dews.url.getApiUrl("HR", "HRPamodm01800_X10005Service", "get_org"), {
+                async: true,
+                data: {
+                    company_cd: company_cd,
+                    dept_cd: dept_cd
+                }
+            }).done(function (data) {
+                resolve(data); // 데이터가 성공적으로 수신되면 resolve() 호출
+            }).fail(function (xhr, status, error) {
+                reject(xhr.responseJSON.message); // 오류 발생 시 reject() 호출
+            });
         });
     }
     
     function get_ogrp_cd_pstn_cd(company_cd, ogrp_cd, pstn_cd) {
-        dews.api.get(dews.url.getApiUrl("HR", "HRPamodm01800_X10005Service", "get_ogrp_cd_pstn_cd"), {
-            async: true,
-            data: {
-                company_cd: company_cd,
-                ogrp_cd: ogrp_cd,
-                pstn_cd: pstn_cd
-            }
-        }).done(function (data) {
-            self.grid1.setCellValue(self.grid1.select(), 'OGRP_CD', data[0].SYSDEF_NM);
-            self.grid1.setCellValue(self.grid1.select(), 'PSTN_CD', data[1].SYSDEF_NM);
-        }).fail(function (xhr, status, error) {
-            dews.error(xhr.responseJSON.message);
+        return new Promise((resolve, reject) => {
+            dews.api.get(dews.url.getApiUrl("HR", "HRPamodm01800_X10005Service", "get_ogrp_cd_pstn_cd"), {
+                async: true,
+                data: {
+                    company_cd: company_cd,
+                    ogrp_cd: ogrp_cd,
+                    pstn_cd: pstn_cd
+                }
+            }).done(function (data) {
+                resolve([data[0].SYSDEF_NM, data[1].SYSDEF_NM]);
+            }).fail(function (xhr, status, error) {
+                reject(xhr.responseJSON.message);
+            });
         });
     }
     
     function get_prmt_dt_retm_dt(company_cd, emp_no) {
-        dews.api.get(dews.url.getApiUrl("HR", "HRPamodm01800_X10005Service", "get_prmt_dt_retm_dt"), {
-            async: true,
-            data: {
-                company_cd: company_cd,
-                emp_no: emp_no
-            }
-        }).done(function (data) {
-            self.grid1.setCellValue(self.grid1.select(), 'PRMT_DT', data[0].DATE_VALUE);
-            self.grid1.setCellValue(self.grid1.select(), 'RETM_DT', data[1].DATE_VALUE);
-        }).fail(function (xhr, status, error) {
-            dews.error(xhr.responseJSON.message);
+        return new Promise((resolve, reject) => {
+            dews.api.get(dews.url.getApiUrl("HR", "HRPamodm01800_X10005Service", "get_prmt_dt_retm_dt"), {
+                async: true,
+                data: {
+                    company_cd: company_cd,
+                    emp_no: emp_no
+                }
+            }).done(function (data) {
+                resolve([data[0].DATE_VALUE, data[1].DATE_VALUE]);
+            }).fail(function (xhr, status, error) {
+                reject(xhr.responseJSON.message);
+            });
         });
     }
+    
     
     function get_tm_cd_nm(emp_no, bwrk_dt) {
         dews.api.get(dews.url.getApiUrl("HR", "HRPamodm01800_X10005Service", "get_tm_cd_nm"), {

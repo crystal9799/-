@@ -13,5 +13,9 @@ public class BeanConfig {
 	public CacheDwaggerModels cacheDwaggerModels() {
 		return new CacheDwaggerModels();
 	}
+	@Bean
+	public JsonUtils jsonUtils() {
+		return new JsonUtils();
+	}
 
 }

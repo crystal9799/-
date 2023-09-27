@@ -1,0 +1,357 @@
+<!--##99656329-a168-4016-9e1b-602ba5ac8fdd##-->
+<!--##card_Modify_full##-->
+<!--##aAlW3//70i8maNC7bYvLIRmGx3Mj7dHorV7CC837HKg154f8QEFgoRICNjX1bG3r##-->
+<!--
+  DEWS UI/UX IDE - Build Result - v1.5
+  # PageID: card_Modify_full
+  # PageTitle: 등록서비스조회
+  # Server: http://localhost:8080/
+-->
+<!--
+
+-->
+
+<div id="searchCondition" class="dews-ui-condition-panel">
+  <ul class="required-area">
+    <li>
+      <label class="dews-ui-multilingual">검색어</label>
+      <span>
+        <input id="SearchKeyword" name="SearchKeyword" type="text" class="dews-ui-textbox basic" />
+      </span>
+    </li>
+  </ul>
+</div>
+<div class="dews-ui-container-panel" data-dews-fit-bottom="true">
+  <div class="dews-container-item" data-dews-position="left" data-dews-width="437px">
+    <div id="cardlist1" class="dews-ui-cardlist"></div>
+  </div>
+  <div class="dews-container-item" data-dews-position="normal">
+    <div id="bindingForm" class="dews-ui-form-panel">
+      <ul>
+        <li>
+          <label>모듈</label>
+          <span>
+            <input id="module" name="module" type="text" class="dews-ui-textbox basic" readonly="readonly" />
+          </span>
+        </li>
+        <li class="col-2">
+          <label>모듈설명</label>
+          <span>
+            <input id="moduleDesc" name="moduleDesc" type="text" class="dews-ui-textbox basic" readonly="readonly" />
+          </span>
+        </li>
+        <li class="col-2">
+          <label>서비스이름</label>
+          <span>
+            <input id="service" name="service" type="text" class="dews-ui-textbox basic" readonly="readonly" />
+          </span>
+        </li>
+        <li class="col-2">
+          <label>서비스설명</label>
+          <span>
+            <input id="serviceDesc" name="serviceDesc" type="text" class="dews-ui-textbox basic" readonly="readonly" />
+          </span>
+        </li>
+        <li class="col-2">
+          <label>API주소</label>
+          <span>
+            <input id="urlPattern" name="urlPattern" type="text" class="dews-ui-textbox basic" readonly="readonly" />
+          </span>
+        </li>
+        <li class="col-2">
+          <label>API설명</label>
+          <span>
+            <input id="patternDesc" name="patternDesc" type="text" class="dews-ui-textbox basic" readonly="readonly" />
+          </span>
+        </li>
+        <li>
+          <label>서비스버전</label>
+          <span>
+            <input id="serviceVersion" name="serviceVersion" type="text" class="dews-ui-textbox basic" readonly="readonly" />
+          </span>
+        </li>
+        <li>
+          <label>시큐리티설정여부</label>
+          <span>
+            <input id="security" name="security" type="text" class="dews-ui-textbox basic" readonly="readonly" />
+          </span>
+        </li>
+      </ul>
+    </div>
+    <div id="containerpanel1" class="dews-ui-container-panel" data-dews-fit-bottom="true">
+      <div id="containerpanelitem1" class="dews-container-item" data-dews-position="normal">
+        <h2 id="tit1" class="dews-ui-title">파라미터 정보</h2>
+        <div id="grid2" class="dews-ui-grid"></div>
+        <h2 id="tit2" class="dews-ui-title">스키마 정보</h2>
+        <div id="grid3" class="dews-ui-grid"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+    .textbox1{background-size: 3px;}
+</style>
+
+
+
+<script>
+  dews.ready(function () {
+    var self = this;
+    self.version = self.version || {};
+    self.version.view='1.1';
+
+
+    /*a2bb4499-f318-4839-a355-0149593128d9*/ var localStorage = window.localStorage;
+    
+    
+    
+    // 저장 및 조회 시 포커스 유지
+    var cardSelect = '';
+    
+    function CallApiTotalDatas() {
+        dews.api.get(dews.url.getApiUrl("HR", "DwaggerService", "dwagger_totalList"), {
+            async: false,
+            data: {
+                serviceName: '',
+                langCd: 'KR'
+            }
+        }).done(function (data) {
+            if (data != '' && data != null && data != undefined) {
+                self.total_ds.data(mainData);
+                SaveDataToLocalStorage("saveData", data);
+                SaveDataToLocalStorage("last_saveDTS", new Date());
+            }
+            // dews.ui.page.close(); // 페이지 닫기
+        });
+    }
+    
+    // JSON 데이터를 로컬 스토리지에 저장하는 함수
+    function SaveDataToLocalStorage(key, data) {
+        try {
+            // 데이터를 JSON 문자열로 직렬화하여 저장
+            const jsonData = JSON.stringify(data);
+            localStorage.setItem(key, jsonData);
+            console.log(`데이터를 로컬 스토리지에 저장했습니다. (키: ${key})`);
+        } catch (error) {
+            console.error(`로컬 스토리지에 데이터를 저장하는 중 오류 발생: ${error}`);
+        }
+    }
+    
+    // 로컬 스토리지에서 JSON 데이터를 가져오는 함수
+    function getDataFromLocalStorage(key) {
+        try {
+            // 로컬 스토리지에서 데이터를 가져와서 파싱
+            const jsonData = localStorage.getItem(key);
+            if (jsonData) {
+                const data = JSON.parse(jsonData);
+                console.log(`로컬 스토리지에서 데이터를 가져왔습니다. (키: ${key})`);
+                return data;
+            } else {
+                console.log(`로컬 스토리지에서 데이터를 찾을 수 없습니다. (키: ${key})`);
+                return null;
+            }
+        } catch (error) {
+            console.error(`로컬 스토리지에서 데이터를 가져오는 중 오류 발생: ${error}`);
+            return null;
+        }
+    }
+    
+    
+    
+    self.total_ds = dews.ui.dataSource('total_ds', {
+      schema: {
+        model: {
+          fields: [
+            { field: 'module', editable: false, type: 'string' }, 
+            { field: 'moduleDesc', editable: false, type: 'string' }, 
+            { field: 'service', editable: false, type: 'string' }, 
+            { field: 'serviceDesc', editable: false, type: 'string' }, 
+            { field: 'serviceVersion', editable: false, type: 'string' }, 
+            { field: 'urlPattern', editable: false, type: 'string' }, 
+            { field: 'patternDesc', editable: false, type: 'string' }, 
+            { field: 'security', editable: false, type: 'string' }, 
+            { field: 'apiParamList', editable: false, type: 'object' }, 
+            { field: 'apiSchemaList', editable: false, type: 'object' }
+          ]
+    
+        }
+      },
+      data: []
+    });
+    self.param_ds = dews.ui.dataSource('param_ds', {
+      grid: true,
+      schema: {
+        model: {
+          fields: [
+            { field: 'key', editable: false, dataType: 'string' }, 
+            { field: 'description', editable: false, dataType: 'string' }, 
+            { field: 'parameterType', editable: false, dataType: 'string' }, 
+            { field: 'declareParameterType', editable: false, dataType: 'string' }, 
+            { field: 'encryption', editable: false, dataType: 'string' }
+          ]
+    
+        }
+      },
+      data: []
+    });
+    self.schema_ds = dews.ui.dataSource('schema_ds', {
+      grid: true,
+      schema: {
+        model: {
+          fields: [
+            { field: 'col', editable: false, dataType: 'string' }, 
+            { field: 'type', editable: false, dataType: 'string' }, 
+            { field: 'desc', editable: false, dataType: 'string' }
+          ]
+    
+        }
+      },
+      data: []
+    });
+    
+    
+    dews.ui.mainbuttons.information.disable(true);
+    dews.ui.mainbuttons.localize.disable(true);
+    dews.ui.mainbuttons.approval.hide();
+    dews.ui.mainbuttons.etnapproval.hide();
+    dews.ui.mainbuttons.add.hide();
+    dews.ui.mainbuttons.add.click(/*4fdb01b7-4bd1-4c3e-92d4-1d7ad29e6377*/ function () {
+    });
+    dews.ui.mainbuttons.search.hide();
+    dews.ui.mainbuttons.search.click(/*df71d88e-ee6c-4507-acb3-3bc2839ce5f3*/ function () {
+    
+    });
+    dews.ui.mainbuttons.delete.hide();
+    dews.ui.mainbuttons.delete.click(/*6bc4fec3-4d19-4249-a40b-e8dc851cbbe7*/ function () {
+    
+    });
+    dews.ui.mainbuttons.print.hide();
+    dews.ui.mainbuttons.print.click(/*66af25c3-26d9-45cb-adae-405c8d9a689a*/ function () {
+    });
+    dews.ui.mainbuttons.save.hide();
+    dews.ui.mainbuttons.save.click(/*47fc8f13-9d5d-414c-81c0-72bf84ece057*/ function () {
+    });
+    dews.ui.cardlist(self.$cardlist1, {
+      dataSource: self.total_ds,
+      template: 
+        '<div class="dews-cardlist-template">' +
+        '	<div class="dews-cardlist-main-text">' +
+        '		<p class="bold">#: data.service #</p>' +
+        '	</div>' +
+        '	<div class="dews-cardlist-sub-text">' +
+        '		<p>#: data.urlPattern #</p>' +
+        '	</div>' +
+        '	<div class="dews-cardlist-right-text">' +
+        '		<p style="float:right">#: data.patternDesc #</p>' +
+        '	</div>' +
+        '</div>'
+    });
+    self.cardlist1.on('change', /*38025a20-ec98-4527-9226-1010ce2bc574*/ function (e) {
+    
+        // 카드리스트 데이터 유무
+        if (self.cardlist1.dataItems().length == 0) {
+            return;
+        }
+    
+        //bindPanel(panel) : 카드리스트의 해당 row에 맞는 데이터를 폼패널에 바인딩
+        self.cardlist1.bindPanel(self.bindingForm);
+    
+        //카드리스트의 선택로우의 데이터를 그리드에 바인딩
+        var apiParamList = self.cardlist1.getValue(self.cardlist1.select(), 'apiParamList');
+        self.param_ds.data(apiParamList);
+        var apiSchemaList = self.cardlist1.getValue(self.cardlist1.select(), 'apiSchemaList');
+        self.schema_ds.data(apiSchemaList);
+    
+    
+    });
+    self.cardlist1.on('dataBound', /*0d2527bf-729f-4ed6-8302-c76919abd13b*/ function (e) {
+    });
+    self.bindingForm.on('change', /*271fbd66-b1dc-4ce1-bd6e-bd157aaf89a5*/ function (e) {
+    });
+    dews.ui.grid(self.$grid2, {
+      dataSource: self.param_ds,
+      height: 200,
+      sortable: false,
+      checkable: false,
+      copyMode: 'cell',
+      columns: [
+        {
+          field: 'key',
+          title: '파라미터키명',
+          width: 60
+        },
+        {
+          field: 'description',
+          title: '파라미터설명',
+          width: 60
+        },
+        {
+          field: 'parameterType',
+          title: '파라미터타입',
+          width: 60
+        },
+        {
+          field: 'declareParameterType',
+          title: '파라미터데이터타입',
+          width: 60
+        },
+        {
+          field: 'encryption',
+          title: '암호화여부',
+          width: 60
+        }
+      ],
+      fixed: {
+        colCount: 0,
+        rightColCount: 0
+      }
+    });
+    dews.ui.grid(self.$grid3, {
+      dataSource: self.schema_ds,
+      sortable: false,
+      checkable: false,
+      copyMode: 'cell',
+      columns: [
+        {
+          field: 'col',
+          title: '컬럼코드',
+          width: 60
+        },
+        {
+          field: 'type',
+          title: '컬럼타입',
+          width: 60
+        },
+        {
+          field: 'desc',
+          title: '컬럼설명',
+          width: 60
+        }
+      ],
+      fixed: {
+        colCount: 0,
+        rightColCount: 0
+      }
+    });
+    
+    
+    
+    
+    /*acabee7e-f4fb-430f-9a2c-cafb761c995a*/ //# sourceURL=card_Modify_full.js
+    InitData();
+    
+    function InitData() {
+        var mainData = self.initialData.apiDatas;
+        if (mainData != null && mainData != undefined && mainData != '') {
+            self.total_ds.data(mainData);
+        } else
+            CallApiTotalDatas();
+    }
+    
+    
+
+  
+  });
+
+</script>

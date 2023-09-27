@@ -59,13 +59,6 @@ public class APIDataCall {
 	}
 
 	private String buildQueryString(String service) {
-		switch (service) {
-		case "결근계":
-			return "?serviceName=HREssodm01400_X10005Service&langCd=KR"; // 결근계에 필요한 파라미터 추가
-		case "승급기준표":
-			return "?serviceName=HRPamprg00100_X10005Service&langCd=KR"; // 승급기준표에 필요한 파라미터 추가
-		default:
-			return "?serviceName=&langCd=KR"; // 다른 서비스에 필요한 파라미터 추가
-		}
+		return "?serviceName=" + service + "&langCd=KR";
 	}
 }

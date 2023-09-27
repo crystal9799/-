@@ -1,6 +1,6 @@
-<!--##5abaa410-7179-4b06-8e52-671a85aac2ee##-->
+<!--##2c28abd4-fd5a-4727-91ff-3dc05fdbcaee##-->
 <!--##Dwagger_SearchService##-->
-<!--##N1arWIwFGDz6vHMPUiRUK6j0XHBxFKRlhpBZ1sY8qm24RTg58GgU+hIPrqnTFKdd##-->
+<!--##5s06c3oT6btsGcP20AVDVwzPSnu1/iwry+hBbhnOhg4KlNtSXdCV1mclWFt6Rsy6##-->
 <!--
   DEWS UI/UX IDE - Build Result - v1.5
   # PageID: Dwagger_SearchService
@@ -13,6 +13,22 @@
 
 <div id="containerpanel1" class="dews-ui-container-panel" data-dews-fit-bottom="true">
   <div id="containerpanelitem1" class="dews-container-item" data-dews-position="normal">
+    <div id="formpanel2" class="dews-ui-form-panel">
+      <ul>
+        <li>
+          <label>마지막 백업 일자</label>
+          <span>
+            <input id="last_backupDT" name="last_backupDT" type="text" class="dews-ui-textbox basic" readonly="readonly" />
+          </span>
+        </li>
+        <li style="float: right;">
+          <label></label>
+          <span>
+            <button id="ChangeCardListView" class="dews-ui-button">카드리스트로 전환</button>
+          </span>
+        </li>
+      </ul>
+    </div>
     <div id="formpanel1" class="dews-ui-form-panel">
       <ul>
         <li class="col-2">
@@ -25,7 +41,7 @@
       </ul>
     </div>
     <h2 id="tit1" class="dews-ui-title">등록 API</h2>
-    <div id="metadata_grid" class="dews-ui-grid"></div>
+    <div id="total_grid" class="dews-ui-grid"></div>
     <div id="containerpanel2" class="dews-ui-container-panel">
       <div id="containerpanelitem2" class="dews-container-item" data-dews-position="left" data-dews-width="800px">
         <h2 id="tit2" class="dews-ui-title">파라미터</h2>
@@ -52,27 +68,10 @@
     self.version.view='1.0';
 
 
+    /*c1069f37-87e6-40d1-9de9-fdae9cb2aeca*/ var localStorage = window.localStorage;
     
     
-    self.metadata_ds = dews.ui.dataSource('metadata_ds', {
-      grid: true,
-      schema: {
-        model: {
-          fields: [
-            { field: 'module', editable: false, dataType: 'string' }, 
-            { field: 'moduleDesc', editable: false, dataType: 'string' }, 
-            { field: 'service', editable: false, dataType: 'string' }, 
-            { field: 'serviceDesc', editable: false, dataType: 'string' }, 
-            { field: 'serviceVersion', editable: false, dataType: 'string' }, 
-            { field: 'urlPattern', editable: false, dataType: 'string' }, 
-            { field: 'patternDesc', editable: false, dataType: 'string' }, 
-            { field: 'security', editable: false, dataType: 'string' }
-          ]
     
-        }
-      },
-      data: []
-    });
     self.param_ds = dews.ui.dataSource('param_ds', {
       grid: true,
       schema: {
@@ -82,9 +81,7 @@
             { field: 'description', editable: false, dataType: 'string' }, 
             { field: 'parameterType', editable: false, dataType: 'string' }, 
             { field: 'declareParameterType', editable: false, dataType: 'string' }, 
-            { field: 'encryption', editable: false, dataType: 'string' }, 
-            { field: 'service', editable: false, dataType: 'string' }, 
-            { field: 'urlPattern', editable: false, dataType: 'string' }
+            { field: 'encryption', editable: false, dataType: 'string' }
           ]
     
         }
@@ -98,9 +95,7 @@
           fields: [
             { field: 'col', editable: false, dataType: 'string' }, 
             { field: 'type', editable: false, dataType: 'string' }, 
-            { field: 'desc', editable: false, dataType: 'string' }, 
-            { field: 'service', editable: false, dataType: 'string' }, 
-            { field: 'urlPattern', editable: false, dataType: 'string' }
+            { field: 'desc', editable: false, dataType: 'string' }
           ]
     
         }
@@ -108,24 +103,35 @@
       data: []
     });
     self.total_ds = dews.ui.dataSource('total_ds', {
+      grid: true,
+      transport: {
+        read: {
+          url: dews.url.getApiUrl('HR', 'DwaggerService', 'dwagger_list'),
+          data: function () {
+            return {
+              serviceName: self.SearchKeyword.text(),
+              langCd: 'KR'
+            };
+          }
+        }
+      },
       schema: {
         model: {
           fields: [
-            { field: 'module', editable: false, type: 'string' }, 
-            { field: 'moduleDesc', editable: false, type: 'string' }, 
-            { field: 'service', editable: false, type: 'string' }, 
-            { field: 'serviceDesc', editable: false, type: 'string' }, 
-            { field: 'serviceVersion', editable: false, type: 'string' }, 
-            { field: 'urlPattern', editable: false, type: 'string' }, 
-            { field: 'patternDesc', editable: false, type: 'string' }, 
-            { field: 'security', editable: false, type: 'string' }, 
-            { field: 'params', editable: false, type: 'object' }, 
-            { field: 'schemas', editable: false, type: 'object' }
+            { field: 'module', editable: false, dataType: 'string' }, 
+            { field: 'moduleDesc', editable: false, dataType: 'string' }, 
+            { field: 'service', editable: false, dataType: 'string' }, 
+            { field: 'serviceDesc', editable: false, dataType: 'string' }, 
+            { field: 'serviceVersion', editable: false, dataType: 'string' }, 
+            { field: 'urlPattern', editable: false, dataType: 'string' }, 
+            { field: 'patternDesc', editable: false, dataType: 'string' }, 
+            { field: 'security', editable: false, dataType: 'string' }, 
+            { field: 'apiParamList', editable: false, dataType: 'object' }, 
+            { field: 'apiSchemaList', editable: false, dataType: 'object' }
           ]
     
         }
-      },
-      data: []
+      }
     });
     
     
@@ -138,32 +144,47 @@
     dews.ui.mainbuttons.delete.hide();
     dews.ui.mainbuttons.print.hide();
     dews.ui.mainbuttons.save.hide();
-    dews.ui.grid(self.$metadata_grid, {
-      dataSource: self.metadata_ds,
+    self.$ChangeCardListView.on('click', /*80831b13-f14f-4801-85a0-bedca5f6c1ca*/ function (e) {
+        try {
+            OpenSubPage();
+        } catch (error) {
+            dews.error(error);
+            console.error(error);
+        }
+    });
+    self.$SearchBtn.on('click', /*9f9e2965-bd0c-45c6-85fd-db9bc1194706*/ function (e) {
+        self.total_ds.read().done(function (data) {
+            if (data != '' && data != null && data != undefined && data[0] != null && data[0] != undefined && data[0] != '') {
+                SaveDataToLocalStorage("saveData", data);
+                SaveDataToLocalStorage("last_saveDTS", new Date());
+            }
+        })
+    });
+    dews.ui.grid(self.$total_grid, {
+      dataSource: self.total_ds,
       sortable: false,
-      autoBind: false,
       checkable: false,
       copyMode: 'cell',
       columns: [
         {
           field: 'module',
           title: '모듈명',
-          width: 60
+          width: 10
         },
         {
           field: 'moduleDesc',
           title: '모듈설명',
-          width: 60
+          width: 30
         },
         {
           field: 'service',
           title: '서비스명',
-          width: 60
+          width: 80
         },
         {
           field: 'serviceDesc',
           title: '서비스설명',
-          width: 60
+          width: 150
         },
         {
           field: 'serviceVersion',
@@ -173,28 +194,47 @@
         {
           field: 'urlPattern',
           title: 'URL주소',
-          width: 60
+          width: 100
         },
         {
           field: 'patternDesc',
           title: 'URL주소설명',
-          width: 60
+          width: 150
         },
         {
           field: 'security',
           title: '시큐리티설정여부',
-          width: 60
+          width: 30
+        },
+        {
+          field: 'apiParamList',
+          title: '파라미터정보객체',
+          width: 60,
+          visible: false
+        },
+        {
+          field: 'apiSchemaList',
+          title: '스키마정보객체',
+          width: 60,
+          visible: false
         }
       ],
       fixed: {
         colCount: 0,
         rightColCount: 0
-      }
+      },
+      clicked: /*c9fa2f0b-2d38-4a9d-bca3-5aac1aefce48*/ function (e) {
+            var apiParamList = self.total_grid.getCellValue(self.total_grid.select(), 'apiParamList');
+            self.param_ds.data(apiParamList);
+            var apiSchemaList = self.total_grid.getCellValue(self.total_grid.select(), 'apiSchemaList');
+            self.schema_ds.data(apiSchemaList);
+    
+        }
+    
     });
     dews.ui.grid(self.$param_grid, {
       dataSource: self.param_ds,
       sortable: false,
-      autoBind: false,
       checkable: false,
       copyMode: 'cell',
       columns: [
@@ -222,16 +262,6 @@
           field: 'encryption',
           title: '암호화여부',
           width: 60
-        },
-        {
-          field: 'service',
-          title: '서비스명',
-          width: 60
-        },
-        {
-          field: 'urlPattern',
-          title: 'URL주소',
-          width: 60
         }
       ],
       fixed: {
@@ -242,7 +272,6 @@
     dews.ui.grid(self.$schema_grid, {
       dataSource: self.schema_ds,
       sortable: false,
-      autoBind: false,
       checkable: false,
       copyMode: 'cell',
       columns: [
@@ -260,16 +289,6 @@
           field: 'desc',
           title: '컬럼설명',
           width: 60
-        },
-        {
-          field: 'service',
-          title: '서비스명',
-          width: 60
-        },
-        {
-          field: 'urlPattern',
-          title: 'URL주소',
-          width: 60
         }
       ],
       fixed: {
@@ -284,19 +303,104 @@
     /*721d425c-12b9-49a3-b2f0-44c9d0fe0dd7*/ //# sourceURL=Dwagger_SearchService.js
     self.total_ds.read();
     
+    //초기에 
+    const retrievedData = getDataFromLocalStorage("saveData");
+    const retrievedDTS = getDataFromLocalStorage("last_saveDTS");
     var apiDatas = '';
+    var last_backup = '';
+    if (retrievedDTS != null && retrievedDTS != undefined && retrievedDTS != '') {
+        last_backup = retrievedDTS;
+    }
+    self.last_backupDT.text(GetformatDate(last_backup));
     
-    function CallApiDatas() {
-        dews.api.get(dews.url.getApiUrl("HR", "DwaggerService", "dwagger_list"), {
+    
+    if (retrievedData != null && retrievedData != undefined && retrievedData != '') {
+        apiDatas = retrievedData;
+        self.total_ds.data(apiDatas);
+    } else
+        CallApiTotalDatas();
+    
+    
+    
+    function CallApiTotalDatas() {
+        dews.api.get(dews.url.getApiUrl("HR", "DwaggerService", "dwagger_totalList"), {
             async: false,
             data: {
-                serviceName:'',
-                langCd:'KR'
+                serviceName: '',
+                langCd: 'KR'
             }
         }).done(function (data) {
             apiDatas = data;
+            if (data != '' && data != null && data != undefined && data[0] != null && data[0] != undefined && data[0] != '') {
+                SaveDataToLocalStorage("saveData", data);
+                SaveDataToLocalStorage("last_saveDTS", new Date());
+            }
             // dews.ui.page.close(); // 페이지 닫기
         });
+    }
+    
+    // JSON 데이터를 로컬 스토리지에 저장하는 함수
+    function SaveDataToLocalStorage(key, data) {
+        try {
+            // 데이터를 JSON 문자열로 직렬화하여 저장
+            const jsonData = JSON.stringify(data);
+            localStorage.setItem(key, jsonData);
+            console.log(`데이터를 로컬 스토리지에 저장했습니다. (키: ${key})`);
+        } catch (error) {
+            console.error(`로컬 스토리지에 데이터를 저장하는 중 오류 발생: ${error}`);
+        }
+    }
+    
+    // 로컬 스토리지에서 JSON 데이터를 가져오는 함수
+    function getDataFromLocalStorage(key) {
+        try {
+            // 로컬 스토리지에서 데이터를 가져와서 파싱
+            const jsonData = localStorage.getItem(key);
+            if (jsonData) {
+                const data = JSON.parse(jsonData);
+                console.log(`로컬 스토리지에서 데이터를 가져왔습니다. (키: ${key})`);
+                return data;
+            } else {
+                console.log(`로컬 스토리지에서 데이터를 찾을 수 없습니다. (키: ${key})`);
+                return null;
+            }
+        } catch (error) {
+            console.error(`로컬 스토리지에서 데이터를 가져오는 중 오류 발생: ${error}`);
+            return null;
+        }
+    }
+    
+    // new Date()로 얻은 정보를 포맷팅해주는 함수
+    function GetformatDate(inputDateStr) {
+        const date = new Date(inputDateStr);
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const day = String(date.getDate()).padStart(2, '0');
+        const hours = String(date.getHours()).padStart(2, '0');
+        const minutes = String(date.getMinutes()).padStart(2, '0');
+        const seconds = String(date.getSeconds()).padStart(2, '0');
+    
+        return `${year}년 ${month}월 ${day}일 ${hours}:${minutes}:${seconds}`;
+    }
+    
+    //카드리스트로 변경하는 함수
+    function OpenSubPage() {
+        try {
+            dews.ui.page.openSubPage('ESSODM01400_X10005_Sub', {
+                title: '카드리스트뷰',
+                url: '/HR/DWAGGER/card_Modify_full',
+                data: {
+                    apiDatas: apiDatas
+                },
+                callback: function () {
+                    //SearchData();
+    
+                }
+            });
+        } catch (error) {
+            dews.error(error);
+            console.error(error);
+        }
     }
     
     

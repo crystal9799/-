@@ -209,10 +209,18 @@ public class HRPamodm01800_X10005Service extends DzCometService {
 	}
 	
 	@DzApi(url="/list_HR_EMP_MST", desc="사원 도움창 조회", httpMethod=DzRequestMethod.GET)
-	public List<Map<String, Object>> list_HR_EMP_MST() throws Exception {	    
+	public List<Map<String, Object>> list_HR_EMP_MST(
+            @DzParam(key = "hlof_fg_cd", desc = "재직구분", required = false, paramType = DzParamType.QueryString) String hlof_fg_cd,
+            @DzParam(key = "txt_search", desc = "검색어", required = false, paramType = DzParamType.QueryString) String txt_search) throws Exception {	    
 	    try {
 			HashMap<String, Object> parameters = new HashMap<String, Object>();
 			parameters.put("P_COMPANY_CD", this.getCompanyCode());
+            if (hlof_fg_cd != null && StringUtil.isNotEmpty(hlof_fg_cd)) {
+                parameters.put("P_HLOF_FG_CD", hlof_fg_cd);
+            }
+            if (txt_search != null && StringUtil.isNotEmpty(txt_search)) {
+                parameters.put("P_TXT_SEARCH", txt_search);
+            }
 
 			List<Map<String, Object>> checkSdtl = executeQuery("dao.Pamodm01800_X10005Dao.list_HR_EMP_MST", parameters);
 			

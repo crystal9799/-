@@ -451,19 +451,17 @@
 	
 	       AND	('N' = 'N' OR HEM.DEPT_CD IN ('DETAIL_AUTH_NOT_USED') )
 	
-	       AND HEM.HLOF_FG_CD = '1'
-	
+			<if test=' P_HLOF_FG_CD != null and P_HLOF_FG_CD != "" '>
+			   AND HEM.HLOF_FG_CD = #{P_HLOF_FG_CD}
+			</if>
 	       AND HEM.EMPY_TP_CD = '1'
 	
 	       AND ( HEM.DEPT_CD IN  (  '1000100' )  )
 	
-	       AND (  
-	             UPPER(MDM.DEPT_NM)  LIKE CONCAT(CONCAT('%', UPPER('')), '%') OR  
-	             UPPER(MDL.DEPT_NM)  LIKE CONCAT(CONCAT('%', UPPER('')), '%') OR  
-	             UPPER(HEM.EMP_NO)   LIKE CONCAT(CONCAT('%', UPPER('')), '%') OR  
-	             UPPER(HEM.KOR_NM)   LIKE CONCAT(CONCAT('%', UPPER('')), '%') OR
-	             UPPER(HEM.DEPT_CD)  LIKE CONCAT(CONCAT('%', UPPER('')), '%')
-	           ) 
+			<if test=' P_TXT_SEARCH != null and P_TXT_SEARCH != "" '>
+			   AND (    HEM.EMP_NO LIKE CONCAT(CONCAT('%', #{P_TXT_SEARCH}), '%')
+			         OR HEM.KOR_NM LIKE CONCAT(CONCAT('%', #{P_TXT_SEARCH}), '%'))
+			</if>
 	    ORDER BY HEM.COMPANY_CD ASC, HEM.EMP_NO ASC
 	</select>
 	

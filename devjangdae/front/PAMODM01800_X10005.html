@@ -1,6 +1,6 @@
-<!--##70f77497-fd62-42fe-9b0f-c6b323b7c9f4##-->
+<!--##d762b689-fc8f-4efd-babd-9ab99bc59c94##-->
 <!--##PAMODM01800_X10005##-->
-<!--##1QDfntZe6KLum0dcgpCyUWlaCYxUmj/0fnvMUEh8ZimPRBOlP7QI+QYp+xXdNYrg##-->
+<!--##LBc2IM5jPYmrHxu+mhRGel+KKViP9SwkuPTuPrmzbYjAysP4MpSiNbIaZbOfSEza##-->
 <!--
   DEWS UI/UX IDE - Build Result - v1.5
   # PageID: PAMODM01800_X10005
@@ -211,11 +211,16 @@
         var dialog;
         dialog = dews.ui.dialog('PAMODM01800_X10005_EMP_POP', {
             url: '/view/HR/PAMODM01800_X10005_EMP_POP',
-            title: '커커커1 도움창',
-            width: 800,
-            height: 400,
+            title: '사원 도움창',
+            width: 650,
+            height: 600,
             //initData: initData,
             ok: function (data) {
+                console.log("시간체크1");
+                dews.ui.loading.show({ // 로딩화면 보여주기
+                    text: '조회중입니다.'
+                });
+    
                 console.log(data);
     
                 for (i = 0; i < data.length; i++) {
@@ -229,7 +234,8 @@
                     get_ogrp_cd_pstn_cd(data[i].COMPANY_CD, data[i].OGRP_CD, data[i].PSTN_CD);
                     get_prmt_dt_retm_dt(data[i].COMPANY_CD, data[i].EMP_NO);
                 }
-    
+                dews.ui.loading.hide();
+                console.log("시간체크2");
             }
         });
         dialog.open();
@@ -657,7 +663,7 @@
     
     function get_org(company_cd, dept_cd) {
         dews.api.get(dews.url.getApiUrl("HR", "HRPamodm01800_X10005Service", "get_org"), {
-            async: false,
+            async: true,
             data: {
                 company_cd: company_cd,
                 dept_cd: dept_cd
@@ -671,7 +677,7 @@
     
     function get_ogrp_cd_pstn_cd(company_cd, ogrp_cd, pstn_cd) {
         dews.api.get(dews.url.getApiUrl("HR", "HRPamodm01800_X10005Service", "get_ogrp_cd_pstn_cd"), {
-            async: false,
+            async: true,
             data: {
                 company_cd: company_cd,
                 ogrp_cd: ogrp_cd,
@@ -687,7 +693,7 @@
     
     function get_prmt_dt_retm_dt(company_cd, emp_no) {
         dews.api.get(dews.url.getApiUrl("HR", "HRPamodm01800_X10005Service", "get_prmt_dt_retm_dt"), {
-            async: false,
+            async: true,
             data: {
                 company_cd: company_cd,
                 emp_no: emp_no
@@ -702,7 +708,7 @@
     
     function get_tm_cd_nm(emp_no, bwrk_dt) {
         dews.api.get(dews.url.getApiUrl("HR", "HRPamodm01800_X10005Service", "get_tm_cd_nm"), {
-            async: false,
+            async: true,
             data: {
                 emp_no: emp_no,
                 bwrk_dt: bwrk_dt

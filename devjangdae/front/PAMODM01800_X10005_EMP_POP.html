@@ -1,6 +1,6 @@
-<!--##47433e1a-79ac-4dec-814d-9d7ea9129c5f##-->
+<!--##ef6af0b5-0719-4a65-8746-c803bc9e29aa##-->
 <!--##PAMODM01800_X10005_EMP_POP##-->
-<!--##8TfkyhAMPb6fFmcBlawRO4oaFFoSFeXv3jDjuoJoxhPzazjS8BJA0rngrzw1Ls5jmHjik4hB/J4mwEFUacuPTA==##-->
+<!--##7GbzCcjSU+JA+T2zhZfxxufv8LBd3I6AGcLy4DGp+WyxFauTdNyRjr26Zey0r/PjlVhQQeQHXNZyHbWqpTp1CA==##-->
 <!--
   DEWS UI/UX IDE - Build Result - v1.5
   # PageID: PAMODM01800_X10005_EMP_POP
@@ -16,13 +16,13 @@
     <li>
       <label class="dews-ui-multilingual">고용형태</label>
       <span>
-        <select id="ddl2" name="ddl2" class="dews-ui-dropdownlist basic" data-dews-value-field="SYSDEF_CD" data-dews-text-field="SYSDEF_NM" data-dews-show-tooltip="true" data-dews-show-value-tooltip="true" data-dews-use-numkey="false"></select>
+        <select id="s_HLOF_FG_CD" name="s_HLOF_FG_CD" class="dews-ui-dropdownlist basic" data-dews-value-field="SYSDEF_CD" data-dews-text-field="SYSDEF_NM" data-dews-show-tooltip="true" data-dews-show-value-tooltip="true" data-dews-use-numkey="false"></select>
       </span>
     </li>
     <li>
       <label class="dews-ui-multilingual">검색어</label>
       <span>
-        <input id="txt1" name="txt1" type="text" class="dews-ui-textbox" />
+        <input id="s_TXT_SEARCH" name="s_TXT_SEARCH" type="text" class="dews-ui-textbox" />
       </span>
     </li>
   </ul>
@@ -62,7 +62,13 @@
       grid: true,
       transport: {
         read: {
-          url: dews.url.getApiUrl('HR', 'HRPamodm01800_X10005Service', 'list_HR_EMP_MST')
+          url: dews.url.getApiUrl('HR', 'HRPamodm01800_X10005Service', 'list_HR_EMP_MST'),
+          data: function () {
+            return {
+              hlof_fg_cd: self.s_HLOF_FG_CD.value(),
+              txt_search: self.s_TXT_SEARCH.text()
+            };
+          }
         }
       },
       schema: {
@@ -124,10 +130,9 @@
     });
     
     
-    self.ddl2.setDataSource(self.pipeDataSource1_P00010);
+    self.s_HLOF_FG_CD.setDataSource(self.pipeDataSource1_P00010);
     dews.ui.grid(self.$grid1, {
       dataSource: self.ds1,
-      height: 400,
       sortable: 'multiple',
       autoBind: false,
       copyMode: 'cell',
@@ -149,7 +154,7 @@
         {
           field: 'EMP_NO',
           title: '사번코드',
-          width: 60,
+          width: 30,
           editor: {
             type: 'codepicker',
             helpCode: 'H_ME_SHEMP_MST_C',
@@ -162,13 +167,12 @@
         {
           field: 'KOR_NM',
           title: '사원성명',
-          width: 90,
-          align: 'left'
+          width: 30
         },
         {
           field: 'JNCO_DT',
           title: '입사일',
-          width: 80,
+          width: 30,
           formats: {
             type: 'date',
             format: 'yyyy-MM-dd'
@@ -239,6 +243,33 @@
     
     
     /*0c171119-0e8c-41e0-b1b6-31697718e20d*/ self.ds1.read();
+    //검색어 컨트롤에서 ENTER키 입력
+    {
+        self.$s_TXT_SEARCH.on('keydown', function (e) {
+            var keycode = event.keyCode ? event.keyCode : e.which;
+            if (keycode == 13) {
+                // alert("enter입력!");
+                self.ds1.read();
+            }
+        });
+    }
+    
+    function list_HR_EMP_MST(hlof_fg_cd, txt_search) {
+        dews.api.get(dews.url.getApiUrl("HR", "HRPamodm01800_X10005Service", "list_HR_EMP_MST"), {
+            async: false,
+            data: {
+                hlof_fg_cd: hlof_fg_cd,
+                txt_search: txt_search
+            }
+        }).done(function (data) {
+    
+            console.log(data);
+            // self.grid1.setCellValue(self.grid1.select(), 'OGRP_CD', data[0].SYSDEF_NM);
+            // self.grid1.setCellValue(self.grid1.select(), 'PSTN_CD', data[1].SYSDEF_NM);
+        }).fail(function (xhr, status, error) {
+            dews.error(xhr.responseJSON.message);
+        });
+    }
     
     
     

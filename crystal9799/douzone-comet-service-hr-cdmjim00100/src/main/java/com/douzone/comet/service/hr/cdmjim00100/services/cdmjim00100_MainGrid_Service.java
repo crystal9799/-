@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import javax.servlet.http.HttpServletRequest;
+
 import com.douzone.gpd.restful.annotation.DzApi;
 import com.douzone.gpd.restful.annotation.DzParam;
 import com.douzone.gpd.restful.enums.DzParamType;
@@ -20,6 +22,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.douzone.gpd.components.exception.DzApplicationRuntimeException;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -34,6 +38,9 @@ import java.util.HashMap;
 @DzApiService(value="Cdmjim00100_MainGrid_Service", module=CometModule.HR, desc="메인그리드_서비스")
 public class cdmjim00100_MainGrid_Service extends DzCometService {
 
+	@Autowired
+	HttpServletRequest request;
+	
 	@Autowired
 	cdmjim00100_MainGrid_Dao cdmjim00100_maingridDAO; 
 	cdmjim00100_SubGrid_Dao cdmjim00100_subgridDAO;
@@ -89,9 +96,11 @@ public class cdmjim00100_MainGrid_Service extends DzCometService {
 	    		for(cdmjim00100_maingrid add_data: add_list) {	    			
 	    			System.out.println("인서트 데이터 정보 : ====== > " + add_list.toString());
 	    			//능력분류번호 채번
-	    			String num = add_data.getLclas_cd() + add_data.getMlsfc_cd() + add_data.getS_csf_cd() + add_data.getTclf_cd() + add_data.getAclf_cd();
+//	    			String num = add_data.getLclas_cd() + add_data.getMlsfc_cd() + add_data.getS_csf_cd() + add_data.getTclf_cd() + add_data.getAclf_cd();
 	    			//채번한 값 모델에 set
-	    			add_data.setAclf_no(num);  	    		
+//	    			add_data.setAclf_no(num);  	    		
+	    			add_data.setUSER_ID(this.getUserId());
+	    			add_data.setIP(request.getRemoteAddr());
 	    			cdmjim00100_maingridDAO.insertcdmjim00100_maingrid(add_data);
 	    		}
 	    	}
@@ -99,6 +108,8 @@ public class cdmjim00100_MainGrid_Service extends DzCometService {
 	    		for(cdmjim00100_maingrid update_data: update_List) {
 	    			System.out.println("업데이트 데이터 정보 : ====== > " + update_data.toString());
 	    			update_data.setCompany_cd(getCompanyCode());
+	    			update_data.setUSER_ID(this.getUserId());
+	    			update_data.setIP(request.getRemoteAddr());
 	    			cdmjim00100_maingridDAO.updatecdmjim00100_maingrid(update_data);
 	    		}	    		
 	    	}
@@ -107,6 +118,13 @@ public class cdmjim00100_MainGrid_Service extends DzCometService {
 	    			System.out.println("딜리트 데이터 정보 : ====== > " + delete_data.toString());
 	    			delete_data.setCompany_cd(getCompanyCode());
 	    			cdmjim00100_maingridDAO.deletecdmjim00100_maingrid(delete_data);
+	    			
+	    			//하위 그리드 삭제
+	    			Map<String, Object> parameters = new HashMap<>();
+	    			parameters.put("ACLF_NO", delete_data.getAclf_no());
+	    			parameters.put("VER_CD", delete_data.getVer_cd());
+	    			cdmjim00100_subgridDAO.deletecdmjim00100_right1_grid_all(parameters);
+	    			cdmjim00100_subgridDAO.deletecdmjim00100_right2_grid_all(parameters);
 	    		}	    		
 	    	}
 	    } catch (Exception e) {

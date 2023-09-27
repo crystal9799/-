@@ -66,7 +66,9 @@
 	        ACLF_NM,
 	        ACLF_LV,
 	        ACLF_TXT,
-	        COMPANY_CD
+	        COMPANY_CD,
+	        INSERT_DTS,
+	        INSERT_IP
 	    )
 	    VALUES (
 	        #{use_yn},
@@ -113,7 +115,9 @@
 	        #{aclf_nm},
 	        #{aclf_lv},
 	        #{aclf_txt},
-	        #{company_cd}
+	        #{company_cd},
+	        SYSDATE,
+	        #{IP}
 	    )    
 	</insert>
 
@@ -132,7 +136,9 @@
 	        ACLF_CD = #{aclf_cd},
 	        ACLF_NM = #{aclf_nm},
 	        ACLF_LV = #{aclf_lv},
-	        ACLF_TXT = #{aclf_txt}
+	        ACLF_TXT = #{aclf_txt},
+	        UPDATE_DTS = SYSDATE,
+	        UPDATE_ID = #{USER_ID}
 	    WHERE ACLF_NO = #{aclf_no}
 	    AND JOB_FG = #{job_fg}
 	    AND VER_CD = #{ver_cd}

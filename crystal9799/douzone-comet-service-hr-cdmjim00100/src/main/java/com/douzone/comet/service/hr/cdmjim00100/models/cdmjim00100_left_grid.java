@@ -12,20 +12,20 @@ public class cdmjim00100_left_grid extends DzAbstractModel {
 
 	
 	@SerializedName("COMPANY_CD")
-	@DzModelField(name="COMPANY_CD", desc="능력분류번호", colName="ACLF_NO", colSize="20", isKey=false)
-	private String company_cd;
+	@DzModelField(name="COMPANY_CD", desc="능력분류번호", colName="COMPANY_CD", colSize="20", isKey=false)
+	private String COMPANY_CD;
 	
 	@SerializedName("ACLF_NO")
 	@DzModelField(name="ACLF_NO", desc="능력분류번호", colName="ACLF_NO", colSize="20", isKey=false)
-	private String aclf_no;
+	private String ACLF_NO;
 	  
 	@SerializedName("VER_CD")
 	@DzModelField(name="VER_CD", desc="버전코드", colName="VER_CD", colSize="5", isKey=false)
-	private String ver_cd;
+	private String VER_CD;
 	  
 	@SerializedName("AELM_CD")
-	@DzModelField(name="AELM_CD", desc="능력요소코드", colName="AELM_CD", colSize="5", isKey=false)
-	private String aelm_cd;
+	@DzModelField(name="AELM_CD", desc="능력요소코드", colName="AELM_CD", colSize="10", isKey=false)
+	private String AELM_CD;
 	  
 	@SerializedName("AELM_NM")
 	@DzModelField(name="AELM_NM", desc="능력요소명", colName="AELM_NM", colSize="300", isKey=false)
@@ -42,8 +42,44 @@ public class cdmjim00100_left_grid extends DzAbstractModel {
 	@SerializedName("PCFM_CD")
 	@DzModelField(name="PCFM_CD", desc="PCFM_CD", colName="PCFM_CD", colSize="100", isKey=false)
 	private String PCFM_CD;
-
 	
+	@SerializedName("IP")
+	@DzModelField(name="IP", desc="IP", colName="IP", colSize="100", isKey=false)
+	private String IP;
+
+	@SerializedName("USER_ID")
+	@DzModelField(name = "USER_ID", desc = "USER_ID", colName = "USER_ID", colSize = "100", isKey = false)
+	private String USER_ID;
+	
+	@SerializedName("OG_AELM_CD")
+	@DzModelField(name="OG_AELM_CD", desc="능력요소코드", colName="OG_AELM_CD", colSize="10", isKey=false)
+	private String OG_AELM_CD;
+	
+	
+	public String getOG_AELM_CD() {
+		return OG_AELM_CD;
+	}
+
+	public void setOG_AELM_CD(String oG_AELM_CD) {
+		OG_AELM_CD = oG_AELM_CD;
+	}
+
+	public String getUSER_ID() {
+		return USER_ID;
+	}
+
+	public void setUSER_ID(String uSER_ID) {
+		USER_ID = uSER_ID;
+	}
+
+	public String getIP() {
+		return IP;
+	}
+
+	public void setIP(String iP) {
+		IP = iP;
+	}
+
 	public String getPCFM_CD() {
 		return PCFM_CD;
 	}
@@ -53,11 +89,11 @@ public class cdmjim00100_left_grid extends DzAbstractModel {
 	}
 
 	public String getCompany_cd() {
-		return company_cd;
+		return COMPANY_CD;
 	}
 
-	public void setCompany_cd(String company_cd) {
-		this.company_cd = company_cd;
+	public void setCompany_cd(String COMPANY_CD) {
+		this.COMPANY_CD = COMPANY_CD;
 	}
 
 	public String get_uid() {
@@ -69,27 +105,27 @@ public class cdmjim00100_left_grid extends DzAbstractModel {
 	}
 
 	public String getAclf_no() {
-		return aclf_no;
+		return ACLF_NO;
 	}
 
 	public void setAclf_no(String aclf_no) {
-		this.aclf_no = aclf_no;
+		this.ACLF_NO = aclf_no;
 	}
  
 	public String getVer_cd() {
-		return ver_cd;
+		return VER_CD;
 	}
 
-	public void setVer_cd(String ver_cd) {
-		this.ver_cd = ver_cd;
+	public void setVer_cd(String VER_CD) {
+		this.VER_CD = VER_CD;
 	}
  
 	public String getAelm_cd() {
-		return aelm_cd;
+		return AELM_CD;
 	}
 
 	public void setAelm_cd(String aelm_cd) {
-		this.aelm_cd = aelm_cd;
+		this.AELM_CD = aelm_cd;
 	}
  
 	public String getAelm_nm() {
@@ -111,9 +147,9 @@ public class cdmjim00100_left_grid extends DzAbstractModel {
     @Override
     public String toString() {
       return
-        "aclf_no: ["+ aclf_no +"]\n"+
-        "ver_cd: ["+ ver_cd +"]\n"+
-        "aelm_cd: ["+ aelm_cd +"]\n"+
+        "aclf_no: ["+ ACLF_NO +"]\n"+
+        "ver_cd: ["+ VER_CD +"]\n"+
+        "aelm_cd: ["+ AELM_CD +"]\n"+
         "aelm_nm: ["+ AELM_NM +"]\n"+
         "aelm_lv: ["+ AELM_LV +"]";
     }

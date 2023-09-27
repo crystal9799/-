@@ -1,7 +1,10 @@
 package com.douzone.comet.service.hr.dwagger.utils;
 
-import java.io.FileWriter;
+import java.io.BufferedWriter;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +22,8 @@ public class JsonUtils {
 	@Autowired
 	CacheDwaggerModels cacheModels;
 
-	public void convertJsonToObject(String jsonData) {
+	public List<DwaggerModel> convertJsonToObject(String jsonData) {
+		List<DwaggerModel> dwaggerModelList = null;
 		try {
 			// ObjectMapper를 사용하여 JSON 데이터를 Java 객체로 변환
 			ObjectMapper objectMapper = new ObjectMapper();
@@ -27,28 +31,22 @@ public class JsonUtils {
 
 			// "data" 배열을 가져와서 List<DwaggerModel>로 변환
 			JsonNode dataNode = jsonNode.get("data");
-			List<DwaggerModel> dwaggerModelList = objectMapper.convertValue(dataNode,
+			dwaggerModelList = objectMapper.convertValue(dataNode,
 					new TypeReference<List<DwaggerModel>>() {
 					});
 
 //			List<DwaggerModel> dwaggerModelList = objectMapper.readValue(jsonData,
 //					new TypeReference<List<DwaggerModel>>() {
 //					});
-			
+
 			System.out.println("--------------------------");
 			System.out.println("dwaggerModelList==>" + dwaggerModelList);
-			System.out.println("cacheModels==>" + cacheModels);
 			System.out.println("--------------------------");
 
-			// 변환된 자바 객체를 서버메모리에 저장하기 위해 set사용.
-			// 새로 값을 불러온다면 이를 파일로 저장.
-			if(cacheModels != null){
-			cacheModels.setApiList(dwaggerModelList);
-			cacheModels.setUpdateDTS(cacheModels.getDate());
-			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		return dwaggerModelList;
 	}
 
 	public String serializeToJson(CacheDwaggerModels cacheDwaggerModels) {
@@ -60,28 +58,31 @@ public class JsonUtils {
 			return "{}"; // 빈 JSON 객체 또는 오류 처리 메시지를 반환
 		}
 	}
-	
-	//JSON으로 직렬화 한뒤 해당 데이터를 파일에 저장하는 메서드
-	public void saveCacheDwaggerModelsToFile() {
-        ObjectMapper objectMapper = new ObjectMapper();
-        String filePath = "C:\\cacheDwaggerModels.json";
-        
-        try {
-            // CacheDwaggerModels 객체를 JSON 문자열로 직렬화
-            String json = objectMapper.writeValueAsString(cacheModels);
 
-            // JSON 문자열을 파일로 저장
-            try (FileWriter fileWriter = new FileWriter(filePath)) {
-                fileWriter.write(json);
-                System.out.println("CacheDwaggerModels 객체를 파일로 저장했습니다.");
-            } catch (IOException e) {
-                e.printStackTrace();
-                System.err.println("CacheDwaggerModels 객체를 파일로 저장하는 데 실패했습니다.");
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            System.err.println("CacheDwaggerModels 객체를 JSON으로 직렬화하는 데 실패했습니다.");
-        }
-    }
-	
+	// JSON으로 직렬화 한뒤 해당 데이터를 파일에 저장하는 메서드
+	public void saveCacheDwaggerModelsToFile() {
+		ObjectMapper objectMapper = new ObjectMapper();
+		String filePath = "C:\\cacheDwaggerModels.json";
+
+		try {
+			// CacheDwaggerModels 객체를 JSON 문자열로 직렬화
+			String json = objectMapper.writeValueAsString(cacheModels);
+
+			// JSON 문자열을 파일로 저장
+			// 한글 인코딩 문제로 UTF-8 인코딩 설정
+			try (FileOutputStream fos = new FileOutputStream(filePath);
+					OutputStreamWriter osw = new OutputStreamWriter(fos, StandardCharsets.UTF_8);
+					BufferedWriter writer = new BufferedWriter(osw)) {
+				writer.write(json);
+				System.out.println("CacheDwaggerModels 객체를 파일로 저장했습니다.");
+			} catch (IOException e) {
+				e.printStackTrace();
+				System.err.println("CacheDwaggerModels 객체를 파일로 저장하는 데 실패했습니다.");
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.err.println("CacheDwaggerModels 객체를 JSON으로 직렬화하는 데 실패했습니다.");
+		}
+	}
+
 }

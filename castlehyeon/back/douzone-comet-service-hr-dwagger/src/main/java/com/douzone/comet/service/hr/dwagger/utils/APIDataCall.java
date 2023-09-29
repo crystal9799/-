@@ -18,6 +18,9 @@ public class APIDataCall {
 			String baseUrl = buildBaseUrl(condition_cd);
 		
 			String urlStr = baseUrl + buildQueryString(keywords);
+			
+			//요청보낼 최종 주소
+			System.out.println("요청보낼 최종 주소" + urlStr);
 
 			URL url = new URL(urlStr);
 
@@ -69,12 +72,16 @@ public class APIDataCall {
 			switch (condition_cd) {
          case "1":
              baseUrl = "http://localhost:8080/api/CM/ServiceRegistrySearchService/metadataModels/ServiceNames?serviceName=";
+             break;
          case "2":
         	 baseUrl = "http://localhost:8080/api/CM/ServiceRegistrySearchService/metadataModels/ServiceNames?serviceName=";
+        	 break;
          case "3":
         	 baseUrl = "http://localhost:8080/api/CM/ServiceRegistrySearchService/metadataModels/ServiceDescriptions?serviceDescription=";
+        	 break;
          case "4":
         	 baseUrl = "http://localhost:8080/api/CM/ServiceRegistrySearchService/metadataModels/urlPattern?urlPattern=";
+        	 break;
          case "5":
         	 baseUrl = "http://localhost:8080/api/CM/ServiceRegistrySearchService/metadataModels/PatternDescriptions?PatternDescription=";
      }

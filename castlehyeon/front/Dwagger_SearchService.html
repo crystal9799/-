@@ -1,6 +1,6 @@
-<!--##256e6cab-a51a-4a38-a8ba-41c98c81f745##-->
+<!--##0eb4d077-eb80-4359-b22f-2047a4d27ff8##-->
 <!--##Dwagger_SearchService##-->
-<!--##J4ZHYuHfkpukQa9hqdwKywVmu329XKJEYB1829vuEEgRjSEokzH+UGGHjwP6/sZR##-->
+<!--##0jaPzNJSUDG3ocAdSB2eXX3FptE9ZyVURy34scbNz32xNtvcr17aJGj9tSiVJxcJ##-->
 <!--
   DEWS UI/UX IDE - Build Result - v1.5
   # PageID: Dwagger_SearchService
@@ -370,10 +370,28 @@
                     self.last_backupDT.text(GetformatDate(new Date()));
                     SaveDataToLocalStorage("saveData", data);
                     SaveDataToLocalStorage("last_saveDTS", new Date());
+                    dews.alert("백업데이터를 저장했습니다.", "success");
                 }
     
                 self.total_ds.data(apiDatas);
     
+                
+            } else if (data[0].state === 'success' && data[0].data.length === 0) { //데이터가 빈 배열이 왔다면
+                //로컬스토리지 api 데이터
+                retrievedData = getDataFromLocalStorage("saveData");
+                //로컬스토리지 업데이트 날짜
+                retrievedDTS = getDataFromLocalStorage("last_saveDTS");
+                if (retrievedDTS != null && retrievedDTS != undefined && retrievedDTS != '') {
+                    last_backup = retrievedDTS;
+                }
+                self.last_backupDT.text(GetformatDate(last_backup));
+    
+    
+                if (retrievedData != null && retrievedData != undefined && retrievedData != '') {
+                    apiDatas = retrievedData;
+                    self.total_ds.data(apiDatas);
+                }
+                dews.alert("백업데이터를 불러왔습니다.", "success");
             } else {
                 dews.alert("데이터를 불러오는데 실패했습니다.", "warning");
             }

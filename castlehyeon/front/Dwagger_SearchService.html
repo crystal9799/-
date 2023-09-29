@@ -1,6 +1,6 @@
-<!--##0eb4d077-eb80-4359-b22f-2047a4d27ff8##-->
+<!--##0644a2cf-384c-43c4-b9f3-3a1bcefb78bd##-->
 <!--##Dwagger_SearchService##-->
-<!--##0jaPzNJSUDG3ocAdSB2eXX3FptE9ZyVURy34scbNz32xNtvcr17aJGj9tSiVJxcJ##-->
+<!--##iZVDaI1AVn3VyjU7qB8YPYvpFYqtuHxJJZmcvfEVd6/ds1E7qGE1p+Ke6GLNTQUx##-->
 <!--
   DEWS UI/UX IDE - Build Result - v1.5
   # PageID: Dwagger_SearchService
@@ -175,6 +175,11 @@
     
     });
     self.$SearchKeyword.on('change', /*1b31fd77-8a69-46d3-9547-323acd222a4e*/ function (e) {
+    });
+    self.$SearchKeyword.on('keydown', /*e25ba940-aa16-4afd-aa9c-cfdaa18ff299*/ function (key) {
+        if (key.keyCode === 13) {
+            CallApiDatas();
+        }
     });
     self.$SearchBtn.on('click', /*9f9e2965-bd0c-45c6-85fd-db9bc1194706*/ function (e) {
         CallApiDatas();
@@ -375,8 +380,12 @@
     
                 self.total_ds.data(apiDatas);
     
-                
-            } else if (data[0].state === 'success' && data[0].data.length === 0) { //데이터가 빈 배열이 왔다면
+    
+            } else if (data.length === 0) { //데이터가 빈 배열이 왔다면
+                dews.ui.snackbar.error('검색결과가 없습니다.');
+    
+            } else {
+                dews.alert("데이터를 불러오는데 실패했습니다.", "warning");
                 //로컬스토리지 api 데이터
                 retrievedData = getDataFromLocalStorage("saveData");
                 //로컬스토리지 업데이트 날짜
@@ -391,9 +400,8 @@
                     apiDatas = retrievedData;
                     self.total_ds.data(apiDatas);
                 }
-                dews.alert("백업데이터를 불러왔습니다.", "success");
-            } else {
-                dews.alert("데이터를 불러오는데 실패했습니다.", "warning");
+    
+                GetDataByKeywords();
             }
             // dews.ui.page.close(); // 페이지 닫기
         });
@@ -473,6 +481,26 @@
             self.SearchKeyword.readonly(false);
         }
     }
+    //현재 넘겨받은 JSON데이터 객체에서 키워드를 통해 찾는다.
+    function GetDataByKeywords() {
+        var keywords = self.SearchKeyword.text();
+        var mainData = apiDatas;
+        if (apiDatas != '' && apiDatas != null && apiDatas != undefined) {
+            // data 배열에서 keywords를 포함하는 요소들을 필터링하여 새로운 배열 생성
+            const filteredData = mainData.filter(item => {
+                // item 객체의 필드 중에서 keywords를 포함하는 필드가 있는지 확인
+                for (const key in item) {
+                    if (item.hasOwnProperty(key) && typeof item[key] === 'string' && item[key].includes(keywords)) {
+                        return true; // keywords를 포함하는 필드가 발견되면 해당 요소를 포함
+                    }
+                }
+                return false; // keywords를 포함하는 필드가 없으면 해당 요소를 제외
+            })
+            self.total_ds.data(filteredData);
+            dews.alert("백업데이터를 불러왔습니다.", "success");
+        } else
+            dews.alert("백업데이터가 존재하지 않습니다.", "success");
+    };
     
     
 

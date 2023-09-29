@@ -1,6 +1,6 @@
-<!--##e34077df-bfa2-4ac2-8c79-2da3e8e05395##-->
+<!--##12c9758f-9cec-4d9f-aa2f-aaa43258169e##-->
 <!--##card_Modify_full##-->
-<!--##umOqNSCEUkLiqIF+L0N4jk5URCufBTYECLi23bTZUgegw/y7QVs/AXXDubiY6SnU##-->
+<!--##obI+R0LVD4W+C6slmvIOywYKWM/NFYudL5n8AwntDji0vyMM3KWDMzBznep0IBT7##-->
 <!--
   DEWS UI/UX IDE - Build Result - v1.5
   # PageID: card_Modify_full
@@ -271,12 +271,24 @@
         '	</div>' +
         '</div>',
       css: 
-        '         .truncate {' +
-        '             overflow: hidden;' +
-        '             white-space: nowrap;     ' +
-        '             text-overflow: ellipsis; ' +
-        '             width: 100%;             ' +
-        '         }'
+        '   .dews-cardlist-main-text p {' +
+        '     white-space: nowrap; /* 텍스트가 한 줄로 유지되도록 설정 */' +
+        '     overflow: hidden; /* 넘치는 부분을 숨기도록 설정 */' +
+        '     text-overflow: ellipsis; /* "..." 표시 설정 */' +
+        '     max-width: 80%; /* 부모 요소 너비를 최대로 설정 */' +
+        '   }' +
+        '     .dews-cardlist-sub-text p {' +
+        '     white-space: nowrap; /* 텍스트가 한 줄로 유지되도록 설정 */' +
+        '     overflow: hidden; /* 넘치는 부분을 숨기도록 설정 */' +
+        '     text-overflow: ellipsis; /* "..." 표시 설정 */' +
+        '     max-width: 50%; /* 부모 요소 너비를 최대로 설정 */' +
+        '   }' +
+        '     .dews-cardlist-right-text p {' +
+        '     white-space: nowrap; /* 텍스트가 한 줄로 유지되도록 설정 */' +
+        '     overflow: hidden; /* 넘치는 부분을 숨기도록 설정 */' +
+        '     text-overflow: ellipsis; /* "..." 표시 설정 */' +
+        '     max-width: 50%; /* 부모 요소 너비를 최대로 설정 */' +
+        '   }'
     });
     self.cardlist1.on('change', /*38025a20-ec98-4527-9226-1010ce2bc574*/ function (e) {
     

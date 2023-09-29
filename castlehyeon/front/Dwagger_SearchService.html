@@ -1,6 +1,6 @@
-<!--##faa6c9ce-3788-46b8-be09-feedc5596df9##-->
+<!--##256e6cab-a51a-4a38-a8ba-41c98c81f745##-->
 <!--##Dwagger_SearchService##-->
-<!--##GAKOK1LcZJkJ+UR1pqN8G5RNRofHx78fFaqpyBG396SMWnHjk88Kvz4gEU66aBNV##-->
+<!--##J4ZHYuHfkpukQa9hqdwKywVmu329XKJEYB1829vuEEgRjSEokzH+UGGHjwP6/sZR##-->
 <!--
   DEWS UI/UX IDE - Build Result - v1.5
   # PageID: Dwagger_SearchService
@@ -112,17 +112,6 @@
     });
     self.total_ds = dews.ui.dataSource('total_ds', {
       grid: true,
-      transport: {
-        read: {
-          url: dews.url.getApiUrl('HR', 'DwaggerService', 'dwagger_list'),
-          data: function () {
-            return {
-              serviceName: self.SearchKeyword.text(),
-              langCd: 'KR'
-            };
-          }
-        }
-      },
       schema: {
         model: {
           fields: [
@@ -139,7 +128,8 @@
           ]
     
         }
-      }
+      },
+      data: []
     });
     self.search_conditions = dews.ui.dataSource('search_conditions', {
       schema: {
@@ -187,12 +177,7 @@
     self.$SearchKeyword.on('change', /*1b31fd77-8a69-46d3-9547-323acd222a4e*/ function (e) {
     });
     self.$SearchBtn.on('click', /*9f9e2965-bd0c-45c6-85fd-db9bc1194706*/ function (e) {
-        self.total_ds.read().done(function (data) {
-            if (data != '' && data != null && data != undefined && data[0] != null && data[0] != undefined && data[0] != '') {
-                SaveDataToLocalStorage("saveData", data);
-                SaveDataToLocalStorage("last_saveDTS", new Date());
-            }
-        })
+        CallApiDatas();
     });
     dews.ui.grid(self.$total_grid, {
       dataSource: self.total_ds,
@@ -343,7 +328,7 @@
     
     
     /*721d425c-12b9-49a3-b2f0-44c9d0fe0dd7*/ //# sourceURL=Dwagger_SearchService.js
-    self.total_ds.read();
+    // self.total_ds.read();
     Check_Condition();
     //초기 설정값
     //로컬스토리지 api 데이터
@@ -364,22 +349,33 @@
         apiDatas = retrievedData;
         self.total_ds.data(apiDatas);
     } else
-        CallApiTotalDatas();
+        CallApiDatas();
     
     
     
-    function CallApiTotalDatas() {
+    function CallApiDatas() {
         dews.api.get(dews.url.getApiUrl("HR", "DwaggerService", "dwagger_totalList"), {
             async: false,
             data: {
-                serviceName: '',
-                langCd: 'KR'
+                keywords: self.SearchKeyword.text(),
+                langCd: 'KR',
+                condition_cd: condition_cd
             }
         }).done(function (data) {
             apiDatas = data;
             if (data != '' && data != null && data != undefined && data[0] != null && data[0] != undefined && data[0] != '') {
-                SaveDataToLocalStorage("saveData", data);
-                SaveDataToLocalStorage("last_saveDTS", new Date());
+                //전체 검색일 때만 로컬스토리지에 저장
+                //마지막 백업날짜 업데이트
+                if (condition_cd === '1') {
+                    self.last_backupDT.text(GetformatDate(new Date()));
+                    SaveDataToLocalStorage("saveData", data);
+                    SaveDataToLocalStorage("last_saveDTS", new Date());
+                }
+    
+                self.total_ds.data(apiDatas);
+    
+            } else {
+                dews.alert("데이터를 불러오는데 실패했습니다.", "warning");
             }
             // dews.ui.page.close(); // 페이지 닫기
         });
@@ -452,6 +448,8 @@
     //조건에 따라 버튼 활성화 이벤트
     function Check_Condition() {
         if (condition_cd === '1') {
+            //값 초기화
+            self.SearchKeyword.text('');
             self.SearchKeyword.readonly(true);
         } else {
             self.SearchKeyword.readonly(false);

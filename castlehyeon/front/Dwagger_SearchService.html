@@ -1,6 +1,6 @@
-<!--##74f31bfe-d245-4d84-a0cc-8241372eee73##-->
+<!--##faa6c9ce-3788-46b8-be09-feedc5596df9##-->
 <!--##Dwagger_SearchService##-->
-<!--##lG+CraRILLn8onhIXpejivGRh4MvwUBP7h5Yq0RpYHrNJpbV/EZA6dBdj7F1TCn3##-->
+<!--##GAKOK1LcZJkJ+UR1pqN8G5RNRofHx78fFaqpyBG396SMWnHjk88Kvz4gEU66aBNV##-->
 <!--
   DEWS UI/UX IDE - Build Result - v1.5
   # PageID: Dwagger_SearchService
@@ -31,6 +31,12 @@
     </div>
     <div id="formpanel1" class="dews-ui-form-panel">
       <ul>
+        <li>
+          <label>검색조건</label>
+          <span>
+            <select id="search_condition" name="search_condition" class="dews-ui-dropdownlist basic" data-dews-value-field="CONDITION_CD" data-dews-text-field="CONDITION_CD_NM" data-dews-show-tooltip="true" data-dews-show-value-tooltip="true" data-dews-use-numkey="false"></select>
+          </span>
+        </li>
         <li class="col-2">
           <label>검색</label>
           <span>
@@ -69,6 +75,8 @@
 
 
     /*c1069f37-87e6-40d1-9de9-fdae9cb2aeca*/ var localStorage = window.localStorage;
+    //조건 코드
+    var condition_cd = '1';
     
     
     
@@ -133,6 +141,22 @@
         }
       }
     });
+    self.search_conditions = dews.ui.dataSource('search_conditions', {
+      schema: {
+        model: {
+          fields: [
+            { field: 'CONDITION_CD', editable: false, type: 'string' }, 
+            { field: 'CONDITION_CD_NM', editable: false, type: 'string' }
+          ]
+    
+        }
+      },
+      data: [{ CONDITION_CD: "1", CONDITION_CD_NM: "전체검색"},
+    { CONDITION_CD: "2", CONDITION_CD_NM: "서비스명"},
+    { CONDITION_CD: "3", CONDITION_CD_NM: "서비스설명"},
+    { CONDITION_CD: "4", CONDITION_CD_NM: "URL패턴"},
+    { CONDITION_CD: "5", CONDITION_CD_NM: "URL설명"}]
+    });
     
     
     dews.ui.mainbuttons.information.hide();
@@ -151,6 +175,16 @@
             dews.error(error);
             console.error(error);
         }
+    });
+    self.search_condition.setDataSource(self.search_conditions);
+    self.search_condition.on('change', /*e00ca631-c4d2-47cd-893b-06156671df73*/ function (e) {
+        condition_cd = self.search_condition.value();
+        Check_Condition();
+    });
+    self.search_condition.on('select', /*f9176874-6392-4629-9cc0-34698b9a07e0*/ function (e) {
+    
+    });
+    self.$SearchKeyword.on('change', /*1b31fd77-8a69-46d3-9547-323acd222a4e*/ function (e) {
     });
     self.$SearchBtn.on('click', /*9f9e2965-bd0c-45c6-85fd-db9bc1194706*/ function (e) {
         self.total_ds.read().done(function (data) {
@@ -310,12 +344,16 @@
     
     /*721d425c-12b9-49a3-b2f0-44c9d0fe0dd7*/ //# sourceURL=Dwagger_SearchService.js
     self.total_ds.read();
-    
-    //초기에 
+    Check_Condition();
+    //초기 설정값
+    //로컬스토리지 api 데이터
     const retrievedData = getDataFromLocalStorage("saveData");
+    //로컬스토리지 업데이트 날짜
     const retrievedDTS = getDataFromLocalStorage("last_saveDTS");
     var apiDatas = '';
     var last_backup = '';
+    
+    
     if (retrievedDTS != null && retrievedDTS != undefined && retrievedDTS != '') {
         last_backup = retrievedDTS;
     }
@@ -409,6 +447,14 @@
         } catch (error) {
             dews.error(error);
             console.error(error);
+        }
+    }
+    //조건에 따라 버튼 활성화 이벤트
+    function Check_Condition() {
+        if (condition_cd === '1') {
+            self.SearchKeyword.readonly(true);
+        } else {
+            self.SearchKeyword.readonly(false);
         }
     }
     

@@ -1,6 +1,6 @@
-<!--##2c28abd4-fd5a-4727-91ff-3dc05fdbcaee##-->
+<!--##0644a2cf-384c-43c4-b9f3-3a1bcefb78bd##-->
 <!--##Dwagger_SearchService##-->
-<!--##5s06c3oT6btsGcP20AVDVwzPSnu1/iwry+hBbhnOhg4KlNtSXdCV1mclWFt6Rsy6##-->
+<!--##iZVDaI1AVn3VyjU7qB8YPYvpFYqtuHxJJZmcvfEVd6/ds1E7qGE1p+Ke6GLNTQUx##-->
 <!--
   DEWS UI/UX IDE - Build Result - v1.5
   # PageID: Dwagger_SearchService
@@ -31,6 +31,12 @@
     </div>
     <div id="formpanel1" class="dews-ui-form-panel">
       <ul>
+        <li>
+          <label>검색조건</label>
+          <span>
+            <select id="search_condition" name="search_condition" class="dews-ui-dropdownlist basic" data-dews-value-field="CONDITION_CD" data-dews-text-field="CONDITION_CD_NM" data-dews-show-tooltip="true" data-dews-show-value-tooltip="true" data-dews-use-numkey="false"></select>
+          </span>
+        </li>
         <li class="col-2">
           <label>검색</label>
           <span>
@@ -69,6 +75,8 @@
 
 
     /*c1069f37-87e6-40d1-9de9-fdae9cb2aeca*/ var localStorage = window.localStorage;
+    //조건 코드
+    var condition_cd = '1';
     
     
     
@@ -104,17 +112,6 @@
     });
     self.total_ds = dews.ui.dataSource('total_ds', {
       grid: true,
-      transport: {
-        read: {
-          url: dews.url.getApiUrl('HR', 'DwaggerService', 'dwagger_list'),
-          data: function () {
-            return {
-              serviceName: self.SearchKeyword.text(),
-              langCd: 'KR'
-            };
-          }
-        }
-      },
       schema: {
         model: {
           fields: [
@@ -131,7 +128,24 @@
           ]
     
         }
-      }
+      },
+      data: []
+    });
+    self.search_conditions = dews.ui.dataSource('search_conditions', {
+      schema: {
+        model: {
+          fields: [
+            { field: 'CONDITION_CD', editable: false, type: 'string' }, 
+            { field: 'CONDITION_CD_NM', editable: false, type: 'string' }
+          ]
+    
+        }
+      },
+      data: [{ CONDITION_CD: "1", CONDITION_CD_NM: "전체검색"},
+    { CONDITION_CD: "2", CONDITION_CD_NM: "서비스명"},
+    { CONDITION_CD: "3", CONDITION_CD_NM: "서비스설명"},
+    { CONDITION_CD: "4", CONDITION_CD_NM: "URL패턴"},
+    { CONDITION_CD: "5", CONDITION_CD_NM: "URL설명"}]
     });
     
     
@@ -152,13 +166,23 @@
             console.error(error);
         }
     });
+    self.search_condition.setDataSource(self.search_conditions);
+    self.search_condition.on('change', /*e00ca631-c4d2-47cd-893b-06156671df73*/ function (e) {
+        condition_cd = self.search_condition.value();
+        Check_Condition();
+    });
+    self.search_condition.on('select', /*f9176874-6392-4629-9cc0-34698b9a07e0*/ function (e) {
+    
+    });
+    self.$SearchKeyword.on('change', /*1b31fd77-8a69-46d3-9547-323acd222a4e*/ function (e) {
+    });
+    self.$SearchKeyword.on('keydown', /*e25ba940-aa16-4afd-aa9c-cfdaa18ff299*/ function (key) {
+        if (key.keyCode === 13) {
+            CallApiDatas();
+        }
+    });
     self.$SearchBtn.on('click', /*9f9e2965-bd0c-45c6-85fd-db9bc1194706*/ function (e) {
-        self.total_ds.read().done(function (data) {
-            if (data != '' && data != null && data != undefined && data[0] != null && data[0] != undefined && data[0] != '') {
-                SaveDataToLocalStorage("saveData", data);
-                SaveDataToLocalStorage("last_saveDTS", new Date());
-            }
-        })
+        CallApiDatas();
     });
     dews.ui.grid(self.$total_grid, {
       dataSource: self.total_ds,
@@ -223,6 +247,14 @@
         colCount: 0,
         rightColCount: 0
       },
+      change: /*73645730-1d2e-44b6-b8c4-8f4139a55da8*/ function (e) {
+            var apiParamList = self.total_grid.getCellValue(self.total_grid.select(), 'apiParamList');
+            self.param_ds.data(apiParamList);
+            var apiSchemaList = self.total_grid.getCellValue(self.total_grid.select(), 'apiSchemaList');
+            self.schema_ds.data(apiSchemaList);
+    
+        }
+    ,
       clicked: /*c9fa2f0b-2d38-4a9d-bca3-5aac1aefce48*/ function (e) {
             var apiParamList = self.total_grid.getCellValue(self.total_grid.select(), 'apiParamList');
             self.param_ds.data(apiParamList);
@@ -301,13 +333,17 @@
     
     
     /*721d425c-12b9-49a3-b2f0-44c9d0fe0dd7*/ //# sourceURL=Dwagger_SearchService.js
-    self.total_ds.read();
-    
-    //초기에 
+    // self.total_ds.read();
+    Check_Condition();
+    //초기 설정값
+    //로컬스토리지 api 데이터
     const retrievedData = getDataFromLocalStorage("saveData");
+    //로컬스토리지 업데이트 날짜
     const retrievedDTS = getDataFromLocalStorage("last_saveDTS");
     var apiDatas = '';
     var last_backup = '';
+    
+    
     if (retrievedDTS != null && retrievedDTS != undefined && retrievedDTS != '') {
         last_backup = retrievedDTS;
     }
@@ -318,22 +354,54 @@
         apiDatas = retrievedData;
         self.total_ds.data(apiDatas);
     } else
-        CallApiTotalDatas();
+        CallApiDatas();
     
     
     
-    function CallApiTotalDatas() {
+    function CallApiDatas() {
         dews.api.get(dews.url.getApiUrl("HR", "DwaggerService", "dwagger_totalList"), {
             async: false,
             data: {
-                serviceName: '',
-                langCd: 'KR'
+                keywords: self.SearchKeyword.text(),
+                langCd: 'KR',
+                condition_cd: condition_cd
             }
         }).done(function (data) {
             apiDatas = data;
             if (data != '' && data != null && data != undefined && data[0] != null && data[0] != undefined && data[0] != '') {
-                SaveDataToLocalStorage("saveData", data);
-                SaveDataToLocalStorage("last_saveDTS", new Date());
+                //전체 검색일 때만 로컬스토리지에 저장
+                //마지막 백업날짜 업데이트
+                if (condition_cd === '1') {
+                    self.last_backupDT.text(GetformatDate(new Date()));
+                    SaveDataToLocalStorage("saveData", data);
+                    SaveDataToLocalStorage("last_saveDTS", new Date());
+                    dews.alert("백업데이터를 저장했습니다.", "success");
+                }
+    
+                self.total_ds.data(apiDatas);
+    
+    
+            } else if (data.length === 0) { //데이터가 빈 배열이 왔다면
+                dews.ui.snackbar.error('검색결과가 없습니다.');
+    
+            } else {
+                dews.alert("데이터를 불러오는데 실패했습니다.", "warning");
+                //로컬스토리지 api 데이터
+                retrievedData = getDataFromLocalStorage("saveData");
+                //로컬스토리지 업데이트 날짜
+                retrievedDTS = getDataFromLocalStorage("last_saveDTS");
+                if (retrievedDTS != null && retrievedDTS != undefined && retrievedDTS != '') {
+                    last_backup = retrievedDTS;
+                }
+                self.last_backupDT.text(GetformatDate(last_backup));
+    
+    
+                if (retrievedData != null && retrievedData != undefined && retrievedData != '') {
+                    apiDatas = retrievedData;
+                    self.total_ds.data(apiDatas);
+                }
+    
+                GetDataByKeywords();
             }
             // dews.ui.page.close(); // 페이지 닫기
         });
@@ -390,7 +458,8 @@
                 title: '카드리스트뷰',
                 url: '/HR/DWAGGER/card_Modify_full',
                 data: {
-                    apiDatas: apiDatas
+                    apiDatas: apiDatas,
+                    formated_last_backup: self.last_backupDT.text()
                 },
                 callback: function () {
                     //SearchData();
@@ -402,6 +471,36 @@
             console.error(error);
         }
     }
+    //조건에 따라 버튼 활성화 이벤트
+    function Check_Condition() {
+        if (condition_cd === '1') {
+            //값 초기화
+            self.SearchKeyword.text('');
+            self.SearchKeyword.readonly(true);
+        } else {
+            self.SearchKeyword.readonly(false);
+        }
+    }
+    //현재 넘겨받은 JSON데이터 객체에서 키워드를 통해 찾는다.
+    function GetDataByKeywords() {
+        var keywords = self.SearchKeyword.text();
+        var mainData = apiDatas;
+        if (apiDatas != '' && apiDatas != null && apiDatas != undefined) {
+            // data 배열에서 keywords를 포함하는 요소들을 필터링하여 새로운 배열 생성
+            const filteredData = mainData.filter(item => {
+                // item 객체의 필드 중에서 keywords를 포함하는 필드가 있는지 확인
+                for (const key in item) {
+                    if (item.hasOwnProperty(key) && typeof item[key] === 'string' && item[key].includes(keywords)) {
+                        return true; // keywords를 포함하는 필드가 발견되면 해당 요소를 포함
+                    }
+                }
+                return false; // keywords를 포함하는 필드가 없으면 해당 요소를 제외
+            })
+            self.total_ds.data(filteredData);
+            dews.alert("백업데이터를 불러왔습니다.", "success");
+        } else
+            dews.alert("백업데이터가 존재하지 않습니다.", "success");
+    };
     
     
 

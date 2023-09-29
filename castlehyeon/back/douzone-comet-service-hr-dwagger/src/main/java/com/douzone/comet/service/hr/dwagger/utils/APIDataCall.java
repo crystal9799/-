@@ -11,12 +11,16 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class APIDataCall {
 
-	public String callApi(String service) {
+	public String callApi(String keywords, String condition_cd) {
 		StringBuilder response = new StringBuilder();
 		try {
 			// 요청을 보낼 URL 설정
-			String baseUrl = "http://localhost:8080/api/CM/ServiceRegistrySearchService/metadataModels/ServiceNames";
-			String urlStr = baseUrl + buildQueryString(service);
+			String baseUrl = buildBaseUrl(condition_cd);
+		
+			String urlStr = baseUrl + buildQueryString(keywords);
+			
+			//요청보낼 최종 주소
+			System.out.println("요청보낼 최종 주소" + urlStr);
 
 			URL url = new URL(urlStr);
 
@@ -45,8 +49,10 @@ public class APIDataCall {
 			JsonNode jsonNode = objectMapper.readTree(jsonResponse);
 			
 			System.out.println("jsonResponse===>"+ jsonResponse);
-			if (jsonNode.has("state") && "error".equals(jsonNode.get("state").asText())) {
+			if ((jsonNode.has("state") && "error".equals(jsonNode.get("state").asText()))
+					|| (jsonNode.has("data") && "[]".equals(jsonNode.get("data").asText()))) {
 				// 응답에 에러 상태가 포함되어 있으면 에러로 처리
+				// 조회한 데이터가 크기가 0이라면 에러로 처리
 				response.setLength(0); // 기존 데이터 초기화
 				response.append("-1");
 				System.out.println("HTTP GET 요청 실패. 응답 데이터: " + jsonResponse);
@@ -58,7 +64,27 @@ public class APIDataCall {
 		return response.toString();
 	}
 
-	private String buildQueryString(String service) {
-		return "?serviceName=" + service + "&langCd=KR";
+	private String buildQueryString(String keywords) {
+		return keywords + "&langCd=KR";
+	}
+	private String buildBaseUrl(String condition_cd) {
+		 String baseUrl = "";
+			switch (condition_cd) {
+         case "1":
+             baseUrl = "http://localhost:8080/api/CM/ServiceRegistrySearchService/metadataModels/ServiceNames?serviceName=";
+             break;
+         case "2":
+        	 baseUrl = "http://localhost:8080/api/CM/ServiceRegistrySearchService/metadataModels/ServiceNames?serviceName=";
+        	 break;
+         case "3":
+        	 baseUrl = "http://localhost:8080/api/CM/ServiceRegistrySearchService/metadataModels/ServiceDescriptions?serviceDescription=";
+        	 break;
+         case "4":
+        	 baseUrl = "http://localhost:8080/api/CM/ServiceRegistrySearchService/metadataModels/urlPattern?urlPattern=";
+        	 break;
+         case "5":
+        	 baseUrl = "http://localhost:8080/api/CM/ServiceRegistrySearchService/metadataModels/PatternDescriptions?PatternDescription=";
+     }
+			return baseUrl;
 	}
 }

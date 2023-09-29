@@ -1,6 +1,6 @@
-<!--##99656329-a168-4016-9e1b-602ba5ac8fdd##-->
+<!--##df536996-036c-4145-8da9-ada968e0056c##-->
 <!--##card_Modify_full##-->
-<!--##aAlW3//70i8maNC7bYvLIRmGx3Mj7dHorV7CC837HKg154f8QEFgoRICNjX1bG3r##-->
+<!--##BCj/CasZOvMGk7IVI48shCDIinExAiaEi+9die29TYyZjKM1ziE+9/4Uk6ELqAcn##-->
 <!--
   DEWS UI/UX IDE - Build Result - v1.5
   # PageID: card_Modify_full
@@ -11,6 +11,26 @@
 
 -->
 
+<div id="containerpanel2" class="dews-ui-container-panel">
+  <div id="containerpanelitem2" class="dews-container-item" data-dews-position="normal">
+    <div id="formpanel1" class="dews-ui-form-panel">
+      <ul>
+        <li>
+          <label>마지막 백업 일자</label>
+          <span>
+            <input id="last_backupDT" name="last_backupDT" type="text" class="dews-ui-textbox basic" readonly="readonly" />
+          </span>
+        </li>
+        <li style="float: right;">
+          <label></label>
+          <span>
+            <button id="ChangeGridView" class="dews-ui-button">그리드로변환</button>
+          </span>
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>
 <div id="searchCondition" class="dews-ui-condition-panel">
   <ul class="required-area">
     <li>
@@ -109,53 +129,6 @@
     // 저장 및 조회 시 포커스 유지
     var cardSelect = '';
     
-    function CallApiTotalDatas() {
-        dews.api.get(dews.url.getApiUrl("HR", "DwaggerService", "dwagger_totalList"), {
-            async: false,
-            data: {
-                serviceName: '',
-                langCd: 'KR'
-            }
-        }).done(function (data) {
-            if (data != '' && data != null && data != undefined) {
-                self.total_ds.data(mainData);
-                SaveDataToLocalStorage("saveData", data);
-                SaveDataToLocalStorage("last_saveDTS", new Date());
-            }
-            // dews.ui.page.close(); // 페이지 닫기
-        });
-    }
-    
-    // JSON 데이터를 로컬 스토리지에 저장하는 함수
-    function SaveDataToLocalStorage(key, data) {
-        try {
-            // 데이터를 JSON 문자열로 직렬화하여 저장
-            const jsonData = JSON.stringify(data);
-            localStorage.setItem(key, jsonData);
-            console.log(`데이터를 로컬 스토리지에 저장했습니다. (키: ${key})`);
-        } catch (error) {
-            console.error(`로컬 스토리지에 데이터를 저장하는 중 오류 발생: ${error}`);
-        }
-    }
-    
-    // 로컬 스토리지에서 JSON 데이터를 가져오는 함수
-    function getDataFromLocalStorage(key) {
-        try {
-            // 로컬 스토리지에서 데이터를 가져와서 파싱
-            const jsonData = localStorage.getItem(key);
-            if (jsonData) {
-                const data = JSON.parse(jsonData);
-                console.log(`로컬 스토리지에서 데이터를 가져왔습니다. (키: ${key})`);
-                return data;
-            } else {
-                console.log(`로컬 스토리지에서 데이터를 찾을 수 없습니다. (키: ${key})`);
-                return null;
-            }
-        } catch (error) {
-            console.error(`로컬 스토리지에서 데이터를 가져오는 중 오류 발생: ${error}`);
-            return null;
-        }
-    }
     
     
     
@@ -232,20 +205,54 @@
     dews.ui.mainbuttons.save.hide();
     dews.ui.mainbuttons.save.click(/*47fc8f13-9d5d-414c-81c0-72bf84ece057*/ function () {
     });
+    self.$ChangeGridView.on('click', /*587c4c2a-3dcb-4141-9484-5877e40fe0e4*/ function (e) {
+        dews.ui.page.close();
+    
+    });
+    self.$SearchKeyword.on('change', /*90eb5389-aa0e-4dd3-8787-f9e861f447e3*/ function (e) {
+    
+    });
+    self.$SearchKeyword.on('keydown', /*be623d3f-3121-4dda-81e7-eb738333151d*/ function (key) {
+        if (key.keyCode === 13) {
+            GetDataByKeywords();
+        }
+    });
+    self.$SearchKeyword.on('keyup', /*7a8c1ca8-875e-4fc1-bc2b-aa573494b6bc*/ function (e) {
+    
+    });
     dews.ui.cardlist(self.$cardlist1, {
       dataSource: self.total_ds,
       template: 
         '<div class="dews-cardlist-template">' +
-        '	<div class="dews-cardlist-main-text">' +
+        '	<div class="dews-cardlist-main-text truncate">' +
         '		<p class="bold">#: data.service #</p>' +
         '	</div>' +
         '	<div class="dews-cardlist-sub-text">' +
         '		<p>#: data.urlPattern #</p>' +
         '	</div>' +
-        '	<div class="dews-cardlist-right-text">' +
+        '	<div class="dews-cardlist-right-text bottom">' +
         '		<p style="float:right">#: data.patternDesc #</p>' +
         '	</div>' +
-        '</div>'
+        '</div>',
+      css: 
+        '   .dews-cardlist-main-text p {' +
+        '     white-space: nowrap; /* 텍스트가 한 줄로 유지되도록 설정 */' +
+        '     overflow: hidden; /* 넘치는 부분을 숨기도록 설정 */' +
+        '     text-overflow: ellipsis; /* "..." 표시 설정 */' +
+        '     max-width: 80%; /* 부모 요소 너비를 최대로 설정 */' +
+        '   }' +
+        '     .dews-cardlist-sub-text p {' +
+        '     white-space: nowrap; /* 텍스트가 한 줄로 유지되도록 설정 */' +
+        '     overflow: hidden; /* 넘치는 부분을 숨기도록 설정 */' +
+        '     text-overflow: ellipsis; /* "..." 표시 설정 */' +
+        '     max-width: 50%; /* 부모 요소 너비를 최대로 설정 */' +
+        '   }' +
+        '     .dews-cardlist-right-text p {' +
+        '     white-space: nowrap; /* 텍스트가 한 줄로 유지되도록 설정 */' +
+        '     overflow: hidden; /* 넘치는 부분을 숨기도록 설정 */' +
+        '     text-overflow: ellipsis; /* "..." 표시 설정 */' +
+        '     max-width: 50%; /* 부모 요소 너비를 최대로 설정 */' +
+        '   }'
     });
     self.cardlist1.on('change', /*38025a20-ec98-4527-9226-1010ce2bc574*/ function (e) {
     
@@ -343,11 +350,33 @@
     
     function InitData() {
         var mainData = self.initialData.apiDatas;
+        self.last_backupDT.text(self.initialData.formated_last_backup);
         if (mainData != null && mainData != undefined && mainData != '') {
             self.total_ds.data(mainData);
-        } else
-            CallApiTotalDatas();
+        } else {
+            dews.alert("데이터를 불러오는데 실패했습니다.", "warning");
+            dews.ui.page.close();
+    
+        }
     }
+    
+    //현재 넘겨받은 JSON데이터 객체에서 키워드를 통해 찾는다.
+    function GetDataByKeywords() {
+        var keywords = self.SearchKeyword.text();
+        var mainData = self.initialData.apiDatas;
+        // data 배열에서 keywords를 포함하는 요소들을 필터링하여 새로운 배열 생성
+        const filteredData = mainData.filter(item => {
+            // item 객체의 필드 중에서 keywords를 포함하는 필드가 있는지 확인
+            for (const key in item) {
+                if (item.hasOwnProperty(key) && typeof item[key] === 'string' && item[key].includes(keywords)) {
+                    return true; // keywords를 포함하는 필드가 발견되면 해당 요소를 포함
+                }
+            }
+            return false; // keywords를 포함하는 필드가 없으면 해당 요소를 제외
+        })
+        self.total_ds.data(filteredData);
+    
+    };
     
     
 

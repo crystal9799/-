@@ -1,6 +1,6 @@
-<!--##2c28abd4-fd5a-4727-91ff-3dc05fdbcaee##-->
+<!--##74f31bfe-d245-4d84-a0cc-8241372eee73##-->
 <!--##Dwagger_SearchService##-->
-<!--##5s06c3oT6btsGcP20AVDVwzPSnu1/iwry+hBbhnOhg4KlNtSXdCV1mclWFt6Rsy6##-->
+<!--##lG+CraRILLn8onhIXpejivGRh4MvwUBP7h5Yq0RpYHrNJpbV/EZA6dBdj7F1TCn3##-->
 <!--
   DEWS UI/UX IDE - Build Result - v1.5
   # PageID: Dwagger_SearchService
@@ -223,6 +223,14 @@
         colCount: 0,
         rightColCount: 0
       },
+      change: /*73645730-1d2e-44b6-b8c4-8f4139a55da8*/ function (e) {
+            var apiParamList = self.total_grid.getCellValue(self.total_grid.select(), 'apiParamList');
+            self.param_ds.data(apiParamList);
+            var apiSchemaList = self.total_grid.getCellValue(self.total_grid.select(), 'apiSchemaList');
+            self.schema_ds.data(apiSchemaList);
+    
+        }
+    ,
       clicked: /*c9fa2f0b-2d38-4a9d-bca3-5aac1aefce48*/ function (e) {
             var apiParamList = self.total_grid.getCellValue(self.total_grid.select(), 'apiParamList');
             self.param_ds.data(apiParamList);
@@ -390,7 +398,8 @@
                 title: '카드리스트뷰',
                 url: '/HR/DWAGGER/card_Modify_full',
                 data: {
-                    apiDatas: apiDatas
+                    apiDatas: apiDatas,
+                    formated_last_backup: self.last_backupDT.text()
                 },
                 callback: function () {
                     //SearchData();

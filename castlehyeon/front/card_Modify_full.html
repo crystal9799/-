@@ -1,6 +1,6 @@
-<!--##99656329-a168-4016-9e1b-602ba5ac8fdd##-->
+<!--##e34077df-bfa2-4ac2-8c79-2da3e8e05395##-->
 <!--##card_Modify_full##-->
-<!--##aAlW3//70i8maNC7bYvLIRmGx3Mj7dHorV7CC837HKg154f8QEFgoRICNjX1bG3r##-->
+<!--##umOqNSCEUkLiqIF+L0N4jk5URCufBTYECLi23bTZUgegw/y7QVs/AXXDubiY6SnU##-->
 <!--
   DEWS UI/UX IDE - Build Result - v1.5
   # PageID: card_Modify_full
@@ -11,6 +11,26 @@
 
 -->
 
+<div id="containerpanel2" class="dews-ui-container-panel">
+  <div id="containerpanelitem2" class="dews-container-item" data-dews-position="normal">
+    <div id="formpanel1" class="dews-ui-form-panel">
+      <ul>
+        <li>
+          <label>마지막 백업 일자</label>
+          <span>
+            <input id="last_backupDT" name="last_backupDT" type="text" class="dews-ui-textbox basic" readonly="readonly" />
+          </span>
+        </li>
+        <li style="float: right;">
+          <label></label>
+          <span>
+            <button id="ChangeGridView" class="dews-ui-button">그리드로변환</button>
+          </span>
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>
 <div id="searchCondition" class="dews-ui-condition-panel">
   <ul class="required-area">
     <li>
@@ -232,20 +252,31 @@
     dews.ui.mainbuttons.save.hide();
     dews.ui.mainbuttons.save.click(/*47fc8f13-9d5d-414c-81c0-72bf84ece057*/ function () {
     });
+    self.$ChangeGridView.on('click', /*587c4c2a-3dcb-4141-9484-5877e40fe0e4*/ function (e) {
+        dews.ui.page.close();
+    
+    });
     dews.ui.cardlist(self.$cardlist1, {
       dataSource: self.total_ds,
       template: 
         '<div class="dews-cardlist-template">' +
-        '	<div class="dews-cardlist-main-text">' +
+        '	<div class="dews-cardlist-main-text truncate">' +
         '		<p class="bold">#: data.service #</p>' +
         '	</div>' +
         '	<div class="dews-cardlist-sub-text">' +
         '		<p>#: data.urlPattern #</p>' +
         '	</div>' +
-        '	<div class="dews-cardlist-right-text">' +
+        '	<div class="dews-cardlist-right-text bottom">' +
         '		<p style="float:right">#: data.patternDesc #</p>' +
         '	</div>' +
-        '</div>'
+        '</div>',
+      css: 
+        '         .truncate {' +
+        '             overflow: hidden;' +
+        '             white-space: nowrap;     ' +
+        '             text-overflow: ellipsis; ' +
+        '             width: 100%;             ' +
+        '         }'
     });
     self.cardlist1.on('change', /*38025a20-ec98-4527-9226-1010ce2bc574*/ function (e) {
     
@@ -343,6 +374,7 @@
     
     function InitData() {
         var mainData = self.initialData.apiDatas;
+        self.last_backupDT.text(self.initialData.formated_last_backup);
         if (mainData != null && mainData != undefined && mainData != '') {
             self.total_ds.data(mainData);
         } else

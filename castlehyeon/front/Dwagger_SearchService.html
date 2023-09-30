@@ -1,6 +1,6 @@
-<!--##13ad342d-afa5-446d-b1b5-97be6d9d40d3##-->
+<!--##6bb39d7d-600c-4a7e-8b51-8d71247bef34##-->
 <!--##Dwagger_SearchService##-->
-<!--##PwRsGx8np6R5sY7UFji1VNs09E6Hry46BGpqDVRiILnrAgdBwoFLJgN0UWhvTSRM##-->
+<!--##0WOd3oIWR6SKIR5se5ZfGI2YvtCsX06xnNJpbrysD9zE7hbakSCdirDa0MnP3FFp##-->
 <!--
   DEWS UI/UX IDE - Build Result - v1.5
   # PageID: Dwagger_SearchService
@@ -367,7 +367,7 @@
                 condition_cd: condition_cd
             }
         }).done(function (data) {
-            
+    
             if (data != '' && data != null && data != undefined && data[0] != null && data[0] != undefined && data[0] != '') {
                 //전체 검색일 때만 로컬스토리지에 저장
                 //마지막 백업날짜 업데이트
@@ -377,9 +377,8 @@
                     SaveDataToLocalStorage("saveData", data);
                     SaveDataToLocalStorage("last_saveDTS", new Date());
                     dews.alert("백업데이터를 저장했습니다.", "success");
-                }
-    
-                self.total_ds.data(apiDatas);
+                } else
+                    self.total_ds.data(data);
     
     
             } else if (data === null || data.length === 0) { //데이터가 빈 배열이 왔다면

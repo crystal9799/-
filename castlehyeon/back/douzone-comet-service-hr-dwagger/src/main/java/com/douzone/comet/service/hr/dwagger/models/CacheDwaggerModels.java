@@ -10,6 +10,7 @@ import java.util.List;
 
 import org.springframework.stereotype.Component;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -20,13 +21,18 @@ public class CacheDwaggerModels {
 	@JsonProperty("data")
 	List<DwaggerModel> apiList;
 	String updateDTS;
-
+	 // 'transient' 키워드를 사용하여 직렬화에서 제외시킴
+	 @JsonIgnore
+	transient String date;
+    
+    
 	public CacheDwaggerModels() {
 		super();
 		//리스트는 객체 오직 한개만 사용.
 		apiList = new ArrayList<>();
 		//객체가 생성되었을 때 시점 저장.
 		updateDTS = this.getDate();
+		
 		
 		// 파일이 존재하는지 확인
         File file = new File("C:\\cacheDwaggerModels.json");

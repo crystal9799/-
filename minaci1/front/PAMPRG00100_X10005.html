@@ -1,6 +1,6 @@
-<!--##53d18483-7c02-41b7-b488-8191ae4d8b8a##-->
+<!--##e7e255fe-5471-4458-93c0-4401aa284bce##-->
 <!--##PAMPRG00100_X10005##-->
-<!--##fa7fJV95SEzcmVK+gJVMFveCw7uAjyyYJ52B0t59Dq/tR0mmGbCVoYmUKRaCw2m4##-->
+<!--##hRgWFZGiRXMMQrFUUE8LeFEzd4nC4WTRH0bXtm2auIGcFqoizpaCVWaX9NKFxNW+##-->
 <!--
   DEWS UI/UX IDE - Build Result - v1.5
   # PageID: PAMPRG00100_X10005
@@ -139,11 +139,11 @@
     
         dews.ui.loading.show();
     
-        self.grid_ds.read().then(() => { // read가 프로미스를 반환한다고 가정
+        self.grid_ds.read().then(() => { // read가 프로미스를 반환
             var dataCount = self.grid_ds.data().length;
             console.log("데이터 갯수" + dataCount);
     
-            // 데이터 바인딩이 완료된 후 로딩창을 숨깁니다.
+            // 데이터 바인딩이 완료된 후 로딩창을 숨김
             dews.ui.loading.hide();
         });
     }
@@ -151,6 +151,7 @@
     // 중복데이터 정렬, 그룹화
     function handleDuplicateData() {
         var allData = self.gridMaster.dataItems();
+    
         var groupedDataMap = new Map(); // 중복 데이터를 그룹화하는 Map
     
         // 데이터를 combinedKey를 기준으로 정렬
@@ -377,7 +378,6 @@
                     console.error(msg);
                     return false;
                 }
-    
                 if (msg) {
                     errMsg.push(msg);
                     console.error(msg);
@@ -391,8 +391,7 @@
                     row.BIZAREA_CD = self.bizarea_cd.value(); // 현재 선택된 사업장으로 저장
                 }
                 row.PSTN_CD = pstnNmMap[row.PSTN_NM]; // '직급명'에 넣기(없으면 필수값 입력하라고 나옴)
-                row.LEDU_CD = lecdMap[row.LEDU_NM]; //ds localdata 으로 매핑시도해봤지만 안됨
-    
+                row.LEDU_CD = lecdMap[row.LEDU_CD]; //ds localdata 으로 매핑시도해봤지만 안됨
                 return row;
             },
         }).done(result => {
@@ -401,6 +400,7 @@
                 processLargeData(result, errMsg);
             } else {
                 processRegularData(result, errMsg); // 1000미만은 front에서 작업
+    
             }
         }).fail(error => {
             console.error(error);
@@ -676,7 +676,7 @@
     });
     dews.ui.mainbuttons.search.click(/*37fe89ce-9f9d-444b-a3a3-dfe45a8e42e2*/ function () {
     
-        if (self.grid_ds.getDirtyDataCount() >= 1) {
+        if (self.grid_ds.getDirtyDataCount() > 0) {
             dews.confirm('저장되지 않은 데이터가 있습니다.\n그래도 조회 하시겠습니까?', "question").yes(function () {
                 searchData();
             }).no(function () {
@@ -758,8 +758,8 @@
                 }
                 dews.ui.snackbar.ok('자료가 정상적으로 저장되었습니다.');
                 self.gridMaster.refresh();
-                console.log("승급년월" + self.mpPROMO_YEAR_MONTH.value());
-                self.gridMaster.refresh();
+                //console.log("승급년월" + self.mpPROMO_YEAR_MONTH.value());
+                location.reload(); //새로고침 안하면 에러남...에러 확인해야 함
             }).fail(function (xhr, status, error) {
                 if (progressInterval) {
                     clearInterval(progressInterval);

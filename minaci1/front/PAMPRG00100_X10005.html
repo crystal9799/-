@@ -1,6 +1,6 @@
-<!--##93e42205-d6e7-4909-aa6f-69836b888700##-->
+<!--##53d18483-7c02-41b7-b488-8191ae4d8b8a##-->
 <!--##PAMPRG00100_X10005##-->
-<!--##uWAYmmxO35xbcwFx5MokxBvPf09h5b0SFxelY665iWcS4vCpOMEPETXVHfYfG71M##-->
+<!--##fa7fJV95SEzcmVK+gJVMFveCw7uAjyyYJ52B0t59Dq/tR0mmGbCVoYmUKRaCw2m4##-->
 <!--
   DEWS UI/UX IDE - Build Result - v1.5
   # PageID: PAMPRG00100_X10005
@@ -16,7 +16,6 @@
   <button id="downloadBtnTemplet" class="dews-ui-button">엑셀템플릿다운로드</button>
   <button id="downloadBtnData" class="dews-ui-button">엑셀다운로드</button>
   <button id="uploadBtnApply" class="dews-ui-button">엑셀업로드</button>
-  <button id="bulkExcelUpload" class="dews-ui-button">대량엑셀업로드</button>
 </div>
 <div id="conditionpanel" class="dews-ui-condition-panel" data-dews-columns="2">
   <ul class="required-area">
@@ -42,16 +41,6 @@
 </div>
 <div id="excelFormGrid" class="dews-ui-grid"></div>
 <div id="importExcelGrid" class="dews-ui-grid"></div>
-<div id="containerpanel3" class="dews-ui-container-panel">
-  <div id="containerpanelitem3" class="dews-container-item" data-dews-position="normal">
-    <div><form id="uploadForm" action="/HRPamprg00100_X10005_BulkUploadService/uploadFile_HR_URGDBASETBL_INFO_X10005MST" method="POST" enctype="multipart/form-data">
-    <input type="file" name="file" id="uploader" class="dews-ui-file" data-dews-download-use="false" style="display: none;"> <!-- 화면에서 숨김 -->
-    <label for="uploader" id="uploadButton">Upload File</label> <!-- 업로드 버튼 생성 -->
-</form>
- 
-</div>
-  </div>
-</div>
 
 <style>
     
@@ -87,12 +76,51 @@
     // 학력
     var lecdMap = {
         '초등졸': 1,
-        '중졸': 22,
+        '중졸': 2,
         '고졸': 3,
         '전문대졸': 4,
         '대졸': 5,
         '대학원졸': 6
     };
+    
+    function startProgress(totalDirtyData) {
+        let progress = dews.ui.progress("progress6", {
+            type: "circular",
+            total: 100,
+            target: "page",
+        });
+    
+        function updateProgress(current) {
+            progress.setCurrent(current);
+        }
+    
+        let interval;
+        let duration;
+    
+        if (totalDirtyData < 300) {
+            duration = 3 * 1000; // 3초
+        } else if (totalDirtyData < 500) {
+            duration = 30 * 1000; // 30초
+        } else if (totalDirtyData <= 5000) {
+            duration = 1 * 60 * 1000; // 1분 
+        } else {
+            duration = 2 * 60 * 1000; // 2분
+        }
+    
+        interval = duration / 100;
+        let currentPercentage = 0;
+    
+        let progressInterval = setInterval(() => {
+            currentPercentage++;
+            updateProgress(currentPercentage);
+    
+            if (currentPercentage >= 100) {
+                clearInterval(progressInterval);
+            }
+        }, interval);
+    
+        return progressInterval; // 필요에 따라 다른 곳에서 인터벌을 중지시킬 수 있도록 반환
+    }
     
     
     function getCurrentMonth() {
@@ -105,12 +133,20 @@
     }
     
     function searchData() {
-        dews.ui.loading.show();
-        self.mpPROMO_YEAR_MONTH.value(self.mpPROMO_YEAR_MONTH.value());
-        self.grid_ds.read();
-        dews.ui.loading.hide();
-    }
+        console.log("self.mpPROMO_YEAR_MONTH.value()" + self.mpPROMO_YEAR_MONTH.value());
+        var change_Year_Month = self.mpPROMO_YEAR_MONTH.value();
+        self.mpPROMO_YEAR_MONTH.value(change_Year_Month);
     
+        dews.ui.loading.show();
+    
+        self.grid_ds.read().then(() => { // read가 프로미스를 반환한다고 가정
+            var dataCount = self.grid_ds.data().length;
+            console.log("데이터 갯수" + dataCount);
+    
+            // 데이터 바인딩이 완료된 후 로딩창을 숨깁니다.
+            dews.ui.loading.hide();
+        });
+    }
     
     // 중복데이터 정렬, 그룹화
     function handleDuplicateData() {
@@ -151,7 +187,7 @@
                         processedData.push(group[k]);
                         //최상위 행 css
                         var rowNo = self.gridMaster.getDataIndexFromItemIndex(group[k].SEQ - 1);
-                        self.gridMaster.setRowStyle(rowNo, { background: '#FFFFFF' }); //최상위 데이터 하얀색. 원래는 테두리 입히고 싶었으나 함수 못찾음 
+                        //self.gridMaster.setRowStyle(rowNo, { background: '#FFFFFF' }); //최상위 데이터 하얀색. 원래는 테두리 입히고 싶었으나 함수 못찾음 
                     } else {
                         // 최상위 데이터를 제외한 나머지 데이터에 CSS 입히기
                         var rowIndex = self.gridMaster.getDataIndexFromItemIndex(group[k].SEQ - 1);
@@ -173,26 +209,63 @@
     
     }
     
+    function processLargeData(result, errMsg) {
+        dews.ui.snackbar.info("1000건 이상의 데이터 입니다. 처리에 시간이 소요될 수 있습니다.");
+        processImportData(result, errMsg);
+        saveExcelData(result);
+    }
+    
+    function processRegularData(result, errMsg) {
+        self.gridMaster.clearRows();
+        processImportData();
+        handleDuplicateData();
+        checkErrors(result, errMsg);
+    }
+    
+    function processImportData(result, errMsg) {
+        if (result && result.totalCount === result.success.count) {
+            for (let i = 0; i < result.success.count; i++) {
+                self.importExcelGrid.setRowState(i, "created");
+            }
+            dews.ui.snackbar.info(`${result.totalCount}건 데이터를 불러왔습니다.`);
+        } else {
+            self.grid_ds.data([]);
+            if (errMsg.length > 0) {
+                dews.error(errMsg[0]);
+            }
+            dews.ui.loading.hide();
+        }
+    }
+    
+    function checkErrors(result, errMsg) {
+        const checkedIndices = self.gridMaster.getCheckedIndex();
+        if (checkedIndices.length > 0) {
+            dews.ui.snackbar.info("중복된 데이터 삭제바랍니다.");
+            self.gridMaster.select(checkedIndices[0], 'STD_YM');
+        }
+    }
     
     function saveExcelData(result) {
-        console.log("self.bizarea_cd.value()" + self.bizarea_cd.value());
-        console.log("self.importExcel_ds" + self.importExcelGrid.dataItems());
+        var progressIntervalReference = startProgress(result.totalCount); //프로그레스바 함수 호출 
     
-        // 서버로 POST 요청 보내기
         dews.api.post(
             dews.url.getApiUrl('HR', 'HRPamprg00100_X10005Service', 'uploadExcel_HR_URGDBASETBL_INFO_X10005MST'),
             {
-                async: false,
+                async: true,
                 data: {
                     uploadData: JSON.stringify(self.importExcelGrid.dataItems()),
                     bizarea_cd: self.bizarea_cd.value()
                 }
             }
         ).done(function (data) {
+            clearInterval(progressIntervalReference);
+            dews.ui.progress("progress6").setCurrent(100);  // 진행률 100%로 설정
+    
             dews.ui.snackbar.ok('자료가 정상적으로 저장되었습니다.');
             self.mpPROMO_YEAR_MONTH.value(result.success.data.STD_YM);
             dews.ui.mainbuttons.search.click();
         }).fail(function (xhr, status, error) {
+            clearInterval(progressIntervalReference);
             dews.ui.snackbar.warning('엑셀업로드 실패. 다시 업로드해주세요');
         });
     }
@@ -202,33 +275,46 @@
         var importDataCount = self.importExcelGrid.dataItems().length;
         var rowNum = self.gridMaster.dataItems().length;
     
-        console.log("importDataCount" + importDataCount);
+        //console.log("importDataCount" + importDataCount);
     
         for (var i = 0; i < importDataCount; i++) {
             self.gridMaster.addRow(rowNum);
             var idx = self.gridMaster.select();
             var pstnNm = self.importExcelGrid.getCellValue(i, 'PSTN_NM');
-            // TRGT_GRD_CD 처리 (기본값 'K1' 설정)
+    
+            var ledumCd = self.importExcelGrid.getCellValue(i, 'LEDU_CD');
+    
+            // TRGT_GRD_CD 처리 (기본값 'K1' 설정, 소문자일 경우 대문자처리)
             var trgtGrdCd = self.importExcelGrid.getCellValue(i, 'TRGT_GRD_CD');
-            trgtGrdCd = (trgtGrdCd == null || trgtGrdCd == undefined) ? 'K1' : trgtGrdCd;
+            trgtGrdCd = (trgtGrdCd == null || trgtGrdCd == undefined) ? 'K1' : trgtGrdCd.toUpperCase();
     
             // UGRD_GRD_CD 처리 (기본값 'K2' 설정)
             var ugrdGrdCd = self.importExcelGrid.getCellValue(i, 'UGRD_GRD_CD');
-            ugrdGrdCd = (ugrdGrdCd == null || ugrdGrdCd == undefined) ? 'K2' : ugrdGrdCd;
+            ugrdGrdCd = (ugrdGrdCd == null || ugrdGrdCd == undefined) ? 'K2' : ugrdGrdCd.toUpperCase();
     
             // MIN_BWRK_MY 처리 (기본값 30 설정)
             var minBwrkMy = parseInt(self.importExcelGrid.getCellValue(i, 'MIN_BWRK_MY'));
             minBwrkMy = isNaN(minBwrkMy) ? 30 : minBwrkMy; // 숫자가 아니면 기본값 30으로 설정
     
-            self.gridMaster.setCellValue(idx, 'PSTN_NM', self.importExcelGrid.getCellValue(i, 'PSTN_NM'), false);
-            self.gridMaster.setCellValue(idx, 'PSTN_CD', pstnNmMap[pstnNm], false);
-            self.gridMaster.setCellValue(idx, 'bizarea_cd', self.bizarea_cd.value(), false);
-            self.gridMaster.setCellValue(idx, 'SEQ', rowNum += 1, false); // 순번 컬럼에 값 설정
+            //BWRK_MY_CALC_STD_DT 처리
+            var bwrkMyCalcStdDt = self.importExcelGrid.getCellValue(i, 'BWRK_MY_CALC_STD_DT');
+            bwrkMyCalcStdDt = (bwrkMyCalcStdDt == null || bwrkMyCalcStdDt == undefined || bwrkMyCalcStdDt == "") ? self.mpPROMO_YEAR_MONTH.value() + "01" : bwrkMyCalcStdDt;
+    
             self.gridMaster.setCellValue(idx, 'STD_YM', self.importExcelGrid.getCellValue(i, 'STD_YM'), false); // 기준년월에 "승급년월" 저장
+            self.gridMaster.setCellValue(idx, 'PSTN_NM', self.importExcelGrid.getCellValue(i, 'PSTN_NM'), false); //직급명
+            self.gridMaster.setCellValue(idx, 'PSTN_CD', pstnNmMap[pstnNm], false);
             self.gridMaster.setCellValue(idx, 'TRGT_GRD_CD', trgtGrdCd, false); // 대상등급
             self.gridMaster.setCellValue(idx, 'UGRD_GRD_CD', ugrdGrdCd, false); // 승급등급
             self.gridMaster.setCellValue(idx, 'MIN_BWRK_MY', minBwrkMy, false); // 최소근무월수
-            self.gridMaster.setCellValue(idx, 'BWRK_MY_CALC_STD_DT', self.mpPROMO_YEAR_MONTH.value() + "01", false); // 산정기준일
+            self.gridMaster.setCellValue(idx, 'AGGR_TERM_CNT', self.importExcelGrid.getCellValue(i, 'AGGR_TERM_CNT'), false); // 근무성적집계기간
+            self.gridMaster.setCellValue(idx, 'BWRK_SGRAD_CD', self.importExcelGrid.getCellValue(i, 'BWRK_SGRAD_CD'), false); // 근무성적
+            self.gridMaster.setCellValue(idx, 'LEDU_NM', self.importExcelGrid.getCellValue(i, 'LEDU_CD'), false); // 학력
+            self.gridMaster.setCellValue(idx, 'LEDU_CD', lecdMap[ledumCd], false); // 학력
+            self.gridMaster.setCellValue(idx, 'BWRK_MY_CALC_STD_DT', bwrkMyCalcStdDt, false); // 산정기준일
+            self.gridMaster.setCellValue(idx, 'RMK_NM', self.importExcelGrid.getCellValue(i, 'RMK_NM'), false); // 비고
+            self.gridMaster.setCellValue(idx, 'bizarea_cd', self.bizarea_cd.value(), false);
+            self.gridMaster.setCellValue(idx, 'SEQ', rowNum += 1, false); // 순번 컬럼에 값 설정
+    
     
             // 'STD_YM', 'bizarea_cd', 'PSTN_CD', 'TRGT_GRD_CD'를 결합하여 'COMBINED_KEY' 생성
             var combinedKey = self.importExcelGrid.getCellValue(i, 'STD_YM') + '-' + self.bizarea_cd.value() + '-' + pstnNmMap[pstnNm] + '-' + trgtGrdCd + '-' + ugrdGrdCd + '-' + minBwrkMy;
@@ -262,11 +348,11 @@
                 "MIN_BWRK_MY": "최소근무월수",
                 "AGGR_TERM_CNT": "근무성적집계기간",
                 "BWRK_SGRAD_CD": "근무성적",
-                "LEDU_CD": "학력코드",
+                "LEDU_CD": "학력",
                 "BWRK_MY_CALC_STD_DT": "산정기준일",
                 "RMK_NM": "비고",
             },
-            validator: function (row) {
+            validator: row => {
                 dews.ui.loading.hide();
                 var msg = '';
     
@@ -295,117 +381,12 @@
                 if (msg) {
                     errMsg.push(msg);
                     console.error(msg);
-                    return false;
-                }
-                return true;
-            }
-        }).done(function (result) {
-            dews.ui.loading.hide();
-    
-            if (result && result.totalCount === result.success.count) {
-                for (var i = 0; i < result.success.count; i++) {
-                    self.importExcelGrid.setRowState(i, "created");
-                }
-                dews.ui.snackbar.info(result.totalCount + "건 데이터를 불러왔습니다.");
-            } else {
-                self.grid_ds.data([]); // 일부라도 불러오지 못하면 데이터 초기화
-                if (errMsg.length > 0) {
-                    dews.error(errMsg[0]);
-                }
-            }
-            dews.ui.snackbar.info(result.totalCount + "건의 데이터를 입력하셨습니다.");
-            self.gridMaster.clearRows(); //fd에서 데이터 삭제
-    
-            processImportData(); //업로드그리드 -> 마스터그리드로 데이터 전달
-            handleDuplicateData(); //마스터그리드 데이터 정렬 
-    
-            var checkedIndices = self.gridMaster.getCheckedIndex();
-            if (checkedIndices.length > 0) {
-                dews.ui.snackbar.info("중복된 데이터 삭제바랍니다.");
-                var rowIndex = checkedIndices[0]; // 첫 번째 선택된 행의 인덱스 가져오기
-                self.gridMaster.select(rowIndex, 'STD_YM'); // 해당 행 선택(focus효과)
-            }
-        }).fail(function (error) {
-            console.error(error);
-            dews.ui.loading.hide();
-            dews.ui.snackbar.warning("엑셀 업로드 실패했습니다. 파일을 확인해주세요.");
-        }).always(function () {
-            e.target.value = ""; // e 초기화
-        });
-    }
-    
-    
-    
-    function bulkImportExcel(e) {
-        var errMsg = [];
-        var stdYmMaxLength = 6;
-        var pstnCdMaxLength = 6;
-        var grdCdMaxLength = 10;
-        var minBwrkMyMaxLength = 1000000;
-        var titleDepth = 1;
-    
-        // 데이터 소스 초기화
-        self.importExcel_ds.data([]);
-    
-        // 엑셀 업로드 로딩바
-        //dews.ui.loading.show({ text: '엑셀 업로드 진행 중입니다.' });
-    
-        // var rowCount = self.importExcelGrid.getRowCountFromExcel(e.target.files);
-        // // 엑셀 업로드 로딩바
-    
-    
-        //데이터 소스 바인딩
-        self.importExcelGrid.importExcel({
-            fileDialog: true,
-            file: e.target.files,
-            titleDepth: titleDepth,
-            mapping: {
-                "STD_YM": "기준년월",
-                "PSTN_NM": "직급명",
-                "TRGT_GRD_CD": "대상등급",
-                "UGRD_GRD_CD": "승급등급",
-                "MIN_BWRK_MY": "최소근무월수",
-                "AGGR_TERM_CNT": "근무성적집계기간",
-                "BWRK_SGRAD_CD": "근무성적",
-                "LEDU_NM": "학력",
-                "BWRK_MY_CALC_STD_DT": "산정기준일",
-                "RMK_NM": "비고",
-            },
-            validator: function (row) {
-                dews.ui.loading.hide();
-                var msg = '';
-    
-                //기본키 누락시 업로드 실패
-                if (!row.STD_YM || row.STD_YM.length > stdYmMaxLength) {
-                    msg = dews.string.format("기준년월이 올바르지 않습니다.\n확인 후 업로드 하십시오.({0})", row.STD_YM);
-                    console.error(msg); //콘솔에 값누락 확인 
-                    return false;
-                } else if (!row.PSTN_NM || row.PSTN_NM.length > pstnCdMaxLength) {
-                    msg = dews.string.format("직급명이 올바르지 않습니다.\n확인 후 업로드 하십시오.({0}/{1})", row.STD_YM, row.PSTN_NM);
-                    console.error(msg);
-                    return false;
-                } else if (!row.TRGT_GRD_CD || row.TRGT_GRD_CD.length > grdCdMaxLength) {
-                    msg = dews.string.format("대상등급이 올바르지 않습니다.\n확인 후 업로드 하십시오.({0}/{1}/{2})", row.STD_YM, row.PSTN_CD, row.TRGT_GRD_CD);
-                    console.error(msg);
-                    return false;
-                } else if (!row.UGRD_GRD_CD || row.UGRD_GRD_CD.length > grdCdMaxLength) {
-                    msg = dews.string.format("승급등급이 올바르지 않습니다.\n확인 후 업로드 하십시오.({0}/{1}/{2}/{3})", row.STD_YM, row.PSTN_CD, row.TRGT_GRD_CD, row.UGRD_GRD_CD);
-                    console.error(msg);
-                } else if (!row.MIN_BWRK_MY || row.MIN_BWRK_MY.length > minBwrkMyMaxLength) {
-                    msg = dews.string.format("최소근무월수가 올바르지 않습니다.\n확인 후 업로드 하십시오.({0}/{1}/{2}/{3}/{4})", row.STD_YM, row.PSTN_CD, row.TRGT_GRD_CD, row.UGRD_GRD_CD, row.MIN_BWRK_MY);
-                    console.error(msg);
-                    return false;
-                }
-    
-                if (msg) {
-                    errMsg.push(msg);
-                    console.error(msg);
-                    dews.ui.snackbar.warning("누락된 정보가 있습니다.\n확인 후 업로드 하십시오");
+                    dews.ui.loading.hide(); // 에러 발생 시 로딩바 숨김
                     return false;
                 }
                 return true;
             },
-            convertor: function (row) {
+            convertor: row => {
                 if (row.BIZAREA_NM == null || row.BIZAREA_NM == undefined) {
                     row.BIZAREA_CD = self.bizarea_cd.value(); // 현재 선택된 사업장으로 저장
                 }
@@ -414,34 +395,21 @@
     
                 return row;
             },
-        }).done(function (result) {
+        }).done(result => {
             dews.ui.loading.hide();
-            //updateProgress();
-            if (result && result.totalCount === result.success.count) {
-                for (var i = 0; i < result.success.count; i++) {
-                    self.importExcelGrid.setRowState(i, "created");
-                }
-    
-                dews.ui.snackbar.info(result.totalCount + "건 데이터를 불러왔습니다.");
-    
-                saveExcelData(result);
-    
+            if (result.totalCount > 1000) { // 1000개 이상 back에서 바로 저장처리
+                processLargeData(result, errMsg);
             } else {
-                self.grid_ds.data([]); // 일부라도 불러오지 못하면 데이터 초기화
-                if (errMsg.length > 0) {
-                    dews.error(errMsg[0]);
-                }
+                processRegularData(result, errMsg); // 1000미만은 front에서 작업
             }
-        }).fail(function (error) {
+        }).fail(error => {
             console.error(error);
             dews.ui.loading.hide();
             dews.ui.snackbar.warning("엑셀 업로드 실패했습니다. 파일을 확인해주세요.");
-        }).always(function () {
-            e.target.value = ""; // e 초기화
+        }).always(() => {
+            e.target.value = "";
         });
     }
-    
-    
     
     function OpenDialogYm() {
         var dialog = dews.ui.dialog("PAMPRG00100_YM", {
@@ -714,12 +682,38 @@
             }).no(function () {
             });
         } else {
-    
             searchData();
         }
     
     });
     dews.ui.mainbuttons.delete.click(/*da329bef-6f06-4958-bb9d-489a5d95db95*/ function () {
+    
+        try {
+            // 체크된 행 인덱스를 가진 배열
+            var checkArray = self.gridMaster.getCheckedIndex();
+            if (checkArray.length == 0) { // 체크된 행이 없다면
+                dews.ui.snackbar.warning("체크된 행이 없습니다."); // 스낵바 경고 띄우기
+                return;
+            }
+            dews.confirm("삭제하시겠습니까?", "question").yes(function () {
+                self.gridMaster.removeRow(checkArray); // 체크된 행 모두 삭제하기
+                dews.ui.snackbar.info("저장을 눌러 삭제를 완료하세요.");
+            });
+        } catch (error) {
+            console.error(error);
+            dews.error(error);
+        }
+    
+    });
+    
+    
+    /**
+     * @Control : MainButton
+     * @Event : click
+     * @Control-ID : delete
+     * @Warning : 주석라인 수정시 스크립트 저장에 문제가 발생할 수 있습니다.
+     *//*da329bef-6f06-4958-bb9d-489a5d95db95*/
+    dews.ui.mainbuttons.delete.click(function () {
         try {
             // 체크된 행 인덱스를 가진 배열
             var checkArray = self.gridMaster.getCheckedIndex();
@@ -737,14 +731,19 @@
         }
     });
     dews.ui.mainbuttons.save.click(/*de6735b5-68c0-4785-bc2d-308bb03c399d*/ function () {
-    
-        self.gridMaster.commitCell(); // 수정모드 종료
         var checkedIndices = self.gridMaster.getCheckedIndex();
     
-        // console.log("self.gridMaster.dataSource.dataProvider._dp._values" + self.gridMaster.dataSource.dataProvider._dp._values);
         if (checkedIndices && checkedIndices.length > 0) {
             dews.ui.snackbar.warning("중복값이 존재합니다. 체크된 데이터 삭제해주세요.");
         } else {
+            var dirtyData = self.grid_ds.getDirtyData();
+    
+    
+            var totalDirtyData = dirtyData.Deleted.length + dirtyData.Updated.length + dirtyData.Added.length;
+            if (totalDirtyData >= 3000) {
+                var progressInterval = startProgress(totalDirtyData);
+            }
+    
             dews.api.post(
                 dews.url.getApiUrl('HR', 'HRPamprg00100_X10005Service', 'save_HR_URGDBASETBL_INFO_X10005MST'), {
                 async: false,
@@ -753,20 +752,64 @@
                 }
             }
             ).done(function (data) {
+                if (progressInterval) {
+                    clearInterval(progressInterval);
+                    dews.ui.progress("progress6").setCurrent(100);
+                }
                 dews.ui.snackbar.ok('자료가 정상적으로 저장되었습니다.');
-    
-    
+                self.gridMaster.refresh();
+                console.log("승급년월" + self.mpPROMO_YEAR_MONTH.value());
+                self.gridMaster.refresh();
             }).fail(function (xhr, status, error) {
+                if (progressInterval) {
+                    clearInterval(progressInterval);
+                    dews.ui.progress("progress6").setCurrent(100);
+                }
                 dews.ui.snackbar.error(error);
             });
         }
-        // self.grid_ds.data = self.grid_ds.options.data;
-        // self.grid_ds.read();
+        self.gridMaster.refresh();
+        self.grid_ds.read();
     
     });
     self.$copybtnApply.on('click', /*df183ba1-b663-4f91-b5c4-39905db4b87c*/ function (e) {
         OpenDialogCopy();
     
+    });
+    
+    
+    /**
+     * @Control : Button
+     * @Event : click
+     * @Control-ID : downloadBtnTempvar
+     * @Warning : 주석라인 수정시 스크립트 저장에 문제가 발생할 수 있습니다.
+     */
+    self.$downloadBtnTemplet.on('click', function (e) {
+        try {
+            // 사업장번호 선택되어 있어야 함
+            if (self.mpPROMO_YEAR_MONTH.value() == '' || self.bizarea_cd.value() == '') {
+                dews.ui.snackbar.warning("누락된 필수값이 있습니다.");
+                return false;
+            }
+            // 데이터가 없을 시 한 줄 추가(양식)
+            if (self.excelFormGrid.dataItems().length === 0) {
+                self.excelFormGrid.addRow();
+            }
+            // 파일 이름
+            var downloadFileName = dews.string.format("승급기준표등록__{0}.xlsx", dews.date.format(new Date(), "yyyyMMdd_HHmmss"));
+            // Excel 서식 다운로드
+            var exportToExcelOptions = {
+                fileName: downloadFileName,
+                exportGrids: [
+                    { grid: self.excelFormGrid, sheetName: "UPLOAD" }
+                ]
+            }; // saveAsExcel: 그리드의 내용을 엑셀로 저장
+            self.excelFormGrid.saveAsExcel(exportToExcelOptions);
+            dews.ui.snackbar.ok("양식 다운로드 완료되었습니다.");
+        } catch (error) {
+            dews.error(error);
+            console.log(error);
+        }
     });
     self.$downloadBtnTemplet.on('click', /*481962ba-2461-4e07-81cc-b0b656c4f1aa*/ function (e) {
         try {
@@ -817,32 +860,17 @@
             return false;
         }
         try {
-            importExcel(e);
-            // 중복 확인
+            importExcel(e); //엑셀 매핑작업
         }
         catch (error) {
             dews.error(error);
             console.error(error);
-        }
-    });
-    self.$bulkExcelUpload.on('click', /*a6e64b8b-e8f6-4d3f-a5f5-b9f42e60b0e4*/ function (e) {
-    
-        if (self.mpPROMO_YEAR_MONTH.value() == '' || self.bizarea_cd.value() == '') {
-            dews.ui.snackbar.warning("누락된 필수값이 있습니다.");
-            return false;
-        }
-        try {
-            bulkImportExcel(e);
-            // 중복 확인
-        }
-        catch (error) {
-            dews.error(error);
-            console.error(error);
+            dews.ui.loading.hide(); // 에러 발생 시 로딩바 숨김
         }
     });
     self.mpPROMO_YEAR_MONTH.on('change', /*9cd054b6-b7e2-4b3e-b457-5bc434526e95*/ function (e) {
         if (self.conditionpanel.validate({ tooltip: true, message: '필수 항목을 입력해 주십시요.' })) {
-            if (self.grid_ds.getDirtyDataCount() >= 1) {
+            if (self.grid_ds.getDirtyDataCount() > 0) {
                 dews.confirm('저장되지 않은 데이터가 있습니다.\n그래도 조회 하시겠습니까?', "question").yes(function () {
                     searchData();
                 }).no(function () {
@@ -960,7 +988,7 @@
         },
         {
           field: 'LEDU_NM',
-          title: '학력',
+          title: '학력명',
           width: 80,
           editor: {
             type: 'codepicker',
@@ -982,7 +1010,7 @@
         },
         {
           field: 'LEDU_CD',
-          title: '학력코드',
+          title: '학력',
           width: 80,
           visible: false,
           editor: {
@@ -991,6 +1019,7 @@
             codeField: 'SYSDEF_CD',
             textField: 'SYSDEF_NM',
             gridCodeField: 'LEDU_CD',
+            gridTextField: 'LEDU_NM',
             helpTitle: '학력 도움창',
             helpSize: 'medium',
             helpParams: /*587d6f15-8773-479c-a310-f91ef8ac5829*/ function(e) {
@@ -1069,7 +1098,19 @@
       fixed: {
         colCount: 0,
         rightColCount: 0
-      }
+      },
+      dataBound: /*dee97294-1bb1-465f-8d51-5e83ffc4ce1f*/ function (e) {
+            dews.ui.loading.hide(); // 로딩화면 숨기기
+        },
+        save: function (e) {
+            try {
+                // 여기에 save 로직을 넣을 수 있습니다.
+            } catch (error) {
+                dews.error(error);
+                console.error(error);
+            }
+        }
+    
     });
     dews.ui.grid(self.$excelFormGrid, {
       dataSource: self.forExcelDataSource,
@@ -1190,7 +1231,13 @@
         {
           field: 'LEDU_CD',
           title: '학력',
-          width: 80
+          width: 80,
+          formats: {
+            type: 'dataSource',
+            dataSource: self.ledu_cd_ds,
+            dataValueField: 'LEDU_CD',
+            dataTextField: 'LEDU_NM'
+          }
         },
         {
           field: 'LEDU_NM',
@@ -1247,6 +1294,8 @@
     self.gridMaster.SEQ = 0;
     self.gridMaster.sort({ field: 'TRGT_GRD_CD', dir: 'asc' }); // 대상등급 기준으로 오름차순 정렬 
     self.grid_ds.read();
+    
+    
     
     
     

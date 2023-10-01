@@ -1,22 +1,14 @@
 package com.douzone.comet.service.hr.pamprg;
 
-import java.io.InputStream;
+ 
 import java.util.ArrayList;
-import java.util.Collection;
+ 
 import java.util.HashMap;
-import java.util.Iterator;
+ 
 import java.util.List;
 import java.util.Map;
-
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.usermodel.Workbook;
-import org.apache.poi.ss.usermodel.WorkbookFactory;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
-
 import com.douzone.comet.components.DzCometService;
 import com.douzone.comet.service.hr.pamprg.dao.Pamprg00100_X10005Dao;
 import com.douzone.comet.service.hr.pamprg.models.Pamprg00100_X10005Model;
@@ -28,15 +20,10 @@ import com.douzone.gpd.jdbc.objects.SqlPack;
 import com.douzone.gpd.restful.annotation.DzApi;
 import com.douzone.gpd.restful.annotation.DzApiService;
 import com.douzone.gpd.restful.annotation.DzParam;
-import com.douzone.gpd.restful.annotation.response.DzCustomJsonResponse;
-import com.douzone.gpd.restful.annotation.response.DzFileDownloadResponse;
 import com.douzone.gpd.restful.enums.CometModule;
 import com.douzone.gpd.restful.enums.DzParamType;
 import com.douzone.gpd.restful.enums.DzRequestMethod;
 import com.douzone.gpd.restful.model.DzGridModel;
-import com.douzone.gpd.util.JsonUtil.DzJsonIgnore;
-import com.ibm.icu.math.BigDecimal;
-
 import utills.CommonUtil;
 
 /**
@@ -51,7 +38,7 @@ public class HRPamprg00100_X10005Service extends DzCometService {
  
 	@Autowired
 	Pamprg00100_X10005Dao pamprg00100_X10005Dao;
-
+ 
 	// [메인화면 조회]
 	@DzApi(url = "/list_HR_URGDBASETBL_INFO_X10005MST", desc = "승급기준표-조회", httpMethod = DzRequestMethod.GET)
 	public List<Pamprg00100_X10005Model> list_HR_URGDBASETBL_INFO_X10005MST(
@@ -75,7 +62,9 @@ public class HRPamprg00100_X10005Service extends DzCometService {
 				Pamprg00100_X10005Model model = pamprg00100_X10005ModelList.get(i);
 				model.setSeq(i + 1);
 			}
-
+			
+			System.out.println("데이터모델"+pamprg00100_X10005ModelList.toString());
+			
 			return pamprg00100_X10005ModelList;
 
 		} catch (Exception e) {
@@ -301,39 +290,43 @@ public class HRPamprg00100_X10005Service extends DzCometService {
 	}
  
 	// 유효성 검사 다시 한번하고 엑셀 마무리
-	@Transactional(rollbackFor = Exception.class)
-	@DzCustomJsonResponse
-	@DzApi(url = "/uploadExcel_HR_URGDBASETBL_INFO_X10005MST", desc = "엑셀업로드", httpMethod = DzRequestMethod.POST)
-	public boolean pamodm01550x10005_excel_upload(
-			@DzParam(key = "uploadData", desc = "업로드데이터",required = false, paramType = DzParamType.Body) List <Pamprg00100_X10005Model> uploadData,
-	        @DzParam(key = "bizarea_cd", desc = "사업장코드",required = false, paramType = DzParamType.Body) String bizarea_cd)
-	        throws Exception {
-		//변경된 객체와 그대로인 것의 객체 구별 
-		String company_cd = this.getCompanyCode();
-		String userId = this.getUserId();
-		String userIp = this.getRemoteHost();
+		@Transactional(rollbackFor = Exception.class)
+		@DzApi(url = "/uploadExcel_HR_URGDBASETBL_INFO_X10005MST", desc = "엑셀업로드", httpMethod = DzRequestMethod.POST)
+		public boolean pamodm01550x10005_excel_upload(
+				@DzParam(key = "uploadData", desc = "업로드데이터",required = false, paramType = DzParamType.Body) List <Pamprg00100_X10005Model> uploadData,
+		        @DzParam(key = "bizarea_cd", desc = "사업장코드",required = false, paramType = DzParamType.Body) String bizarea_cd)
+		        throws Exception {
 	 
-	    try {
-
-	     uploadData
-	        .parallelStream()
-	        .forEachOrdered(pamprg00100_X10005Model -> {
-	            try {
-	                CommonUtil commonUtil = new CommonUtil();
-        
-	                pamprg00100_X10005Model =commonUtil.setCommonFields(pamprg00100_X10005Model, company_cd, userId, userIp);
-	                System.out.println(pamprg00100_X10005Model.toString());
-	                pamprg00100_X10005Model.setBizarea_cd(bizarea_cd);
-	                pamprg00100_X10005Model.setBwrk_my_calc_std_dt(StringUtil.getLocaleTimeString(pamprg00100_X10005Model.getBwrk_my_calc_std_dt(), "yyyyMMdd"));
-	                this.pamprg00100_X10005Dao.uploadPAMPRG00100_Model(pamprg00100_X10005Model);
-	            } catch (Exception e) {
-	            }
-	        });
-	    } catch (DzApplicationRuntimeException e) {
-	        throw e;
-	    } catch (Exception e) {
-	        throw e;
-	    }
-	    return true;
-	}
+			//변경된 객체와 그대로인 것의 객체 구별 
+			String company_cd = this.getCompanyCode();
+			String userId = this.getUserId();
+			String userIp = this.getRemoteHost();
+		 
+		    try {
+		    	 
+				
+		    	System.out.println("uploadData사이즈 "+uploadData.size());//사이즈를 분할해서 front에 뿌려주기 
+		     
+		    uploadData
+		        .parallelStream()
+		        .forEachOrdered(pamprg00100_X10005Model -> {
+		            try {
+		                CommonUtil commonUtil = new CommonUtil();
+	        
+		                pamprg00100_X10005Model =commonUtil.setCommonFields(pamprg00100_X10005Model, company_cd, userId, userIp);
+		                System.out.println(pamprg00100_X10005Model.toString());
+		                pamprg00100_X10005Model.setBizarea_cd(bizarea_cd);
+		                pamprg00100_X10005Model.setBwrk_my_calc_std_dt(StringUtil.getLocaleTimeString(pamprg00100_X10005Model.getBwrk_my_calc_std_dt(), "yyyyMMdd"));
+		                this.pamprg00100_X10005Dao.uploadPAMPRG00100_Model(pamprg00100_X10005Model);
+		            } catch (Exception e) {
+		            }
+		        });
+		    } catch (DzApplicationRuntimeException e) {
+		        throw e;
+		    } catch (Exception e) {
+		        throw e;
+		    }
+		    return true;
+		}
+  
 }

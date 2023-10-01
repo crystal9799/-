@@ -32,23 +32,23 @@ public class Pamprg00100_X10005Model extends DzAbstractModel {
 	private String pstn_nm;
 
 	@SerializedName("ORIG_PSTN_CD")
-	@DzModelField(name = "orig_pstn_cd", desc = "수정이전 직급코드", colName = "ORIG_PSTN_CD", colSize = "5", isKey = false)
+	@DzModelField(name = "orig_pstn_cd", desc = "수정이전 직급코드", colName = "ORIG_PSTN_CD", colSize = "6", isKey = false)
 	private String orig_pstn_cd;
 
 	@SerializedName("TRGT_GRD_CD")
-	@DzModelField(name = "trgt_grd_cd", desc = "대상등급", colName = "TRGT_GRD_CD", colSize = "5", isKey = false)
+	@DzModelField(name = "trgt_grd_cd", desc = "대상등급", colName = "TRGT_GRD_CD", colSize = "6", isKey = false)
 	private String trgt_grd_cd;
 
 	@SerializedName("ORIG_TRGT_GRD_CD")
-	@DzModelField(name = "orig_trgt_grd_cd", desc = "수정이전 등급코드", colName = "ORIG_TRGT_GRD_CD", colSize = "5", isKey = false)
+	@DzModelField(name = "orig_trgt_grd_cd", desc = "수정이전 등급코드", colName = "ORIG_TRGT_GRD_CD", colSize = "6", isKey = false)
 	private String orig_trgt_grd_cd;
 
 	@SerializedName("UGRD_GRD_CD")
-	@DzModelField(name = "ugrd_grd_cd", desc = "승급등급코드", colName = "UGRD_GRD_CD", colSize = "5", isKey = false)
+	@DzModelField(name = "ugrd_grd_cd", desc = "승급등급코드", colName = "UGRD_GRD_CD", colSize = "6", isKey = false)
 	private String ugrd_grd_cd;
 
 	@SerializedName("ORIG_UGRD_GRD_CD")
-	@DzModelField(name = "orig_ugrd_grd_cd", desc = "수정이전 승급등급코드", colName = "ORIG_UGRD_GRD_CD", colSize = "5", isKey = false)
+	@DzModelField(name = "orig_ugrd_grd_cd", desc = "수정이전 승급등급코드", colName = "ORIG_UGRD_GRD_CD", colSize = "6", isKey = false)
 	private String orig_ugrd_grd_cd;
 
 	@SerializedName("MIN_BWRK_MY")

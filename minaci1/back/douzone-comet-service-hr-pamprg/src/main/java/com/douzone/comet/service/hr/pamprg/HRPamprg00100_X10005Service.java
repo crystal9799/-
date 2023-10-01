@@ -1,12 +1,22 @@
 package com.douzone.comet.service.hr.pamprg;
 
+import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Date;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.usermodel.WorkbookFactory;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
+
 import com.douzone.comet.components.DzCometService;
 import com.douzone.comet.service.hr.pamprg.dao.Pamprg00100_X10005Dao;
 import com.douzone.comet.service.hr.pamprg.models.Pamprg00100_X10005Model;
@@ -18,10 +28,16 @@ import com.douzone.gpd.jdbc.objects.SqlPack;
 import com.douzone.gpd.restful.annotation.DzApi;
 import com.douzone.gpd.restful.annotation.DzApiService;
 import com.douzone.gpd.restful.annotation.DzParam;
+import com.douzone.gpd.restful.annotation.response.DzCustomJsonResponse;
+import com.douzone.gpd.restful.annotation.response.DzFileDownloadResponse;
 import com.douzone.gpd.restful.enums.CometModule;
 import com.douzone.gpd.restful.enums.DzParamType;
 import com.douzone.gpd.restful.enums.DzRequestMethod;
 import com.douzone.gpd.restful.model.DzGridModel;
+import com.douzone.gpd.util.JsonUtil.DzJsonIgnore;
+import com.ibm.icu.math.BigDecimal;
+
+import utills.CommonUtil;
 
 /**
  * @description : 승급관리기준표_Service
@@ -29,9 +45,10 @@ import com.douzone.gpd.restful.model.DzGridModel;
  * @Author : minaci
  * @History :
  */
+
 @DzApiService(value = "HRPamprg00100_X10005Service", module = CometModule.HR, desc = "승급기준등록표_Service")
 public class HRPamprg00100_X10005Service extends DzCometService {
-
+ 
 	@Autowired
 	Pamprg00100_X10005Dao pamprg00100_X10005Dao;
 
@@ -101,45 +118,46 @@ public class HRPamprg00100_X10005Service extends DzCometService {
 	public void save_HR_URGDBASETBL_INFO_X10005MST(
 			@DzParam(key = "grid_ds", desc = "승급기준표 데이터", paramType = DzParamType.Body) DzGridModel<Pamprg00100_X10005Model> grid_ds)
 			throws Exception {
+
+		System.out.println("grid_ds" + grid_ds.getDeleted());
 		try {
+			String companyCode = this.getCompanyCode();
+			String userId = this.getUserId();
+			String remoteHost = this.getRemoteHost();
+			CommonUtil commonUtil = new CommonUtil();
 
-			// [delete] : 완료
-			for (Pamprg00100_X10005Model deleteRow : grid_ds.getDeleted()) {
-				deleteRow.setCompany_cd(this.getCompanyCode());
-			}
-
-			// [update] : 기본키 수정 가능하게 함(완료)
-			for (Pamprg00100_X10005Model updateRow : grid_ds.getUpdated()) {
-				updateRow.setCompany_cd(this.getCompanyCode());
-				updateRow.setUpdate_id(this.getUserId());
-				updateRow.setUpdate_dts(new Date());
-				updateRow.setUpdate_ip(this.getRemoteHost());
-				updateRow.setBwrk_my_calc_std_dt(
-						StringUtil.getLocaleTimeString(updateRow.getBwrk_my_calc_std_dt(), "yyyyMMdd"));
-				logger.info("updateRow" + updateRow.toString());
-			}
-
-			// [insert] : 일괄 저장 merge into
-			for (Pamprg00100_X10005Model insertRow : grid_ds.getAdded()) {
-				insertRow.setCompany_cd(this.getCompanyCode());
-				insertRow.setInsert_id(this.getUserId());
-				insertRow.setInsert_dts(new Date());
-				insertRow.setInsert_ip(this.getRemoteHost());
-				insertRow.setBwrk_my_calc_std_dt(
-						StringUtil.getLocaleTimeString(insertRow.getBwrk_my_calc_std_dt(), "yyyyMMdd"));
-				logger.info("insertRow" + insertRow.toString());
-			}
-
-			if (grid_ds.getDeleted() != null && grid_ds.getDeleted().size() > 0) {
-				pamprg00100_X10005Dao.deletePAMPRG00100_Model(grid_ds.getDeleted());
+			// [delete]: 완료
+			List<Pamprg00100_X10005Model> deletedRows = grid_ds.getDeleted();
+			if (deletedRows != null && !deletedRows.isEmpty()) {
+				deletedRows
+						.forEach(deleteRow -> commonUtil.setCommonFields(deleteRow, companyCode, userId, remoteHost));
+				pamprg00100_X10005Dao.deletePAMPRG00100_Model(deletedRows);
 				logger.info("그리드 삭제완료");
 			}
-			if (grid_ds.getUpdated() != null && grid_ds.getUpdated().size() > 0) {
-				pamprg00100_X10005Dao.updatePAMPRG00100_Model(grid_ds.getUpdated());
+
+			// [update]: 기본키 수정 가능하게 함(완료)
+			List<Pamprg00100_X10005Model> updatedRows = grid_ds.getUpdated();
+			if (updatedRows != null && !updatedRows.isEmpty()) {
+				updatedRows.forEach(updateRow -> {
+					commonUtil.setCommonFields(updateRow, companyCode, userId, remoteHost);
+					updateRow.setBwrk_my_calc_std_dt(
+							StringUtil.getLocaleTimeString(updateRow.getBwrk_my_calc_std_dt(), "yyyyMMdd"));
+					logger.info("updateRow " + updateRow.toString());
+				});
+				pamprg00100_X10005Dao.updatePAMPRG00100_Model(updatedRows);
 				logger.info("그리드 수정완료");
 			}
-			if (grid_ds.getAdded() != null && grid_ds.getAdded().size() > 0) {
-				pamprg00100_X10005Dao.insertPAMPRG00100_Model(grid_ds.getAdded());
+
+			// [insert]: 일괄 저장 merge into
+			List<Pamprg00100_X10005Model> addedRows = grid_ds.getAdded();
+			if (addedRows != null && !addedRows.isEmpty()) {
+				addedRows.forEach(insertRow -> {
+					commonUtil.setCommonFields(insertRow, companyCode, userId, remoteHost);
+					insertRow.setBwrk_my_calc_std_dt(
+							StringUtil.getLocaleTimeString(insertRow.getBwrk_my_calc_std_dt(), "yyyyMMdd"));
+					logger.info("insertRow " + insertRow.toString());
+				});
+				pamprg00100_X10005Dao.insertPAMPRG00100_Model(addedRows);
 				logger.info("그리드 추가완료");
 			}
 		} catch (Exception e) {
@@ -164,10 +182,10 @@ public class HRPamprg00100_X10005Service extends DzCometService {
 			parameters.put("P_TARGET_YEAR_MONTH", targetYearMonth);
 
 			int result = pamprg00100_X10005Dao.checkListExist(parameters);
-			logger.info("result"+result);
-			
-			if(result > 0) {
-				return false; // 있으면 false 
+			logger.info("result" + result);
+
+			if (result > 0) {
+				return false; // 있으면 false
 			}
 			return true;
 
@@ -220,7 +238,7 @@ public class HRPamprg00100_X10005Service extends DzCometService {
 			HashMap<String, Object> parameters = new HashMap<String, Object>();
 			parameters.put("P_COMPANY_CD", this.getCompanyCode()); // required
 			parameters.put("P_TARGET_YEAR_MONTH", targetYearMonth); // 대상년월
-			parameters.put("P_PROMO_YEAR_MONTH", mpPROMO_YEAR_MONTH); // 승급년월			
+			parameters.put("P_PROMO_YEAR_MONTH", mpPROMO_YEAR_MONTH); // 승급년월
 			parameters.put("P_BIZAREA_CD", bizarea_cd);
 			parameters.put("P_BWRK_MY_CALC_STD_DT", targetYearMonth + "01"); // -- 산정기준일 (승급년월의 1일)
 
@@ -281,5 +299,41 @@ public class HRPamprg00100_X10005Service extends DzCometService {
 		}
 		return list;
 	}
+ 
+	// 유효성 검사 다시 한번하고 엑셀 마무리
+	@Transactional(rollbackFor = Exception.class)
+	@DzCustomJsonResponse
+	@DzApi(url = "/uploadExcel_HR_URGDBASETBL_INFO_X10005MST", desc = "엑셀업로드", httpMethod = DzRequestMethod.POST)
+	public boolean pamodm01550x10005_excel_upload(
+			@DzParam(key = "uploadData", desc = "업로드데이터",required = false, paramType = DzParamType.Body) List <Pamprg00100_X10005Model> uploadData,
+	        @DzParam(key = "bizarea_cd", desc = "사업장코드",required = false, paramType = DzParamType.Body) String bizarea_cd)
+	        throws Exception {
+		//변경된 객체와 그대로인 것의 객체 구별 
+		String company_cd = this.getCompanyCode();
+		String userId = this.getUserId();
+		String userIp = this.getRemoteHost();
+	 
+	    try {
 
+	     uploadData
+	        .parallelStream()
+	        .forEachOrdered(pamprg00100_X10005Model -> {
+	            try {
+	                CommonUtil commonUtil = new CommonUtil();
+        
+	                pamprg00100_X10005Model =commonUtil.setCommonFields(pamprg00100_X10005Model, company_cd, userId, userIp);
+	                System.out.println(pamprg00100_X10005Model.toString());
+	                pamprg00100_X10005Model.setBizarea_cd(bizarea_cd);
+	                pamprg00100_X10005Model.setBwrk_my_calc_std_dt(StringUtil.getLocaleTimeString(pamprg00100_X10005Model.getBwrk_my_calc_std_dt(), "yyyyMMdd"));
+	                this.pamprg00100_X10005Dao.uploadPAMPRG00100_Model(pamprg00100_X10005Model);
+	            } catch (Exception e) {
+	            }
+	        });
+	    } catch (DzApplicationRuntimeException e) {
+	        throw e;
+	    } catch (Exception e) {
+	        throw e;
+	    }
+	    return true;
+	}
 }

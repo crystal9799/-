@@ -1,6 +1,6 @@
-<!--##44d35a8f-c5b0-425d-a508-b4429bc23900##-->
+<!--##20772c78-c495-4449-ad6f-765aabc1173d##-->
 <!--##PAMPRG00100_COPY##-->
-<!--##nzDCncT/xX1FaL6mrh/sGbNk4e7UBcfLEmFBw+iW8zws/cql8MCwcfxUF3kBXqOI##-->
+<!--##p155faESd+j3xeubCZ9dqg7yi1KIilsh67ZMQ+709CE3e2N8eqskwlbEsewx7Mx+##-->
 <!--
   DEWS UI/UX IDE - Build Result - v1.5
   # PageID: PAMPRG00100_COPY
@@ -85,6 +85,8 @@
             }
         }).done(function (data) {
             dews.ui.snackbar.ok("종전자료복사가 완료되었습니다.");
+            self.targetYearMonth.value(data.STD_YM);
+            dews.ui.mainbuttons.search.click();
         }).fail(function (message) {
             dews.ui.snackbar.warning(message.responseJSON.message);
         });

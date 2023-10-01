@@ -45,6 +45,11 @@ public class Pamprg00100_X10005Dao  {
 	public void insertPAMPRG00100_Model(List<Pamprg00100_X10005Model> Pamprg00100_X10005Model) throws Exception {
 		this.mybatisSupport.insertBatch(this.getClass().getName() + ".insertPAMPRG00100_Model", Pamprg00100_X10005Model);
 	}
+	
+	
+	public void uploadPAMPRG00100_Model(Pamprg00100_X10005Model Pamprg00100_X10005Model) throws Exception {
+		this.mybatisSupport.insert(this.getClass().getName() + ".uploadPAMPRG00100_Model", Pamprg00100_X10005Model);
+	}
 
 	/**
 	 * 복수 데이터 수정 처리

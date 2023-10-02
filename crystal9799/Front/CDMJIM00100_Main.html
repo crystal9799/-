@@ -1,6 +1,6 @@
-<!--##c97539cc-ff30-40c1-ba23-aa3f078a9b20##-->
+<!--##2fe52c58-b88c-45d4-be1e-c40997a4b266##-->
 <!--##CDMJIM00100_Main##-->
-<!--##eaqVsOq22OUg/AFQfCzw5isZsM90BaIlPaq0kvSBHO9WmKfWD6UUM/1ma26ChKwa##-->
+<!--##FYzZPVGY9jEeyYXL+lr5oKWk4j4gDdrPxQZY/6f8JBT+QSrNZeYKXIKv2v7M1CC5##-->
 <!--
   DEWS UI/UX IDE - Build Result - v1.5
   # PageID: CDMJIM00100_Main
@@ -86,8 +86,8 @@
 </div>
 <div class="dews-button-group" style="text-align: right;">
   <h2 class="dews-ui-title">세부분류</h2>
-  <button class="dews-ui-button">추가</button>
-  <button class="dews-ui-button">삭제</button>
+  <button id="sub_add_btn" class="dews-ui-button">추가</button>
+  <button id="sub_del_btn" class="dews-ui-button">삭제</button>
 </div>
 <div class="dews-ui-container-panel">
   <div class="dews-container-item" data-dews-position="left" data-dews-width="574px">
@@ -120,7 +120,6 @@
 
     /*70cee10b-3521-442d-82f0-480b335cebfb*/ //# sourceURL=CDMJIM00100_Main.js
     self.USE_DROP.value("YES");
-    
     
     
     
@@ -213,7 +212,8 @@
             { field: 'VER_CD', editable: false, dataType: 'string' }, 
             { field: 'AELM_NM', editable: false, dataType: 'string' }, 
             { field: 'AELM_LV', editable: false, dataType: 'number' }, 
-            { field: '_uid', editable: false, dataType: 'string' }
+            { field: '_uid', editable: false, dataType: 'string' }, 
+            { field: 'OG_AELM_CD', editable: false, dataType: 'string' }
           ]
     
         }
@@ -243,7 +243,9 @@
             { field: 'AELM_NM', editable: false, dataType: 'string' }, 
             { field: 'PCFM_CD', editable: false, dataType: 'string' }, 
             { field: 'PCFM_DC', editable: false, dataType: 'string' }, 
-            { field: '_uid', editable: false, dataType: 'string' }
+            { field: '_uid', editable: false, dataType: 'string' }, 
+            { field: 'AELM_LV', editable: false, dataType: 'number' }, 
+            { field: 'OG_PCFM_CD', editable: false, dataType: 'string' }
           ]
     
         }
@@ -271,7 +273,11 @@
             { field: 'NEED_RQISIT_CD', editable: false, dataType: 'string' }, 
             { field: 'NEED_RQISIT_NM1', editable: false, dataType: 'string' }, 
             { field: 'NEED_RQISIT_NM2', editable: false, dataType: 'string' }, 
-            { field: 'NEED_RQISIT_NM3', editable: false, dataType: 'string' }
+            { field: 'NEED_RQISIT_NM3', editable: false, dataType: 'string' }, 
+            { field: 'ACLF_NO', editable: false, dataType: 'string' }, 
+            { field: 'VER_CD', editable: false, dataType: 'string' }, 
+            { field: 'AELM_CD', editable: false, dataType: 'string' }, 
+            { field: 'PCFM_CD', editable: false, dataType: 'string' }
           ]
     
         }
@@ -323,8 +329,9 @@
     });
     dews.ui.mainbuttons.save.click(/*2d23a3b2-21fb-4697-8d65-5f7fc24ad853*/ function () {
         // TODO: 데이터소스를 저장합니다.
-        if (self.MAIN_DS.getDirtyDataCount() == 0) {
+        if (self.MAIN_DS.getDirtyDataCount() + self.LEFT_DS.getDirtyDataCount() + self.RIGHT1_DS.getDirtyDataCount() + self.RIGHT2_DS.getDirtyDataCount() == 0) {
             dews.alert('변경된 데이터가 없습니다.');
+            // self.MAIN_DS.read();
             return false;
         }
         //
@@ -335,31 +342,90 @@
         //
         // 서비스 파라미터명과 데이터소스명이 같은경우
         dews.confirm('저장하시겠습니까?', 'ico2').yes(function () {
-            self.MAIN_DS.batchSave(dews.url.getApiUrl('HR', 'Cdmjim00100_MainGrid_Service', 'cdmjim00100_MainGrid_Save'))
-                .done(function (data) {
-                    dews.ui.snackbar.ok('저장되었습니다.');
-                    dews.ui.loading.show({
-                        text: '조회중입니다.'
+            if (self.MAIN_DS.getDirtyDataCount() != 0) {
+                self.MAIN_DS.batchSave(dews.url.getApiUrl('HR', 'Cdmjim00100_MainGrid_Service', 'cdmjim00100_MainGrid_Save'))
+                    .done(function (data) {
+                        dews.ui.snackbar.ok('저장되었습니다.');
+                        dews.ui.loading.show({
+                            text: '조회중입니다.'
+                        });
+                        self.MAIN_DS.read();
+                        self.LEFT_DS.read();
+                        self.RIGHT1_DS.read();
+                        self.RIGHT2_DS.read();
+                    }).fail(function (message) {
+                        dews.ui.snackbar.warning(message);
+                    }).always(function () {
+                        dews.ui.loading.hide();
                     });
-                    self.MAIN_DS.read();
-                }).fail(function (message) {
-                    dews.ui.snackbar.warning(message);
-                }).always(function () {
-                    dews.ui.loading.hide();
-                });
+            }
+    
+            if (self.LEFT_DS.getDirtyDataCount() != 0) {
+                // self.left_grid.setCellValue(self.left_grid.select(), "OG_AELM_CD", self.left_grid.getCellValue(self.left_grid.select(), "AELM_CD"), false);
+                self.LEFT_DS.batchSave(dews.url.getApiUrl('HR', 'Cdmjim00100_SubGrid_Service', 'cdmjim00100_Leftgrid_Save'))
+                    .done(function (data) {
+                        dews.ui.snackbar.ok('저장되었습니다.');
+                        dews.ui.loading.show({
+                            text: '조회중입니다.'
+                        });
+                        self.MAIN_DS.read();
+                        self.LEFT_DS.read();
+                        self.RIGHT1_DS.read();
+                        self.RIGHT2_DS.read();
+                    }).fail(function (message) {
+                        dews.ui.snackbar.warning(message);
+                    }).always(function () {
+                        dews.ui.loading.hide();
+                    });
+            }
+            if (self.RIGHT1_DS.getDirtyDataCount() != 0) {
+                // self.right1_grid.setCellValue(self.right1_grid.select(), "ORG_PCFM_CD", self.right1_grid.getCellValue(self.right1_grid.select(), "PCFM_CD"));
+                self.RIGHT1_DS.batchSave(dews.url.getApiUrl('HR', 'Cdmjim00100_SubGrid_Service', 'cdmjim00100_Right1grid_Save'))
+                    .done(function (data) {
+                        dews.ui.snackbar.ok('저장되었습니다.');
+                        dews.ui.loading.show({
+                            text: '조회중입니다.'
+                        });
+                        self.MAIN_DS.read();
+                        self.RIGHT1_DS.read();
+                        self.RIGHT2_DS.read();
+                    }).fail(function (message) {
+                        dews.ui.snackbar.warning(message);
+                    }).always(function () {
+                        dews.ui.loading.hide();
+                    });
+            }
+            if (self.RIGHT2_DS.getDirtyDataCount() != 0) {
+                // self.right1_grid.setCellValue(self.right1_grid.select(), "ORG_PCFM_CD", self.right1_grid.getCellValue(self.right1_grid.select(), "PCFM_CD"));
+                self.RIGHT2_DS.batchSave(dews.url.getApiUrl('HR', 'Cdmjim00100_SubGrid_Service', 'cdmjim00100_Right2grid_Save'))
+                    .done(function (data) {
+                        dews.ui.snackbar.ok('저장되었습니다.');
+                        dews.ui.loading.show({
+                            text: '조회중입니다.'
+                        });
+                        self.MAIN_DS.read();
+                        self.RIGHT2_DS.read();
+                    }).fail(function (message) {
+                        dews.ui.snackbar.warning(message);
+                    }).always(function () {
+                        dews.ui.loading.hide();
+                    });
+            }
         }).no(function () {
             dews.ui.snackbar.warning('취소되었습니다.');
         });
         //
         // 서비스 파라미터명과 데이터소스명이 다른경우
         // dews.confirm('수정된 데이터를 저장하시겠습니까 ? ', 'question').yes(function () {
-        //     dews.api.post(dews.url.getApiUrl('HR', 'Cdmjim00100_MainGrid_Service', 'cdmjim00100_MainGrid_Save'), {
+        //     dews.api.post(dews.url.getApiUrl('HR', 'Cdmjim00100_SubGrid_Service', 'cdmjim00100_Subgrid_Save'), {
         //         async: false,
         //         data: {
         //             //ServiceParameterName : ServiceParameterValue
-        //             saveData: JSON.stringify(self.MAIN_DS.getDirtyData()),
-        //             param1: self.cd_gaap.value(),
-        //             param2: 'value2'
+        //             saveData:
+        //                 JSON.stringify({
+        //                     "COMPANY_CD": self.user.companyCode,
+        //                     "ACLF_NO": self.LEFT_DS.getDirtyData().ACLF_NO
+        //                 })
         //         }
         //     }).done(function (data) {
         //         dews.ui.snackbar.ok('자료가 정상적으로 저장되었습니다.');
@@ -633,6 +699,7 @@
                                 self.main_grid.setCellValue(self.main_grid.select(), "TCLF_NM", data.TCLF_NM);
                                 self.main_grid.setCellValue(self.main_grid.select(), "ACLF_CD", data.ACLF_CD);
                                 self.main_grid.setCellValue(self.main_grid.select(), "ACLF_NM", data.ACLF_NM);
+                                self.main_grid.setCellValue(self.main_grid.select(), "ACLF_NO", data.ACLF_NO);
                                 self.main_grid.setCellValue(self.main_grid.select(), "COMPANY_CD", self.user.companyCode);
                             });
                         }
@@ -644,9 +711,57 @@
         }
     
     });
+    self.$sub_add_btn.on('click', /*c87f01c7-0cbc-4755-a8d1-cd98e777bc2a*/ function (e) {
+        if (self.main_grid.getCellValue(self.main_grid.select(), "JOB_FG") == 1) {
+            dews.ui.snackbar.warning(dews.localize.get("NCS표준코드는 수정할 수 없습니다."));
+        } else {
+            if (self.left_grid.focused) {
+                self.left_grid.addRow();
+                self.left_grid.setCellValue(self.left_grid.select(), "ACLF_NO", self.main_grid.getCellValue(self.main_grid.select(), "ACLF_NO"), false, false);
+                self.left_grid.setCellValue(self.left_grid.select(), "VER_CD", self.main_grid.getCellValue(self.main_grid.select(), "VER_CD"));
+            } else if (self.right1_grid.focused) {
+                if (self.left_grid.getCellValue(self.left_grid.select(), "AELM_CD") == undefined) {
+                    dews.ui.snackbar.warning(dews.localize.get("세부 분류를 먼저 입력 해야 합니다."));
+                } else {
+                    self.right1_grid.addRow();
+                    self.right1_grid.setCellValue(self.right1_grid.select(), "ACLF_NO", self.left_grid.getCellValue(self.left_grid.select(), "ACLF_NO"), false, false);
+                    self.right1_grid.setCellValue(self.right1_grid.select(), "AELM_CD", self.left_grid.getCellValue(self.left_grid.select(), "AELM_CD"), false, false);
+                    self.right1_grid.setCellValue(self.right1_grid.select(), "AELM_NM", self.left_grid.getCellValue(self.left_grid.select(), "AELM_NM"), false, false);
+                    self.right1_grid.setCellValue(self.right1_grid.select(), "VER_CD", self.main_grid.getCellValue(self.main_grid.select(), "VER_CD"), false, false);
+                    self.right1_grid.setCellValue(self.right1_grid.select(), "AELM_NM", self.left_grid.getCellValue(self.left_grid.select(), "AELM_NM"), false, false);
+                    self.right1_grid.setCellValue(self.right1_grid.select(), "AELM_LV", self.left_grid.getCellValue(self.left_grid.select(), "AELM_LV"), false, false);
+                    // self.right1_grid.setCellValue(self.right1_grid.select(), "PCFM_CD", self.right1_grid.select() + 1, false, false);
+                }
+            } else if (self.right2_grid.focused) {
+                if (self.right1_grid.getCellValue(self.right1_grid.select(), "ACLF_NO") == undefined) {
+                    dews.ui.snackbar.warning(dews.localize.get("수행 준거 내역을 먼저 입력 해야 합니다."));
+                } else {
+                    self.right2_grid.addRow();
+                    self.right2_grid.setCellValue(self.right2_grid.select(), "ACLF_NO", self.right1_grid.getCellValue(self.right1_grid.select(), "ACLF_NO"));
+                    self.right2_grid.setCellValue(self.right2_grid.select(), "VER_CD", self.right1_grid.getCellValue(self.right1_grid.select(), "VER_CD"));
+                    self.right2_grid.setCellValue(self.right2_grid.select(), "AELM_CD", self.right1_grid.getCellValue(self.right1_grid.select(), "AELM_CD"));
+                    self.right2_grid.setCellValue(self.right2_grid.select(), "PCFM_CD", self.right1_grid.getCellValue(self.right1_grid.select(), "PCFM_CD"));
+                }
+            }
+        }
+    });
+    self.$sub_del_btn.on('click', /*264a6856-7649-437b-801a-f577674199af*/ function (e) {
+        if (self.main_grid.getCellValue(self.main_grid.select(), "JOB_FG") == 1) {
+            dews.ui.snackbar.warning(dews.localize.get("NCS표준코드는 수정할 수 없습니다."));
+        } else {
+            if (self.left_grid.focused) {
+                self.left_grid.removeRow(self.left_grid.select());
+            } else if (self.right1_grid.focused) {
+                self.right1_grid.removeRow(self.right1_grid.select());
+            } else if (self.right2_grid.focused) {
+                self.right2_grid.removeRow(self.right2_grid.select());
+            }
+        }
+    });
     dews.ui.grid(self.$left_grid, {
       dataSource: self.LEFT_DS,
       height: 200,
+      editable: true,
       sortable: false,
       checkable: false,
       copyMode: 'cell',
@@ -666,23 +781,69 @@
         {
           field: 'AELM_CD',
           title: '능력요소코드',
-          width: 80
+          width: 80,
+          attributes: { class: 'required' },
+          editor: { type: 'string', maxLength: 0, editable: /*ceed9d5e-9f1c-4f4b-908f-99ee67d55150*/ function(e) {
+      if(this.getRowState(e.row.index) === "added"){
+        return true;
+      }
+      else {
+        var fg = self.main_grid.getCellValue(self.main_grid.select(), 'JOB_FG');
+        if(fg == '1') {
+          return false;
+        }else if(fg == '2') {
+          return true;
+        }
+      }
+    } }
         },
         {
           field: 'AELM_NM',
           title: '능력요소명',
           width: 70,
-          align: 'left'
+          align: 'left',
+          editor: { type: 'string', maxLength: 0, editable: /*6e9fa597-257b-4c4f-ac59-41ab19cff3f2*/ function(e) {
+      if(this.getRowState(e.row.index) === "added"){
+        return true;
+      }
+      else {
+        var fg = self.main_grid.getCellValue(self.main_grid.select(), 'JOB_FG');
+        if(fg == '1') {
+          return false;
+        }else if(fg == '2') {
+          return true;
+        }
+      }
+    } }
         },
         {
           field: 'AELM_LV',
           title: '능력요소레벨',
-          width: 80
+          width: 80,
+          editor: { type: 'string', maxLength: 0, editable: /*9fe11847-11e0-4b04-8e76-1b5b47c2e3ce*/ function(e) {
+      if(this.getRowState(e.row.index) === "added"){
+        return true;
+      }
+      else {
+        var fg = self.main_grid.getCellValue(self.main_grid.select(), 'JOB_FG');
+        if(fg == '1') {
+          return false;
+        }else if(fg == '2') {
+          return true;
+        }
+      }
+    } }
         },
         {
           field: '_uid',
           title: '_uid',
           width: 60,
+          visible: false
+        },
+        {
+          field: 'OG_AELM_CD',
+          title: '능력분류번호',
+          width: 80,
           visible: false
         }
       ],
@@ -694,14 +855,17 @@
             self.RIGHT1_DS.read();
         }
     ,
-      clicked: /*2839dbf6-a23b-4478-80d2-8ed5bd2a5479*/ function (e) {
-            self.RIGHT1_DS.read();
+      dblClicked: /*55f68e93-9b8f-44ee-b186-f0d2c0c1dc69*/ function (e) {
+            if (self.main_grid.getCellValue(self.main_grid.select(), "JOB_FG") == 1) {
+                dews.ui.snackbar.warning(dews.localize.get("NCS표준코드는 수정할 수 없습니다."));
+            }
         }
     
     });
     dews.ui.grid(self.$right1_grid, {
       dataSource: self.RIGHT1_DS,
       height: 200,
+      editable: true,
       sortable: false,
       checkable: false,
       copyMode: 'cell',
@@ -732,31 +896,77 @@
           visible: false
         },
         {
+          field: 'AELM_LV',
+          title: '능력요소레벨',
+          width: 60,
+          visible: false
+        },
+        {
           field: 'PCFM_CD',
           title: '수행준거코드',
-          width: 80
+          width: 80,
+          attributes: { class: 'required' },
+          editor: { type: 'string', maxLength: 0, editable: /*42614219-cdb0-4c82-b6b6-72478fbab19a*/ function(e) {
+      if(this.getRowState(e.row.index) === "added"){
+        return true;
+      }
+      else {
+        var fg = self.main_grid.getCellValue(self.main_grid.select(), 'JOB_FG');
+        if(fg == '1') {
+          return false;
+        }else if(fg == '2') {
+          return true;
+        }
+      }
+    } }
         },
         {
           field: 'PCFM_DC',
           title: '수행준거내역',
           width: 120,
-          align: 'left'
+          align: 'left',
+          editor: { type: 'string', maxLength: 0, editable: /*31c22703-2f7f-492d-bc56-92233f7ff305*/ function(e) {
+      if(this.getRowState(e.row.index) === "added"){
+        return true;
+      }
+      else {
+        var fg = self.main_grid.getCellValue(self.main_grid.select(), 'JOB_FG');
+        if(fg == '1') {
+          return false;
+        }else if(fg == '2') {
+          return true;
+        }
+      }
+    } }
         },
         {
           field: '_uid',
           title: '_uid',
           width: 60,
           visible: false
+        },
+        {
+          field: 'ORG_PCFM_CD',
+          title: '수행준거코드',
+          width: 80,
+          visible: false
         }
       ],
       fixed: {
         colCount: 0,
         rightColCount: 0
-      }
+      },
+      dblClicked: /*716e9cbf-51f8-4c8a-b3a7-7fd1957735f9*/ function (e) {
+            if (self.main_grid.getCellValue(self.main_grid.select(), "JOB_FG") == 1) {
+                dews.ui.snackbar.warning(dews.localize.get("NCS표준코드는 수정할 수 없습니다."));
+            }
+        }
+    
     });
     dews.ui.grid(self.$right2_grid, {
       dataSource: self.RIGHT2_DS,
       height: 161,
+      editable: true,
       sortable: false,
       checkable: false,
       copyMode: 'cell',
@@ -770,24 +980,94 @@
         {
           field: 'NEED_RQISIT_NM1',
           title: '필요지식',
-          width: 60
+          width: 60,
+          editor: { type: 'string', maxLength: 0, editable: /*8cb675d9-d8a8-4446-a4e5-a49c794ad49f*/ function(e) {
+      if(this.getRowState(e.row.index) === "added"){
+        return true;
+      }
+      else {
+        var fg = self.main_grid.getCellValue(self.main_grid.select(), 'JOB_FG');
+        if(fg == '1') {
+          return false;
+        }else if(fg == '2') {
+          return true;
+        }
+      }
+    } }
         },
         {
           field: 'NEED_RQISIT_NM2',
           title: '필요기술',
           width: 90,
-          align: 'left'
+          align: 'left',
+          editor: { type: 'string', maxLength: 0, editable: /*b598ebf9-cc5c-4446-a338-888e3eb4f464*/ function(e) {
+      if(this.getRowState(e.row.index) === "added"){
+        return true;
+      }
+      else {
+        var fg = self.main_grid.getCellValue(self.main_grid.select(), 'JOB_FG');
+        if(fg == '1') {
+          return false;
+        }else if(fg == '2') {
+          return true;
+        }
+      }
+    } }
         },
         {
           field: 'NEED_RQISIT_NM3',
           title: '필요역량',
-          width: 60
+          width: 60,
+          align: 'left',
+          editor: { type: 'string', maxLength: 0, editable: /*6501dc64-bc06-4723-9c56-d29ccbead723*/ function(e) {
+      if(this.getRowState(e.row.index) === "added"){
+        return true;
+      }
+      else {
+        var fg = self.main_grid.getCellValue(self.main_grid.select(), 'JOB_FG');
+        if(fg == '1') {
+          return false;
+        }else if(fg == '2') {
+          return true;
+        }
+      }
+    } }
+        },
+        {
+          field: 'ACLF_NO',
+          title: '능력분류번호',
+          width: 60,
+          visible: false
+        },
+        {
+          field: 'VER_CD',
+          title: '버전코드',
+          width: 80,
+          visible: false
+        },
+        {
+          field: 'AELM_CD',
+          title: '능력요소코드',
+          width: 80,
+          visible: false
+        },
+        {
+          field: 'PCFM_CD',
+          title: '수행준거코드',
+          width: 80,
+          visible: false
         }
       ],
       fixed: {
         colCount: 0,
         rightColCount: 0
-      }
+      },
+      dblClicked: /*ba7779be-ca3f-433f-89fc-3352001a69a8*/ function (e) {
+            if (self.main_grid.getCellValue(self.main_grid.select(), "JOB_FG") == 1) {
+                dews.ui.snackbar.warning(dews.localize.get("NCS표준코드는 수정할 수 없습니다."));
+            }
+        }
+    
     });
     
     

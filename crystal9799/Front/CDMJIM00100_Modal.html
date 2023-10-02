@@ -1,6 +1,6 @@
-<!--##7ecfc3c8-357c-452f-adb2-1eeee51bfe30##-->
+<!--##c1c89c69-a458-4770-ae59-d731e9a222f8##-->
 <!--##CDMJIM00100_Modal##-->
-<!--##mp3pqCGBvleR6xc4I1pU1ZGrFBEF7B4nWURJHLu9ipg/DeLjSh2BIKDIXki1un2+##-->
+<!--##ei6sYvymm70jERiBOgTeOLL9pLWJYbBvKNqGSf/vJ3thV5ykYNQRmKkSyg50nQoW##-->
 <!--
   DEWS UI/UX IDE - Build Result - v1.5
   # PageID: CDMJIM00100_Modal
@@ -63,7 +63,7 @@
   </div>
 </div>
 <div class="dews-dialog-button-group bottom" style="text-align: center;">
-  <button id="ok_btn" class="dews-ui-button">아니면좋은데</button>
+  <button id="ok_btn" class="dews-ui-button">적용</button>
   <button id="close_btn" class="dews-ui-button">닫기</button>
 </div>
 
@@ -82,6 +82,7 @@
 
     /*512dccf4-2d20-44e8-9a2c-4f4bf545c452*/ //# sourceURL=CDMJIM00100_Modal.js
     var col_arr = ["LCLAS_CD", "MLSFC_CD", "S_CSF_CD", "TCLF_CD", "ACLF_CD"];
+    //도움창으로 데이터 삽입 시 유효성 검사
     function check_valid() {
         for (const [index, element] of col_arr.entries()) {
             var test = (self.INSERT_GRID.getCellValue(0, element) == null || self.INSERT_GRID.getCellValue(0, element) == "")
@@ -246,7 +247,8 @@
             { field: 'TCLF_CD', editable: false, dataType: 'string' }, 
             { field: 'TCLF_NM', editable: false, dataType: 'string' }, 
             { field: 'ACLF_CD', editable: false, dataType: 'string' }, 
-            { field: 'ACLF_NM', editable: false, dataType: 'string' }
+            { field: 'ACLF_NM', editable: false, dataType: 'string' }, 
+            { field: 'ACLF_NO', editable: false, dataType: 'string' }
           ]
     
         }
@@ -492,6 +494,12 @@
           title: '능력분류명',
           width: 90,
           align: 'left'
+        },
+        {
+          field: 'ACLF_NO',
+          title: '능력분류번호',
+          width: 60,
+          visible: false
         }
       ],
       fixed: {
@@ -503,6 +511,13 @@
         self.formpanel1.bindTo(self.KND_GRID);
     });
     self.$ok_btn.on('click', /*772e0812-5733-4d84-a57b-1078b3ef123f*/ function (e) {
+        var aclf = self.INSERT_GRID.getCellValue(0, "LCLAS_CD") +
+            self.INSERT_GRID.getCellValue(0, "MLSFC_CD") +
+            self.INSERT_GRID.getCellValue(0, "S_CSF_CD") +
+            self.INSERT_GRID.getCellValue(0, "TCLF_CD") +
+            self.INSERT_GRID.getCellValue(0, "ACLF_CD");
+    
+        self.INSERT_GRID.setCellValue(0, "ACLF_NO", aclf);
         self.ok(self.INSERT_GRID.dataItems(self.INSERT_GRID.select()));
     });
     self.$close_btn.on('click', /*d532e0e1-9de9-4a9d-81ed-b6058a2aca78*/ function (e) {

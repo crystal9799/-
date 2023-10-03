@@ -1,6 +1,6 @@
-<!--##cc1da8f2-e60c-41e8-8064-3a115c64442c##-->
+<!--##36df7200-4b2b-48d0-b064-a00bcfe69746##-->
 <!--##ESSODM01400_X10005_Sub##-->
-<!--##qnR04jKSn56g/zkMNEPqp4lA0y1K4NBVo1A38lMXqACcsOBdq1AlVn8tZEygI1UA##-->
+<!--##L7EwU68iikAxgiHuy+Cuu6+tnqNjO9czex9n5ALq8fqy1nQxD1af6EMMk4617CRA##-->
 <!--
   DEWS UI/UX IDE - Build Result - v1.5
   # PageID: ESSODM01400_X10005_Sub
@@ -169,6 +169,12 @@
     self.COMPANY_CD.text(self.user.companyCode);
     self.REQ_DEPT_CD.text(self.user.deptCode);
     self.REQ_BIZAREA_CD.text(self.user.bizAreaCode);
+    
+    //더미데이터 넣기
+    self.START_DT.value('20230821');
+    self.END_DT.value('20230824');
+    self.REASON_DC.text('휴가신청합니다.');
+    
     // 직급, 직위 데이터
     const positionData = [
         { PSTN_CD: '11', PSTN_NM: '대표이사' },
@@ -399,13 +405,13 @@
             SaveTempData();
         } else if (athz_st_cd == "2") {
             SaveTempData();
-            dews.alert("결재대기 중입니다.", "warning");
+            dews.ui.snackbar.ok("결재대기 중입니다.");
         } else if (athz_st_cd == "3") {
             SaveTempData();
-            dews.alert("결재반려 되었습니다.", "warning");
+            dews.ui.snackbar.ok("결재반려 되었습니다.");
         } else if (athz_st_cd == "4") {
             SaveTempData();
-            dews.alert("결재완료 되었습니다.", "warning");
+            dews.ui.snackbar.ok("결재완료 되었습니다.");
         } else {
             SaveTempData();
             grid.commitCell();
@@ -427,7 +433,7 @@
                     // main_ds: main_ds
                 }
             }).done(function (data) {
-                alert('결재신청 되었습니다.');
+                dews.ui.snackbar.ok('결재신청 되었습니다.');
                 self.main_grid.setCellValue(self.main_grid.select(), 'ATHZ_ST_CD', '2');
                 self.ATHZ_ST_NM.text(GetATHZ_ST_NM('2'));
                 InitBtns();
@@ -449,7 +455,7 @@
                     // main_ds: main_ds
                 }
             }).done(function (data) {
-                alert('결재요청이 취소 되었습니다.');
+                dews.ui.snackbar.ok('결재요청이 취소 되었습니다.');
                 self.main_grid.setCellValue(self.main_grid.select(), 'ATHZ_ST_CD', '1');
                 self.ATHZ_ST_NM.text(GetATHZ_ST_NM('1'));
                 InitBtns();
@@ -962,10 +968,13 @@
         if (req_date < 0) { // 신청가능일 < 10
             dews.ui.snackbar.warning("종료일은 시작일보다 작을 수 없습니다.");
             return false;
-        } else if (startDate < today || endDate < today) { // 신청 날짜는 오늘부터 가능하다.
-            dews.ui.snackbar.warning("시작일과 종료일은 오늘날짜보다 작을 수 없습니다.");
-            return false;
-        } else if (self.DNL_CD.value() === '5100') { // 신청가능일 < 10
+        }
+        // 더미데이터를 넣기 위해 다음 유효성 검사는 주석처리
+        // else if (startDate < today || endDate < today) { // 신청 날짜는 오늘부터 가능하다.
+        //     dews.ui.snackbar.warning("시작일과 종료일은 오늘날짜보다 작을 수 없습니다.");
+        //     return false;
+        // } 
+        else if (self.DNL_CD.value() === '5100') { // 신청가능일 < 10
             if (req_date > 10) {
                 dews.ui.snackbar.warning("10일 이내로 신청해야 합니다. 현재 신청일 : " + req_date + "일");
                 return false;
@@ -1004,6 +1013,8 @@
                     dews.api.get(dews.url.getApiUrl("HR", "HREssodm01400_X10005Service", "update_HR_OFFAPPLY_MST_X10005MST"), {
                         async: false,
                         data: {
+                            //결재상태코드
+                            athz_st_cd: self.ATHZ_ST_CD.text(),
                             //기본키
                             company_cd: self.COMPANY_CD.text(),//회사코드
                             req_no: self.main_grid.getCellValue(0, 'REQ_NO'), // 신청번호
@@ -1340,7 +1351,7 @@
         try {
             var dialog = dews.ui.dialog("popup", {
                 // 대화 상자(모달창) 경로
-                url: '/view/HR/ESSODM01400_X10005_Modal.html', // 실제 D-ERP 배포 시 .html 삭제
+                url: '/view/HR/ESSODM01400_X10005_Modal.html',
                 // 대화 상자(모달창) 문서 제목
                 title: '결재화면',
                 // 대화 상자(모달창) 크기 설정

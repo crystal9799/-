@@ -7,8 +7,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import com.douzone.comet.jdbc.mybatis.DzMybatisSupport;
+import com.douzone.comet.service.hr.essodm.models.ChartData;
 import com.douzone.comet.service.hr.essodm.models.Essodm01400_X10005Model;
 import com.douzone.comet.service.hr.essodm.models.Essodm01400_X10005_UserInfoModel;
+import com.douzone.comet.service.hr.essodm.models.OffApply;
 /** 
   * @description :
   * @Since   : 
@@ -86,5 +88,12 @@ public class Essodm01400_x10005Dao  {
 	public void approveEssodm01400_X10005Model(HashMap<String, Object> parameters) {
 		this.mybatisSupport.update(this.getClass().getName() + ".approveEssodm01400_X10005Model", parameters);
 	}
-
+	//월마다의 건수를 찾아내는 조회쿼리
+	public List<ChartData> selectDataByCondition(HashMap<String, Object> parameters) {
+        return this.mybatisSupport.selectList(this.getClass().getName() + ".selectDataByCondition", parameters);
+    }
+	//검색 당일 날짜의 주간 row를 찾아내는 조회 쿼리
+	public List<OffApply> selectDataByWeekCondition() {
+        return this.mybatisSupport.selectList(this.getClass().getName() + ".selectDataByWeekCondition");
+    }
 }

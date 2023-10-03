@@ -11,11 +11,16 @@ import com.douzone.gpd.restful.annotation.DzParam;
 import com.douzone.gpd.restful.enums.DzParamType;
 import com.douzone.gpd.restful.enums.DzRequestMethod;
 import com.douzone.comet.service.hr.essodm.dao.Essodm01400_x10005Dao;
+import com.douzone.comet.service.hr.essodm.models.ChartData;
+import com.douzone.comet.service.hr.essodm.models.ChartDataByWeek;
 import com.douzone.comet.service.hr.essodm.models.Essodm01400_X10005Model;
 import com.douzone.comet.service.hr.essodm.models.Essodm01400_X10005_UserInfoModel;
+import com.douzone.comet.service.hr.essodm.models.OffApply;
 import com.douzone.comet.service.hr.essodm.models.ResponseHashMap;
 import com.douzone.comet.service.hr.essodm.utils.GetInsertUpdateInfo;
 import com.douzone.gpd.restful.model.DzGridModel;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import com.douzone.gpd.components.exception.DzApplicationRuntimeException;
 import org.springframework.transaction.annotation.Transactional;
@@ -61,7 +66,7 @@ public class HREssodm01400_X10005Service extends DzCometService {
 		return items;
 	}
 
-	// 이건 사용하지 않을 것 그리드에서 기본정보를 다 들고 있음.
+	
 	@DzApi(url = "/getUserInfo", desc = "메인페이지 기본정보 조회", httpMethod = DzRequestMethod.GET)
 	public List<Essodm01400_X10005_UserInfoModel> getUserInfo(
 			@DzParam(key = "company_cd", desc = "회사코드", paramType = DzParamType.QueryString) String company_cd,
@@ -84,7 +89,46 @@ public class HREssodm01400_X10005Service extends DzCometService {
 
 		return items;
 	}
+	
+	@DzApi(url = "/selectDataByCondition", desc = "메인페이지 차트정보 조회 월간", httpMethod = DzRequestMethod.GET)
+	public List<ChartData> selectDataByCondition(
+			@DzParam(key = "company_cd", desc = "회사코드", paramType = DzParamType.QueryString) String company_cd,
+			@DzParam(key = "bizarea_cd", desc = "사업장코드", paramType = DzParamType.QueryString) String bizarea_cd,
+			@DzParam(key = "dept_cd", desc = "부서코드", paramType = DzParamType.QueryString) String dept_cd)
+			throws Exception {
+		List<ChartData> datas = new ArrayList<ChartData>();
+		try {
+			HashMap<String, Object> parameters = new HashMap<>();
+			parameters.put("P_COMPANY_CD", company_cd);
+			parameters.put("P_BIZAREA_CD", bizarea_cd);
+			parameters.put("P_DEPT_CD", dept_cd);
+			datas = essodm01400_x10005DAO.selectDataByCondition(parameters);
+		} catch (Exception e) {
+			throw new DzApplicationRuntimeException(e);
+		}
 
+		return datas;
+	}
+	
+	
+	@DzApi(url = "/getDataByWeek", desc = "메인페이지 차트정보 조회 주간", httpMethod = DzRequestMethod.GET)
+	public List<ChartDataByWeek> getDataByWeek()
+			throws Exception {
+		OffApply offApply = new OffApply();
+		List<ChartDataByWeek> list = new ArrayList<ChartDataByWeek>();
+		try {
+			list = offApply.getDataByWeek(essodm01400_x10005DAO.selectDataByWeekCondition());
+			System.out.println("차트정보주간==>"+list.toString());
+			
+			
+		} catch (Exception e) {
+			throw new DzApplicationRuntimeException(e);
+		}
+
+		return list;
+	}
+	
+	
 	@Transactional(rollbackFor = Exception.class)
 	@DzApi(url = "/update_HR_OFFAPPLY_MST_X10005MST", desc = "결근계 수정", httpMethod = DzRequestMethod.GET)
 	public String save_HR_OFFAPPLY_MST_X10005(

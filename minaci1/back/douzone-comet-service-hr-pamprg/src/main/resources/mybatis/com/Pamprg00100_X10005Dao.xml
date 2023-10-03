@@ -124,7 +124,7 @@
 	</update>
 	
 	<!-- merge 사용하기 전엔 기존 데이터 기존에서 변경된건 update하고 중복된건 delete하고 insert 해줘야 했음 --> 
-	<!--  	<insert id="insertPAMPRG00100_Model" parameterType="com.douzone.comet.service.hr.pamprg.models.Pamprg00100_X10005Model">
+	<insert id="insertPAMPRG00100_Model" parameterType="com.douzone.comet.service.hr.pamprg.models.Pamprg00100_X10005Model">
 			INSERT INTO 
 					   HR_URGDBASETBL_INFO_X10005
 												 (
@@ -144,7 +144,7 @@
 													#{insert_id}, #{insert_ip}, #{insert_dts},
 													#{insert_id}, #{insert_ip},  #{insert_dts}
 											)
-	    </insert>-->
+	</insert>
 	
 	
 	
@@ -254,7 +254,7 @@
 
 	</insert>
 	
-	<select id = "list_ym" parameterType="hashMap" resultType="hashMap">
+	<select id = "list_ym" parameterType="hashMap" resultType="Map">
 		SELECT DISTINCT STD_YM 
  				FROM 
  					HR_URGDBASETBL_INFO_X10005
@@ -308,6 +308,15 @@
 						#{insert_id}, #{insert_ip}, #{insert_dts}
 						)
 	</update>
+	
+ 
+	<select id="selectModel" parameterType ="hashMap" resultType="com.douzone.comet.service.hr.pamprg.models.Pamprg00100_X10005Model">	
+		SELECT *
+			  FROM HR_URGDBASETBL_INFO_X10005
+		WHERE COMPANY_CD = #{P_COMPANY_CD}
+		AND STD_YM || BIZAREA_CD || PSTN_CD || TRGT_GRD_CD || UGRD_GRD_CD || MIN_BWRK_MY = #{P_COMBINED_KEY}
+	</select>
+ 
 	
 	
 </mapper>

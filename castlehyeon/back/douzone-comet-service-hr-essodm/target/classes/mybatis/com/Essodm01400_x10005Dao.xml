@@ -46,40 +46,51 @@
 		EMP_NO,
 		HEM.KOR_NM KOR_NM,
 		HEM.PSTN_CD PSTN_CD,
-		HEM.OGRP_CD OGRP_CD,
+		HEM.OGRP_CD
+		OGRP_CD,
 		HEM.BIZAREA_CD BIZAREA_CD,
 		MBM.BIZAREA_NM BIZAREA_NM,
 		COMET.FN_HR_UP_DEPT_NM2(HEM.COMPANY_CD, HEM.DEPT_CD, SYSDATE) AS ORG,
 		HEM.POSI_CD POSI_CD,
 		MGM.GRP_NM GRP_NM,
 		MDM.DEPT_NM DEPT_NM,
-		MDM.DEPT_CD DEPT_CD,
+		MDM.DEPT_CD
+		DEPT_CD,
 		MDM.DEPT_START_DT DEPT_START_DT,
 		ORG_TB.PATH PATH
-		FROM HR_EMP_MST HEM
-		JOIN MA_BIZAREA_MST MBM ON HEM.COMPANY_CD = MBM.COMPANY_CD AND
+		FROM
+		HR_EMP_MST HEM
+		JOIN MA_BIZAREA_MST MBM ON HEM.COMPANY_CD =
+		MBM.COMPANY_CD AND
 		HEM.BIZAREA_CD = MBM.BIZAREA_CD
-		JOIN MA_GROUP_MST MGM ON HEM.COMPANY_CD
+		JOIN MA_GROUP_MST MGM
+		ON HEM.COMPANY_CD
 		= MGM.COMPANY_CD AND
 		MGM.MENUGRP_CD = HEM.BIZAREA_CD
 		JOIN MA_DEPT_MST
-		MDM ON HEM.COMPANY_CD = MDM.COMPANY_CD AND HEM.DEPT_CD =
+		MDM ON HEM.COMPANY_CD = MDM.COMPANY_CD AND HEM.DEPT_CD
+		=
 		MDM.DEPT_CD
 		LEFT OUTER JOIN (
 		SELECT
-		C.DEPT_NM || '/' || B.DEPT_NM || '/' ||
+		C.DEPT_NM || '/' || B.DEPT_NM ||
+		'/' ||
 		A.DEPT_NM AS PATH,
 		A.DEPT_START_DT DEPT_START_DT,
-		A.DEPT_CD DEPT_CD
+		A.DEPT_CD
+		DEPT_CD
 		FROM
 		MA_DEPT_MST A
-		LEFT JOIN MA_DEPT_MST B ON A.UP_DEPT_CD = B.DEPT_CD AND
+		LEFT JOIN MA_DEPT_MST B ON A.UP_DEPT_CD =
+		B.DEPT_CD AND
 		B.COMPANY_CD =
 		A.COMPANY_CD
-		LEFT JOIN MA_DEPT_MST C ON B.UP_DEPT_CD =
+		LEFT JOIN MA_DEPT_MST C ON
+		B.UP_DEPT_CD =
 		C.DEPT_CD AND C.COMPANY_CD =
 		A.COMPANY_CD
-		WHERE A.COMPANY_CD =
+		WHERE
+		A.COMPANY_CD =
 		#{P_COMPANY_CD}
 		) ORG_TB ON HEM.DEPT_CD = ORG_TB.DEPT_CD
 		WHERE
@@ -190,12 +201,8 @@
 		WHERE HOMX.DNLGB_CD = '400'
 		AND
 		HOMX.COMPANY_CD = #{P_COMPANY_CD}
-		<!--
-		<if
-			test='P_START_DT !=null and P_START_DT !="" and P_END_DT !=null and P_END_DT !=""'>
-			AND START_DT BETWEEN #{P_START_DT} AND #{P_END_DT}
-		</if>
-		-->
+		<!-- <if test='P_START_DT !=null and P_START_DT !="" and P_END_DT !=null 
+			and P_END_DT !=""'> AND START_DT BETWEEN #{P_START_DT} AND #{P_END_DT} </if> -->
 		<if
 			test='P_START_DT !=null and P_START_DT !="" and P_END_DT !=null and P_END_DT !=""'>
 			AND END_DT BETWEEN #{P_START_DT} AND #{P_END_DT}
@@ -277,7 +284,7 @@
 		AND REQ_NO = #{P_REQ_NO}
 	</update>
 
-<update parameterType="HashMap"
+	<update parameterType="HashMap"
 		id="approveEssodm01400_X10005Model">
 		UPDATE HR_OFFAPPLY_MST_X10005
 		<set>
@@ -294,7 +301,67 @@
 	<delete id="deleteEssodm01400_X10005Model"
 		parameterType="HashMap">
 		DELETE FROM HR_OFFAPPLY_MST_X10005
-		WHERE COMPANY_CD = #{P_COMPANY_CD}
+		WHERE COMPANY_CD =
+		#{P_COMPANY_CD}
 		AND REQ_NO = #{P_REQ_NO}
 	</delete>
+
+
+	<resultMap id="chartDataResultMap"
+		type="com.douzone.comet.service.hr.essodm.models.ChartData">
+		<result property="month" column="MONTH" />
+		<result property="count" column="COUNT_PER_MONTH" />
+	</resultMap>
+
+	<select id="selectDataByCondition"
+		resultMap="chartDataResultMap">
+		SELECT TO_CHAR(TO_DATE(START_DT, 'YYYY-MM-DD'), 'YYYY-MM')
+		AS MONTH,
+		COUNT(*) AS COUNT_PER_MONTH
+		FROM HR_OFFAPPLY_MST_X10005
+		WHERE
+		TO_DATE(START_DT, 'YYYY-MM-DD') BETWEEN TO_DATE('2023-01-01',
+		'YYYY-MM-DD') AND TRUNC(SYSDATE)
+		AND COMPANY_CD = #{P_COMPANY_CD}
+		AND
+		DEPT_CD = #{P_DEPT_CD}
+		AND BIZAREA_CD = #{P_BIZAREA_CD}
+		AND DNLGB_CD =
+		400
+		AND ATHZ_ST_CD = 4
+		GROUP BY TO_CHAR(TO_DATE(START_DT, 'YYYY-MM-DD'),
+		'YYYY-MM')
+		ORDER BY TO_CHAR(TO_DATE(START_DT, 'YYYY-MM-DD'), 'YYYY-MM')
+	</select>
+
+	<!-- OffApply 클래스와 매핑되는 resultMap 정의 -->
+	<resultMap id="offApplyResultMap" type="com.douzone.comet.service.hr.essodm.models.OffApply">
+		<id property="reqNo" column="REQ_NO" />
+		<result property="startDate" column="START_DT" />
+		<result property="endDate" column="END_DT" />
+	</resultMap>
+
+	<!-- 데이터베이스에서 데이터를 가져오는 쿼리 -->
+	<select id="selectDataByWeekCondition" resultMap="offApplyResultMap">
+		WITH DateRange AS (
+		SELECT
+		TO_CHAR(NEXT_DAY(TRUNC(SYSDATE, 'D'), '월요일'), 'YYYYMMDD') AS StartOfWeek,
+		TO_CHAR(NEXT_DAY(TRUNC(SYSDATE, 'D') + 4, '금요일'), 'YYYYMMDD') AS
+		EndOfWeek
+		FROM DUAL
+		)
+		SELECT
+		o.REQ_NO,
+		o.START_DT,
+		o.END_DT
+		FROM
+		HR_OFFAPPLY_MST_X10005 o
+		JOIN
+		DateRange dr
+		ON
+		<![CDATA[
+		TO_DATE(o.START_DT, 'YYYYMMDD') <= TO_DATE(dr.EndOfWeek, 'YYYYMMDD')
+		AND TO_DATE(o.END_DT, 'YYYYMMDD') >= TO_DATE(dr.StartOfWeek, 'YYYYMMDD')
+		]]>
+	</select>
 </mapper>

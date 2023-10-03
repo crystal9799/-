@@ -32,6 +32,7 @@ public class DwaggerService extends DzCometService {
 	JsonUtils jsonUtils;
 
 	//서비스를 받아오는 api
+	//프론트의 로컬스토리지에 저장내역이 없는 경우에도 사용.
 	@DzApi(url = "/dwagger_totalList", desc = "서비스조회-서비스명", httpMethod = DzRequestMethod.GET)
 	public List<DwaggerModel> dwagger_totalList(
 			@DzParam(key = "keywords", desc = "검색어", paramType = DzParamType.QueryString) String keywords,
@@ -60,8 +61,31 @@ public class DwaggerService extends DzCometService {
 				System.out.println("--------------------------");
 				System.out.println("cacheModels==>" + cacheModels);
 				System.out.println("--------------------------");
+			}else {
+				DwaggerModel errorModel = new DwaggerModel();
+				errorModel.setModule(result);
+				dwaggerModelList.add(errorModel);
 			}
+			System.out.println("DwaggerModelList===>"+dwaggerModelList.toString());
+		} catch (Exception e) {
+			throw new DzApplicationRuntimeException(e);
+		}
 
+		return dwaggerModelList;
+	}
+	
+	//DEWS API에서 "java.lang.reflect.InvocationTargetException: null"오류 뜨는 경우
+	//빈에 저장되어있는 캐시 데이터 반환
+	@DzApi(url = "/dwagger_errorGetInfo", desc = "서비스조회-로컬스토리지존재X", httpMethod = DzRequestMethod.GET)
+	public List<DwaggerModel> dwagger_notExistLocal(
+			@DzParam(key = "keywords", desc = "검색어", paramType = DzParamType.QueryString) String keywords,
+			@DzParam(key = "langCd", desc = "언어", paramType = DzParamType.QueryString) String langCd,
+			@DzParam(key = "condition_cd", desc = "검색조건코드", paramType = DzParamType.QueryString) String condition_cd) throws Exception {
+		List<DwaggerModel> dwaggerModelList = new ArrayList<DwaggerModel>();
+		try {
+			System.out.println("Service cacheModels===>" + cacheModels);
+			dwaggerModelList = cacheModels.getApiList();
+				
 		} catch (Exception e) {
 			throw new DzApplicationRuntimeException(e);
 		}

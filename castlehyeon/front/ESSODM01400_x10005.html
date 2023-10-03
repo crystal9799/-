@@ -1,6 +1,6 @@
-<!--##a4c8cbdb-45a6-4976-90fb-b82350d2629a##-->
+<!--##2363af44-f5df-4faf-b0d3-cd6083a514d2##-->
 <!--##ESSODM01400_x10005##-->
-<!--##WxqviOlxwsIUpwMQvPDa+cDM/50ObFkEP5FHBbZsSHugEuA8sk1oZh+H2BagYDhU##-->
+<!--##1lHlEjVUQSY/f87yymxHje1qtQJiYOtte+4QGVxqj0avYBgNoHm9X0EhrTp+Rn8F##-->
 <!--
   DEWS UI/UX IDE - Build Result - v1.5
   # PageID: ESSODM01400_x10005
@@ -11,6 +11,28 @@
 
 -->
 
+<div id="containerpanel4" class="dews-ui-container-panel">
+  <div id="containerpanelitem4" class="dews-container-item" data-dews-position="normal">
+    <div id="tabpnl1" class="dews-ui-tab-panel">
+      <ul class="dews-tab-items">
+        <li id="tab2" class="dews-tab-item" data-dews-title="주간결근자내역">
+          <div id="containerpanel6" class="dews-ui-container-panel">
+            <div id="containerpanelitem6" class="dews-container-item" data-dews-position="normal">
+              <div id="week_chart" class="dews-ui-chart" />
+            </div>
+          </div>
+        </li>
+        <li id="tab1" class="dews-tab-item" data-dews-title="월간결근결재내역">
+          <div id="containerpanel5" class="dews-ui-container-panel">
+            <div id="containerpanelitem5" class="dews-container-item" data-dews-position="normal">
+              <div id="month_chart" class="dews-ui-chart" />
+            </div>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>
 <h2 id="tit3" class="dews-ui-title">기본정보</h2>
 <div id="containerpanel3" class="dews-ui-container-panel" data-dews-fit-bottom="true">
   <div id="containerpanelitem3" class="dews-container-item" data-dews-position="normal">
@@ -205,6 +227,30 @@
     { HR_CD: "5101", HR_CD_NM: "유계결근[10일 초과]"},
     { HR_CD: "5102", HR_CD_NM: "유계결근[30일 초과]"}]
     });
+    self.month_chart_ds = dews.ui.dataSource('month_chart_ds', {
+      schema: {
+        model: {
+          fields: [
+            { field: 'month', editable: false, type: 'string' }, 
+            { field: 'count', editable: false, type: 'string' }
+          ]
+    
+        }
+      },
+      data: []
+    });
+    self.week_chart_ds = dews.ui.dataSource('week_chart_ds', {
+      schema: {
+        model: {
+          fields: [
+            { field: 'day', editable: false, type: 'string' }, 
+            { field: 'count', editable: false, type: 'string' }
+          ]
+    
+        }
+      },
+      data: []
+    });
     
     
     dews.ui.mainbuttons.localize.hide();
@@ -215,6 +261,82 @@
     dews.ui.mainbuttons.delete.hide();
     dews.ui.mainbuttons.print.hide();
     dews.ui.mainbuttons.save.hide();
+    dews.ui.chart(self.$week_chart, {
+      type: 'column',
+      series: [
+        {
+          field: 'count',
+          name: '요일별결근자수',
+          categoryField: 'day'
+        }
+      ],
+      seriesDefaults: {
+        labels: {
+          visible: true,
+          position: 'outsideEnd',
+          margin: {
+            top: 0,
+            bottom: 0,
+            left: 0,
+            right: 0
+          },
+          color: '#000000',
+          background: 'transparent',
+          rotation: '0'
+        }
+      },
+      title: {
+        fontSize: 16,
+        fontFamily: 'Graphic'
+      },
+      valueAxis: {
+        max: 20,
+        min: 0,
+        majorUnit: 4,
+        line: {
+          color: '#e8e8e8',
+          width: 1
+        }
+      },
+      tooltip: {
+        template: '#: category # #: value #'
+      }
+    });
+    dews.ui.chart(self.$month_chart, {
+      type: 'line',
+      series: [
+        {
+          field: 'count',
+          name: '결근결재건수',
+          categoryField: 'month'
+        }
+      ],
+      seriesDefaults: {
+        style: 'none'
+      },
+      valueAxis: {
+        min: 0,
+        max: 40,
+        majorUnit: 5,
+        color: '#818181',
+        axisCrossingValue: 0
+      },
+      title: {
+        fontSize: 16,
+        fontFamily: 'Graphic'
+      },
+      categoryAxis: {
+        crosshair: {
+          color: '#838383',
+          width: 2
+        }
+      },
+      tooltip: {
+        background: 'transparent',
+        format: 'none',
+        template: '#= series.name #: #= value #'
+      }
+    });
     self.$search_button.on('click', /*db97b64c-80a9-43e4-8377-d609ac26b06e*/ function (e) {
         SearchData();
     });
@@ -433,7 +555,34 @@
     
     
     
-    /*7b94ccf8-7b1d-41e7-9ddb-3b62c2f625c1*/ 
+    /*7b94ccf8-7b1d-41e7-9ddb-3b62c2f625c1*/ GetChartInfo();
+    
+    //chart 정보를 받아오는 API
+    function GetChartInfo() {
+        dews.api.get(dews.url.getApiUrl("HR", "HREssodm01400_X10005Service", "selectDataByCondition"), {
+            async: false,
+            data: {
+                //기본키
+                company_cd: self.user.companyCode,//회사코드
+                bizarea_cd: self.user.bizAreaCode, //사업장코드
+                dept_cd: self.user.deptCode, // 신청번호
+            }
+        }).done(function (data) {
+            self.month_chart_ds.data(data);
+            self.month_chart.setDataSource(self.month_chart_ds);
+            console.log(data);
+        });
+    
+        dews.api.get(dews.url.getApiUrl("HR", "HREssodm01400_X10005Service", "getDataByWeek"), {
+            async: false
+        }).done(function (data) {
+            self.week_chart_ds.data(data);
+            self.week_chart.setDataSource(self.week_chart_ds);
+            console.log(data);
+        });
+    }
+    
+    
     //신청자 변경 시 기본정보도 함께 변경될 수 있도록 사원정보를 불러오는 함수
     function GetUserInfo(emp_no, company_cd) {
         dews.api.get(dews.url.getApiUrl("HR", "HREssodm01400_X10005Service", "getUserInfo"), {

@@ -196,21 +196,33 @@ public class HRPamodm01800_X10005Service extends DzCometService {
 	@DzApi(url="/list_bizarea_cd", desc="사업장 조회", httpMethod=DzRequestMethod.GET)
 	public List<Map<String, Object>> list_bizarea_cd() throws Exception {	    
 	    try {
-			String sqlText;
-			SqlPack so = new SqlPack();
-			
 			HashMap<String, Object> parameters = new HashMap<String, Object>();
-			
 			parameters.put("P_COMPANY_CD", this.getCompanyCode());
+
+			List<Map<String, Object>> checkSdtl = executeQuery("dao.Pamodm01800_X10005Dao.list_bizarea_cd", parameters);
 			
-			sqlText = MyBatisUtil.getId(this.getClass(), "dao.Pamodm01800_X10005Dao.list_bizarea_cd");
-			so = new SqlPack();
-			so.setStoreProcedure(false);
-			so.setMapperType(MapperType.MyBatis);
-			so.getInParameters().putAll(parameters);
-			so.setSqlText(sqlText);
-			
-			List<Map<String, Object>> checkSdtl = this.queryForList(so);
+			return checkSdtl;
+	        
+	    } catch (Exception e) {
+	        throw new DzApplicationRuntimeException(e);
+	    }
+	}
+	
+	@DzApi(url="/list_HR_EMP_MST", desc="사원 도움창 조회", httpMethod=DzRequestMethod.GET)
+	public List<Map<String, Object>> list_HR_EMP_MST(
+            @DzParam(key = "hlof_fg_cd", desc = "재직구분", required = false, paramType = DzParamType.QueryString) String hlof_fg_cd,
+            @DzParam(key = "txt_search", desc = "검색어", required = false, paramType = DzParamType.QueryString) String txt_search) throws Exception {	    
+	    try {
+			HashMap<String, Object> parameters = new HashMap<String, Object>();
+			parameters.put("P_COMPANY_CD", this.getCompanyCode());
+            if (hlof_fg_cd != null && StringUtil.isNotEmpty(hlof_fg_cd)) {
+                parameters.put("P_HLOF_FG_CD", hlof_fg_cd);
+            }
+            if (txt_search != null && StringUtil.isNotEmpty(txt_search)) {
+                parameters.put("P_TXT_SEARCH", txt_search);
+            }
+
+			List<Map<String, Object>> checkSdtl = executeQuery("dao.Pamodm01800_X10005Dao.list_HR_EMP_MST", parameters);
 			
 			return checkSdtl;
 	        
@@ -224,25 +236,18 @@ public class HRPamodm01800_X10005Service extends DzCometService {
 			@DzParam(key = "company_cd", desc = "회사코드", paramType = DzParamType.QueryString) String company_cd,
 			@DzParam(key = "dept_cd", desc = "회사코드", paramType = DzParamType.QueryString) String dept_cd) throws Exception {	    
 	    try {
-			String sqlText;
-			SqlPack so = new SqlPack();
-			
 			HashMap<String, Object> parameters = new HashMap<String, Object>();
-			
 			parameters.put("P_COMPANY_CD", company_cd);
 			parameters.put("P_DEPT_CD", dept_cd);
 			
-			sqlText = MyBatisUtil.getId(this.getClass(), "dao.Pamodm01800_X10005Dao.get_org");
-			so = new SqlPack();
-			so.setStoreProcedure(false);
-			so.setMapperType(MapperType.MyBatis);
-			so.getInParameters().putAll(parameters);
-			so.setSqlText(sqlText);
+			List<Map<String, Object>> checkSdtl = executeQuery("dao.Pamodm01800_X10005Dao.get_org", parameters);
 			
-			List<Map<String, Object>> checkSdtl = this.queryForList(so);
-
+			if (checkSdtl == null || checkSdtl.isEmpty()) {
+				// 리스트가 비어있는 경우에 대한 처리
+				return null;
+			}
+			
 			String org = (String) checkSdtl.get(0).get("ORG");
-			
 			return org;
 	        
 	    } catch (Exception e) {
@@ -256,23 +261,12 @@ public class HRPamodm01800_X10005Service extends DzCometService {
 			@DzParam(key = "ogrp_cd", desc = "직군코드", paramType = DzParamType.QueryString) String ogrp_cd,
 			@DzParam(key = "pstn_cd", desc = "직급코드", paramType = DzParamType.QueryString) String pstn_cd) throws Exception {	    
 	    try {
-			String sqlText;
-			SqlPack so = new SqlPack();
-			
 			HashMap<String, Object> parameters = new HashMap<String, Object>();
-			
 			parameters.put("P_COMPANY_CD", company_cd);
 			parameters.put("P_OGRP_CD", ogrp_cd);
 			parameters.put("P_PSTN_CD", pstn_cd);
 			
-			sqlText = MyBatisUtil.getId(this.getClass(), "dao.Pamodm01800_X10005Dao.get_ogrp_cd_pstn_cd");
-			so = new SqlPack();
-			so.setStoreProcedure(false);
-			so.setMapperType(MapperType.MyBatis);
-			so.getInParameters().putAll(parameters);
-			so.setSqlText(sqlText);
-			
-			List<Map<String, Object>> checkSdtl = this.queryForList(so);
+			List<Map<String, Object>> checkSdtl = executeQuery("dao.Pamodm01800_X10005Dao.get_ogrp_cd_pstn_cd", parameters);
 			
 			return checkSdtl;
 	        
@@ -286,22 +280,12 @@ public class HRPamodm01800_X10005Service extends DzCometService {
 			@DzParam(key = "company_cd", desc = "회사코드", paramType = DzParamType.QueryString) String company_cd,
 			@DzParam(key = "emp_no", desc = "사원번호", paramType = DzParamType.QueryString) String emp_no) throws Exception {	    
 	    try {
-			String sqlText;
-			SqlPack so = new SqlPack();
-			
 			HashMap<String, Object> parameters = new HashMap<String, Object>();
 			
 			parameters.put("P_COMPANY_CD", company_cd);
 			parameters.put("P_EMP_NO", emp_no);
 			
-			sqlText = MyBatisUtil.getId(this.getClass(), "dao.Pamodm01800_X10005Dao.get_prmt_dt_retm_dt");
-			so = new SqlPack();
-			so.setStoreProcedure(false);
-			so.setMapperType(MapperType.MyBatis);
-			so.getInParameters().putAll(parameters);
-			so.setSqlText(sqlText);
-			
-			List<Map<String, Object>> checkSdtl = this.queryForList(so);
+			List<Map<String, Object>> checkSdtl = executeQuery("dao.Pamodm01800_X10005Dao.get_prmt_dt_retm_dt", parameters);
 			
 			return checkSdtl;
 	        
@@ -315,29 +299,32 @@ public class HRPamodm01800_X10005Service extends DzCometService {
 			@DzParam(key = "emp_no", desc = "사원번호", paramType = DzParamType.QueryString) String emp_no,
 			@DzParam(key = "bwrk_dt", desc = "근무일", paramType = DzParamType.QueryString) String bwrk_dt) throws Exception {	    
 	    try {
-			String sqlText;
-			SqlPack so = new SqlPack();
-			
 			HashMap<String, Object> parameters = new HashMap<String, Object>();
-			
+			parameters.put("P_COMPANY_CD", this.getCompanyCode());
 			parameters.put("P_EMP_NO", emp_no);
 			parameters.put("P_BWRK_DT", bwrk_dt);
 			
-			sqlText = MyBatisUtil.getId(this.getClass(), "dao.Pamodm01800_X10005Dao.get_tm_cd_nm");
-			so = new SqlPack();
-			so.setStoreProcedure(false);
-			so.setMapperType(MapperType.MyBatis);
-			so.getInParameters().putAll(parameters);
-			so.setSqlText(sqlText);
+			List<Map<String, Object>> checkSdtl = executeQuery("dao.Pamodm01800_X10005Dao.get_tm_cd_nm", parameters);
 			
-			List<Map<String, Object>> checkSdtl = this.queryForList(so);
-
+			if (checkSdtl == null || checkSdtl.isEmpty()) {
+				return null;
+			}
+			
 			String tm_cd_nm = (String) checkSdtl.get(0).get("TM_CD_NM");
-			
 			return tm_cd_nm;
 	        
 	    } catch (Exception e) {
 	        throw new DzApplicationRuntimeException(e);
 	    }
+	}
+	
+	private List<Map<String, Object>> executeQuery(String daoMethodId, HashMap<String, Object> parameters) throws Exception {
+	    String sqlText = MyBatisUtil.getId(this.getClass(), daoMethodId);
+	    SqlPack so = new SqlPack();
+	    so.setStoreProcedure(false);
+	    so.setMapperType(MapperType.MyBatis);
+	    so.getInParameters().putAll(parameters);
+	    so.setSqlText(sqlText);
+	    return this.queryForList(so);
 	}
 }

@@ -2,6 +2,7 @@ package com.douzone.comet.service.hr.pamprg.dao;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -42,8 +43,13 @@ public class Pamprg00100_X10005Dao  {
 	 * 단일 데이터 입력 처리
 	 * @param Pamprg00100_X10005Model
 	 */
-	public void insertPAMPRG00100_Model(List<Pamprg00100_X10005Model> Pamprg00100_X10005Model) throws Exception {
-		this.mybatisSupport.insertBatch(this.getClass().getName() + ".insertPAMPRG00100_Model", Pamprg00100_X10005Model);
+	public void mergeintoPAMPRG00100_Model(List<Pamprg00100_X10005Model> Pamprg00100_X10005Model) throws Exception {
+		this.mybatisSupport.insert(this.getClass().getName() + ".mergeintoPAMPRG00100_Model", Pamprg00100_X10005Model);
+	}
+	
+	
+	public void uploadPAMPRG00100_Model(Pamprg00100_X10005Model Pamprg00100_X10005Model) throws Exception {
+		this.mybatisSupport.insert(this.getClass().getName() + ".uploadPAMPRG00100_Model", Pamprg00100_X10005Model);
 	}
 
 	/**
@@ -62,9 +68,9 @@ public class Pamprg00100_X10005Dao  {
 		this.mybatisSupport.deleteBatch(this.getClass().getName() + ".deletePAMPRG00100_Model", parameters);
 	}
 
-	  
-
-	 
+	public List<Pamprg00100_X10005Model> selectModel(HashMap<String, Object> parameters) throws Exception{
+		return this.mybatisSupport.selectList(this.getClass().getName()+".selectModel",parameters);
+	}
  
 	 
 }

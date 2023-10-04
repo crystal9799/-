@@ -54,11 +54,11 @@
 				<if test="P_BIZAREA_CD != '' and P_BIZAREA_CD != null">
 				    AND (HUI.BIZAREA_CD = #{P_BIZAREA_CD})
 				</if>
-			ORDER BY HUI.BIZAREA_CD ASC, HUI.PSTN_CD ASC, HUI.TRGT_GRD_CD DESC,
-					 HUI.UGRD_GRD_CD DESC, HUI.MIN_BWRK_MY DESC, HUI.AGGR_TERM_CNT DESC
+			ORDER BY HUI.BIZAREA_CD ASC, HUI.PSTN_CD ASC, HUI.TRGT_GRD_CD ASC,
+					 HUI.UGRD_GRD_CD ASC, HUI.MIN_BWRK_MY ASC, HUI.AGGR_TERM_CNT ASC
 	</select>
 	
-	<select id="get_BizareaList" parameterType="hashMap" resultType="hashMap">
+	<select id="get_BizareaList" parameterType="hashMap" resultType="Map">
 		SELECT MBM.COMPANY_CD
 			   ,MBM.BIZAREA_CD
 			   ,COALESCE(MBL.BIZAREA_NM, MBM.BIZAREA_NM) AS BIZAREA_NM
@@ -123,8 +123,8 @@
 			AND (MIN_BWRK_MY = #{orig_min_bwrk_my})
 	</update>
 	
-	<!-- merge 사용하기 전엔 기존 데이터 delete -> insert 해줘야 했음 --> 
-	<!--  	<insert id="insertPAMPRG00100_Model" parameterType="com.douzone.comet.service.hr.pamprg.models.Pamprg00100_X10005Model">
+	<!-- merge 사용하기 전엔 기존 데이터 기존에서 변경된건 update하고 중복된건 delete하고 insert 해줘야 했음 --> 
+	<insert id="insertPAMPRG00100_Model" parameterType="com.douzone.comet.service.hr.pamprg.models.Pamprg00100_X10005Model">
 			INSERT INTO 
 					   HR_URGDBASETBL_INFO_X10005
 												 (
@@ -144,11 +144,11 @@
 													#{insert_id}, #{insert_ip}, #{insert_dts},
 													#{insert_id}, #{insert_ip},  #{insert_dts}
 											)
-	    </insert>-->
+	</insert>
 	
 	
 	
-	<update id="insertPAMPRG00100_Model" parameterType="com.douzone.comet.service.hr.pamprg.models.Pamprg00100_X10005Model">
+	<update id="mergeintoPAMPRG00100_Model" parameterType="com.douzone.comet.service.hr.pamprg.models.Pamprg00100_X10005Model">
 		MERGE INTO HR_URGDBASETBL_INFO_X10005
 			USING DUAL
 			ON
@@ -161,9 +161,13 @@
 				AND (UGRD_GRD_CD = #{ugrd_grd_cd})
 				AND (MIN_BWRK_MY = #{min_bwrk_my})
 			  )
-			WHEN MATCHED THEN 
+			WHEN MATCHED THEN  --복합키는 같은데 그 외의 키는 업데이트 될 수 있음 
 				 UPDATE SET
-						   update_id = #{insert_id}
+				 		   aggr_term_cnt = #{aggr_term_cnt}
+				 		   ,bwrk_sgrad_cd = #{bwrk_sgrad_cd}
+				 		   ,bwrk_my_calc_std_dt = #{bwrk_my_calc_std_dt}
+				 		   ,rmk_nm = #{rmk_nm}
+						   ,update_id = #{insert_id}
 						   ,update_dts = #{insert_dts}
 			WHEN NOT MATCHED THEN 
 				INSERT 
@@ -242,20 +246,15 @@
 				   #{P_INSERT_ID}, #{P_INSERT_IP}, SYSDATE
 			FROM HR_URGDBASETBL_INFO_X10005 HUI
 			WHERE HUI.COMPANY_CD = #{P_COMPANY_CD}
-				AND HUI.STD_YM = ( SELECT MAX(STD_YM) -- 기준년월
-								   FROM HR_URGDBASETBL_INFO_X10005
-								   WHERE COMPANY_CD = #{P_COMPANY_CD}
-										AND STD_YM <![CDATA[<]]> #{P_PROMO_YEAR_MONTH}
+				AND HUI.STD_YM =  #{P_PROMO_YEAR_MONTH}
+				
 									<if test="P_BIZAREA_CD != '' and P_BIZAREA_CD != null">
 									    AND BIZAREA_CD = #{P_BIZAREA_CD}
 									</if>
-								  )
-				<if test="P_BIZAREA_CD != '' and P_BIZAREA_CD != null">
-				    AND HUI.BIZAREA_CD = #{P_BIZAREA_CD}
-				</if>
+
 	</insert>
 	
-	<select id = "list_ym" parameterType="hashMap" resultType="hashMap">
+	<select id = "list_ym" parameterType="hashMap" resultType="Map">
 		SELECT DISTINCT STD_YM 
  				FROM 
  					HR_URGDBASETBL_INFO_X10005
@@ -265,6 +264,58 @@
  		ORDER BY STD_YM 
 	</select>
 	
+
 	
+	<update id="uploadPAMPRG00100_Model" parameterType="com.douzone.comet.service.hr.pamprg.models.Pamprg00100_X10005Model">
+		MERGE INTO HR_URGDBASETBL_INFO_X10005
+			USING DUAL
+			ON
+			(
+				COMPANY_CD = #{company_cd}
+				AND (STD_YM = #{std_ym})
+				AND (BIZAREA_CD = #{bizarea_cd})
+				AND (PSTN_CD = #{pstn_cd})
+				AND (TRGT_GRD_CD = #{trgt_grd_cd})
+				AND (UGRD_GRD_CD = #{ugrd_grd_cd})
+				AND (MIN_BWRK_MY = #{min_bwrk_my})
+			  )
+			WHEN MATCHED THEN  --복합키는 같은데 그 외의 키는 업데이트 될 수 있음 
+				 UPDATE SET
+				 		   aggr_term_cnt = #{aggr_term_cnt}
+				 		   ,bwrk_sgrad_cd = #{bwrk_sgrad_cd}
+				 		   ,bwrk_my_calc_std_dt = #{bwrk_my_calc_std_dt}
+				 		   ,rmk_nm = #{rmk_nm}
+						   ,update_id = #{insert_id}
+						   ,update_dts = #{insert_dts}
+			WHEN NOT MATCHED THEN 
+				INSERT 
+					  (
+						 COMPANY_CD, STD_YM, BIZAREA_CD, PSTN_CD,TRGT_GRD_CD, 
+						 UGRD_GRD_CD,MIN_BWRK_MY, AGGR_TERM_CNT,
+						 BWRK_SGRAD_CD,LEDU_CD, BWRK_MY_CALC_STD_DT,
+						 RMK_NM,
+						 INSERT_ID, INSERT_IP, INSERT_DTS,
+						 UPDATE_ID, UPDATE_IP, UPDATE_DTS
+					   )
+				VALUES
+					  (
+					    #{company_cd}, #{std_ym}, #{bizarea_cd},
+					    #{pstn_cd}, #{trgt_grd_cd}, #{urgd_grd_cd}, 
+					    #{min_bwrk_my}, #{aggr_term_cnt},
+						#{bwrk_sgrad_cd}, #{ledu_cd}, #{bwrk_my_calc_std_dt},
+						#{rmk_nm},
+						#{insert_id}, #{insert_ip}, #{insert_dts},
+						#{insert_id}, #{insert_ip}, #{insert_dts}
+						)
+	</update>
+	
+ 
+	<select id="selectModel" parameterType ="HashMap" resultType="com.douzone.comet.service.hr.pamprg.models.Pamprg00100_X10005Model">	
+		SELECT *
+			  FROM HR_URGDBASETBL_INFO_X10005
+		WHERE COMPANY_CD = #{P_COMPANY_CD}
+		AND STD_YM || BIZAREA_CD || PSTN_CD || TRGT_GRD_CD || UGRD_GRD_CD || MIN_BWRK_MY = #{P_COMBINED_KEY}
+	</select>
+  
 	
 </mapper>

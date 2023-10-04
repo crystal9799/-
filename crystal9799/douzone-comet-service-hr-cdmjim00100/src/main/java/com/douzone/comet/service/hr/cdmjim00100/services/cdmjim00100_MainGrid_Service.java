@@ -51,12 +51,12 @@ public class cdmjim00100_MainGrid_Service extends DzCometService {
 		@DzParam(key="JOB_FG", desc="직무구분", required = false, defaultValue = "", paramType = DzParamType.Body) String JOB_FG,
 		@DzParam(key="USE_YN", desc="사용여부", required = false, defaultValue = "", paramType = DzParamType.Body) String USE_YN,
 		@DzParam(key="lst_ver_yn", desc = "최종조건", required = false, defaultValue = "", paramType = DzParamType.Body) String lst_ver_yn,
-		@DzParam(key="LCLAS_CD", desc = "대분류코드", required = false, defaultValue = "", paramType = DzParamType.Body) String LCLAS_CD,
-		@DzParam(key="MLSFC_CD", desc = "중분류코드", required = false, defaultValue = "", paramType = DzParamType.Body) String MLSFC_CD,
-		@DzParam(key="S_CSF_CD", desc = "소분류코드", required = false, defaultValue = "", paramType = DzParamType.Body) String S_CSF_CD,
-		@DzParam(key="TCLF_CD", desc = "세분류코드", required = false, defaultValue = "", paramType = DzParamType.Body) String TCLF_CD,
-		@DzParam(key="ACLF_CD", desc = "능력단위코드", required = false, defaultValue = "", paramType = DzParamType.Body) String ACLF_CD,
-		@DzParam(key="ACLF_LV", desc = "능력단위레벨", required = false, defaultValue = "", paramType = DzParamType.Body) String ACLF_LV
+		@DzParam(key="LCLAS_CD", desc = "대분류코드", required = false, defaultValue = "", paramType = DzParamType.Body) List<String> LCLAS_CD,
+		@DzParam(key="MLSFC_CD", desc = "중분류코드", required = false, defaultValue = "", paramType = DzParamType.Body) List<String> MLSFC_CD,
+		@DzParam(key="S_CSF_CD", desc = "소분류코드", required = false, defaultValue = "", paramType = DzParamType.Body) List<String> S_CSF_CD,
+		@DzParam(key="TCLF_CD", desc = "세분류코드", required = false, defaultValue = "", paramType = DzParamType.Body) List<String> TCLF_CD,
+		@DzParam(key="ACLF_CD", desc = "능력단위코드", required = false, defaultValue = "", paramType = DzParamType.Body) List<String> ACLF_CD,
+		@DzParam(key="ACLF_LV", desc = "능력단위레벨", required = false, defaultValue = "", paramType = DzParamType.Body) List<String> ACLF_LV
 	) throws Exception {
 		List<cdmjim00100_maingrid> cdmjim00100_maingridList =  new ArrayList<cdmjim00100_maingrid>();
 		try {

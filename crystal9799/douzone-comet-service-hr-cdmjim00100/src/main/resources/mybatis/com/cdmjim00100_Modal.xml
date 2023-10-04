@@ -79,6 +79,9 @@
 			    <when test='TARGET == "TCLF_NM" and NAME != null and NAME != ""'>
 			        AND HJM.TCLF_NM LIKE '%'||#{NAME}||'%'
 			    </when>
+			    <when test='TARGET == "ACLF_NM" and NAME != null and NAME != ""'>
+			        AND HJM.ACLF_NM LIKE '%'||#{NAME}||'%'
+			    </when>
 			</choose>
 		</where>				
 	</select>

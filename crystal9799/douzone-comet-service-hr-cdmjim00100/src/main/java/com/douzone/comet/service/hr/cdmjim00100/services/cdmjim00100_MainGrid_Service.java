@@ -43,6 +43,7 @@ public class cdmjim00100_MainGrid_Service extends DzCometService {
 	
 	@Autowired
 	cdmjim00100_MainGrid_Dao cdmjim00100_maingridDAO; 
+	@Autowired
 	cdmjim00100_SubGrid_Dao cdmjim00100_subgridDAO;
 
 	@DzApi(url="/cdmjim00100_MainGrid_List", desc="메인그리드_조회", httpMethod=DzRequestMethod.POST)
@@ -130,6 +131,9 @@ public class cdmjim00100_MainGrid_Service extends DzCometService {
 	    			System.out.println("딜리트 데이터 정보 : ====== > " + delete_data.toString());
 	    			delete_data.setCompany_cd(getCompanyCode());
 	    			
+	    			//메인 그리드 삭제
+	    			cdmjim00100_maingridDAO.deletecdmjim00100_maingrid(delete_data);
+
 	    			//하위 그리드 삭제
 	    			Map<String, Object> parameters = new HashMap<>();
 	    			parameters.put("ACLF_NO", delete_data.getAclf_no());
@@ -137,8 +141,6 @@ public class cdmjim00100_MainGrid_Service extends DzCometService {
 	    			cdmjim00100_subgridDAO.deletecdmjim00100_right1_grid_all(parameters);
 	    			cdmjim00100_subgridDAO.deletecdmjim00100_right2_grid_all(parameters);
 	    			
-	    			//메인 그리드 삭제
-	    			cdmjim00100_maingridDAO.deletecdmjim00100_maingrid(delete_data);
 	    			
 	    		}	    		
 	    	}

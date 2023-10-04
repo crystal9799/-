@@ -1,6 +1,6 @@
-<!--##36df7200-4b2b-48d0-b064-a00bcfe69746##-->
+<!--##7d302335-2a92-47d3-887f-67efe316347f##-->
 <!--##ESSODM01400_X10005_Sub##-->
-<!--##L7EwU68iikAxgiHuy+Cuu6+tnqNjO9czex9n5ALq8fqy1nQxD1af6EMMk4617CRA##-->
+<!--##pifTuUZnJhCvm4FfIcZA7aDLoNYqElZ5meq+mT6wqv/uQ/zKtHYN5cwXhrvrmW07##-->
 <!--
   DEWS UI/UX IDE - Build Result - v1.5
   # PageID: ESSODM01400_X10005_Sub
@@ -419,7 +419,9 @@
     
     });
     self.$req_button.on('click', /*f56047f2-5d5e-4010-8581-246f5c29f3b3*/ function (e) {
-        dews.alert('결재신청 하시겠습니까?', "question").done(function () {
+        dews.confirm('결재신청 하시겠습니까?', {
+            icon: "question"
+        }).yes(function () {
             dews.api.get(dews.url.getApiUrl("HR", "HREssodm01400_X10005Service", "approve_HR_OFFAPPLY_MST_X10005MST"), {
                 async: false,
                 data: {
@@ -438,10 +440,14 @@
                 self.ATHZ_ST_NM.text(GetATHZ_ST_NM('2'));
                 InitBtns();
             });
+        }).no(function () {
+            dews.ui.snackbar.warning('결재신청을 취소하였습니다.')
         });
     });
     self.$req_cancel_button.on('click', /*d1d1abf1-bdb2-4e1e-876d-2cf45aa12988*/ function (e) {
-        dews.alert('결재요청을 취소 하시겠습니까?', "question").done(function () {
+        dews.confirm('결재요청을 취소 하시겠습니까?', {
+            icon: "question"
+        }).yes(function () {
             dews.api.get(dews.url.getApiUrl("HR", "HREssodm01400_X10005Service", "approve_HR_OFFAPPLY_MST_X10005MST"), {
                 async: false,
                 data: {
@@ -460,6 +466,8 @@
                 self.ATHZ_ST_NM.text(GetATHZ_ST_NM('1'));
                 InitBtns();
             });
+        }).no(function () {
+    
         });
     });
     self.$approve_button.on('click', /*ff94b48d-1e4f-4be1-aa8b-c8c89538591b*/ function (e) {
@@ -705,10 +713,8 @@
     
     /*cdd3d4f4-7ecd-43e5-9538-0f8096f35ab0*/ InitData();
     InitBtns();
-    
     //isExist를 전역변수로 할당
     var isExistSub = self.initialData.isExist;
-    
     
     function InitData() {
         try {

@@ -1,14 +1,18 @@
 package com.douzone.comet.service.hr.pamprg;
 
- 
 import java.util.ArrayList;
- 
+import java.util.Collections;
 import java.util.HashMap;
- 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+
+import org.apache.commons.vfs2.util.DelegatingFileSystemOptionsBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StopWatch;
+
 import com.douzone.comet.components.DzCometService;
 import com.douzone.comet.service.hr.pamprg.dao.Pamprg00100_X10005Dao;
 import com.douzone.comet.service.hr.pamprg.models.Pamprg00100_X10005Model;
@@ -24,6 +28,8 @@ import com.douzone.gpd.restful.enums.CometModule;
 import com.douzone.gpd.restful.enums.DzParamType;
 import com.douzone.gpd.restful.enums.DzRequestMethod;
 import com.douzone.gpd.restful.model.DzGridModel;
+import com.hazelcast.internal.serialization.impl.ArrayListStreamSerializer;
+
 import utills.CommonUtil;
 
 /**
@@ -38,7 +44,7 @@ public class HRPamprg00100_X10005Service extends DzCometService {
  
 	@Autowired
 	Pamprg00100_X10005Dao pamprg00100_X10005Dao;
- 
+
 	// [메인화면 조회]
 	@DzApi(url = "/list_HR_URGDBASETBL_INFO_X10005MST", desc = "승급기준표-조회", httpMethod = DzRequestMethod.GET)
 	public List<Pamprg00100_X10005Model> list_HR_URGDBASETBL_INFO_X10005MST(
@@ -58,13 +64,11 @@ public class HRPamprg00100_X10005Service extends DzCometService {
 			pamprg00100_X10005ModelList = pamprg00100_X10005Dao.selectPamprg00100_X10005ModelList(parameters);
 
 			// SEQ 값 생성하는 로직
-			for (int i = 0; i < pamprg00100_X10005ModelList.size(); i++) {
-				Pamprg00100_X10005Model model = pamprg00100_X10005ModelList.get(i);
-				model.setSeq(i + 1);
-			}
-			
-			System.out.println("데이터모델"+pamprg00100_X10005ModelList.toString());
-			
+//			for (int i = 0; i < pamprg00100_X10005ModelList.size(); i++) {
+//				Pamprg00100_X10005Model model = pamprg00100_X10005ModelList.get(i);
+//				model.setSeq(i + 1);
+//			}
+
 			return pamprg00100_X10005ModelList;
 
 		} catch (Exception e) {
@@ -110,16 +114,17 @@ public class HRPamprg00100_X10005Service extends DzCometService {
 
 		System.out.println("grid_ds" + grid_ds.getDeleted());
 		try {
-			String companyCode = this.getCompanyCode();
+			String companyCd = this.getCompanyCode();
 			String userId = this.getUserId();
-			String remoteHost = this.getRemoteHost();
+			String userIp = this.getRemoteHost();
+			
 			CommonUtil commonUtil = new CommonUtil();
 
 			// [delete]: 완료
 			List<Pamprg00100_X10005Model> deletedRows = grid_ds.getDeleted();
 			if (deletedRows != null && !deletedRows.isEmpty()) {
 				deletedRows
-						.forEach(deleteRow -> commonUtil.setCommonFields(deleteRow, companyCode, userId, remoteHost));
+						.forEach(deleteRow -> commonUtil.setCommonFields(deleteRow, companyCd, userId, userIp));
 				pamprg00100_X10005Dao.deletePAMPRG00100_Model(deletedRows);
 				logger.info("그리드 삭제완료");
 			}
@@ -128,7 +133,7 @@ public class HRPamprg00100_X10005Service extends DzCometService {
 			List<Pamprg00100_X10005Model> updatedRows = grid_ds.getUpdated();
 			if (updatedRows != null && !updatedRows.isEmpty()) {
 				updatedRows.forEach(updateRow -> {
-					commonUtil.setCommonFields(updateRow, companyCode, userId, remoteHost);
+					commonUtil.setCommonFields(updateRow, companyCd, userId, userIp);
 					updateRow.setBwrk_my_calc_std_dt(
 							StringUtil.getLocaleTimeString(updateRow.getBwrk_my_calc_std_dt(), "yyyyMMdd"));
 					logger.info("updateRow " + updateRow.toString());
@@ -141,13 +146,18 @@ public class HRPamprg00100_X10005Service extends DzCometService {
 			List<Pamprg00100_X10005Model> addedRows = grid_ds.getAdded();
 			if (addedRows != null && !addedRows.isEmpty()) {
 				addedRows.forEach(insertRow -> {
-					commonUtil.setCommonFields(insertRow, companyCode, userId, remoteHost);
+					commonUtil.setCommonFields(insertRow, companyCd, userId, userIp);
 					insertRow.setBwrk_my_calc_std_dt(
 							StringUtil.getLocaleTimeString(insertRow.getBwrk_my_calc_std_dt(), "yyyyMMdd"));
 					logger.info("insertRow " + insertRow.toString());
+					try {
+						pamprg00100_X10005Dao.uploadPAMPRG00100_Model(insertRow);
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+					logger.info("그리드 추가완료");
 				});
-				pamprg00100_X10005Dao.insertPAMPRG00100_Model(addedRows);
-				logger.info("그리드 추가완료");
+				
 			}
 		} catch (Exception e) {
 			throw new DzApplicationRuntimeException(e);
@@ -267,6 +277,7 @@ public class HRPamprg00100_X10005Service extends DzCometService {
 			throws Exception {
 		List<Map<String, Object>> list = new ArrayList<>();
 		try {
+			
 			HashMap<String, Object> parameters = new HashMap<String, Object>();
 			parameters.put("P_COMPANY_CD", this.getCompanyCode());
 			parameters.put("P_BIZAREA_CD", bizarea_cd);
@@ -288,45 +299,51 @@ public class HRPamprg00100_X10005Service extends DzCometService {
 		}
 		return list;
 	}
- 
-	// 유효성 검사 다시 한번하고 엑셀 마무리
+
 		@Transactional(rollbackFor = Exception.class)
 		@DzApi(url = "/uploadExcel_HR_URGDBASETBL_INFO_X10005MST", desc = "엑셀업로드", httpMethod = DzRequestMethod.POST)
 		public boolean pamodm01550x10005_excel_upload(
-				@DzParam(key = "uploadData", desc = "업로드데이터",required = false, paramType = DzParamType.Body) List <Pamprg00100_X10005Model> uploadData,
-		        @DzParam(key = "bizarea_cd", desc = "사업장코드",required = false, paramType = DzParamType.Body) String bizarea_cd)
-		        throws Exception {
-	 
-			//변경된 객체와 그대로인 것의 객체 구별 
-			String company_cd = this.getCompanyCode();
+				@DzParam(key = "uploadData", desc = "업로드데이터", required = false, paramType = DzParamType.Body) List<Pamprg00100_X10005Model> uploadData,
+				@DzParam(key = "bizarea_cd", desc = "사업장코드", required = false, paramType = DzParamType.Body) String bizarea_cd)
+				throws Exception {
+
+			// 변경된 객체와 그대로인 것의 객체 구별
+			String companyCd = this.getCompanyCode();
 			String userId = this.getUserId();
 			String userIp = this.getRemoteHost();
-		 
-		    try {
-		    	 
-				
-		    	System.out.println("uploadData사이즈 "+uploadData.size());//사이즈를 분할해서 front에 뿌려주기 
-		     
-		    uploadData
-		        .parallelStream()
-		        .forEachOrdered(pamprg00100_X10005Model -> {
-		            try {
-		                CommonUtil commonUtil = new CommonUtil();
-	        
-		                pamprg00100_X10005Model =commonUtil.setCommonFields(pamprg00100_X10005Model, company_cd, userId, userIp);
-		                System.out.println(pamprg00100_X10005Model.toString());
-		                pamprg00100_X10005Model.setBizarea_cd(bizarea_cd);
-		                pamprg00100_X10005Model.setBwrk_my_calc_std_dt(StringUtil.getLocaleTimeString(pamprg00100_X10005Model.getBwrk_my_calc_std_dt(), "yyyyMMdd"));
-		                this.pamprg00100_X10005Dao.uploadPAMPRG00100_Model(pamprg00100_X10005Model);
-		            } catch (Exception e) {
-		            }
-		        });
-		    } catch (DzApplicationRuntimeException e) {
-		        throw e;
-		    } catch (Exception e) {
-		        throw e;
-		    }
-		    return true;
+
+			StopWatch stopWatch = new StopWatch();
+			stopWatch.start();
+			CommonUtil commonUtil = new CommonUtil();
+			
+			try {
+				uploadData
+					.parallelStream()
+					.forEachOrdered(pamprg00100_X10005Model -> {
+					try {
+						pamprg00100_X10005Model = commonUtil.setCommonFields
+								(pamprg00100_X10005Model, companyCd, userId, userIp);
+						
+						pamprg00100_X10005Model.setBizarea_cd(bizarea_cd);
+						pamprg00100_X10005Model.setBwrk_my_calc_std_dt(StringUtil
+								.getLocaleTimeString(pamprg00100_X10005Model.getBwrk_my_calc_std_dt(), "yyyyMMdd"));
+						
+						this.pamprg00100_X10005Dao.uploadPAMPRG00100_Model(pamprg00100_X10005Model);
+						
+					} catch (Exception e) {
+						e.printStackTrace();  
+					}
+				});
+			} catch (DzApplicationRuntimeException e) {
+				throw e;
+			} catch (Exception e) {
+				throw e;
+			} finally {
+				stopWatch.stop();
+				System.out.println(stopWatch.prettyPrint());
+				System.out.println("코드 실행 시간 (s): " + stopWatch.getTotalTimeSeconds());
+			}
+			return true;
 		}
-  
+
 }

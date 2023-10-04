@@ -1,6 +1,6 @@
-<!--##6472833b-3acf-4883-bd2c-a371ec1499b1##-->
+<!--##31010e9d-ee3a-4c84-a8b6-fd2882e7adac##-->
 <!--##ESSODM01400_X10005_Sub##-->
-<!--##L4RIxVVRrSjSwXEIJfxEUsdMwhNoRZEmN0CCKZQbZ3kWW9XseWQ478+u8qxA+pan##-->
+<!--##TIqCaWgPnOyGTKDErjaQnWsdc76qn4Gt8x+k149juUM0dPkdKs7w2xDqpvRzQZCx##-->
 <!--
   DEWS UI/UX IDE - Build Result - v1.5
   # PageID: ESSODM01400_X10005_Sub
@@ -528,7 +528,10 @@
         //     }).no(function () {
         //     });
         //   } else {
-        dews.ui.page.close();
+        if (HasChanges() > 0) {
+            dews.ui.snackbar.warning("변경된 내용이 있습니다. \n임시저장을 해주세요.");
+        } else
+            dews.ui.page.close();
         //   }
     
     });

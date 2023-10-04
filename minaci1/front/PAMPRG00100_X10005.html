@@ -1,6 +1,6 @@
-<!--##657320e0-b26f-4a18-93fb-92b07932b4e7##-->
+<!--##b397bdae-1912-4aba-90ec-e5d9a2640452##-->
 <!--##PAMPRG00100_X10005##-->
-<!--##8si19ocEFJRUqhxEy1RMdd0gA9XbhovkdwVLN2xkChRpHCEijNnpW1Dv1wDoqayG##-->
+<!--##eP0LRO9Km0HtvD9yiU/aSnYoXLK5L8mUQ8zi8Js5BC0PMg7vyIcPpRNZ+fKnNSy5##-->
 <!--
   DEWS UI/UX IDE - Build Result - v1.5
   # PageID: PAMPRG00100_X10005
@@ -169,6 +169,7 @@
     
             var ledumCd = self.importExcelGrid.getCellValue(i, 'LEDU_CD');
     
+            console.log("LEDU_CD" + ledumCd);
             // TRGT_GRD_CD 처리 (기본값 'K1' 설정, 소문자일 경우 대문자처리)
             var trgtGrdCd = self.importExcelGrid.getCellValue(i, 'TRGT_GRD_CD');
             trgtGrdCd = (trgtGrdCd == null || trgtGrdCd == undefined) ? 'K1' : trgtGrdCd.toUpperCase();
@@ -193,10 +194,9 @@
             self.gridMaster.setCellValue(idx, 'MIN_BWRK_MY', minBwrkMy, false); // 최소근무월수
             self.gridMaster.setCellValue(idx, 'AGGR_TERM_CNT', self.importExcelGrid.getCellValue(i, 'AGGR_TERM_CNT'), false); // 근무성적집계기간
             self.gridMaster.setCellValue(idx, 'BWRK_SGRAD_CD', self.importExcelGrid.getCellValue(i, 'BWRK_SGRAD_CD'), false); // 근무성적
-            //self.gridMaster.setCellValue(idx, 'LEDU_NM', self.importExcelGrid.getCellValue(i, 'LEDU_CD'), false); // 학력
             self.gridMaster.setCellValue(idx, 'LEDU_NM', self.importExcelGrid.getCellValue(i, 'LEDU_NM'), false); // 학력
     
-            self.gridMaster.setCellValue(idx, 'LEDU_CD', lecdMap[ledumCd], false); // 학력명
+            self.gridMaster.setCellValue(idx, 'LEDU_CD', ledumCd, false); // 학력코드
             self.gridMaster.setCellValue(idx, 'BWRK_MY_CALC_STD_DT', bwrkMyCalcStdDt, false); // 산정기준일
             self.gridMaster.setCellValue(idx, 'RMK_NM', self.importExcelGrid.getCellValue(i, 'RMK_NM'), false); // 비고
             self.gridMaster.setCellValue(idx, 'bizarea_cd', self.bizarea_cd.value(), false);
@@ -346,7 +346,7 @@
                 "MIN_BWRK_MY": "최소근무월수",
                 "AGGR_TERM_CNT": "근무성적집계기간",
                 "BWRK_SGRAD_CD": "근무성적",
-                "LEDU_NM": "학력",
+                "LEDU_CD": "학력",
                 "BWRK_MY_CALC_STD_DT": "산정기준일",
                 "RMK_NM": "비고",
             },
@@ -391,7 +391,10 @@
                     row.BIZAREA_CD = self.bizarea_cd.value(); // 현재 선택된 사업장으로 저장
                 }
                 row.PSTN_CD = pstnNmMap[row.PSTN_NM]; // '직급명'에 넣기(없으면 필수값 입력하라고 나옴)
-                row.LEDU_CD = lecdMap[row.LEDU_NM]; //ds localdata 으로 매핑시도해봤지만 안됨
+                row.LEDU_NM = row.LEDU_CD; //ds localdata 으로 매핑시도해봤지만 안됨
+                row.LEDU_CD = lecdMap[row.LEDU_NM];
+                //console.log("row.LEDU_CD" + row.LEDU_CD);
+                //self.importExcelGrid.setCellValue(idx, 'LEDU_CD', row.LEDU_CD, false); // 기본값 설정self.importExcel_ds.LED
                 return row;
     
             },
@@ -711,6 +714,10 @@
     });
     dews.ui.mainbuttons.search.click(/*37fe89ce-9f9d-444b-a3a3-dfe45a8e42e2*/ function () {
     
+        self.gridMaster.setOptions({
+            rowNo: true
+        })
+    
         if (self.grid_ds.getDirtyDataCount() > 0) {
             dews.confirm('저장되지 않은 데이터가 있습니다.\n그래도 조회 하시겠습니까?', "question").yes(function () {
                 searchData();
@@ -912,6 +919,10 @@
     
     });
     self.$uploadBtnApply.on('click', /*9ed4bb85-ff33-478d-ad7d-c8670429122e*/ function (e) {
+    
+        self.gridMaster.setOptions({
+            rowNo: false
+        })
     
         if (self.mpPROMO_YEAR_MONTH.value() == '' || self.bizarea_cd.value() == '') {
             dews.ui.snackbar.warning("누락된 필수값이 있습니다.");
@@ -1209,18 +1220,18 @@
         },
         {
           field: 'LEDU_CD',
-          title: '학력코드',
+          title: '학력',
           visible: false,
           formats: {
             type: 'dataSource',
             dataSource: self.ledu_cd_ds,
-            dataValueField: 'LEDU_NM',
-            dataTextField: 'LEDU_CD'
+            dataValueField: 'LEDU_CD',
+            dataTextField: 'LEDU_NM'
           }
         },
         {
           field: 'LEDU_NM',
-          title: '학력',
+          title: '학력명',
           width: 80
         },
         {
@@ -1289,20 +1300,20 @@
         },
         {
           field: 'LEDU_CD',
-          title: '학력코드',
+          title: '학력',
           width: 80,
-          visible: false,
-          formats: {
-            type: 'dataSource',
-            dataSource: self.ledu_cd_ds,
-            dataValueField: 'LEDU_NM',
-            dataTextField: 'LEDU_CD'
-          }
+          visible: false
         },
         {
           field: 'LEDU_NM',
-          title: '학력',
-          width: 80
+          title: '학력명',
+          width: 80,
+          formats: {
+            type: 'dataSource',
+            dataSource: self.ledu_cd_ds,
+            dataValueField: 'LEDU_CD',
+            dataTextField: 'LEDU_NM'
+          }
         },
         {
           field: 'BWRK_MY_CALC_STD_DT',

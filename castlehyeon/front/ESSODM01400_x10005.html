@@ -1,6 +1,6 @@
-<!--##94f5000c-993e-494c-98cd-1653a8cb4ebe##-->
+<!--##2d3204f4-5343-44c5-9b88-03a01bb73a74##-->
 <!--##ESSODM01400_x10005##-->
-<!--##JpzoAYJ8p3CfzI5lorh72XNv8iZEnxbeSvLT1+IhWYf6jYfcKdalKHuwigSSgfeC##-->
+<!--##V3vCQpsXf875PylR20MqgQqaaoYTz9+yHsFzl2P82/AR1Jo59OU52pmnbqMhl+rj##-->
 <!--
   DEWS UI/UX IDE - Build Result - v1.5
   # PageID: ESSODM01400_x10005
@@ -34,8 +34,8 @@
   </div>
 </div>
 <h2 id="tit3" class="dews-ui-title">기본정보</h2>
-<div id="containerpanel3" class="dews-ui-container-panel" data-dews-fit-bottom="true">
-  <div id="containerpanelitem3" class="dews-container-item" data-dews-position="normal">
+<div id="containerpanel7" class="dews-ui-container-panel">
+  <div id="containerpanelitem7" class="dews-container-item" data-dews-position="normal">
     <div id="userInfo_formpanel" class="dews-ui-form-panel" data-dews-columns="4">
       <ul>
         <li>
@@ -82,11 +82,15 @@
         </li>
       </ul>
     </div>
-    <h2 id="tit4" class="dews-ui-title">조회조건</h2>
+  </div>
+</div>
+<h2 id="tit6" class="dews-ui-title">조회조건</h2>
+<div id="containerpanel8" class="dews-ui-container-panel">
+  <div id="containerpanelitem8" class="dews-container-item" data-dews-position="normal">
     <div id="formpanel2" class="dews-ui-form-panel" data-dews-columns="3">
       <ul>
         <li class="col-2">
-          <label class="required">결근 기간</label>
+          <label>결근 기간</label>
           <span>
             <span id="period_picker" class="dews-ui-periodpicker required" style="width: 200px;"></span>
             <button id="search_button" class="dews-ui-button">조회</button>
@@ -100,6 +104,10 @@
         </li>
       </ul>
     </div>
+  </div>
+</div>
+<div id="containerpanel3" class="dews-ui-container-panel" data-dews-fit-bottom="true">
+  <div id="containerpanelitem3" class="dews-container-item" data-dews-position="normal">
     <h2 id="tit5" class="dews-ui-title">조회정보</h2>
     <div id="main_grid" class="dews-ui-grid"></div>
     <div id="formpanel3" class="dews-ui-form-panel"></div>
@@ -337,7 +345,7 @@
         template: '#= series.name #: #= value #'
       }
     });
-    self.$search_button.on('click', /*db97b64c-80a9-43e4-8377-d609ac26b06e*/ function (e) {
+    self.$search_button.on('click', /*956f3142-ecd5-425f-a5e9-e4621fe5753d*/ function (e) {
         if (!self.formpanel2.validate()) {
             dews.ui.snackbar.error('검색값을 올바르게 입력해주세요.');
             return;
@@ -345,13 +353,24 @@
         SearchData();
     
     });
-    self.$subPage_open.on('click', /*483d34f3-0a84-497f-be94-85abe787fa80*/ function (e) {
+    
+    
+    /**
+     * @Control : Button
+     * @Event : click
+     * @Control-ID : subPage_open
+     * @Warning : 주석라인 수정시 스크립트 저장에 문제가 발생할 수 있습니다.
+     *//*483d34f3-0a84-497f-be94-85abe787fa80*//*917016a2-ff1f-472f-98e5-f749ca137fb7*/
+    self.$subPage_open.on('click', function (e) {
         try {
             OpenSubPage(false, null);
         } catch (error) {
             dews.error(error);
             console.error(error);
         }
+    });
+    self.$subPage_open.on('click', /*917016a2-ff1f-472f-98e5-f749ca137fb7*/ function(e) {
+    
     });
     dews.ui.grid(self.$main_grid, {
       dataSource: self.main_ds,

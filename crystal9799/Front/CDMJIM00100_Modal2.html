@@ -1,0 +1,141 @@
+<!--##9d2ea901-cc0c-4861-8de6-328aaec9bee2##-->
+<!--##CDMJIM00100_Modal2##-->
+<!--##RrIfHpw7QIoOnEMPE6Ssmp5qkSEg/FZeqcbaesxq01pEqZtCLOYpTiA5J1rtzE+R##-->
+<!--
+  DEWS UI/UX IDE - Build Result - v1.5
+  # PageID: CDMJIM00100_Modal2
+  # PageTitle: 직무분류코드도움창
+  # Server: http://localhost:8080/
+-->
+<!--
+
+-->
+
+<div class="dews-ui-condition-panel">
+  <ul class="required-area">
+    <li>
+      <label class="dews-ui-multilingual">검색어</label>
+      <span>
+        <input id="textbox1" name="textbox1" type="text" class="dews-ui-textbox basic" />
+      </span>
+    </li>
+  </ul>
+</div>
+<div id="MCP_GRID" class="dews-ui-grid"></div>
+<div class="dews-dialog-button-group bottom" style="text-align: center;">
+  <button id="ok_btn" class="dews-ui-button">적용</button>
+  <button id="close_btn" class="dews-ui-button">닫기</button>
+</div>
+
+<style>
+    
+</style>
+
+
+
+<script>
+  dews.ready(function () {
+    var self = this;
+    self.version = self.version || {};
+    self.version.view='1.0';
+
+
+    /*926e781e-6e8c-4888-b59f-6ca477b7d6a0*/ //# sourceURL=CDMJIM00100_Modal2.js
+    // var dialog = dews.ui.dialog("LCLAS_PICKER");
+    var dialog = this;
+    console.log(dialog.getInitData());
+    
+    
+    
+    self.PARAM_DS = dews.ui.dataSource('PARAM_DS', {
+      grid: true,
+      transport: {
+        read: {
+          type: 'post',
+          url: dews.url.getApiUrl('HR', 'Cdmjim00100_Modal_Service', 'selectFgList'),
+          data: /*df8b2a45-47f3-48fa-a774-d722429be127*/ function() {
+        return({
+            param_cd : dialog.getInitData().params.param_cd,
+            param_name: dialog.getInitData().params.param_name
+        })
+    }
+        }
+      },
+      schema: {
+        model: {
+          fields: [
+            { field: 'PARAM_CD', editable: false, dataType: 'string' }, 
+            { field: 'PARAM_NAME', editable: false, dataType: 'string' }
+          ]
+    
+        }
+      }
+    });
+    dews.api.get(dews.url.getApiUrl('CM', 'CommonCodeDtlService', 'common_ci_codeDtl_list'),{
+      async: false,
+      data: {
+          end_dt: '',
+          foreign_yn: '',
+          field_cd_pipe: 'ZN09_10005',
+          module_cd: 'HR',
+          syscode_yn: '',
+          keyword: '',
+          base_yn: ''
+      }
+    }).done(function (data) {
+      var ar_ZN09_10005 = new Array();
+    
+      for (var i = 0; i < data.length; i++) {
+        if (data[i].FIELD_CD == "ZN09_10005") { 
+          ar_ZN09_10005.push(data[i]); 
+    
+        }
+      }
+      self.pipeDataSource1_ZN09_10005 = dews.ui.dataSource('pipeDataSource1_ZN09_10005',  { data: ar_ZN09_10005 });
+      self.pipeDataSource1 = dews.ui.dataSource('pipeDataSource1', { data: data });
+      
+    });
+    
+    
+    dews.ui.grid(self.$MCP_GRID, {
+      dataSource: self.PARAM_DS,
+      height: 348,
+      sortable: false,
+      copyMode: 'cell',
+      columns: [
+        {
+          field: 'param_cd',
+          title: '코드',
+          width: 60
+        },
+        {
+          field: 'param_name',
+          title: '내역',
+          width: 60
+        }
+      ],
+      fixed: {
+        colCount: 0,
+        rightColCount: 0
+      }
+    });
+    self.$ok_btn.on('click', /*7d96eefc-d402-4a4d-bb98-ea69066c3a35*/ function (e) {
+        console.log("e는 이거임 ===== " + e);
+        console.log("self.MCP_GRID.getCheckedRows() === > " + self.MCP_GRID.getCheckedRows());
+        var data = self.MCP_GRID.getCheckedRows();
+        self.initData
+        self.ok(data);
+    });
+    self.$close_btn.on('click', /*1f81c0e5-6b2c-4bae-907b-837bb518d93b*/ function (e) {
+        self.close();
+    });
+    
+    
+    
+    
+    
+
+  
+  });
+
+</script>

@@ -34,6 +34,11 @@ public class Pamprg00100_X10005Dao  {
 		return this.mybatisSupport.selectList(this.getClass().getName() + ".selectPamprg00100_X10005ModelList", parameters);
 	}
 	
+	//그리드 페이징 조회 
+	public List<Pamprg00100_X10005Model> master_list_paging(HashMap<String, Object> parameters) throws Exception {
+		return this.mybatisSupport.selectList(this.getClass().getName() + ".master_list_paging", parameters);
+	}
+	
 	//종전데이터 있는지 여부 확인 
 	public int checkListExist(HashMap<String, Object> parameters) throws Exception {
 		return this.mybatisSupport.selectOne(this.getClass().getName() + ".checkListExist", parameters);

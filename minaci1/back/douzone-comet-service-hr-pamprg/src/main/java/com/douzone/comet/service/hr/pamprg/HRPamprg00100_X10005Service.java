@@ -49,25 +49,31 @@ public class HRPamprg00100_X10005Service extends DzCometService {
 	@DzApi(url = "/list_HR_URGDBASETBL_INFO_X10005MST", desc = "승급기준표-조회", httpMethod = DzRequestMethod.GET)
 	public List<Pamprg00100_X10005Model> list_HR_URGDBASETBL_INFO_X10005MST(
 			@DzParam(key = "mpPROMO_YEAR_MONTH", desc = "승급년월", required = false, paramType = DzParamType.QueryString) String mpPROMO_YEAR_MONTH,
-			@DzParam(key = "bizarea_cd", desc = "사업장", required = false, paramType = DzParamType.QueryString) String bizarea_cd)
+			@DzParam(key = "bizarea_cd", desc = "사업장", required = false, paramType = DzParamType.QueryString) String bizarea_cd,
+			@DzParam(key = "paging", desc = "페이징 사용", paramType = DzParamType.QueryString) String paging,
+            @DzParam(key = "pagingStart", desc = "페이징 시작인덱스", paramType = DzParamType.QueryString) String pagingStart,
+            @DzParam(key = "pagingCount", desc = "페이징 시 데이터 수", paramType = DzParamType.QueryString) String pagingCount
+            )
 			throws Exception {
 		List<Pamprg00100_X10005Model> pamprg00100_X10005ModelList = new ArrayList<Pamprg00100_X10005Model>();
 
 		try {
-
 			HashMap<String, Object> parameters = new HashMap<String, Object>();
 
 			parameters.put("P_COMPANY_CD", this.getCompanyCode());
 			parameters.put("P_BIZAREA_CD", bizarea_cd);
 			parameters.put("P_PROMO_YEAR_MONTH", mpPROMO_YEAR_MONTH);
-
+			parameters.put("P_PG_START", pagingStart);
+			parameters.put("P_PG_END", pagingCount);
+			
+			if(pagingStart.equals("0")) {
+				parameters.put("P_PAGING_START", "0");
+				parameters.put("P_PAGING_COUNT", "99999999");
+			}
+			parameters.put("P_PAGING_START", pagingStart);
+			parameters.put("P_PAGING_COUNT", pagingCount);
+			
 			pamprg00100_X10005ModelList = pamprg00100_X10005Dao.selectPamprg00100_X10005ModelList(parameters);
-
-			// SEQ 값 생성하는 로직
-//			for (int i = 0; i < pamprg00100_X10005ModelList.size(); i++) {
-//				Pamprg00100_X10005Model model = pamprg00100_X10005ModelList.get(i);
-//				model.setSeq(i + 1);
-//			}
 
 			return pamprg00100_X10005ModelList;
 

@@ -43,6 +43,24 @@
 			<if test='JOB_FG != null and JOB_FG != ""'>
 				AND JOB_FG = #{JOB_FG}				
 			</if>
+			<if test='LCLAS_CD != null and LCLAS_CD != ""'>
+				AND LCLAS_CD = #{LCLAS_CD}				
+			</if>
+			<if test='MLSFC_CD != null and MLSFC_CD != ""'>
+				AND MLSFC_CD = #{MLSFC_CD}				
+			</if>
+			<if test='S_CSF_CD != null and S_CSF_CD != ""'>
+				AND S_CSF_CD = #{S_CSF_CD}				
+			</if>
+			<if test='TCLF_CD != null and TCLF_CD != ""'>
+				AND TCLF_CD = #{TCLF_CD}				
+			</if>
+			<if test='ACLF_CD != null and ACLF_CD != ""'>
+				AND ACLF_CD = #{ACLF_CD}				
+			</if>
+			<if test='ACLF_LV != null and ACLF_LV != ""'>
+				AND ACLF_LV = #{ACLF_LV}				
+			</if>
 		</where>
 		ORDER BY VER_CD
 	</select>

@@ -43,13 +43,20 @@ public class cdmjim00100_MainGrid_Service extends DzCometService {
 	
 	@Autowired
 	cdmjim00100_MainGrid_Dao cdmjim00100_maingridDAO; 
+	@Autowired
 	cdmjim00100_SubGrid_Dao cdmjim00100_subgridDAO;
 
 	@DzApi(url="/cdmjim00100_MainGrid_List", desc="메인그리드_조회", httpMethod=DzRequestMethod.POST)
 	public List<cdmjim00100_maingrid> cdmjim00100_MainGrid_List(
 		@DzParam(key="JOB_FG", desc="직무구분", required = false, defaultValue = "", paramType = DzParamType.Body) String JOB_FG,
 		@DzParam(key="USE_YN", desc="사용여부", required = false, defaultValue = "", paramType = DzParamType.Body) String USE_YN,
-		@DzParam(key="lst_ver_yn", desc = "최종조건", required = false, defaultValue = "", paramType = DzParamType.Body) String lst_ver_yn
+		@DzParam(key="lst_ver_yn", desc = "최종조건", required = false, defaultValue = "", paramType = DzParamType.Body) String lst_ver_yn,
+		@DzParam(key="LCLAS_CD", desc = "대분류코드", required = false, defaultValue = "", paramType = DzParamType.Body) List<String> LCLAS_CD,
+		@DzParam(key="MLSFC_CD", desc = "중분류코드", required = false, defaultValue = "", paramType = DzParamType.Body) List<String> MLSFC_CD,
+		@DzParam(key="S_CSF_CD", desc = "소분류코드", required = false, defaultValue = "", paramType = DzParamType.Body) List<String> S_CSF_CD,
+		@DzParam(key="TCLF_CD", desc = "세분류코드", required = false, defaultValue = "", paramType = DzParamType.Body) List<String> TCLF_CD,
+		@DzParam(key="ACLF_CD", desc = "능력단위코드", required = false, defaultValue = "", paramType = DzParamType.Body) List<String> ACLF_CD,
+		@DzParam(key="ACLF_LV", desc = "능력단위레벨", required = false, defaultValue = "", paramType = DzParamType.Body) List<String> ACLF_LV
 	) throws Exception {
 		List<cdmjim00100_maingrid> cdmjim00100_maingridList =  new ArrayList<cdmjim00100_maingrid>();
 		try {
@@ -62,6 +69,12 @@ public class cdmjim00100_MainGrid_Service extends DzCometService {
 	 		cdmjim00100_maingrid.put("COMPANY_CD",this.getCompanyCode());
 			cdmjim00100_maingrid.put("JOB_FG",JOB_FG);
 			cdmjim00100_maingrid.put("USE_YN",USE_YN);
+			cdmjim00100_maingrid.put("LCLAS_CD",LCLAS_CD);
+			cdmjim00100_maingrid.put("MLSFC_CD",MLSFC_CD);
+			cdmjim00100_maingrid.put("S_CSF_CD",S_CSF_CD);
+			cdmjim00100_maingrid.put("TCLF_CD",TCLF_CD);
+			cdmjim00100_maingrid.put("ACLF_CD",ACLF_CD);
+			cdmjim00100_maingrid.put("ACLF_LV",ACLF_LV);
 	 		cdmjim00100_maingridList = cdmjim00100_maingridDAO.selectcdmjim00100_maingridList(cdmjim00100_maingrid);
 	 		for(cdmjim00100_maingrid mg: cdmjim00100_maingridList){
 	 			mg.set_uid(UUID.randomUUID().toString());
@@ -117,14 +130,18 @@ public class cdmjim00100_MainGrid_Service extends DzCometService {
 	    		for(cdmjim00100_maingrid delete_data: delete_List) {
 	    			System.out.println("딜리트 데이터 정보 : ====== > " + delete_data.toString());
 	    			delete_data.setCompany_cd(getCompanyCode());
-	    			cdmjim00100_maingridDAO.deletecdmjim00100_maingrid(delete_data);
 	    			
+	    			//메인 그리드 삭제
+	    			cdmjim00100_maingridDAO.deletecdmjim00100_maingrid(delete_data);
+
 	    			//하위 그리드 삭제
 	    			Map<String, Object> parameters = new HashMap<>();
 	    			parameters.put("ACLF_NO", delete_data.getAclf_no());
 	    			parameters.put("VER_CD", delete_data.getVer_cd());
 	    			cdmjim00100_subgridDAO.deletecdmjim00100_right1_grid_all(parameters);
 	    			cdmjim00100_subgridDAO.deletecdmjim00100_right2_grid_all(parameters);
+	    			
+	    			
 	    		}	    		
 	    	}
 	    } catch (Exception e) {

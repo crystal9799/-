@@ -100,7 +100,7 @@
 		        , A.START_DT ORIG_START_DT
 		        , A.END_DT		 	-- A.종료일
 				, A.END_DT ORIG_END_DT
-		        , F.TM_CD_NM		-- E.시간코드 근태시간코드마스터 HR_OFFTIME_MST 일근태마스터의 근무일
+		        , F.TM_CD_NM		-- E.시간코드 
 		        , A.DOF_TP		 	-- A.휴무유형
 		        , A.START_TM		-- A.시작시간
 		        , A.END_TM		 	-- A.종료시간

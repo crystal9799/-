@@ -1,6 +1,6 @@
-<!--##847fc943-ee39-41ef-8f92-456690d418a5##-->
+<!--##94f5000c-993e-494c-98cd-1653a8cb4ebe##-->
 <!--##ESSODM01400_x10005##-->
-<!--##PxNqO1vHexS+ah+Yw21DRgte+ypumGIty2VeC02mRuHBYCHjzJJUaLQz3mN0a0dB##-->
+<!--##JpzoAYJ8p3CfzI5lorh72XNv8iZEnxbeSvLT1+IhWYf6jYfcKdalKHuwigSSgfeC##-->
 <!--
   DEWS UI/UX IDE - Build Result - v1.5
   # PageID: ESSODM01400_x10005
@@ -340,9 +340,10 @@
     self.$search_button.on('click', /*db97b64c-80a9-43e4-8377-d609ac26b06e*/ function (e) {
         if (!self.formpanel2.validate()) {
             dews.ui.snackbar.error('검색값을 올바르게 입력해주세요.');
-                return;
-            }
+            return;
+        }
         SearchData();
+    
     });
     self.$subPage_open.on('click', /*483d34f3-0a84-497f-be94-85abe787fa80*/ function (e) {
         try {
@@ -626,7 +627,18 @@
             dews.ui.loading.show({ // 로딩화면 보여주기
                 text: '조회중입니다.'
             });
-            self.main_ds.read();  // 데이터소스 Read
+            self.main_ds.read().done(function () {
+                var search_result = self.main_grid.getSummary('REQ_NO', 'COUNT');
+                // 만약 gird row count가 0이라면 이전 검색결과에서의 기본정보 초기화
+                if (search_result === 0) {
+                    self.EMP_NO.text('');
+                    self.KOR_NM.text('');
+                    self.PSTN_NM.text('');
+                    self.OGRP_NM.text('');
+                    self.ORG.text('');
+                    self.POSI_NM.text('');
+                }
+            });  // 데이터소스 Read
             dews.ui.loading.hide();
         } catch (error) {
             dews.ui.loading.hide();

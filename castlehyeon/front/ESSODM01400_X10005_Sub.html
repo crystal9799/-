@@ -1,6 +1,6 @@
-<!--##31010e9d-ee3a-4c84-a8b6-fd2882e7adac##-->
+<!--##3c0d7d89-329f-4912-aba7-1d5dee637d1e##-->
 <!--##ESSODM01400_X10005_Sub##-->
-<!--##TIqCaWgPnOyGTKDErjaQnWsdc76qn4Gt8x+k149juUM0dPkdKs7w2xDqpvRzQZCx##-->
+<!--##ZHuwKnbVg5OKAGYfHm0Waz+3Rmh5XbxemZCM0A5SL7jm9u+NrfIQeXjSuBQnRHVy##-->
 <!--
   DEWS UI/UX IDE - Build Result - v1.5
   # PageID: ESSODM01400_X10005_Sub
@@ -171,9 +171,9 @@
     self.REQ_BIZAREA_CD.text(self.user.bizAreaCode);
     
     //더미데이터 넣기
-    self.START_DT.value('20230821');
-    self.END_DT.value('20230824');
-    self.REASON_DC.text('휴가신청합니다.');
+    // self.START_DT.value('20230821');
+    // self.END_DT.value('20230824');
+    // self.REASON_DC.text('휴가신청합니다.');
     
     // 직급, 직위 데이터
     const positionData = [
@@ -528,7 +528,7 @@
         //     }).no(function () {
         //     });
         //   } else {
-        if (HasChanges() > 0) {
+        if (HasChanges() > 0 && isSaved) {
             dews.ui.snackbar.warning("변경된 내용이 있습니다. \n임시저장을 해주세요.");
         } else
             dews.ui.page.close();
@@ -998,10 +998,10 @@
             return false;
         }
         // 더미데이터를 넣기 위해 다음 유효성 검사는 주석처리
-        // else if (startDate < today || endDate < today) { // 신청 날짜는 오늘부터 가능하다.
-        //     dews.ui.snackbar.warning("시작일과 종료일은 오늘날짜보다 작을 수 없습니다.");
-        //     return false;
-        // } 
+        else if (startDate < today || endDate < today) { // 신청 날짜는 오늘부터 가능하다.
+            dews.ui.snackbar.warning("시작일과 종료일은 오늘날짜보다 작을 수 없습니다.");
+            return false;
+        }
         else if (self.DNL_CD.value() === '5100') { // 신청가능일 < 10
             if (req_date > 10) {
                 dews.ui.snackbar.warning("10일 이내로 신청해야 합니다. 현재 신청일 : " + req_date + "일");

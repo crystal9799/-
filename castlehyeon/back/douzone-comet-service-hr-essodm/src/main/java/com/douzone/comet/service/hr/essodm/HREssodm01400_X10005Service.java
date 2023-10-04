@@ -112,12 +112,19 @@ public class HREssodm01400_X10005Service extends DzCometService {
 	
 	
 	@DzApi(url = "/getDataByWeek", desc = "메인페이지 차트정보 조회 주간", httpMethod = DzRequestMethod.GET)
-	public List<ChartDataByWeek> getDataByWeek()
+	public List<ChartDataByWeek> getDataByWeek(
+			@DzParam(key = "company_cd", desc = "", paramType = DzParamType.QueryString) String company_cd,
+			@DzParam(key = "bizarea_cd", desc = "", paramType = DzParamType.QueryString) String bizarea_cd,
+			@DzParam(key = "dept_cd", desc = "", paramType = DzParamType.QueryString) String dept_cd)	
 			throws Exception {
 		OffApply offApply = new OffApply();
 		List<ChartDataByWeek> list = new ArrayList<ChartDataByWeek>();
 		try {
-			list = offApply.getDataByWeek(essodm01400_x10005DAO.selectDataByWeekCondition());
+			HashMap<String, Object> parameters = new HashMap<>();
+			parameters.put("P_COMPANY_CD", company_cd);
+			parameters.put("P_BIZAREA_CD", bizarea_cd);
+			parameters.put("P_DEPT_CD", dept_cd);
+			list = offApply.getDataByWeek(essodm01400_x10005DAO.selectDataByWeekCondition(parameters));
 			System.out.println("차트정보주간==>"+list.toString());
 			
 			
@@ -301,6 +308,11 @@ public class HREssodm01400_X10005Service extends DzCometService {
 			
 			
 			GetInsertUpdateInfo userInfo = new GetInsertUpdateInfo();
+			//결재완료 시 결재문서번호 넣기 ATHZ_DOC_CD  예시) EWP_HR_GWA2022050176
+			ResponseHashMap responseMap = new ResponseHashMap();
+			String doc_no = responseMap.createDocNo(essodm01400_x10005DAO);
+			System.out.println("생성된 결재문서번호===>"+doc_no);
+			parameters.put("P_ATHZ_DOC_CD", doc_no);
 			parameters.put("P_UPDATE_ID", userInfo.getUserId() != null ? userInfo.getUserId() : this.getUserId());
 			parameters.put("P_UPDATE_IP", userInfo.getIp());
 			parameters.put("P_UPDATE_DTS", userInfo.getDate());

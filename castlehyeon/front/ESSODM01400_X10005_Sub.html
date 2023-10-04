@@ -1,6 +1,6 @@
-<!--##36df7200-4b2b-48d0-b064-a00bcfe69746##-->
+<!--##3c0d7d89-329f-4912-aba7-1d5dee637d1e##-->
 <!--##ESSODM01400_X10005_Sub##-->
-<!--##L7EwU68iikAxgiHuy+Cuu6+tnqNjO9czex9n5ALq8fqy1nQxD1af6EMMk4617CRA##-->
+<!--##ZHuwKnbVg5OKAGYfHm0Waz+3Rmh5XbxemZCM0A5SL7jm9u+NrfIQeXjSuBQnRHVy##-->
 <!--
   DEWS UI/UX IDE - Build Result - v1.5
   # PageID: ESSODM01400_X10005_Sub
@@ -171,9 +171,9 @@
     self.REQ_BIZAREA_CD.text(self.user.bizAreaCode);
     
     //더미데이터 넣기
-    self.START_DT.value('20230821');
-    self.END_DT.value('20230824');
-    self.REASON_DC.text('휴가신청합니다.');
+    // self.START_DT.value('20230821');
+    // self.END_DT.value('20230824');
+    // self.REASON_DC.text('휴가신청합니다.');
     
     // 직급, 직위 데이터
     const positionData = [
@@ -196,6 +196,8 @@
     let inputData =
     {
     };
+    
+    
     
     
     
@@ -380,6 +382,7 @@
     dews.ui.mainbuttons.search.hide();
     dews.ui.mainbuttons.delete.hide();
     dews.ui.mainbuttons.print.hide();
+    dews.ui.mainbuttons.save.hide();
     self.s_EMP_NO.on('codedialog', /*bac2ec72-9198-4777-905f-fcea45bac730*/ function (e) {
         e.callback = function (s) {
             // self.REQ_EMP_NO.text(s.EMP_NO);
@@ -419,48 +422,64 @@
     
     });
     self.$req_button.on('click', /*f56047f2-5d5e-4010-8581-246f5c29f3b3*/ function (e) {
-        dews.alert('결재신청 하시겠습니까?', "question").done(function () {
-            dews.api.get(dews.url.getApiUrl("HR", "HREssodm01400_X10005Service", "approve_HR_OFFAPPLY_MST_X10005MST"), {
-                async: false,
-                data: {
-                    //기본키
-                    company_cd: self.main_grid.getCellValue(0, 'COMPANY_CD'),//회사코드
-                    req_no: self.main_grid.getCellValue(0, 'REQ_NO'), // 신청번호
+        if (HasChanges() > 0) {
+            dews.ui.snackbar.warning("변경된 내용이 있습니다. \n임시저장을 해주세요.");
+        } else {
+            dews.confirm('결재신청 하시겠습니까?', {
+                icon: "question"
+            }).yes(function () {
+                dews.api.get(dews.url.getApiUrl("HR", "HREssodm01400_X10005Service", "approve_HR_OFFAPPLY_MST_X10005MST"), {
+                    async: false,
+                    data: {
+                        //기본키
+                        company_cd: self.main_grid.getCellValue(0, 'COMPANY_CD'),//회사코드
+                        req_no: self.main_grid.getCellValue(0, 'REQ_NO'), // 신청번호
     
-                    //결재상태코드
-                    athz_st_cd: '2'
-                    //한번에 모델로 보내기 => dirtyData 상에서 added로 들어가는 문제점
-                    // main_ds: main_ds
-                }
-            }).done(function (data) {
-                dews.ui.snackbar.ok('결재신청 되었습니다.');
-                self.main_grid.setCellValue(self.main_grid.select(), 'ATHZ_ST_CD', '2');
-                self.ATHZ_ST_NM.text(GetATHZ_ST_NM('2'));
-                InitBtns();
+                        //결재상태코드
+                        athz_st_cd: '2'
+                        //한번에 모델로 보내기 => dirtyData 상에서 added로 들어가는 문제점
+                        // main_ds: main_ds
+                    }
+                }).done(function (data) {
+                    dews.ui.snackbar.ok('결재신청 되었습니다.');
+                    self.main_grid.setCellValue(self.main_grid.select(), 'ATHZ_ST_CD', '2');
+                    self.ATHZ_ST_NM.text(GetATHZ_ST_NM('2'));
+                    InitBtns();
+                });
+            }).no(function () {
+                dews.ui.snackbar.warning('결재신청을 취소하였습니다.')
             });
-        });
+        }
     });
     self.$req_cancel_button.on('click', /*d1d1abf1-bdb2-4e1e-876d-2cf45aa12988*/ function (e) {
-        dews.alert('결재요청을 취소 하시겠습니까?', "question").done(function () {
-            dews.api.get(dews.url.getApiUrl("HR", "HREssodm01400_X10005Service", "approve_HR_OFFAPPLY_MST_X10005MST"), {
-                async: false,
-                data: {
-                    //기본키
-                    company_cd: self.main_grid.getCellValue(0, 'COMPANY_CD'),//회사코드
-                    req_no: self.main_grid.getCellValue(0, 'REQ_NO'), // 신청번호
+        if (HasChanges() > 0) {
+            dews.ui.snackbar.warning("변경된 내용이 있습니다. \n임시저장을 해주세요.");
+        } else {
+            dews.confirm('결재요청을 취소 하시겠습니까?', {
+                icon: "question"
+            }).yes(function () {
+                dews.api.get(dews.url.getApiUrl("HR", "HREssodm01400_X10005Service", "approve_HR_OFFAPPLY_MST_X10005MST"), {
+                    async: false,
+                    data: {
+                        //기본키
+                        company_cd: self.main_grid.getCellValue(0, 'COMPANY_CD'),//회사코드
+                        req_no: self.main_grid.getCellValue(0, 'REQ_NO'), // 신청번호
     
-                    //결재상태코드
-                    athz_st_cd: '1'
-                    //한번에 모델로 보내기 => dirtyData 상에서 added로 들어가는 문제점
-                    // main_ds: main_ds
-                }
-            }).done(function (data) {
-                dews.ui.snackbar.ok('결재요청이 취소 되었습니다.');
-                self.main_grid.setCellValue(self.main_grid.select(), 'ATHZ_ST_CD', '1');
-                self.ATHZ_ST_NM.text(GetATHZ_ST_NM('1'));
-                InitBtns();
+                        //결재상태코드
+                        athz_st_cd: '1'
+                        //한번에 모델로 보내기 => dirtyData 상에서 added로 들어가는 문제점
+                        // main_ds: main_ds
+                    }
+                }).done(function (data) {
+                    dews.ui.snackbar.ok('결재요청이 취소 되었습니다.');
+                    self.main_grid.setCellValue(self.main_grid.select(), 'ATHZ_ST_CD', '1');
+                    self.ATHZ_ST_NM.text(GetATHZ_ST_NM('1'));
+                    InitBtns();
+                });
+            }).no(function () {
+    
             });
-        });
+        }
     });
     self.$approve_button.on('click', /*ff94b48d-1e4f-4be1-aa8b-c8c89538591b*/ function (e) {
         try {
@@ -473,30 +492,34 @@
     self.$delete_button.on('click', /*4d8e17ac-e695-4e96-93b8-5762ecd28545*/ function (e) {
         var req_no = self.main_grid.getCellValue(0, 'REQ_NO');
         var company_cd = self.COMPANY_CD.text();
-        dews.confirm('삭제하시겠습니까?', "question").yes(function () {
-            if (req_no == "") {
-                dews.ui.snackbar.error('존재하지 않는 문서입니다.');
-                return;
-            }
-            else {
-                dews.api.get(dews.url.getApiUrl("HR", "HREssodm01400_X10005Service", "delete_HR_OFFAPPLY_MST_X10005MST"), {
-                    async: false,
-                    data: {
-                        req_no: req_no,
-                        company_cd: company_cd
-                    }
-                }).done(function (data) {
-                    if (data == 'OK') {
-                        dews.ui.snackbar.ok('삭제되었습니다.');
-                        dews.ui.page.close(); // 현재 서브페이지 닫기
-                    } else
-                        dews.ui.snackbar.warning(data);
-                }).fail(function (e) {
-                    dews.ui.snackbar.error('삭제하는데 실패하였습니다.');
-                });
-            }
-        }).no(function () {
-        });
+        if (HasChanges() > 0) {
+            dews.ui.snackbar.warning("변경된 내용이 있습니다. \n임시저장을 해주세요.");
+        } else {
+            dews.confirm('삭제하시겠습니까?', "question").yes(function () {
+                if (req_no == "") {
+                    dews.ui.snackbar.error('존재하지 않는 문서입니다.');
+                    return;
+                }
+                else {
+                    dews.api.get(dews.url.getApiUrl("HR", "HREssodm01400_X10005Service", "delete_HR_OFFAPPLY_MST_X10005MST"), {
+                        async: false,
+                        data: {
+                            req_no: req_no,
+                            company_cd: company_cd
+                        }
+                    }).done(function (data) {
+                        if (data == 'OK') {
+                            dews.ui.snackbar.ok('삭제되었습니다.');
+                            dews.ui.page.close(); // 현재 서브페이지 닫기
+                        } else
+                            dews.ui.snackbar.warning(data);
+                    }).fail(function (e) {
+                        dews.ui.snackbar.error('삭제하는데 실패하였습니다.');
+                    });
+                }
+            }).no(function () {
+            });
+        }
     });
     self.$sub_close_button.on('click', /*64036093-15ee-4515-9241-24b3b54e6681*/ function (e) {
         //   if (self.absData_ds.getDirtyDataCount() > 0) {
@@ -505,7 +528,10 @@
         //     }).no(function () {
         //     });
         //   } else {
-        dews.ui.page.close();
+        if (HasChanges() > 0 && isSaved) {
+            dews.ui.snackbar.warning("변경된 내용이 있습니다. \n임시저장을 해주세요.");
+        } else
+            dews.ui.page.close();
         //   }
     
     });
@@ -705,9 +731,11 @@
     
     /*cdd3d4f4-7ecd-43e5-9538-0f8096f35ab0*/ InitData();
     InitBtns();
-    
     //isExist를 전역변수로 할당
     var isExistSub = self.initialData.isExist;
+    //기존 데이터를 불러왔을 경우, 임시저장을 한번이라도 했을 때, 상태관리 비교는 initData로 해서는 안됨.
+    var isSaved = false;
+    
     
     
     function InitData() {
@@ -970,10 +998,10 @@
             return false;
         }
         // 더미데이터를 넣기 위해 다음 유효성 검사는 주석처리
-        // else if (startDate < today || endDate < today) { // 신청 날짜는 오늘부터 가능하다.
-        //     dews.ui.snackbar.warning("시작일과 종료일은 오늘날짜보다 작을 수 없습니다.");
-        //     return false;
-        // } 
+        else if (startDate < today || endDate < today) { // 신청 날짜는 오늘부터 가능하다.
+            dews.ui.snackbar.warning("시작일과 종료일은 오늘날짜보다 작을 수 없습니다.");
+            return false;
+        }
         else if (self.DNL_CD.value() === '5100') { // 신청가능일 < 10
             if (req_date > 10) {
                 dews.ui.snackbar.warning("10일 이내로 신청해야 합니다. 현재 신청일 : " + req_date + "일");
@@ -1052,6 +1080,9 @@
                         }
                         dews.ui.snackbar.ok("임시 저장 되었습니다.");
                         InitBtns();
+                        //한번이라도 임시저장을 했을 경우, HasChanged()에서 비교하는 데이터를 새롭게 줘야함.
+                        isSaved = true;
+                        inputData = IsNewInputNewData();
                         // dews.ui.page.close(); // 페이지 닫기
                     });
                 }
@@ -1164,7 +1195,9 @@
                             break;
                         }
                     }
-                } else {
+                    //기존 데이터에서 임시저장을 한번도 하지 않았음. 수정했거나, 수정사항이 없는경우
+                    //메인페이지에서 넘겨받은 데이터로 비교하기.
+                } else if (!isSaved) {
                     if (dateRegex.test(self.initialData.userData[key]) && dateRegex.test(newData[key])) {
                         var oldDate = new Date(self.initialData.userData[key]);
                         var newDate = new Date(newData[key]);
@@ -1174,6 +1207,22 @@
                         }
                     } else {
                         if (self.initialData.userData[key] !== newData[key]) {
+                            hasChanges = 1;
+                            break;
+                        }
+                    }
+                } else if (isSaved) {
+                    //기존 데이터에서 임시저장을 한번이라도 했을 경우. 수정했거나, 수정사항이 없는경우
+                    //inputData = IsNewInputNewData();를 통해 임시저장된 데이터를 기존 데이터로 비교해주어야함.
+                    if (dateRegex.test(inputData[key]) && dateRegex.test(newData[key])) {
+                        var oldDate = new Date(inputData[key]);
+                        var newDate = new Date(newData[key]);
+                        if (oldDate.getTime() !== newDate.getTime()) {
+                            hasChanges = 1;
+                            break;
+                        }
+                    } else {
+                        if (inputData[key] !== newData[key]) {
                             hasChanges = 1;
                             break;
                         }

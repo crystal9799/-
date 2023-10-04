@@ -80,6 +80,10 @@ public class Essodm01400_x10005Dao  {
 	public int selectMaxReqNo() {
 		return this.mybatisSupport.selectOne(this.getClass().getName() + ".selectMaxReqNo");
 	}
+	// 채번하여 기존에 가장 큰 값 구하기
+	public int selectMaxDocNo() {
+		return this.mybatisSupport.selectOne(this.getClass().getName() + ".selectMaxDocNo");
+	}
 	//기존 기간 내에 근태기록이 있는지 확인하기
 	public String hasContainSamePeriod(HashMap<String, Object> parameters) {
 		return this.mybatisSupport.selectOne(this.getClass().getName() + ".hasContainSamePeriod", parameters);
@@ -93,7 +97,7 @@ public class Essodm01400_x10005Dao  {
         return this.mybatisSupport.selectList(this.getClass().getName() + ".selectDataByCondition", parameters);
     }
 	//검색 당일 날짜의 주간 row를 찾아내는 조회 쿼리
-	public List<OffApply> selectDataByWeekCondition() {
-        return this.mybatisSupport.selectList(this.getClass().getName() + ".selectDataByWeekCondition");
+	public List<OffApply> selectDataByWeekCondition(HashMap<String, Object> parameters) {
+        return this.mybatisSupport.selectList(this.getClass().getName() + ".selectDataByWeekCondition", parameters);
     }
 }

@@ -1,6 +1,6 @@
-<!--##2363af44-f5df-4faf-b0d3-cd6083a514d2##-->
+<!--##529a12b8-614d-4b75-be1f-0bae72e32d11##-->
 <!--##ESSODM01400_x10005##-->
-<!--##1lHlEjVUQSY/f87yymxHje1qtQJiYOtte+4QGVxqj0avYBgNoHm9X0EhrTp+Rn8F##-->
+<!--##Hlgcyv2S42CgxVx+kNuZE9ydOkAQQF8/3+Lsrrgn59WZCBjVIIK9BKc5MMlmeR2W##-->
 <!--
   DEWS UI/UX IDE - Build Result - v1.5
   # PageID: ESSODM01400_x10005
@@ -34,8 +34,8 @@
   </div>
 </div>
 <h2 id="tit3" class="dews-ui-title">기본정보</h2>
-<div id="containerpanel3" class="dews-ui-container-panel" data-dews-fit-bottom="true">
-  <div id="containerpanelitem3" class="dews-container-item" data-dews-position="normal">
+<div id="containerpanel7" class="dews-ui-container-panel">
+  <div id="containerpanelitem7" class="dews-container-item" data-dews-position="normal">
     <div id="userInfo_formpanel" class="dews-ui-form-panel" data-dews-columns="4">
       <ul>
         <li>
@@ -82,11 +82,15 @@
         </li>
       </ul>
     </div>
-    <h2 id="tit4" class="dews-ui-title">조회조건</h2>
+  </div>
+</div>
+<h2 id="tit6" class="dews-ui-title">조회조건</h2>
+<div id="containerpanel8" class="dews-ui-container-panel">
+  <div id="containerpanelitem8" class="dews-container-item" data-dews-position="normal">
     <div id="formpanel2" class="dews-ui-form-panel" data-dews-columns="3">
       <ul>
         <li class="col-2">
-          <label class="required">결근 기간</label>
+          <label>결근 기간</label>
           <span>
             <span id="period_picker" class="dews-ui-periodpicker required" style="width: 200px;"></span>
             <button id="search_button" class="dews-ui-button">조회</button>
@@ -100,6 +104,10 @@
         </li>
       </ul>
     </div>
+  </div>
+</div>
+<div id="containerpanel3" class="dews-ui-container-panel" data-dews-fit-bottom="true">
+  <div id="containerpanelitem3" class="dews-container-item" data-dews-position="normal">
     <h2 id="tit5" class="dews-ui-title">조회정보</h2>
     <div id="main_grid" class="dews-ui-grid"></div>
     <div id="formpanel3" class="dews-ui-form-panel"></div>
@@ -290,7 +298,6 @@
         fontFamily: 'Graphic'
       },
       valueAxis: {
-        max: 20,
         min: 0,
         majorUnit: 4,
         line: {
@@ -316,7 +323,6 @@
       },
       valueAxis: {
         min: 0,
-        max: 40,
         majorUnit: 5,
         color: '#818181',
         axisCrossingValue: 0
@@ -337,16 +343,32 @@
         template: '#= series.name #: #= value #'
       }
     });
-    self.$search_button.on('click', /*db97b64c-80a9-43e4-8377-d609ac26b06e*/ function (e) {
+    self.$search_button.on('click', /*956f3142-ecd5-425f-a5e9-e4621fe5753d*/ function (e) {
+        if (!self.formpanel2.validate()) {
+            dews.ui.snackbar.error('검색값을 올바르게 입력해주세요.');
+            return;
+        }
         SearchData();
+    
     });
-    self.$subPage_open.on('click', /*483d34f3-0a84-497f-be94-85abe787fa80*/ function (e) {
+    self.$subPage_open.on('click', /*917016a2-ff1f-472f-98e5-f749ca137fb7*/ function (e) {
         try {
             OpenSubPage(false, null);
         } catch (error) {
             dews.error(error);
             console.error(error);
         }
+    });
+    
+    
+    /**
+     * @Control : Button
+     * @Event : click
+     * @Control-ID : subPage_open
+     * @Warning : 주석라인 수정시 스크립트 저장에 문제가 발생할 수 있습니다.
+     *//*917016a2-ff1f-472f-98e5-f749ca137fb7*/
+    self.$subPage_open.on('click', function (e) {
+    
     });
     dews.ui.grid(self.$main_grid, {
       dataSource: self.main_ds,
@@ -557,12 +579,16 @@
     
     /*7b94ccf8-7b1d-41e7-9ddb-3b62c2f625c1*/ GetChartInfo();
     
+    
+    //두개의 차트 max값을 동적으로 적용하기 위한 변수
+    var line_chartMax = -Infinity;
+    var column_chartMax = -Infinity;
     //chart 정보를 받아오는 API
     function GetChartInfo() {
         dews.api.get(dews.url.getApiUrl("HR", "HREssodm01400_X10005Service", "selectDataByCondition"), {
             async: false,
             data: {
-                //기본키
+    
                 company_cd: self.user.companyCode,//회사코드
                 bizarea_cd: self.user.bizAreaCode, //사업장코드
                 dept_cd: self.user.deptCode, // 신청번호
@@ -571,14 +597,49 @@
             self.month_chart_ds.data(data);
             self.month_chart.setDataSource(self.month_chart_ds);
             console.log(data);
+            // 반복문을 사용하여 최대값 찾기
+            for (var i = 0; i < data.length; i++) {
+                var item = data[i];
+                if (item.count > line_chartMax) {
+                    line_chartMax = item.count;
+                }
+            }
+    
+            var options = {
+                valueAxis: {
+                    max: line_chartMax
+                }
+            }
+            //max값 동적적용
+            self.month_chart.setOptions(options);
         });
     
         dews.api.get(dews.url.getApiUrl("HR", "HREssodm01400_X10005Service", "getDataByWeek"), {
-            async: false
+            async: false,
+            data: {
+    
+                company_cd: self.user.companyCode,//회사코드
+                bizarea_cd: self.user.bizAreaCode, //사업장코드
+                dept_cd: self.user.deptCode, // 신청번호
+            }
         }).done(function (data) {
             self.week_chart_ds.data(data);
             self.week_chart.setDataSource(self.week_chart_ds);
             console.log(data);
+            // 반복문을 사용하여 최대값 찾기
+            for (var i = 0; i < data.length; i++) {
+                var item = data[i];
+                if (item.count > column_chartMax) {
+                    column_chartMax = item.count;
+                }
+            }
+            var options = {
+                valueAxis: {
+                    max: column_chartMax
+                }
+            }
+            //max값 동적적용
+            self.week_chart.setOptions(options);
         });
     }
     
@@ -622,7 +683,18 @@
             dews.ui.loading.show({ // 로딩화면 보여주기
                 text: '조회중입니다.'
             });
-            self.main_ds.read();  // 데이터소스 Read
+            self.main_ds.read().done(function () {
+                var search_result = self.main_grid.getSummary('REQ_NO', 'COUNT');
+                // 만약 gird row count가 0이라면 이전 검색결과에서의 기본정보 초기화
+                if (search_result === 0) {
+                    self.EMP_NO.text('');
+                    self.KOR_NM.text('');
+                    self.PSTN_NM.text('');
+                    self.OGRP_NM.text('');
+                    self.ORG.text('');
+                    self.POSI_NM.text('');
+                }
+            });  // 데이터소스 Read
             dews.ui.loading.hide();
         } catch (error) {
             dews.ui.loading.hide();

@@ -378,5 +378,11 @@
 		TO_DATE(o.START_DT, 'YYYYMMDD') <= TO_DATE(dr.EndOfWeek, 'YYYYMMDD')
 		AND TO_DATE(o.END_DT, 'YYYYMMDD') >= TO_DATE(dr.StartOfWeek, 'YYYYMMDD')
 		]]>
+		AND o.dept_cd = #{P_DEPT_CD}
+		AND o.bizarea_cd = #{P_BIZAREA_CD}
+		AND o.company_cd = #{P_COMPANY_CD}
+		AND o.DNLGB_CD = 400
+		AND o.ATHZ_ST_CD = 4
+		
 	</select>
 </mapper>

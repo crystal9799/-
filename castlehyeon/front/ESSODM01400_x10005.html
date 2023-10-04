@@ -1,6 +1,6 @@
-<!--##2d3204f4-5343-44c5-9b88-03a01bb73a74##-->
+<!--##ddfd6a1e-8b6c-48a7-87c0-7620716e954b##-->
 <!--##ESSODM01400_x10005##-->
-<!--##V3vCQpsXf875PylR20MqgQqaaoYTz9+yHsFzl2P82/AR1Jo59OU52pmnbqMhl+rj##-->
+<!--##UAZl9jERvYEZ3xzb3gBNwGfk4OR3mF1Iqnu5/1afYn2vl/3CQYhYecx3e35ARmE8##-->
 <!--
   DEWS UI/UX IDE - Build Result - v1.5
   # PageID: ESSODM01400_x10005
@@ -353,15 +353,7 @@
         SearchData();
     
     });
-    
-    
-    /**
-     * @Control : Button
-     * @Event : click
-     * @Control-ID : subPage_open
-     * @Warning : 주석라인 수정시 스크립트 저장에 문제가 발생할 수 있습니다.
-     *//*483d34f3-0a84-497f-be94-85abe787fa80*//*917016a2-ff1f-472f-98e5-f749ca137fb7*/
-    self.$subPage_open.on('click', function (e) {
+    self.$subPage_open.on('click', /*917016a2-ff1f-472f-98e5-f749ca137fb7*/ function (e) {
         try {
             OpenSubPage(false, null);
         } catch (error) {
@@ -369,7 +361,15 @@
             console.error(error);
         }
     });
-    self.$subPage_open.on('click', /*917016a2-ff1f-472f-98e5-f749ca137fb7*/ function(e) {
+    
+    
+    /**
+     * @Control : Button
+     * @Event : click
+     * @Control-ID : subPage_open
+     * @Warning : 주석라인 수정시 스크립트 저장에 문제가 발생할 수 있습니다.
+     *//*917016a2-ff1f-472f-98e5-f749ca137fb7*/
+    self.$subPage_open.on('click', function (e) {
     
     });
     dews.ui.grid(self.$main_grid, {
@@ -586,7 +586,7 @@
         dews.api.get(dews.url.getApiUrl("HR", "HREssodm01400_X10005Service", "selectDataByCondition"), {
             async: false,
             data: {
-                //기본키
+    
                 company_cd: self.user.companyCode,//회사코드
                 bizarea_cd: self.user.bizAreaCode, //사업장코드
                 dept_cd: self.user.deptCode, // 신청번호
@@ -598,7 +598,13 @@
         });
     
         dews.api.get(dews.url.getApiUrl("HR", "HREssodm01400_X10005Service", "getDataByWeek"), {
-            async: false
+            async: false,
+             data: {
+    
+                company_cd: self.user.companyCode,//회사코드
+                bizarea_cd: self.user.bizAreaCode, //사업장코드
+                dept_cd: self.user.deptCode, // 신청번호
+            }
         }).done(function (data) {
             self.week_chart_ds.data(data);
             self.week_chart.setDataSource(self.week_chart_ds);

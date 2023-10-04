@@ -97,7 +97,7 @@ public class Essodm01400_x10005Dao  {
         return this.mybatisSupport.selectList(this.getClass().getName() + ".selectDataByCondition", parameters);
     }
 	//검색 당일 날짜의 주간 row를 찾아내는 조회 쿼리
-	public List<OffApply> selectDataByWeekCondition() {
-        return this.mybatisSupport.selectList(this.getClass().getName() + ".selectDataByWeekCondition");
+	public List<OffApply> selectDataByWeekCondition(HashMap<String, Object> parameters) {
+        return this.mybatisSupport.selectList(this.getClass().getName() + ".selectDataByWeekCondition", parameters);
     }
 }

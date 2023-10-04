@@ -19,6 +19,16 @@
 
 	</select>
 
+	<select id="selectMaxDocNo" resultType="int">
+		SELECT
+		COALESCE(MAX(TO_NUMBER(SUBSTR(ATHZ_DOC_CD, 17, 4))), 0) AS MAX_NUMBER
+		FROM
+		HR_OFFAPPLY_MST_X10005
+		WHERE SUBSTR(ATHZ_DOC_CD, 1, 10) = 'EWP_HR_GWA'
+		AND TO_NUMBER(SUBSTR(ATHZ_DOC_CD, 11, 6)) =
+		EXTRACT(YEAR FROM SYSDATE) * 100 + EXTRACT(MONTH FROM SYSDATE)
+	</select>
+
 	<select id="hasContainSamePeriod" parameterType="HashMap"
 		resultType="String">
 		SELECT CASE WHEN COUNT(*) = 0 THEN 'false'
@@ -288,6 +298,7 @@
 		id="approveEssodm01400_X10005Model">
 		UPDATE HR_OFFAPPLY_MST_X10005
 		<set>
+			<if test='P_ATHZ_DOC_CD != null and P_ATHZ_DOC_CD != ""'>ATHZ_DOC_CD = #{P_ATHZ_DOC_CD},</if>
 			<if test='P_ATHZ_ST_CD != null and P_ATHZ_ST_CD != ""'>ATHZ_ST_CD = #{P_ATHZ_ST_CD},</if>
 			<if test='P_UPDATE_ID != null and P_UPDATE_ID != ""'>UPDATE_ID = #{P_UPDATE_ID},</if>
 			<if test='P_UPDATE_IP != null and P_UPDATE_IP != ""'>UPDATE_IP = #{P_UPDATE_IP},</if>
@@ -335,18 +346,22 @@
 	</select>
 
 	<!-- OffApply 클래스와 매핑되는 resultMap 정의 -->
-	<resultMap id="offApplyResultMap" type="com.douzone.comet.service.hr.essodm.models.OffApply">
+	<resultMap id="offApplyResultMap"
+		type="com.douzone.comet.service.hr.essodm.models.OffApply">
 		<id property="reqNo" column="REQ_NO" />
 		<result property="startDate" column="START_DT" />
 		<result property="endDate" column="END_DT" />
 	</resultMap>
 
 	<!-- 데이터베이스에서 데이터를 가져오는 쿼리 -->
-	<select id="selectDataByWeekCondition" resultMap="offApplyResultMap">
+	<select id="selectDataByWeekCondition"
+		resultMap="offApplyResultMap">
 		WITH DateRange AS (
 		SELECT
-		TO_CHAR(NEXT_DAY(TRUNC(SYSDATE, 'D'), '월요일'), 'YYYYMMDD') AS StartOfWeek,
-		TO_CHAR(NEXT_DAY(TRUNC(SYSDATE, 'D') + 4, '금요일'), 'YYYYMMDD') AS
+		TO_CHAR(NEXT_DAY(TRUNC(SYSDATE, 'D'), '월요일'),
+		'YYYYMMDD') AS StartOfWeek,
+		TO_CHAR(NEXT_DAY(TRUNC(SYSDATE, 'D') + 4,
+		'금요일'), 'YYYYMMDD') AS
 		EndOfWeek
 		FROM DUAL
 		)

@@ -24,8 +24,8 @@ public class CacheDwaggerModels {
 	List<DwaggerModel> apiList;
 	String updateDTS;
 	 // 'transient' 키워드를 사용하여 직렬화에서 제외시킴
-//	 @JsonIgnore
-//	transient String date;
+	 @JsonIgnore
+	transient String date;
 		
 		//스프링 빈은 기본적으로 싱글톤 스코프로 관리
 		//파일을 읽어와 데이터를 초기화하는 부분을 싱글톤 빈의 라이프사이클과 분리

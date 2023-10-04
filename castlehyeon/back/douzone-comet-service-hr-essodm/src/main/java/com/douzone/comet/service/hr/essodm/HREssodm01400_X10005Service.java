@@ -301,6 +301,11 @@ public class HREssodm01400_X10005Service extends DzCometService {
 			
 			
 			GetInsertUpdateInfo userInfo = new GetInsertUpdateInfo();
+			//결재완료 시 결재문서번호 넣기 ATHZ_DOC_CD  예시) EWP_HR_GWA2022050176
+			ResponseHashMap responseMap = new ResponseHashMap();
+			String doc_no = responseMap.createDocNo(essodm01400_x10005DAO);
+			System.out.println("생성된 결재문서번호===>"+doc_no);
+			parameters.put("P_ATHZ_DOC_CD", doc_no);
 			parameters.put("P_UPDATE_ID", userInfo.getUserId() != null ? userInfo.getUserId() : this.getUserId());
 			parameters.put("P_UPDATE_IP", userInfo.getIp());
 			parameters.put("P_UPDATE_DTS", userInfo.getDate());

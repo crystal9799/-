@@ -1,6 +1,6 @@
-<!--##2fe52c58-b88c-45d4-be1e-c40997a4b266##-->
+<!--##02617fbe-a443-4e7b-a628-74f84660a87f##-->
 <!--##CDMJIM00100_Main##-->
-<!--##FYzZPVGY9jEeyYXL+lr5oKWk4j4gDdrPxQZY/6f8JBT+QSrNZeYKXIKv2v7M1CC5##-->
+<!--##zqStE0JyiBo7/KCwwaxABPxDhYWxmrEN7l7DuOD5KOG+DPvzFrFEn/meU9yYSpd4##-->
 <!--
   DEWS UI/UX IDE - Build Result - v1.5
   # PageID: CDMJIM00100_Main
@@ -11,10 +11,6 @@
 
 -->
 
-<div class="dews-button-group" style="text-align: right;">
-  <button class="dews-ui-button">양식받기</button>
-  <button class="dews-ui-button">엑셀업로드</button>
-</div>
 <div class="dews-ui-condition-panel">
   <ul class="required-area">
     <li>
@@ -41,37 +37,37 @@
     <li>
       <label class="dews-ui-multilingual">대분류코드</label>
       <span>
-        <select id="multicodepicker1" name="multicodepicker1" class="dews-ui-multicodepicker basic" data-dews-help-custom="false" data-dews-help-size="medium" />
+        <select id="LCLAS_MCP" name="LCLAS_MCP" class="dews-ui-multicodepicker basic" data-dews-help-title="분류 도움창" data-dews-help-custom="false" data-dews-help-size="medium" />
       </span>
     </li>
     <li>
       <label class="dews-ui-multilingual">중분류코드</label>
       <span>
-        <select id="multicodepicker2" name="multicodepicker2" class="dews-ui-multicodepicker basic" data-dews-help-custom="false" data-dews-help-size="medium" />
+        <select id="MLSFC_MCP" name="MLSFC_MCP" class="dews-ui-multicodepicker basic" data-dews-code-field="PARAM_CD" data-dews-text-field="PARAM_NAME" data-dews-help-title="중분류 도움창" data-dews-help-custom="false" data-dews-help-size="medium" />
       </span>
     </li>
     <li>
       <label class="dews-ui-multilingual">소분류코드</label>
       <span>
-        <select id="multicodepicker3" name="multicodepicker3" class="dews-ui-multicodepicker basic" data-dews-help-custom="false" data-dews-help-size="medium" />
+        <select id="S_CSF_MCP" name="S_CSF_MCP" class="dews-ui-multicodepicker basic" data-dews-help-title="소분류 도움창" data-dews-help-custom="false" data-dews-help-size="medium" />
       </span>
     </li>
     <li>
       <label class="dews-ui-multilingual">세분류코드</label>
       <span>
-        <select id="multicodepicker4" name="multicodepicker4" class="dews-ui-multicodepicker basic" data-dews-help-custom="false" data-dews-help-size="medium" />
+        <select id="TCLF_MCP" name="TCLF_MCP" class="dews-ui-multicodepicker basic" data-dews-help-title="세분류 도움창" data-dews-help-custom="false" data-dews-help-size="medium" />
       </span>
     </li>
     <li>
       <label class="dews-ui-multilingual">능력단위코드</label>
       <span>
-        <select id="multicodepicker5" name="multicodepicker5" class="dews-ui-multicodepicker basic" data-dews-help-custom="false" data-dews-help-size="medium" />
+        <select id="ACLF_CD_MCP" name="ACLF_CD_MCP" class="dews-ui-multicodepicker basic" data-dews-help-title="능력단위 도움창" data-dews-help-custom="false" data-dews-help-size="medium" />
       </span>
     </li>
     <li>
       <label class="dews-ui-multilingual">능력단위요소</label>
       <span>
-        <select id="multicodepicker6" name="multicodepicker6" class="dews-ui-multicodepicker basic" data-dews-help-custom="false" data-dews-help-size="medium" />
+        <select id="ACLF_MCP" name="ACLF_MCP" class="dews-ui-multicodepicker basic" data-dews-help-custom="false" data-dews-help-size="medium" />
       </span>
     </li>
   </ul>
@@ -120,6 +116,32 @@
 
     /*70cee10b-3521-442d-82f0-480b335cebfb*/ //# sourceURL=CDMJIM00100_Main.js
     self.USE_DROP.value("YES");
+    var dialog = dews.ui.dialog("MAIN_DIALOG",
+        {
+            url: "~/view/HR/CDMJIM00100_Modal2",
+            title: "분류 도움창",
+            width: 500,
+            height: 500,
+            button: 'applyAndClose',
+            ok: function (data) {
+                //     dialog.on('closed', function (e) {
+                //         console.log(e);
+                //         console.log("data ----- > " + data);
+                //         var row = self.MCP_GRID.getCheckedRows();
+                //         console.log(row);
+                //         self.MAIN_DIALOG.setData(row);
+                //     })
+                console.log("받아온 데이터 " + data[0].PARAM_CD + data[0].PARAM_NAME);
+                self.MLSFC_MCP.setData({ param_cd: data[0].PARAM_CD, param_name: data[0].PARAM_NAME });
+    
+                // self.setData(data);
+                //     // self.EQP_NO.setData({ EQP_NO: data.EQP_NO, EQP_NM: data.EQP_NM });
+                //     // self.EQP_CSF_CD.value(data.EQP_CSF_CD);
+                //     // self.EQP_NM.text(data.EQP_NM);
+                //     // self.GridMST.setCellValue(self.GridMST.select(), 'EQP_NO', data.EQP_NO);
+                //     // self.GridMST.setCellValue(self.GridMST.select(), 'EQP_NM', data.EQP_NM);
+            }
+        });
     
     
     
@@ -159,7 +181,8 @@
             return {
               USE_YN: self.USE_DROP.value(),
               JOB_FG: self.FG_DROP.value(),
-              lst_ver_yn: self.$lst_ver_yn.prop('checked')
+              lst_ver_yn: self.$lst_ver_yn.prop('checked'),
+              LCLAS_CD: self.LCLAS_MCP.codes().join('|')
             };
           }
         }
@@ -439,6 +462,92 @@
     });
     self.FG_DROP.setDataSource(self.job_fg);
     self.USE_DROP.setDataSource(self.use_yn);
+    self.LCLAS_MCP.on('codedialog', /*187062f6-2e49-4683-a614-436f80948ec5*/ function (e) {
+        // 코드피커 다이얼로그가 실행될 때 호출
+        console.log('LCLAS_MCP Codepicker-codedialog event');
+    
+        var initData = {
+            params: {
+                param_name: "LCLAS_NM",
+                param_cd: "LCLAS_CD"
+            }
+        };
+    
+        dialog.setInitData(initData);
+        dialog.open();
+        dialog.ok(self.MLSFC_MCP.setData(data));
+        // dialog.ok(self.MCP_GRID.getCheckedRows());
+    });
+    self.MLSFC_MCP.on('codedialog', /*218cc958-2505-4969-b084-3fa724f4d6a5*/ function (e) {
+        // 코드피커 다이얼로그가 실행될 때 호출
+        console.log('MLSFC_MCP Codepicker-codedialog event');
+    
+        var initData = {
+            params: {
+                param_name: "MLSFC_NM",
+                param_cd: "MLSFC_CD"
+            }
+        };
+    
+        dialog.setInitData(initData);
+        dialog.open();
+    });
+    self.S_CSF_MCP.on('codedialog', /*2a9affdd-8dea-48be-95c4-d312b276c2d7*/ function (e) {
+        // 코드피커 다이얼로그가 실행될 때 호출
+        console.log('S_CSF_MCP Codepicker-codedialog event');
+    
+        var initData = {
+            params: {
+                param_name: "S_CSF_NM",
+                param_cd: "S_CSF_CD"
+            }
+        };
+    
+        dialog.setInitData(initData);
+        dialog.open();
+    });
+    self.TCLF_MCP.on('codedialog', /*b1896e7d-46a5-4fbf-84f3-1939af3228ea*/ function (e) {
+        // 코드피커 다이얼로그가 실행될 때 호출
+        console.log('TCLF_MCP Codepicker-codedialog event');
+    
+        var initData = {
+            params: {
+                param_name: "TCLF_NM",
+                param_cd: "TCLF_CD"
+            }
+        };
+    
+        dialog.setInitData(initData);
+        dialog.open();
+    });
+    self.ACLF_CD_MCP.on('codedialog', /*989fa6b7-44a3-42ad-a885-21961484f02d*/ function (e) {
+        // 코드피커 다이얼로그가 실행될 때 호출
+        console.log('ACLF_CD_MCP Codepicker-codedialog event');
+    
+        var initData = {
+            params: {
+                param_name: "ACLF_NM",
+                param_cd: "ACLF_CD"
+            }
+        };
+    
+        dialog.setInitData(initData);
+        dialog.open();
+    });
+    self.ACLF_MCP.on('codedialog', /*ee176f96-8b79-49f9-96bf-168bea06e3eb*/ function (e) {
+        // 코드피커 다이얼로그가 실행될 때 호출
+        console.log('ACLF_CD_MCP Codepicker-codedialog event');
+    
+        var initData = {
+            params: {
+                param_name: "ACLF_TXT",
+                param_cd: "ACLF_LV"
+            }
+        };
+    
+        dialog.setInitData(initData);
+        dialog.open();
+    });
     dews.ui.grid(self.$main_grid, {
       dataSource: self.MAIN_DS,
       height: 295,
@@ -685,7 +794,10 @@
                         height: 600,
                         width: 800,
                         button: 'applyAndClose',
-                        initData: "test",
+                        initData: {
+                            param_name: "test_nm",
+                            param_cd: "test_cd"
+                        },
                         ok: function (data) {
                             dialog.on('closed', function (e) {
                                 console.log(data);
@@ -1075,6 +1187,8 @@
     self.left_grid.setDetail(self.right1_grid);
     self.right1_grid.setDetail(self.right2_grid);
     
+    
+    /*46447d39-a189-4af8-8358-3b129af29437*/ var self = this;
     
     
 

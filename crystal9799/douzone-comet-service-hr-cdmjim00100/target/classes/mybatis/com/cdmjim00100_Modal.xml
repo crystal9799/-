@@ -22,6 +22,9 @@
 	            <when test='param_cd == "ACLF_CD"'>
 	                ACLF_CD
 	            </when>           
+	            <when test='param_cd == "ACLF_LV"'>
+	                ACLF_LV
+	            </when>           
         	</choose>
         	AS param_cd,
         	<choose>
@@ -39,6 +42,9 @@
 	            </when>
 	            <when test='param_name == "ACLF_NM"'>
 	                ACLF_NM
+	            </when>
+	            <when test='param_name == "ACLF_TXT"'>
+	                ACLF_TXT
 	            </when>
 	        </choose>
 	        AS param_name
@@ -60,33 +66,15 @@
 			<if test='TCLF_CD != null and TCLF_CD != ""'>
 				AND HJM.TCLF_CD = #{TCLF_CD}
 			</if>
+			<if test='ACLF_CD != null and ACLF_CD != ""'>
+				AND HJM.ACLF_CD = #{ACLF_CD}
+			</if>
+			<if test='TARGET != null and TARGET != "" and NAME != null and NAME != ""'>
+				#{TARGET} = #{NAME}
+			</if>
 		</where>				
 	</select>
 
-	<select id="selectObject" resultType="java.lang.Object">		
-		SELECT	*
-		FROM	@{dzparam_dbname}[tableName]
-		WHERE	[columnName] = [columnValue]		
-	</select>
-
-	<insert id="insertObject">		
-		INSERT INTO @{dzparam_dbname}[tableName] (
-				[columnName]
-		) VALUES (
-				[columnValue]
-		)		
-	</insert>
-
-	<update id="updateObject" >		
-		UPDATE	@{dzparam_dbname}[tableName]
-		SET		[columnName] = [columnValue]
-		WHERE	[columnName] = [columnValue]		
-	</update>
-
-	<delete id="deleteObject">		
-		DELETE
-		FROM	@{dzparam_dbname}[tableName]
-		WHERE	[columnName] = [columnValue]		
-	</delete>
+	
 
 </mapper>

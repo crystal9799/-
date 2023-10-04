@@ -1,6 +1,6 @@
-<!--##2363af44-f5df-4faf-b0d3-cd6083a514d2##-->
+<!--##847fc943-ee39-41ef-8f92-456690d418a5##-->
 <!--##ESSODM01400_x10005##-->
-<!--##1lHlEjVUQSY/f87yymxHje1qtQJiYOtte+4QGVxqj0avYBgNoHm9X0EhrTp+Rn8F##-->
+<!--##PxNqO1vHexS+ah+Yw21DRgte+ypumGIty2VeC02mRuHBYCHjzJJUaLQz3mN0a0dB##-->
 <!--
   DEWS UI/UX IDE - Build Result - v1.5
   # PageID: ESSODM01400_x10005
@@ -338,6 +338,10 @@
       }
     });
     self.$search_button.on('click', /*db97b64c-80a9-43e4-8377-d609ac26b06e*/ function (e) {
+        if (!self.formpanel2.validate()) {
+            dews.ui.snackbar.error('검색값을 올바르게 입력해주세요.');
+                return;
+            }
         SearchData();
     });
     self.$subPage_open.on('click', /*483d34f3-0a84-497f-be94-85abe787fa80*/ function (e) {

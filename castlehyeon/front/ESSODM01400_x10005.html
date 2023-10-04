@@ -1,6 +1,6 @@
-<!--##ddfd6a1e-8b6c-48a7-87c0-7620716e954b##-->
+<!--##529a12b8-614d-4b75-be1f-0bae72e32d11##-->
 <!--##ESSODM01400_x10005##-->
-<!--##UAZl9jERvYEZ3xzb3gBNwGfk4OR3mF1Iqnu5/1afYn2vl/3CQYhYecx3e35ARmE8##-->
+<!--##Hlgcyv2S42CgxVx+kNuZE9ydOkAQQF8/3+Lsrrgn59WZCBjVIIK9BKc5MMlmeR2W##-->
 <!--
   DEWS UI/UX IDE - Build Result - v1.5
   # PageID: ESSODM01400_x10005
@@ -298,7 +298,6 @@
         fontFamily: 'Graphic'
       },
       valueAxis: {
-        max: 20,
         min: 0,
         majorUnit: 4,
         line: {
@@ -324,7 +323,6 @@
       },
       valueAxis: {
         min: 0,
-        max: 40,
         majorUnit: 5,
         color: '#818181',
         axisCrossingValue: 0
@@ -581,6 +579,10 @@
     
     /*7b94ccf8-7b1d-41e7-9ddb-3b62c2f625c1*/ GetChartInfo();
     
+    
+    //두개의 차트 max값을 동적으로 적용하기 위한 변수
+    var line_chartMax = -Infinity;
+    var column_chartMax = -Infinity;
     //chart 정보를 받아오는 API
     function GetChartInfo() {
         dews.api.get(dews.url.getApiUrl("HR", "HREssodm01400_X10005Service", "selectDataByCondition"), {
@@ -595,11 +597,26 @@
             self.month_chart_ds.data(data);
             self.month_chart.setDataSource(self.month_chart_ds);
             console.log(data);
+            // 반복문을 사용하여 최대값 찾기
+            for (var i = 0; i < data.length; i++) {
+                var item = data[i];
+                if (item.count > line_chartMax) {
+                    line_chartMax = item.count;
+                }
+            }
+    
+            var options = {
+                valueAxis: {
+                    max: line_chartMax
+                }
+            }
+            //max값 동적적용
+            self.month_chart.setOptions(options);
         });
     
         dews.api.get(dews.url.getApiUrl("HR", "HREssodm01400_X10005Service", "getDataByWeek"), {
             async: false,
-             data: {
+            data: {
     
                 company_cd: self.user.companyCode,//회사코드
                 bizarea_cd: self.user.bizAreaCode, //사업장코드
@@ -609,6 +626,20 @@
             self.week_chart_ds.data(data);
             self.week_chart.setDataSource(self.week_chart_ds);
             console.log(data);
+            // 반복문을 사용하여 최대값 찾기
+            for (var i = 0; i < data.length; i++) {
+                var item = data[i];
+                if (item.count > column_chartMax) {
+                    column_chartMax = item.count;
+                }
+            }
+            var options = {
+                valueAxis: {
+                    max: column_chartMax
+                }
+            }
+            //max값 동적적용
+            self.week_chart.setOptions(options);
         });
     }
     

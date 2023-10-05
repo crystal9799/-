@@ -1,6 +1,6 @@
-<!--##ef31b7cc-8513-44f6-8315-58b1ff2661c1##-->
+<!--##4f135870-fe0c-43e7-b3b2-063e4bc4144d##-->
 <!--##Dwagger_SearchService##-->
-<!--##iopXORYjulaXKN4eWS7d2DMyYazThPyzcDXbG/Ba+Oo9RZh44lvCuoyVk7RQHdj2##-->
+<!--##UNXRRtjLP4OAqgG4ZYAe2Y5NEgnxXA3C8ggnuiSjGMKZ7i8vDVZNaYk5o9jJqfkn##-->
 <!--
   DEWS UI/UX IDE - Build Result - v1.5
   # PageID: Dwagger_SearchService
@@ -367,7 +367,7 @@
             }
         }).done(function (data) {
     
-            if (data[0].module != '-1' && data != '' && data != null && data != undefined && data[0] != null && data[0] != undefined && data[0] != '') {
+            if (data != '' && data != null && data != undefined && data[0] != null && data[0] != undefined && data[0] != '' && data[0].module != '-1') {
                 //전체 검색일 때만 로컬스토리지에 저장
                 //마지막 백업날짜 업데이트
                 if (condition_cd === '1') {
@@ -493,9 +493,14 @@
                     }
                 }
                 return false; // keywords를 포함하는 필드가 없으면 해당 요소를 제외
-            })
+            });
+    
             self.total_ds.data(filteredData);
-            dews.alert("백업데이터를 불러왔습니다.", "success");
+            console.log('filteredData===>' + filteredData);
+            if (filteredData.length > 0) {
+                dews.alert("백업데이터를 불러왔습니다.", "success");
+            } else
+                dews.ui.snackbar.warning("검색결과가 없습니다.");
         } else if (apiDatas === '' || apiDatas === null || apiDatas === undefined) {
             dews.alert("백업데이터가 존재하지 않습니다.", "warning");
             dews.api.get(dews.url.getApiUrl("HR", "DwaggerService", "dwagger_notExistLocal"), {

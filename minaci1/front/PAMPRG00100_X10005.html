@@ -1,6 +1,6 @@
-<!--##b397bdae-1912-4aba-90ec-e5d9a2640452##-->
+<!--##14550b4b-9a9f-42fc-83bb-337647dce71b##-->
 <!--##PAMPRG00100_X10005##-->
-<!--##eP0LRO9Km0HtvD9yiU/aSnYoXLK5L8mUQ8zi8Js5BC0PMg7vyIcPpRNZ+fKnNSy5##-->
+<!--##hCkBAiDGvp9SjqeXajw1zAmSrVilx0EDmiwpklnOj7FZxULwvLq5PdtjtVRxJWad##-->
 <!--
   DEWS UI/UX IDE - Build Result - v1.5
   # PageID: PAMPRG00100_X10005
@@ -13,7 +13,7 @@
 
 <div class="dews-button-group" style="text-align: right;">
   <button id="copybtnApply" class="dews-ui-button">종전자료복사</button>
-  <button id="downloadBtnTemplet" class="dews-ui-button">엑셀템플릿다운로드</button>
+  <button id="downloadBtnTemplet" class="dews-ui-button">양식받기</button>
   <button id="downloadBtnData" class="dews-ui-button">엑셀다운로드</button>
   <button id="uploadBtnApply" class="dews-ui-button">엑셀업로드</button>
 </div>
@@ -39,8 +39,8 @@
     <div id="gridMaster" class="dews-ui-grid"></div>
   </div>
 </div>
-<div id="excelFormGrid" class="dews-ui-grid"></div>
-<div id="importExcelGrid" class="dews-ui-grid"></div>
+<div id="excelFormGrid" class="dews-ui-grid" style="display: none;"></div>
+<div id="importExcelGrid" class="dews-ui-grid" style="display: none;"></div>
 
 <style>
     
@@ -83,46 +83,34 @@
         '대학원졸': 6
     };
     
-    function startProgress(totalDirtyData) {
-    
+    function startProgress(totalDirtyData, onCompleted) {
         var progress = dews.ui.progress("progress6", {
             type: "circular",
             total: 100,
             target: "page",
         });
     
-        function updateProgress(current) {
-            progress.setCurrent(current);
-        }
+        var rowSizeInBytes = 84;
+        var timePerByte = 0.075; //인터넷 환경에 따라 속도 다를 수 있음 
+        var duration = totalDirtyData * rowSizeInBytes * timePerByte;
     
-        var interval;
-        var duration;
-    
-        if (totalDirtyData < 300) {
-            duration = 3 * 1000; // 3초
-        } else if (totalDirtyData < 500) {
-            duration = 30 * 1000; // 30초
-        } else if (totalDirtyData <= 5000) {
-            duration = 1 * 60 * 1000; // 1분 
-        } else {
-            duration = 2 * 60 * 1000; // 2분
-        }
-    
-        interval = duration / 100;
+        var interval = duration / 100;
         var currentPercentage = 0;
     
         var progressInterval = setInterval(() => {
             currentPercentage++;
-            updateProgress(currentPercentage);
+            progress.setCurrent(currentPercentage);
     
             if (currentPercentage >= 100) {
                 clearInterval(progressInterval);
+                if (onCompleted) onCompleted();  // 콜백 실행
             }
         }, interval);
     
-        return progressInterval; // 필요에 따라 다른 곳에서 인터벌을 중지시킬 수 있도록 반환
-    
+        return progressInterval;
     }
+    
+    
     
     function getCurrentMonth() {
     
@@ -291,9 +279,23 @@
     }
     
     function saveExcelData(result) {
+        var isProgressBarCompleted = false;
+        var isApiDone = false;
     
-        var progressIntervalReference = startProgress(result.totalCount); //프로그레스바 함수 호출 
+        // 두 프로세스 모두 완료되었을 때 스낵바를 표시하는 함수
+        function checkAndShowSnackbar() {
+            if (isProgressBarCompleted && isApiDone) {
+                dews.ui.snackbar.ok('자료가 정상적으로 저장되었습니다.');
+            }
+        }
     
+        // startProgress 함수를 호출하고 프로그레스바가 완료될 때의 콜백을 정의합니다.
+        var progressIntervalReference = startProgress(result.totalCount, function () {
+            isProgressBarCompleted = true;
+            checkAndShowSnackbar();
+        });
+    
+        // API 호출
         dews.api.post(
             dews.url.getApiUrl('HR', 'HRPamprg00100_X10005Service', 'uploadExcel_HR_URGDBASETBL_INFO_X10005MST'),
             {
@@ -304,19 +306,20 @@
                 }
             }
         ).done(function (data) {
-            clearInterval(progressIntervalReference);
-            dews.ui.progress("progress6").setCurrent(100);  // 진행률 100%로 설정
+            clearInterval(progressIntervalReference);  // 프로그레스 인터벌을 중지
+            dews.ui.progress("progress6").setCurrent(100);  // 프로그레스바를 100%로 설정
+            isApiDone = true;  // API 완료 상태를 true로 설정
+            checkAndShowSnackbar();  // 스낵바 표시 조건 확인 및 표시
     
-            dews.ui.snackbar.ok('자료가 정상적으로 저장되었습니다.');
             self.mpPROMO_YEAR_MONTH.value(result.success.data.STD_YM);
             dews.ui.mainbuttons.search.click();
     
         }).fail(function (xhr, status, error) {
-            clearInterval(progressIntervalReference);
+            clearInterval(progressIntervalReference);  // 에러 발생 시 프로그레스 인터벌 중지
             dews.ui.snackbar.warning('엑셀업로드 실패. 다시 업로드해주세요');
         });
-    
     }
+    
     
     function importExcel(e) {
     
@@ -995,7 +998,6 @@
           field: 'PSTN_NM',
           title: '직급명',
           width: 90,
-          align: 'left',
           attributes: { class: 'required' },
           editor: {
             type: 'codepicker',
@@ -1047,7 +1049,7 @@
         {
           field: 'AGGR_TERM_CNT',
           title: '근무성적집계기간',
-          width: 60,
+          width: 90,
           formats: {
             type: 'number'
           },
@@ -1072,7 +1074,6 @@
           field: 'LEDU_NM',
           title: '학력',
           width: 90,
-          align: 'left',
           editor: {
             type: 'codepicker',
             helpCode: 'H_MA_CODEDTL_S',
@@ -1109,7 +1110,6 @@
           field: 'RMK_NM',
           title: '비고',
           width: 90,
-          align: 'left',
           editor: { type: 'string', maxLength: 0 }
         },
         {
@@ -1163,11 +1163,13 @@
         },
         {
           field: 'COMBINED_KEY',
-          title: '결합키'
+          title: '결합키',
+          visible: false
         },
         {
           field: 'SEQ',
-          title: '순번'
+          title: '순번',
+          visible: false
         }
       ],
       fixed: {
@@ -1358,6 +1360,9 @@
     /*534ba9e1-a845-40e6-8d1e-d324d5bfa4cc*/ self.mpPROMO_YEAR_MONTH.value(getCurrentMonth()); //데이터 있는 기준 날짜 확인해야 함 
     //self.gridMaster.sort({ field: 'TRGT_GRD_CD', dir: 'asc' }); // 대상등급 기준으로 오름차순 정렬 
     self.grid_ds.read();
+    self.gridMaster.setOptions({
+        rowNo: true
+    })
     self.gridMaster.sort({ field: 'COMBINED_KEY', dir: 'asc' });
     
     

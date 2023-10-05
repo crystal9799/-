@@ -47,6 +47,8 @@ public class cdmjim00100_Modal_Service extends DzCometService {
 		try {
 			System.out.println("param_cd ========= " + param_cd);
 			System.out.println("param_name ========= " + param_name);
+			System.out.println("TARGET ========" + TARGET);
+			System.out.println("NAME ========" + NAME);
 			Map<String, Object> parameters = new HashMap<>();
 			System.out.println("COMPANY_CD ========= " + this.getCompanyCode());
 			parameters.put("COMPANY_CD", this.getCompanyCode());

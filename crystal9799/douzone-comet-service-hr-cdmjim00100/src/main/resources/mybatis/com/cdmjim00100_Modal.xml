@@ -24,7 +24,7 @@
 	            </when>           
 	            <when test='param_cd == "ACLF_LV"'>
 	                ACLF_LV
-	            </when>           
+	            </when>     
         	</choose>
         	AS param_cd,
         	<choose>
@@ -69,9 +69,20 @@
 			<if test='ACLF_CD != null and ACLF_CD != ""'>
 				AND HJM.ACLF_CD = #{ACLF_CD}
 			</if>
-			<if test='TARGET != null and TARGET != "" and NAME != null and NAME != ""'>
-				#{TARGET} = #{NAME}
-			</if>
+			<choose>
+			    <when test='TARGET == "MLSFC_NM" and NAME != null and NAME != ""'>
+			        AND HJM.MLSFC_NM LIKE '%'||#{NAME}||'%'
+			    </when>
+			    <when test='TARGET == "S_CSF_NM" and NAME != null and NAME != ""'>
+			        AND HJM.S_CSF_NM LIKE '%'||#{NAME}||'%'
+			    </when>
+			    <when test='TARGET == "TCLF_NM" and NAME != null and NAME != ""'>
+			        AND HJM.TCLF_NM LIKE '%'||#{NAME}||'%'
+			    </when>
+			    <when test='TARGET == "ACLF_NM" and NAME != null and NAME != ""'>
+			        AND HJM.ACLF_NM LIKE '%'||#{NAME}||'%'
+			    </when>
+			</choose>
 		</where>				
 	</select>
 

@@ -28,7 +28,7 @@ import com.douzone.gpd.restful.enums.CometModule;
 import com.douzone.gpd.restful.enums.DzParamType;
 import com.douzone.gpd.restful.enums.DzRequestMethod;
 import com.douzone.gpd.restful.model.DzGridModel;
-import com.hazelcast.internal.serialization.impl.ArrayListStreamSerializer;
+ 
 
 import utills.CommonUtil;
 
@@ -49,10 +49,7 @@ public class HRPamprg00100_X10005Service extends DzCometService {
 	@DzApi(url = "/list_HR_URGDBASETBL_INFO_X10005MST", desc = "승급기준표-조회", httpMethod = DzRequestMethod.GET)
 	public List<Pamprg00100_X10005Model> list_HR_URGDBASETBL_INFO_X10005MST(
 			@DzParam(key = "mpPROMO_YEAR_MONTH", desc = "승급년월", required = false, paramType = DzParamType.QueryString) String mpPROMO_YEAR_MONTH,
-			@DzParam(key = "bizarea_cd", desc = "사업장", required = false, paramType = DzParamType.QueryString) String bizarea_cd,
-			@DzParam(key = "paging", desc = "페이징 사용", paramType = DzParamType.QueryString) String paging,
-            @DzParam(key = "pagingStart", desc = "페이징 시작인덱스", paramType = DzParamType.QueryString) String pagingStart,
-            @DzParam(key = "pagingCount", desc = "페이징 시 데이터 수", paramType = DzParamType.QueryString) String pagingCount
+			@DzParam(key = "bizarea_cd", desc = "사업장", required = false, paramType = DzParamType.QueryString) String bizarea_cd
             )
 			throws Exception {
 		List<Pamprg00100_X10005Model> pamprg00100_X10005ModelList = new ArrayList<Pamprg00100_X10005Model>();
@@ -63,15 +60,15 @@ public class HRPamprg00100_X10005Service extends DzCometService {
 			parameters.put("P_COMPANY_CD", this.getCompanyCode());
 			parameters.put("P_BIZAREA_CD", bizarea_cd);
 			parameters.put("P_PROMO_YEAR_MONTH", mpPROMO_YEAR_MONTH);
-			parameters.put("P_PG_START", pagingStart);
-			parameters.put("P_PG_END", pagingCount);
+//			parameters.put("P_PG_START", pagingStart);
+//			parameters.put("P_PG_END", pagingCount);
 			
-			if(pagingStart.equals("0")) {
-				parameters.put("P_PAGING_START", "0");
-				parameters.put("P_PAGING_COUNT", "99999999");
-			}
-			parameters.put("P_PAGING_START", pagingStart);
-			parameters.put("P_PAGING_COUNT", pagingCount);
+//			if(pagingStart.equals("0")) {
+//				parameters.put("P_PAGING_START", "0");
+//				parameters.put("P_PAGING_COUNT", "99999999");
+//			}
+//			parameters.put("P_PAGING_START", pagingStart);
+//			parameters.put("P_PAGING_COUNT", pagingCount);
 			
 			pamprg00100_X10005ModelList = pamprg00100_X10005Dao.selectPamprg00100_X10005ModelList(parameters);
 
@@ -83,32 +80,25 @@ public class HRPamprg00100_X10005Service extends DzCometService {
 
 	}
 
-	// [드롭다운리스트 데이터]
 	@DzApi(url = "/get_BizareaList", desc = "사업장 조회", httpMethod = DzRequestMethod.GET)
-	public List<Map<String, Object>> get_BizareaList() throws Exception {
-		List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
-
+	public List<Pamprg00100_X10005Model> get_BizareaList() throws Exception {
+		
+		List<Pamprg00100_X10005Model> pamprg00100_X10005ModelList = new ArrayList<Pamprg00100_X10005Model>();
+		
 		try {
+			
 			HashMap<String, Object> parameters = new HashMap<String, Object>();
-
-			parameters.put("P_COMPANY_CD", this.getCompanyCode());
-
-			String sqlText = MyBatisUtil.getId(this.getClass(), "dao.Pamprg00100_X10005Dao.get_BizareaList");
-			SqlPack so = new SqlPack();
-			so.setStoreProcedure(false);
-			so.setMapperType(MapperType.MyBatis);
-			so.setSqlText(sqlText);
-			so.getInParameters().putAll(parameters);
-
-			list = this.queryForList(so);
-
+			parameters.put("P_COMPANY_CD",this.getCompanyCode());
+			
+			pamprg00100_X10005ModelList = pamprg00100_X10005Dao.get_BizareaList(parameters);
+		  
 		} catch (DzApplicationRuntimeException e) {
 			throw e;
 		} catch (Exception e) {
 			throw e;
 		}
 
-		return list;
+		return pamprg00100_X10005ModelList;
 	}
 
 	// [저장- delete/update/insert]
@@ -128,42 +118,47 @@ public class HRPamprg00100_X10005Service extends DzCometService {
 
 			// [delete]: 완료
 			List<Pamprg00100_X10005Model> deletedRows = grid_ds.getDeleted();
+
 			if (deletedRows != null && !deletedRows.isEmpty()) {
-				deletedRows
-						.forEach(deleteRow -> commonUtil.setCommonFields(deleteRow, companyCd, userId, userIp));
-				pamprg00100_X10005Dao.deletePAMPRG00100_Model(deletedRows);
-				logger.info("그리드 삭제완료");
+			    for (Pamprg00100_X10005Model deleteRow : deletedRows) {
+			        commonUtil.setCommonFields(deleteRow, companyCd, userId, userIp);
+			        deleteRow.setStd_ym(StringUtil.getLocaleTimeString(deleteRow.getStd_ym(), "yyyyMM"));
+			    }
+			    
+			    pamprg00100_X10005Dao.deletePAMPRG00100_Model(deletedRows);
+			    logger.info("그리드 삭제완료");
 			}
 
 			// [update]: 기본키 수정 가능하게 함(완료)
 			List<Pamprg00100_X10005Model> updatedRows = grid_ds.getUpdated();
 			if (updatedRows != null && !updatedRows.isEmpty()) {
-				updatedRows.forEach(updateRow -> {
-					commonUtil.setCommonFields(updateRow, companyCd, userId, userIp);
-					updateRow.setBwrk_my_calc_std_dt(
-							StringUtil.getLocaleTimeString(updateRow.getBwrk_my_calc_std_dt(), "yyyyMMdd"));
-					logger.info("updateRow " + updateRow.toString());
-				});
-				pamprg00100_X10005Dao.updatePAMPRG00100_Model(updatedRows);
-				logger.info("그리드 수정완료");
+			    for (Pamprg00100_X10005Model updateRow : updatedRows) {
+			        commonUtil.setCommonFields(updateRow, companyCd, userId, userIp);
+			        updateRow.setBwrk_my_calc_std_dt(
+			                StringUtil.getLocaleTimeString(updateRow.getBwrk_my_calc_std_dt(), "yyyyMMdd"));
+			        updateRow.setStd_ym(StringUtil.getLocaleTimeString(updateRow.getStd_ym(), "yyyyMM"));
+			        logger.info("updateRow " + updateRow.toString());
+			    }
+			    pamprg00100_X10005Dao.updatePAMPRG00100_Model(updatedRows);
+			    logger.info("그리드 수정완료");
 			}
 
 			// [insert]: 일괄 저장 merge into
 			List<Pamprg00100_X10005Model> addedRows = grid_ds.getAdded();
 			if (addedRows != null && !addedRows.isEmpty()) {
-				addedRows.forEach(insertRow -> {
-					commonUtil.setCommonFields(insertRow, companyCd, userId, userIp);
-					insertRow.setBwrk_my_calc_std_dt(
-							StringUtil.getLocaleTimeString(insertRow.getBwrk_my_calc_std_dt(), "yyyyMMdd"));
-					logger.info("insertRow " + insertRow.toString());
-					try {
-						pamprg00100_X10005Dao.uploadPAMPRG00100_Model(insertRow);
-					} catch (Exception e) {
-						e.printStackTrace();
-					}
-					logger.info("그리드 추가완료");
-				});
-				
+			    for (Pamprg00100_X10005Model insertRow : addedRows) {
+			        commonUtil.setCommonFields(insertRow, companyCd, userId, userIp);
+			        insertRow.setBwrk_my_calc_std_dt(
+			                StringUtil.getLocaleTimeString(insertRow.getBwrk_my_calc_std_dt(), "yyyyMMdd"));
+			        insertRow.setStd_ym(StringUtil.getLocaleTimeString(insertRow.getStd_ym(), "yyyyMM"));
+			        logger.info("insertRow " + insertRow.toString());
+			        try {
+			            pamprg00100_X10005Dao.uploadPAMPRG00100_Model(insertRow);
+			        } catch (Exception e) {
+			            e.printStackTrace();
+			        }
+			        logger.info("그리드 추가완료");
+			    }
 			}
 		} catch (Exception e) {
 			throw new DzApplicationRuntimeException(e);
@@ -333,6 +328,7 @@ public class HRPamprg00100_X10005Service extends DzCometService {
 						pamprg00100_X10005Model.setBizarea_cd(bizarea_cd);
 						pamprg00100_X10005Model.setBwrk_my_calc_std_dt(StringUtil
 								.getLocaleTimeString(pamprg00100_X10005Model.getBwrk_my_calc_std_dt(), "yyyyMMdd"));
+						pamprg00100_X10005Model.setStd_ym(StringUtil.getLocaleTimeString(pamprg00100_X10005Model.getStd_ym(), "yyyyMM"));
 						
 						this.pamprg00100_X10005Dao.uploadPAMPRG00100_Model(pamprg00100_X10005Model);
 						

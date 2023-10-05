@@ -1,6 +1,6 @@
-<!--##c893428d-a25e-4370-9a2e-b0773019de02##-->
+<!--##b1c478fb-e87f-464c-a7c4-09a4c0d9b6e7##-->
 <!--##ESSODM01400_x10005##-->
-<!--##SlGw/58LDO94dfFySX3hkhBf8ucnPd9iFnJ2h2Y2Mt20wFNvSWNuWdsk9NUT+MWM##-->
+<!--##WvvMQzoN3TneL3ltqHaahyEMWllGkxml6FHRbYtq7m1FT0UFyn/YMamTGyigaFBF##-->
 <!--
   DEWS UI/UX IDE - Build Result - v1.5
   # PageID: ESSODM01400_x10005
@@ -605,9 +605,16 @@
                 }
             }
     
+            var desiredIntervalCount = 7;
+            // 간격 계산
+            var interval = Math.ceil(max / desiredIntervalCount);
+    
+            // interval을 기반으로 최종 간격 계산
+            var result = Math.ceil(max / interval);
             var options = {
                 valueAxis: {
-                    max: line_chartMax
+                    max: line_chartMax,
+                    majorUnit: result
                 }
             }
             //max값 동적적용
@@ -633,9 +640,18 @@
                     column_chartMax = item.count;
                 }
             }
+    
+            var desiredIntervalCount = 7;
+            // 간격 계산
+            var interval = Math.ceil(max / desiredIntervalCount);
+    
+            // interval을 기반으로 최종 간격 계산
+            var result = Math.ceil(max / interval);
+    
             var options = {
                 valueAxis: {
-                    max: column_chartMax
+                    max: column_chartMax,
+                    majorUnit: result
                 }
             }
             //max값 동적적용

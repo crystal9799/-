@@ -1,19 +1,13 @@
 package com.douzone.comet.service.hr.pamprg;
-
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
-
-import org.apache.commons.vfs2.util.DelegatingFileSystemOptionsBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StopWatch;
-
 import com.douzone.comet.components.DzCometService;
+import com.douzone.comet.jdbc.mybatis.DzMybatisSupport;
 import com.douzone.comet.service.hr.pamprg.dao.Pamprg00100_X10005Dao;
 import com.douzone.comet.service.hr.pamprg.models.Pamprg00100_X10005Model;
 import com.douzone.comet.service.util.StringUtil;
@@ -28,15 +22,13 @@ import com.douzone.gpd.restful.enums.CometModule;
 import com.douzone.gpd.restful.enums.DzParamType;
 import com.douzone.gpd.restful.enums.DzRequestMethod;
 import com.douzone.gpd.restful.model.DzGridModel;
- 
-
 import utills.CommonUtil;
 
 /**
  * @description : 승급관리기준표_Service
  * @Since : 23.09.12 화요일 개발시작
  * @Author : minaci
- * @History :
+ * @History :23.10.06 기능개발 끝
  */
 
 @DzApiService(value = "HRPamprg00100_X10005Service", module = CometModule.HR, desc = "승급기준등록표_Service")
@@ -44,62 +36,58 @@ public class HRPamprg00100_X10005Service extends DzCometService {
  
 	@Autowired
 	Pamprg00100_X10005Dao pamprg00100_X10005Dao;
+ 
+	private DzMybatisSupport mybatisSupport;
+    
+    @Autowired
+    public HRPamprg00100_X10005Service(DzMybatisSupport mybatisSupport) {
+        this.mybatisSupport = mybatisSupport;
+    }
 
-	// [메인화면 조회]
-	@DzApi(url = "/list_HR_URGDBASETBL_INFO_X10005MST", desc = "승급기준표-조회", httpMethod = DzRequestMethod.GET)
-	public List<Pamprg00100_X10005Model> list_HR_URGDBASETBL_INFO_X10005MST(
+
+    // [메인화면 조회(페이징처리)]
+ 	@DzApi(url = "/list_HR_URGDBASETBL_INFO_X10005MST", desc = "승급기준표-조회", httpMethod = DzRequestMethod.GET)
+ 	public List<Pamprg00100_X10005Model> list_HR_URGDBASETBL_INFO_X10005MST(
 			@DzParam(key = "mpPROMO_YEAR_MONTH", desc = "승급년월", required = false, paramType = DzParamType.QueryString) String mpPROMO_YEAR_MONTH,
-			@DzParam(key = "bizarea_cd", desc = "사업장", required = false, paramType = DzParamType.QueryString) String bizarea_cd
+			@DzParam(key = "bizarea_cd", desc = "사업장", required = false, paramType = DzParamType.QueryString) String bizarea_cd,
+			@DzParam(key = "paging", desc = "",required = false, paramType = DzParamType.QueryString) String paging,
+            @DzParam(key = "pagingStart", desc = "",required = false, paramType = DzParamType.QueryString) String pagingStart,
+            @DzParam(key = "pagingCount", desc = "", required = false,paramType = DzParamType.QueryString) String pagingCount
             )
-			throws Exception {
-		List<Pamprg00100_X10005Model> pamprg00100_X10005ModelList = new ArrayList<Pamprg00100_X10005Model>();
+ 			throws Exception {
+ 			List<Pamprg00100_X10005Model> pamprg00100_X10005ModelList = new ArrayList<Pamprg00100_X10005Model>();
+ 			 
+ 			
+ 			try {
+ 				//파라메터 세팅
+ 		        HashMap<String, Object> parameters = new HashMap<>();
+ 		        
+ 		        parameters.put("P_COMPANY_CD", this.getCompanyCode());
+ 				parameters.put("P_BIZAREA_CD", bizarea_cd); // 사업장별 totalcount 조건
+ 				parameters.put("P_PROMO_YEAR_MONTH", mpPROMO_YEAR_MONTH);
+ 		        parameters.put("P_PAGING", paging);
+ 		        parameters.put("P_PAGING_START", pagingStart);
+ 		        parameters.put("P_PAGING_CNT", pagingCount);
+  
+ 				if(pagingStart.equals("0")) {
+ 					 
+ 					String totalCount = mybatisSupport.selectOne("com.douzone.comet.service.hr.pamprg.dao.Pamprg00100_X10005Dao.totalCount", parameters);
+ 					System.out.println("totalCount"+totalCount);
+ 		            //페이징토탈카운트를 저장합니다(필수!)
+ 					this.setTotalCount(totalCount);
+ 					 
+ 		        }
+ 		        //각자 페이징관련 쿼리를 작성하여 호출합니다.
+ 				
+ 				pamprg00100_X10005ModelList = mybatisSupport.selectList("com.douzone.comet.service.hr.pamprg.dao.Pamprg00100_X10005Dao.master_list_paging", parameters);
+ 				System.out.println("이거 뿌려주니??"+pamprg00100_X10005ModelList.toString());
+ 		        return pamprg00100_X10005ModelList;
 
-		try {
-			HashMap<String, Object> parameters = new HashMap<String, Object>();
-
-			parameters.put("P_COMPANY_CD", this.getCompanyCode());
-			parameters.put("P_BIZAREA_CD", bizarea_cd);
-			parameters.put("P_PROMO_YEAR_MONTH", mpPROMO_YEAR_MONTH);
-//			parameters.put("P_PG_START", pagingStart);
-//			parameters.put("P_PG_END", pagingCount);
-			
-//			if(pagingStart.equals("0")) {
-//				parameters.put("P_PAGING_START", "0");
-//				parameters.put("P_PAGING_COUNT", "99999999");
-//			}
-//			parameters.put("P_PAGING_START", pagingStart);
-//			parameters.put("P_PAGING_COUNT", pagingCount);
-			
-			pamprg00100_X10005ModelList = pamprg00100_X10005Dao.selectPamprg00100_X10005ModelList(parameters);
-
-			return pamprg00100_X10005ModelList;
-
-		} catch (Exception e) {
-			throw new DzApplicationRuntimeException(e);
-		}
-
-	}
-
-	@DzApi(url = "/get_BizareaList", desc = "사업장 조회", httpMethod = DzRequestMethod.GET)
-	public List<Pamprg00100_X10005Model> get_BizareaList() throws Exception {
-		
-		List<Pamprg00100_X10005Model> pamprg00100_X10005ModelList = new ArrayList<Pamprg00100_X10005Model>();
-		
-		try {
-			
-			HashMap<String, Object> parameters = new HashMap<String, Object>();
-			parameters.put("P_COMPANY_CD",this.getCompanyCode());
-			
-			pamprg00100_X10005ModelList = pamprg00100_X10005Dao.get_BizareaList(parameters);
-		  
-		} catch (DzApplicationRuntimeException e) {
-			throw e;
-		} catch (Exception e) {
-			throw e;
-		}
-
-		return pamprg00100_X10005ModelList;
-	}
+ 		
+ 			} catch (Exception e) {
+ 				throw new DzApplicationRuntimeException(e);
+ 			}
+ 		}
 
 	// [저장- delete/update/insert]
 	@Transactional(rollbackFor = Exception.class)
@@ -107,9 +95,9 @@ public class HRPamprg00100_X10005Service extends DzCometService {
 	public void save_HR_URGDBASETBL_INFO_X10005MST(
 			@DzParam(key = "grid_ds", desc = "승급기준표 데이터", paramType = DzParamType.Body) DzGridModel<Pamprg00100_X10005Model> grid_ds)
 			throws Exception {
-
-		System.out.println("grid_ds" + grid_ds.getDeleted());
+	 
 		try {
+			
 			String companyCd = this.getCompanyCode();
 			String userId = this.getUserId();
 			String userIp = this.getRemoteHost();
@@ -131,6 +119,7 @@ public class HRPamprg00100_X10005Service extends DzCometService {
 
 			// [update]: 기본키 수정 가능하게 함(완료)
 			List<Pamprg00100_X10005Model> updatedRows = grid_ds.getUpdated();
+			
 			if (updatedRows != null && !updatedRows.isEmpty()) {
 			    for (Pamprg00100_X10005Model updateRow : updatedRows) {
 			        commonUtil.setCommonFields(updateRow, companyCd, userId, userIp);
@@ -145,6 +134,7 @@ public class HRPamprg00100_X10005Service extends DzCometService {
 
 			// [insert]: 일괄 저장 merge into
 			List<Pamprg00100_X10005Model> addedRows = grid_ds.getAdded();
+			
 			if (addedRows != null && !addedRows.isEmpty()) {
 			    for (Pamprg00100_X10005Model insertRow : addedRows) {
 			        commonUtil.setCommonFields(insertRow, companyCd, userId, userIp);
@@ -192,7 +182,6 @@ public class HRPamprg00100_X10005Service extends DzCometService {
 		} catch (Exception e) {
 			throw new DzApplicationRuntimeException(e);
 		}
-
 	}
 
 	// [종전자료 전 기존데이터 삭제]
@@ -267,7 +256,6 @@ public class HRPamprg00100_X10005Service extends DzCometService {
 				throw e;
 			}
 		}
-
 		return true;
 	}
 
@@ -276,39 +264,40 @@ public class HRPamprg00100_X10005Service extends DzCometService {
 	public List<Map<String, Object>> list_ym(
 			@DzParam(key = "bizarea_cd", desc = "사업장", paramType = DzParamType.QueryString) String bizarea_cd)
 			throws Exception {
-		List<Map<String, Object>> list = new ArrayList<>();
-		try {
-			
-			HashMap<String, Object> parameters = new HashMap<String, Object>();
-			parameters.put("P_COMPANY_CD", this.getCompanyCode());
-			parameters.put("P_BIZAREA_CD", bizarea_cd);
-
-			String sqlText = MyBatisUtil.getId(this.getClass(), "dao.Pamprg00100_X10005Dao.list_ym");
-			SqlPack so = new SqlPack();
-			so.setStoreProcedure(false);
-			so.setMapperType(MapperType.MyBatis);
-			so.setSqlText(sqlText);
-			so.getInParameters().putAll(parameters);
-
-			list = this.queryForList(so);
-			System.out.println("list" + list.toString());
-
-		} catch (DzApplicationRuntimeException e) {
-			throw e;
-		} catch (Exception e) {
-			throw e;
+		
+		    List<Map<String, Object>> list = new ArrayList<>();
+		    
+			try {
+				
+				HashMap<String, Object> parameters = new HashMap<String, Object>();
+				parameters.put("P_COMPANY_CD", this.getCompanyCode());
+				parameters.put("P_BIZAREA_CD", bizarea_cd);
+	
+				String sqlText = MyBatisUtil.getId(this.getClass(), "dao.Pamprg00100_X10005Dao.list_ym");
+				SqlPack so = new SqlPack();
+				so.setStoreProcedure(false);
+				so.setMapperType(MapperType.MyBatis);
+				so.setSqlText(sqlText);
+				so.getInParameters().putAll(parameters);
+	
+				list = this.queryForList(so);
+				System.out.println("list" + list.toString());
+	
+			} catch (DzApplicationRuntimeException e) {
+				throw e;
+			} catch (Exception e) {
+				throw e;
+			}
+			return list;
 		}
-		return list;
-	}
 
-		@Transactional(rollbackFor = Exception.class)
-		@DzApi(url = "/uploadExcel_HR_URGDBASETBL_INFO_X10005MST", desc = "엑셀업로드", httpMethod = DzRequestMethod.POST)
-		public boolean pamodm01550x10005_excel_upload(
-				@DzParam(key = "uploadData", desc = "업로드데이터", required = false, paramType = DzParamType.Body) List<Pamprg00100_X10005Model> uploadData,
-				@DzParam(key = "bizarea_cd", desc = "사업장코드", required = false, paramType = DzParamType.Body) String bizarea_cd)
-				throws Exception {
-
-			// 변경된 객체와 그대로인 것의 객체 구별
+	@Transactional(rollbackFor = Exception.class)
+	@DzApi(url = "/uploadExcel_HR_URGDBASETBL_INFO_X10005MST", desc = "엑셀업로드", httpMethod = DzRequestMethod.POST)
+	public boolean pamodm01550x10005_excel_upload(
+			@DzParam(key = "uploadData", desc = "업로드데이터", required = false, paramType = DzParamType.Body) List<Pamprg00100_X10005Model> uploadData,
+			@DzParam(key = "bizarea_cd", desc = "사업장코드", required = false, paramType = DzParamType.Body) String bizarea_cd)
+			throws Exception {
+ 
 			String companyCd = this.getCompanyCode();
 			String userId = this.getUserId();
 			String userIp = this.getRemoteHost();
@@ -329,9 +318,9 @@ public class HRPamprg00100_X10005Service extends DzCometService {
 						pamprg00100_X10005Model.setBwrk_my_calc_std_dt(StringUtil
 								.getLocaleTimeString(pamprg00100_X10005Model.getBwrk_my_calc_std_dt(), "yyyyMMdd"));
 						pamprg00100_X10005Model.setStd_ym(StringUtil.getLocaleTimeString(pamprg00100_X10005Model.getStd_ym(), "yyyyMM"));
-						
+			            
 						this.pamprg00100_X10005Dao.uploadPAMPRG00100_Model(pamprg00100_X10005Model);
-						
+						 
 					} catch (Exception e) {
 						e.printStackTrace();  
 					}
@@ -346,6 +335,5 @@ public class HRPamprg00100_X10005Service extends DzCometService {
 				System.out.println("코드 실행 시간 (s): " + stopWatch.getTotalTimeSeconds());
 			}
 			return true;
-		}
-
+	}
 }

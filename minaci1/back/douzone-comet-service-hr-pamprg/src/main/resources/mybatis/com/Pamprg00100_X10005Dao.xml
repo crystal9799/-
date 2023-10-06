@@ -11,10 +11,10 @@
 								            ORDER BY 
 								            		 HUI.BIZAREA_CD ASC
 								            		,HUI.PSTN_CD ASC
-								            		,HUI.TRGT_GRD_CD DESC
-								            		,HUI.UGRD_GRD_CD DESC
-								            		,HUI.MIN_BWRK_MY DESC
-								            		,HUI.AGGR_TERM_CNT DESC
+								            		,HUI.TRGT_GRD_CD ASC
+								            		,HUI.UGRD_GRD_CD ASC
+								            		,HUI.MIN_BWRK_MY ASC
+								            		,HUI.AGGR_TERM_CNT ASC
 			        					) AS idx
 			    	 ,HUI.COMPANY_CD AS COMPANY_CD                                      -- 회사 코드
 					 ,HUI.BIZAREA_CD AS BIZAREA_CD                                      -- 사업장 코드

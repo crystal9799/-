@@ -1,6 +1,6 @@
-<!--##d125b0dc-43b0-4b3e-a75e-f7aa32a492be##-->
+<!--##d2cc9bb6-6897-4875-ba83-2e63cbb35615##-->
 <!--##PAMPRG00100_X10005##-->
-<!--##47a3dTOcEU5m3CGioV/CDPZhwJNlJRXQ5FYgMjKnfHuXBjALRPBQf3sGfVGHEaG1##-->
+<!--##kbJqoqHGcFPLXpKEQx8lDPEkMsE6JTBO4MV+RUZRNRVwP2HukH5P3lvfOBBO6s+Z##-->
 <!--
   DEWS UI/UX IDE - Build Result - v1.5
   # PageID: PAMPRG00100_X10005
@@ -464,7 +464,7 @@
     
     self.grid_ds = dews.ui.dataSource('grid_ds', {
       grid: true,
-      paging: true,
+      paging: 'scroll',
       pagingCount: 500,
       transport: {
         read: {
@@ -711,6 +711,7 @@
         self.gridMaster.setCellValue(idx, 'UGRD_GRD_CD', 'K2', false); // 기본값 설정
         self.gridMaster.setCellValue(idx, 'MIN_BWRK_MY', '30', false); // 기본값 설정
         self.gridMaster.setCellValue(idx, 'BWRK_MY_CALC_STD_DT', self.mpPROMO_YEAR_MONTH.value() + "01", false); // 산정기준일에 "승급년월"의 1일로 저장
+    
         self.gridMaster.select(idx, "PSTN_NM"); // "직급명" 컬럼으로 포커스 이동
     
     });
@@ -782,6 +783,15 @@
     
     });
     dews.ui.mainbuttons.save.click(/*de6735b5-68c0-4785-bc2d-308bb03c399d*/ function () {
+    
+    
+        // TRGT_GRD_CD와 UGRD_GRD_CD 비교
+        // var trgtGrdCd = self.gridMaster.getCellValue(idx, 'TRGT_GRD_CD');
+        // var ugrdGrdCd = self.gridMaster.getCellValue(idx, 'UGRD_GRD_CD');
+        // if (trgtGrdCd > ugrdGrdCd) {
+        //     dews.ui.snackbar.warning("대상등급이 승급등급보다 낮아야 합니다.");
+        //     return;  // 저장을 중지하고 함수를 종료
+        // }
     
         self.gridMaster.commitCell();
         var checkedIndices = self.gridMaster.getCheckedIndex();
@@ -1177,6 +1187,30 @@
       },
       dataBound: /*229bd09a-9f83-4ca2-aec7-7740faa6c3de*/ function (e) {
             dews.ui.loading.hide();
+        }
+    ,
+      validationCheck: /*4ce437c6-dafa-4120-a385-640d2b1d45b0*/ function (e) {
+            var field = e.cell.field;
+            var trgtGrdCd = e.cell.data;
+            var ugrdGrdCd = self.gridMaster.getCellValue(self.gridMaster.select(), 'UGRD_GRD_CD');
+    
+            // TRGT_GRD_CD 또는 UGRD_GRD_CD 컬럼의 값이 변경될 때만 유효성 검사 수행
+            if (field == 'TRGT_GRD_CD') {
+                if (trgtGrdCd > ugrdGrdCd || trgtGrdCd === ugrdGrdCd) {
+                    try {
+    
+                        dews.ui.snackbar.warning("대상등급이 승급등급보다 낮아야 합니다.");
+                        self.gridMaster.commitCell();
+                        self.gridMaster.cancelEdit();
+                        self.gridMaster.rowRemove(self.gridMaster.select());
+                        e.preventDefault();
+    
+                    } catch (error) {
+                        console.error(error); // 콘솔에 에러를 출력
+                        // 사용자에게 친숙한 메시지 표시 또는 오류 로깅
+                    }
+                }
+            }
         }
     
     });

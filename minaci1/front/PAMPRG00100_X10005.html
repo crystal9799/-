@@ -1,6 +1,6 @@
-<!--##d2cc9bb6-6897-4875-ba83-2e63cbb35615##-->
+<!--##e8c8648c-5024-43f0-9c8d-866afca90590##-->
 <!--##PAMPRG00100_X10005##-->
-<!--##kbJqoqHGcFPLXpKEQx8lDPEkMsE6JTBO4MV+RUZRNRVwP2HukH5P3lvfOBBO6s+Z##-->
+<!--##YN+DJt9A2i+aKWAEeDUw5m83iXW8W6WxebkzBSTzi4fjyvutQ+F9xl2o77DgCnOS##-->
 <!--
   DEWS UI/UX IDE - Build Result - v1.5
   # PageID: PAMPRG00100_X10005
@@ -710,9 +710,11 @@
         self.gridMaster.setCellValue(idx, 'TRGT_GRD_CD', 'K1', false); // 기본값 설정
         self.gridMaster.setCellValue(idx, 'UGRD_GRD_CD', 'K2', false); // 기본값 설정
         self.gridMaster.setCellValue(idx, 'MIN_BWRK_MY', '30', false); // 기본값 설정
+    
         self.gridMaster.setCellValue(idx, 'BWRK_MY_CALC_STD_DT', self.mpPROMO_YEAR_MONTH.value() + "01", false); // 산정기준일에 "승급년월"의 1일로 저장
     
         self.gridMaster.select(idx, "PSTN_NM"); // "직급명" 컬럼으로 포커스 이동
+        //self.gridMaster.setCellValue(idx, 'PSTN_CD', self.PSTN_NM, false); // 기본값 설정
     
     });
     dews.ui.mainbuttons.search.click(/*37fe89ce-9f9d-444b-a3a3-dfe45a8e42e2*/ function () {
@@ -1013,6 +1015,8 @@
             helpCode: 'H_MA_CODEDTL_S',
             codeField: 'SYSDEF_CD',
             textField: 'SYSDEF_NM',
+            gridCodeField: 'PSTN_CD',
+            gridTextField: 'PSTN_NM',
             helpTitle: '직급명 도움창',
             helpSize: 'medium',
             helpParams: /*2b417dd0-d4a3-452a-935e-423b44d1a9ac*/ function() {

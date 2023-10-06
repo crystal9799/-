@@ -1,6 +1,6 @@
-<!--##553292cc-779d-4ae0-af36-5d6b2454ada9##-->
+<!--##d125b0dc-43b0-4b3e-a75e-f7aa32a492be##-->
 <!--##PAMPRG00100_X10005##-->
-<!--##M8CWag3/vcVimbFxn5F+JlQ9Fz0POaB9FDqUDgw+CaiuLiUm67RQCJ8YN5pLC1Pf##-->
+<!--##47a3dTOcEU5m3CGioV/CDPZhwJNlJRXQ5FYgMjKnfHuXBjALRPBQf3sGfVGHEaG1##-->
 <!--
   DEWS UI/UX IDE - Build Result - v1.5
   # PageID: PAMPRG00100_X10005
@@ -91,7 +91,7 @@
         });
     
         var rowSizeInBytes = 84;
-        var timePerByte = 0.075; //인터넷 환경에 따라 속도 다를 수 있음 
+        var timePerByte = 0.; //인터넷 환경에 따라 속도 다를 수 있음 
         var duration = totalDirtyData * rowSizeInBytes * timePerByte;
     
         var interval = duration / 100;
@@ -131,14 +131,7 @@
         dews.ui.loading.show({
             text: '조회중입니다.'
         });
-    
-        self.grid_ds.read().then(() => { // read가 프로미스를 반환
-            var dataCount = self.grid_ds.data().length;
-            console.log("데이터 갯수" + dataCount);
-    
-            // 데이터 바인딩이 완료된 후 로딩창을 숨김
-            dews.ui.loading.hide();
-        });
+        self.grid_ds.read();
     
     }
     
@@ -405,6 +398,8 @@
             }).done(result => {
     
                 dews.ui.loading.hide();
+                //result에서 파생된 파일사이즈 확인이 어려움 
+                //console.log('resulttotalsize' + JSON.stringify(result));
                 if (result.totalCount > 1000) { // 1000개 이상 back에서 바로 저장처리
                     processLargeData(result, errMsg);
                 }

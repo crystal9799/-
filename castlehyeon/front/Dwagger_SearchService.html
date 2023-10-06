@@ -1,6 +1,6 @@
-<!--##4f135870-fe0c-43e7-b3b2-063e4bc4144d##-->
+<!--##012511ef-5913-4ced-8c43-9a8b7b771d6c##-->
 <!--##Dwagger_SearchService##-->
-<!--##UNXRRtjLP4OAqgG4ZYAe2Y5NEgnxXA3C8ggnuiSjGMKZ7i8vDVZNaYk5o9jJqfkn##-->
+<!--##I4waE1x+mMLK2gGB8KZmEJ1xoAB20pg0k/ooQsObg6b7KCNryvaq74a2XV9y9qUX##-->
 <!--
   DEWS UI/UX IDE - Build Result - v1.5
   # PageID: Dwagger_SearchService
@@ -481,20 +481,19 @@
     }
     //현재 넘겨받은 JSON데이터 객체에서 키워드를 통해 찾는다.
     function GetDataByKeywords() {
-        var keywords = self.SearchKeyword.text();
-        var mainData = apiDatas;
+        var keywords = self.SearchKeyword.text().toLowerCase(); // 키워드를 소문자로 변환
+        var mainData = self.initialData.apiDatas;
         if (apiDatas != '' && apiDatas != null && apiDatas != undefined) {
             // data 배열에서 keywords를 포함하는 요소들을 필터링하여 새로운 배열 생성
             const filteredData = mainData.filter(item => {
-                // item 객체의 필드 중에서 keywords를 포함하는 필드가 있는지 확인
+                // item 객체의 필드 중에서 keywords를 포함하는 필드가 있는지 확인 (대소문자 구별 없이)
                 for (const key in item) {
-                    if (item.hasOwnProperty(key) && typeof item[key] === 'string' && item[key].includes(keywords)) {
+                    if (item.hasOwnProperty(key) && typeof item[key] === 'string' && item[key].toLowerCase().includes(keywords)) {
                         return true; // keywords를 포함하는 필드가 발견되면 해당 요소를 포함
                     }
                 }
                 return false; // keywords를 포함하는 필드가 없으면 해당 요소를 제외
-            });
-    
+            })
             self.total_ds.data(filteredData);
             console.log('filteredData===>' + filteredData);
             if (filteredData.length > 0) {

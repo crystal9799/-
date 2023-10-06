@@ -88,6 +88,7 @@ public class cdmjim00100_MainGrid_Service extends DzCometService {
 	 		cdmjim00100_maingrid.put("valid_MLSFC_ARR", valid_MLSFC_ARR);
 	 		cdmjim00100_maingrid.put("valid_S_CSF_ARR", valid_S_CSF_ARR);
 	 		cdmjim00100_maingrid.put("valid_TCLF_ARR", valid_TCLF_ARR);
+	 		System.out.println("테에에에에에에에에에에스트"+valid_TCLF_ARR);
 	 		cdmjim00100_maingrid.put("valie_ACLF_CD_ARR", valie_ACLF_CD_ARR);
 	 		cdmjim00100_maingrid.put("valid_ACLF_LV_ARR", valid_ACLF_LV_ARR);
 	 		

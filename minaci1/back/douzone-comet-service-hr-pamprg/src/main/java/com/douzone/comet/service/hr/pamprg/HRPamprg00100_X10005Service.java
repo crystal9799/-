@@ -73,6 +73,13 @@ public class HRPamprg00100_X10005Service extends DzCometService {
  					 
  					String totalCount = mybatisSupport.selectOne("com.douzone.comet.service.hr.pamprg.dao.Pamprg00100_X10005Dao.totalCount", parameters);
  					System.out.println("totalCount"+totalCount);
+ 					
+ 					if(Integer.parseInt(totalCount) >= Integer.parseInt(pagingCount)) { //500건 미만일 경우 select 조건
+ 					    parameters.put("IS_MORE_THAN", "Y");
+ 					} else {
+ 					    parameters.put("IS_MORE_THAN", "N");
+ 					}
+ 					System.out.println("IS_MORE_THAN_500"+ parameters.toString());
  		            //페이징토탈카운트를 저장합니다(필수!)
  					this.setTotalCount(totalCount);
  					 

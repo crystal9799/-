@@ -1,6 +1,6 @@
-<!--##14550b4b-9a9f-42fc-83bb-337647dce71b##-->
+<!--##553292cc-779d-4ae0-af36-5d6b2454ada9##-->
 <!--##PAMPRG00100_X10005##-->
-<!--##hCkBAiDGvp9SjqeXajw1zAmSrVilx0EDmiwpklnOj7FZxULwvLq5PdtjtVRxJWad##-->
+<!--##M8CWag3/vcVimbFxn5F+JlQ9Fz0POaB9FDqUDgw+CaiuLiUm67RQCJ8YN5pLC1Pf##-->
 <!--
   DEWS UI/UX IDE - Build Result - v1.5
   # PageID: PAMPRG00100_X10005
@@ -335,93 +335,95 @@
     
         // 엑셀 업로드 로딩바
         dews.ui.loading.show({ text: '엑셀 업로드 진행 중입니다.' });
+        setTimeout(function () {
+            // 로딩바 숨김 처리
+            dews.ui.loading.hide();
+            // 데이터 소스 바인딩
+            self.importExcelGrid.importExcel({
     
-        // 데이터 소스 바인딩
-        self.importExcelGrid.importExcel({
+                fileDialog: true,
+                titleDepth: titleDepth,
+                mapping: {
+                    "STD_YM": "기준년월",
+                    "PSTN_NM": "직급명",
+                    "TRGT_GRD_CD": "대상등급",
+                    "UGRD_GRD_CD": "승급등급",
+                    "MIN_BWRK_MY": "최소근무월수",
+                    "AGGR_TERM_CNT": "근무성적집계기간",
+                    "BWRK_SGRAD_CD": "근무성적",
+                    "LEDU_CD": "학력",
+                    "BWRK_MY_CALC_STD_DT": "산정기준일",
+                    "RMK_NM": "비고",
+                },
+                validator: row => {
     
-            fileDialog: true,
-            titleDepth: titleDepth,
-            mapping: {
-                "STD_YM": "기준년월",
-                "PSTN_NM": "직급명",
-                "TRGT_GRD_CD": "대상등급",
-                "UGRD_GRD_CD": "승급등급",
-                "MIN_BWRK_MY": "최소근무월수",
-                "AGGR_TERM_CNT": "근무성적집계기간",
-                "BWRK_SGRAD_CD": "근무성적",
-                "LEDU_CD": "학력",
-                "BWRK_MY_CALC_STD_DT": "산정기준일",
-                "RMK_NM": "비고",
-            },
-            validator: row => {
+                    var msg = '';
+    
+                    //기본키 누락시 업로드 실패
+                    if (!row.STD_YM || row.STD_YM.length > stdYmMaxLength) {
+                        msg = dews.string.format("기준년월이 올바르지 않습니다.\n확인 후 업로드 하십시오.({0})", row.STD_YM);
+                        console.error(msg); //콘솔에 값누락 확인 
+                        return false;
+                    } else if (!row.PSTN_NM || row.PSTN_NM.length > pstnCdMaxLength) {
+                        msg = dews.string.format("직급명이 올바르지 않습니다.\n확인 후 업로드 하십시오.({0}/{1})", row.STD_YM, row.PSTN_NM);
+                        console.error(msg);
+                        return false;
+                    } else if (!row.TRGT_GRD_CD || row.TRGT_GRD_CD.length > grdCdMaxLength) {
+                        msg = dews.string.format("대상등급이 올바르지 않습니다.\n확인 후 업로드 하십시오.({0}/{1}/{2})", row.STD_YM, row.PSTN_CD, row.TRGT_GRD_CD);
+                        console.error(msg);
+                        return false;
+                    } else if (!row.UGRD_GRD_CD || row.UGRD_GRD_CD.length > grdCdMaxLength) {
+                        msg = dews.string.format("승급등급이 올바르지 않습니다.\n확인 후 업로드 하십시오.({0}/{1}/{2}/{3})", row.STD_YM, row.PSTN_CD, row.TRGT_GRD_CD, row.UGRD_GRD_CD);
+                        console.error(msg);
+                    } else if (!row.MIN_BWRK_MY || row.MIN_BWRK_MY.length > minBwrkMyMaxLength) {
+                        msg = dews.string.format("최소근무월수가 올바르지 않습니다.\n확인 후 업로드 하십시오.({0}/{1}/{2}/{3}/{4})", row.STD_YM, row.PSTN_CD, row.TRGT_GRD_CD, row.UGRD_GRD_CD, row.MIN_BWRK_MY);
+                        console.error(msg);
+                        return false;
+                    }
+                    if (msg) {
+                        errMsg.push(msg);
+                        console.error(msg);
+                        dews.ui.loading.hide(); // 에러 발생 시 로딩바 숨김
+                        return false;
+                    }
+                    return true;
+    
+                },
+                convertor: row => {
+    
+                    if (row.BIZAREA_NM == null || row.BIZAREA_NM == undefined) {
+                        row.BIZAREA_CD = self.bizarea_cd.value(); // 현재 선택된 사업장으로 저장
+                    }
+                    row.PSTN_CD = pstnNmMap[row.PSTN_NM]; // '직급명'에 넣기(없으면 필수값 입력하라고 나옴)
+                    row.LEDU_NM = row.LEDU_CD; //ds localdata 으로 매핑시도해봤지만 안됨
+                    row.LEDU_CD = lecdMap[row.LEDU_NM];
+                    //console.log("row.LEDU_CD" + row.LEDU_CD);
+                    //self.importExcelGrid.setCellValue(idx, 'LEDU_CD', row.LEDU_CD, false); // 기본값 설정self.importExcel_ds.LED
+                    return row;
+    
+                },
+            }).done(result => {
     
                 dews.ui.loading.hide();
-                var msg = '';
-    
-                //기본키 누락시 업로드 실패
-                if (!row.STD_YM || row.STD_YM.length > stdYmMaxLength) {
-                    msg = dews.string.format("기준년월이 올바르지 않습니다.\n확인 후 업로드 하십시오.({0})", row.STD_YM);
-                    console.error(msg); //콘솔에 값누락 확인 
-                    return false;
-                } else if (!row.PSTN_NM || row.PSTN_NM.length > pstnCdMaxLength) {
-                    msg = dews.string.format("직급명이 올바르지 않습니다.\n확인 후 업로드 하십시오.({0}/{1})", row.STD_YM, row.PSTN_NM);
-                    console.error(msg);
-                    return false;
-                } else if (!row.TRGT_GRD_CD || row.TRGT_GRD_CD.length > grdCdMaxLength) {
-                    msg = dews.string.format("대상등급이 올바르지 않습니다.\n확인 후 업로드 하십시오.({0}/{1}/{2})", row.STD_YM, row.PSTN_CD, row.TRGT_GRD_CD);
-                    console.error(msg);
-                    return false;
-                } else if (!row.UGRD_GRD_CD || row.UGRD_GRD_CD.length > grdCdMaxLength) {
-                    msg = dews.string.format("승급등급이 올바르지 않습니다.\n확인 후 업로드 하십시오.({0}/{1}/{2}/{3})", row.STD_YM, row.PSTN_CD, row.TRGT_GRD_CD, row.UGRD_GRD_CD);
-                    console.error(msg);
-                } else if (!row.MIN_BWRK_MY || row.MIN_BWRK_MY.length > minBwrkMyMaxLength) {
-                    msg = dews.string.format("최소근무월수가 올바르지 않습니다.\n확인 후 업로드 하십시오.({0}/{1}/{2}/{3}/{4})", row.STD_YM, row.PSTN_CD, row.TRGT_GRD_CD, row.UGRD_GRD_CD, row.MIN_BWRK_MY);
-                    console.error(msg);
-                    return false;
+                if (result.totalCount > 1000) { // 1000개 이상 back에서 바로 저장처리
+                    processLargeData(result, errMsg);
                 }
-                if (msg) {
-                    errMsg.push(msg);
-                    console.error(msg);
-                    dews.ui.loading.hide(); // 에러 발생 시 로딩바 숨김
-                    return false;
+                else {
+                    processRegularData(result, errMsg); // 1000미만은 front에서 작업
                 }
-                return true;
     
-            },
-            convertor: row => {
+            }).fail(error => {
     
-                if (row.BIZAREA_NM == null || row.BIZAREA_NM == undefined) {
-                    row.BIZAREA_CD = self.bizarea_cd.value(); // 현재 선택된 사업장으로 저장
-                }
-                row.PSTN_CD = pstnNmMap[row.PSTN_NM]; // '직급명'에 넣기(없으면 필수값 입력하라고 나옴)
-                row.LEDU_NM = row.LEDU_CD; //ds localdata 으로 매핑시도해봤지만 안됨
-                row.LEDU_CD = lecdMap[row.LEDU_NM];
-                //console.log("row.LEDU_CD" + row.LEDU_CD);
-                //self.importExcelGrid.setCellValue(idx, 'LEDU_CD', row.LEDU_CD, false); // 기본값 설정self.importExcel_ds.LED
-                return row;
+                console.error(error);
+                dews.ui.loading.hide();
+                dews.ui.snackbar.warning("엑셀 업로드 실패했습니다. 파일을 확인해주세요.");
     
-            },
-        }).done(result => {
+            }).always(() => {
     
-            dews.ui.loading.hide();
-            if (result.totalCount > 1000) { // 1000개 이상 back에서 바로 저장처리
-                processLargeData(result, errMsg);
-            }
-            else {
-                processRegularData(result, errMsg); // 1000미만은 front에서 작업
-            }
+                e.target.value = "";
     
-        }).fail(error => {
-    
-            console.error(error);
-            dews.ui.loading.hide();
-            dews.ui.snackbar.warning("엑셀 업로드 실패했습니다. 파일을 확인해주세요.");
-    
-        }).always(() => {
-    
-            e.target.value = "";
-    
-        });
+            });
+        }, 1000); // 1초 대기
     
     }
     
@@ -467,6 +469,8 @@
     
     self.grid_ds = dews.ui.dataSource('grid_ds', {
       grid: true,
+      paging: true,
+      pagingCount: 500,
       transport: {
         read: {
           url: dews.url.getApiUrl('HR', 'HRPamprg00100_X10005Service', 'list_HR_URGDBASETBL_INFO_X10005MST'),
@@ -506,7 +510,10 @@
             { field: 'UPDATE_DTS', editable: false, dataType: 'string' }, 
             { field: 'UPDATE_IP', editable: false, dataType: 'string' }, 
             { field: 'COMBINED_KEY', editable: false, dataType: 'string' }, 
-            { field: 'SEQ', editable: false, dataType: 'string' }
+            { field: 'SEQ', editable: false, dataType: 'string' }, 
+            { field: 'pagingStart', editable: false, dataType: 'string' }, 
+            { field: 'pagingCount', editable: false, dataType: 'string' }, 
+            { field: 'paging', editable: false, dataType: 'string' }
           ]
     
         }
@@ -585,11 +592,6 @@
       
     });
     self.bizareaCd_ds = dews.ui.dataSource('bizareaCd_ds', {
-      transport: {
-        read: {
-          url: dews.url.getApiUrl('HR', 'HRPamprg00100_X10005Service', 'get_BizareaList')
-        }
-      },
       schema: {
         model: {
           fields: [
@@ -598,7 +600,9 @@
           ]
     
         }
-      }
+      },
+      data: [{"BIZAREA_CD": "1000","BIZAREA_NM":"본점"},{"BIZAREA_CD": "2000","BIZAREA_NM":"부산점"},{"BIZAREA_CD": "3000","BIZAREA_NM":"여수점"},{"BIZAREA_CD": "522","BIZAREA_NM":"평화이즈"}]
+    
     });
     self.trgt_grd_cd_ds = dews.ui.dataSource('trgt_grd_cd_ds', {
       schema: {
@@ -1175,7 +1179,11 @@
       fixed: {
         colCount: 0,
         rightColCount: 0
-      }
+      },
+      dataBound: /*229bd09a-9f83-4ca2-aec7-7740faa6c3de*/ function (e) {
+            dews.ui.loading.hide();
+        }
+    
     });
     dews.ui.grid(self.$excelFormGrid, {
       dataSource: self.forExcelDataSource,
@@ -1359,7 +1367,9 @@
     
     /*534ba9e1-a845-40e6-8d1e-d324d5bfa4cc*/ self.mpPROMO_YEAR_MONTH.value(getCurrentMonth()); //데이터 있는 기준 날짜 확인해야 함 
     //self.gridMaster.sort({ field: 'TRGT_GRD_CD', dir: 'asc' }); // 대상등급 기준으로 오름차순 정렬 
+    
     self.grid_ds.read();
+    
     self.gridMaster.setOptions({
         rowNo: true
     })

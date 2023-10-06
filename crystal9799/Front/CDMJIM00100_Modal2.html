@@ -1,6 +1,6 @@
-<!--##9d2ea901-cc0c-4861-8de6-328aaec9bee2##-->
+<!--##ba44e265-320e-47c3-b5db-3eab2c4b9d78##-->
 <!--##CDMJIM00100_Modal2##-->
-<!--##RrIfHpw7QIoOnEMPE6Ssmp5qkSEg/FZeqcbaesxq01pEqZtCLOYpTiA5J1rtzE+R##-->
+<!--##IxCGaAsGTsZqx6zo3HO2EFiLVztAmJT5MJs4DbeMUdSSsvs+82laXGtAlbvt9TDi##-->
 <!--
   DEWS UI/UX IDE - Build Result - v1.5
   # PageID: CDMJIM00100_Modal2
@@ -16,7 +16,7 @@
     <li>
       <label class="dews-ui-multilingual">검색어</label>
       <span>
-        <input id="textbox1" name="textbox1" type="text" class="dews-ui-textbox basic" />
+        <input id="SEARCH_TXT" name="SEARCH_TXT" type="text" class="dews-ui-textbox basic" />
       </span>
     </li>
   </ul>
@@ -43,6 +43,8 @@
     /*926e781e-6e8c-4888-b59f-6ca477b7d6a0*/ //# sourceURL=CDMJIM00100_Modal2.js
     // var dialog = dews.ui.dialog("LCLAS_PICKER");
     var dialog = this;
+    var initData = this.initData;
+    var initParam = this.initData.params;
     console.log(dialog.getInitData());
     
     
@@ -54,11 +56,15 @@
           type: 'post',
           url: dews.url.getApiUrl('HR', 'Cdmjim00100_Modal_Service', 'selectFgList'),
           data: /*df8b2a45-47f3-48fa-a774-d722429be127*/ function() {
+        var target = dialog.getInitData().params.param_name;
         return({
             param_cd : dialog.getInitData().params.param_cd,
-            param_name: dialog.getInitData().params.param_name
+            param_name: dialog.getInitData().params.param_name,
+            TARGET : target,
+            NAME : self.SEARCH_TXT && self.SEARCH_TXT.text ? self.SEARCH_TXT.text() : ""
         })
     }
+    
         }
       },
       schema: {
@@ -97,6 +103,12 @@
     });
     
     
+    self.$SEARCH_TXT.on('keydown', /*ee7b8026-0f8f-4719-a14f-0a8bd03f5454*/ function (e) {
+        if (e.keyCode == "13") {
+            self.PARAM_DS.read();
+            self.SEARCH_TXT.text("");
+        }
+    });
     dews.ui.grid(self.$MCP_GRID, {
       dataSource: self.PARAM_DS,
       height: 348,
@@ -117,14 +129,26 @@
       fixed: {
         colCount: 0,
         rightColCount: 0
-      }
+      },
+      dblClicked: /*85448e81-24b1-49f8-b0f9-8670fbff0e67*/ function (e) {
+            var data = [{
+                PARAM_NAME: self.MCP_GRID.getCellValue(self.MCP_GRID.select(), "PARAM_NAME"),
+                PARAM_CD: self.MCP_GRID.getCellValue(self.MCP_GRID.select(), "PARMA_CD")
+            }]
+            self.ok(data);
+        }
+    
     });
     self.$ok_btn.on('click', /*7d96eefc-d402-4a4d-bb98-ea69066c3a35*/ function (e) {
-        console.log("e는 이거임 ===== " + e);
+    
         console.log("self.MCP_GRID.getCheckedRows() === > " + self.MCP_GRID.getCheckedRows());
         var data = self.MCP_GRID.getCheckedRows();
         self.initData
-        self.ok(data);
+        if (self.MCP_GRID.getCheckedIndex().length == 0) {
+            dews.ui.snackbar.warning('선택된 데이터가 없습니다.');
+        } else {
+            self.ok(data);
+        }
     });
     self.$close_btn.on('click', /*1f81c0e5-6b2c-4bae-907b-837bb518d93b*/ function (e) {
         self.close();

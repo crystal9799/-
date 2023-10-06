@@ -1,6 +1,6 @@
-<!--##02617fbe-a443-4e7b-a628-74f84660a87f##-->
+<!--##5877f7b4-ed70-485e-ac79-5e02c083ca8d##-->
 <!--##CDMJIM00100_Main##-->
-<!--##zqStE0JyiBo7/KCwwaxABPxDhYWxmrEN7l7DuOD5KOG+DPvzFrFEn/meU9yYSpd4##-->
+<!--##90ekm15LEeaXQKlCpFDzbRWnNf3Z9x91MD5/yVnbQLRDJHao3mam32w3xCJ9yt/j##-->
 <!--
   DEWS UI/UX IDE - Build Result - v1.5
   # PageID: CDMJIM00100_Main
@@ -37,7 +37,7 @@
     <li>
       <label class="dews-ui-multilingual">대분류코드</label>
       <span>
-        <select id="LCLAS_MCP" name="LCLAS_MCP" class="dews-ui-multicodepicker basic" data-dews-help-title="분류 도움창" data-dews-help-custom="false" data-dews-help-size="medium" />
+        <select id="LCLAS_MCP" name="LCLAS_MCP" class="dews-ui-multicodepicker basic" data-dews-code-field="PARAM_CD" data-dews-text-field="PARAM_NAME" data-dews-help-title="분류 도움창" data-dews-help-custom="false" data-dews-help-size="medium" />
       </span>
     </li>
     <li>
@@ -49,25 +49,25 @@
     <li>
       <label class="dews-ui-multilingual">소분류코드</label>
       <span>
-        <select id="S_CSF_MCP" name="S_CSF_MCP" class="dews-ui-multicodepicker basic" data-dews-help-title="소분류 도움창" data-dews-help-custom="false" data-dews-help-size="medium" />
+        <select id="S_CSF_MCP" name="S_CSF_MCP" class="dews-ui-multicodepicker basic" data-dews-code-field="PARAM_CD" data-dews-text-field="PARAM_NAME" data-dews-help-title="소분류 도움창" data-dews-help-custom="false" data-dews-help-size="medium" />
       </span>
     </li>
     <li>
       <label class="dews-ui-multilingual">세분류코드</label>
       <span>
-        <select id="TCLF_MCP" name="TCLF_MCP" class="dews-ui-multicodepicker basic" data-dews-help-title="세분류 도움창" data-dews-help-custom="false" data-dews-help-size="medium" />
+        <select id="TCLF_MCP" name="TCLF_MCP" class="dews-ui-multicodepicker basic" data-dews-code-field="PARAM_CD" data-dews-text-field="PARAM_NAME" data-dews-help-title="세분류 도움창" data-dews-help-custom="false" data-dews-help-size="medium" />
       </span>
     </li>
     <li>
       <label class="dews-ui-multilingual">능력단위코드</label>
       <span>
-        <select id="ACLF_CD_MCP" name="ACLF_CD_MCP" class="dews-ui-multicodepicker basic" data-dews-help-title="능력단위 도움창" data-dews-help-custom="false" data-dews-help-size="medium" />
+        <select id="ACLF_CD_MCP" name="ACLF_CD_MCP" class="dews-ui-multicodepicker basic" data-dews-code-field="PARAM_CD" data-dews-text-field="PARAM_NAME" data-dews-help-title="능력단위 도움창" data-dews-help-custom="false" data-dews-help-size="medium" />
       </span>
     </li>
     <li>
       <label class="dews-ui-multilingual">능력단위요소</label>
       <span>
-        <select id="ACLF_MCP" name="ACLF_MCP" class="dews-ui-multicodepicker basic" data-dews-help-custom="false" data-dews-help-size="medium" />
+        <select id="ACLF_MCP" name="ACLF_MCP" class="dews-ui-multicodepicker basic" data-dews-code-field="PARAM_CD" data-dews-text-field="PARAM_NAME" data-dews-help-title="능력단위 도움창" data-dews-help-custom="false" data-dews-help-size="medium" />
       </span>
     </li>
   </ul>
@@ -116,32 +116,7 @@
 
     /*70cee10b-3521-442d-82f0-480b335cebfb*/ //# sourceURL=CDMJIM00100_Main.js
     self.USE_DROP.value("YES");
-    var dialog = dews.ui.dialog("MAIN_DIALOG",
-        {
-            url: "~/view/HR/CDMJIM00100_Modal2",
-            title: "분류 도움창",
-            width: 500,
-            height: 500,
-            button: 'applyAndClose',
-            ok: function (data) {
-                //     dialog.on('closed', function (e) {
-                //         console.log(e);
-                //         console.log("data ----- > " + data);
-                //         var row = self.MCP_GRID.getCheckedRows();
-                //         console.log(row);
-                //         self.MAIN_DIALOG.setData(row);
-                //     })
-                console.log("받아온 데이터 " + data[0].PARAM_CD + data[0].PARAM_NAME);
-                self.MLSFC_MCP.setData({ param_cd: data[0].PARAM_CD, param_name: data[0].PARAM_NAME });
-    
-                // self.setData(data);
-                //     // self.EQP_NO.setData({ EQP_NO: data.EQP_NO, EQP_NM: data.EQP_NM });
-                //     // self.EQP_CSF_CD.value(data.EQP_CSF_CD);
-                //     // self.EQP_NM.text(data.EQP_NM);
-                //     // self.GridMST.setCellValue(self.GridMST.select(), 'EQP_NO', data.EQP_NO);
-                //     // self.GridMST.setCellValue(self.GridMST.select(), 'EQP_NM', data.EQP_NM);
-            }
-        });
+    var dialog;
     
     
     
@@ -182,7 +157,12 @@
               USE_YN: self.USE_DROP.value(),
               JOB_FG: self.FG_DROP.value(),
               lst_ver_yn: self.$lst_ver_yn.prop('checked'),
-              LCLAS_CD: self.LCLAS_MCP.codes().join('|')
+              LCLAS_CD: self.LCLAS_MCP.codes().join('|'),
+              MLSFC_CD: self.MLSFC_MCP.codes().join('|'),
+              S_CSF_CD: self.S_CSF_MCP.codes().join('|'),
+              TCLF_CD: self.TCLF_MCP.codes().join('|'),
+              ACLF_CD: self.ACLF_CD_MCP.codes().join('|'),
+              ACLF_LV: self.ACLF_MCP.codes().join('|')
             };
           }
         }
@@ -341,10 +321,10 @@
         self.mainButtons.delete.useDefaultConfirm = false;
     
         // TODO: 그리드에서 체크된 항목을 삭제합니다.
-        if (self.main_grid.getCheckedIndex().length == 0) {
-            dews.alert('선택된 데이터가 없습니다.', 'warning');
-            return false;
-        }
+        // if (self.main_grid.getCheckedIndex().length == 0) {
+        //     dews.alert('선택된 데이터가 없습니다.', 'warning');
+        //     return false;
+        // }
         self.main_grid.removeRow(self.main_grid.getCheckedIndex());
     
         // TODO: 그리드에 선택된 항목을 삭제합니다.
@@ -437,27 +417,6 @@
         }).no(function () {
             dews.ui.snackbar.warning('취소되었습니다.');
         });
-        //
-        // 서비스 파라미터명과 데이터소스명이 다른경우
-        // dews.confirm('수정된 데이터를 저장하시겠습니까 ? ', 'question').yes(function () {
-        //     dews.api.post(dews.url.getApiUrl('HR', 'Cdmjim00100_SubGrid_Service', 'cdmjim00100_Subgrid_Save'), {
-        //         async: false,
-        //         data: {
-        //             //ServiceParameterName : ServiceParameterValue
-        //             saveData:
-        //                 JSON.stringify({
-        //                     "COMPANY_CD": self.user.companyCode,
-        //                     "ACLF_NO": self.LEFT_DS.getDirtyData().ACLF_NO
-        //                 })
-        //         }
-        //     }).done(function (data) {
-        //         dews.ui.snackbar.ok('자료가 정상적으로 저장되었습니다.');
-        //         // self.MAIN_DS.read();
-        //     }).fail(function (xhr, status, error) {
-        //         //dews.error('저장이 실패하였습니다.', 'ico1');
-        //         dews.ui.snackbar.error(error);
-        //     });
-        // });
     
     });
     self.FG_DROP.setDataSource(self.job_fg);
@@ -465,7 +424,12 @@
     self.LCLAS_MCP.on('codedialog', /*187062f6-2e49-4683-a614-436f80948ec5*/ function (e) {
         // 코드피커 다이얼로그가 실행될 때 호출
         console.log('LCLAS_MCP Codepicker-codedialog event');
-    
+        createDialog("LCLAS_CD")
+        self.MLSFC_MCP.clear();
+        self.S_CSF_MCP.clear();
+        self.TCLF_MCP.clear();
+        self.ACLF_CD_MCP.clear();
+        self.ACLF_MCP.clear();
         var initData = {
             params: {
                 param_name: "LCLAS_NM",
@@ -475,10 +439,16 @@
     
         dialog.setInitData(initData);
         dialog.open();
-        dialog.ok(self.MLSFC_MCP.setData(data));
-        // dialog.ok(self.MCP_GRID.getCheckedRows());
+    
+    
     });
     self.MLSFC_MCP.on('codedialog', /*218cc958-2505-4969-b084-3fa724f4d6a5*/ function (e) {
+    
+        createDialog("MLSFC_CD");
+        self.S_CSF_MCP.clear();
+        self.TCLF_MCP.clear();
+        self.ACLF_CD_MCP.clear();
+        self.ACLF_MCP.clear();
         // 코드피커 다이얼로그가 실행될 때 호출
         console.log('MLSFC_MCP Codepicker-codedialog event');
     
@@ -494,6 +464,12 @@
     });
     self.S_CSF_MCP.on('codedialog', /*2a9affdd-8dea-48be-95c4-d312b276c2d7*/ function (e) {
         // 코드피커 다이얼로그가 실행될 때 호출
+    
+        createDialog("S_CSF_CD")
+        self.TCLF_MCP.clear();
+        self.ACLF_CD_MCP.clear();
+        self.ACLF_MCP.clear();
+    
         console.log('S_CSF_MCP Codepicker-codedialog event');
     
         var initData = {
@@ -507,6 +483,13 @@
         dialog.open();
     });
     self.TCLF_MCP.on('codedialog', /*b1896e7d-46a5-4fbf-84f3-1939af3228ea*/ function (e) {
+    
+    
+    
+        createDialog("TCLF_CD")
+        self.ACLF_CD_MCP.clear();
+        self.ACLF_MCP.clear();
+    
         // 코드피커 다이얼로그가 실행될 때 호출
         console.log('TCLF_MCP Codepicker-codedialog event');
     
@@ -524,6 +507,9 @@
         // 코드피커 다이얼로그가 실행될 때 호출
         console.log('ACLF_CD_MCP Codepicker-codedialog event');
     
+        createDialog("ACLF_CD")
+        self.ACLF_CD_MCP.clear();
+    
         var initData = {
             params: {
                 param_name: "ACLF_NM",
@@ -537,6 +523,8 @@
     self.ACLF_MCP.on('codedialog', /*ee176f96-8b79-49f9-96bf-168bea06e3eb*/ function (e) {
         // 코드피커 다이얼로그가 실행될 때 호출
         console.log('ACLF_CD_MCP Codepicker-codedialog event');
+        self.ACLF_MCP.clear();
+        createDialog("ACLF_LV")
     
         var initData = {
             params: {
@@ -1189,6 +1177,45 @@
     
     
     /*46447d39-a189-4af8-8358-3b129af29437*/ var self = this;
+    
+    function createDialog(variant) {
+    
+        dialog = dialog = dews.ui.dialog("MAIN_DIALOG",
+            {
+                url: "~/view/HR/CDMJIM00100_Modal2",
+                title: "분류 도움창",
+                width: 500,
+                height: 500,
+                button: 'applyAndClose',
+                ok: function (data) {
+                    switch (variant) {
+                        case "LCLAS_CD":
+                            self.LCLAS_MCP.setData(data);
+                            break;
+                        case "MLSFC_CD":
+                            self.MLSFC_MCP.setData(data);
+                            break;
+                        case "S_CSF_CD":
+                            self.S_CSF_MCP.setData(data);
+                            break;
+                        case "TCLF_CD":
+                            self.TCLF_MCP.setData(data);
+                            break;
+                        case "ACLF_CD":
+                            self.ACLF_CD_MCP.setData(data);
+                            break;
+                        case "ACLF_LV":
+                            self.ACLF_MCP.setData(data);
+                            break;
+                    }
+                }
+            });
+    
+    }
+    
+    
+    
+    
     
     
 

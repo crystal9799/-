@@ -1,6 +1,6 @@
-<!--##f1246a32-8901-42ec-99f7-b0d88988b690##-->
+<!--##2356436b-7b61-47fd-94c1-c8dde8af85ad##-->
 <!--##CDMJIM00100_Modal##-->
-<!--##lyW6KFIhUaNBAAKIBOsSQl20R3dOx+ZdWtBa0Um8Dyh0JrTnsDWSqx2emPOxuUm8##-->
+<!--##EomJP/JBe4FdX1Q0iRQjmLf52xCyYivJEuGShFQg13M0jRhNovujaV3EiUALAx7u##-->
 <!--
   DEWS UI/UX IDE - Build Result - v1.5
   # PageID: CDMJIM00100_Modal
@@ -190,13 +190,16 @@
     	var index = self.KND_GRID.select();
         var target = null;
         switch(index){
-            case 1: target = "MLSFC_CD";
+            case 1: target = "MLSFC_NM";
                 console.log(target);
                 break;
             case 2: target = "S_CSF_NM";
                 console.log(target);
                 break;
             case 3: target = "TCLF_NM";
+                console.log(target);
+                break;
+            case 4: target = "ACLF_NM";
                 console.log(target);
                 break;
         }
@@ -317,7 +320,8 @@
     
     self.$Search_Info.on('keydown', /*cbe25a3f-fa11-4a08-a0c8-65c729572da3*/ function (e) {
         if (e.keyCode == "13") {
-            FGINF_DS.read();
+            self.FGINF_DS.read();
+            self.Search_Info.text('');
         }
     });
     self.$add_btn.on('click', /*c4ef9a55-d674-40d2-aaaa-133eb1ce97ac*/ function (e) {

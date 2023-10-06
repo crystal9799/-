@@ -45,7 +45,7 @@
 		AND START_DT <= #{P_END_DT}
 		AND END_DT >= #{P_START_DT}
 		]]>
-		AND ATHZ_ST_CD != '4'
+		AND ((ATHZ_ST_CD != '4') OR (ATHZ_ST_CD != '1') OR (ATHZ_ST_CD != '2') OR (ATHZ_ST_CD != '3'))   
 	</select>
 
 	<select id="getUserInfo" parameterType="HashMap"

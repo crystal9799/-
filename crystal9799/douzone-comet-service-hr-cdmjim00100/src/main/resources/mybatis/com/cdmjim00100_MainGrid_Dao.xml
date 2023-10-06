@@ -61,7 +61,7 @@
 				 	#{item}
 				 </foreach> 				
 			</if>
-			<if test='valid_TCLF_ARR'>
+			<if test='!valid_TCLF_ARR'>
 				AND TCLF_CD IN
 				<foreach item="item" index="index" collection="TCLF_CD" open="(" separator="," close=")">
 				 	#{item}

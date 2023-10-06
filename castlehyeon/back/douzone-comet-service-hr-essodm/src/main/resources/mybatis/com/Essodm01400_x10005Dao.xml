@@ -6,12 +6,27 @@
 	namespace="com.douzone.comet.service.hr.essodm.dao.Essodm01400_x10005Dao">
 
 	<select id="selectMaxReqNo" resultType="int">
-		SELECT COALESCE(MAX(TO_NUMBER(SUBSTR(REQ_NO, -4))), 0) AS MAX_NUMBER
-		FROM HR_OFFAPPLY_MST_X10005
-		WHERE TO_NUMBER(SUBSTR(REQ_NO, 4, 4)) = EXTRACT(YEAR FROM SYSDATE)
-		AND TO_NUMBER(SUBSTR(REQ_NO, 8, 2)) = EXTRACT(MONTH FROM SYSDATE)
-		AND TO_NUMBER(SUBSTR(REQ_NO, 6, 2)) = EXTRACT(DAY FROM SYSDATE)
+		SELECT
+		COALESCE(MAX(TO_NUMBER(SUBSTR(REQ_NO, -4))), 0) AS MAX_NUMBER
+		FROM
+		HR_OFFAPPLY_MST_X10005
+		WHERE TO_NUMBER(SUBSTR(REQ_NO, 4, 4)) =
+		EXTRACT(YEAR FROM SYSDATE)
+		AND TO_NUMBER(SUBSTR(REQ_NO, 8, 2)) =
+		EXTRACT(MONTH FROM SYSDATE)
+		AND TO_NUMBER(SUBSTR(REQ_NO, 10, 2)) =
+		EXTRACT(DAY FROM SYSDATE)
 
+	</select>
+
+	<select id="selectMaxDocNo" resultType="int">
+		SELECT
+		COALESCE(MAX(TO_NUMBER(SUBSTR(ATHZ_DOC_CD, 17, 4))), 0) AS MAX_NUMBER
+		FROM
+		HR_OFFAPPLY_MST_X10005
+		WHERE SUBSTR(ATHZ_DOC_CD, 1, 10) = 'EWP_HR_GWA'
+		AND TO_NUMBER(SUBSTR(ATHZ_DOC_CD, 11, 6)) =
+		EXTRACT(YEAR FROM SYSDATE) * 100 + EXTRACT(MONTH FROM SYSDATE)
 	</select>
 
 	<select id="hasContainSamePeriod" parameterType="HashMap"
@@ -34,45 +49,118 @@
 	<select id="getUserInfo" parameterType="HashMap"
 		resultType="com.douzone.comet.service.hr.essodm.models.Essodm01400_X10005_UserInfoModel">
 		SELECT EMP_NO, KOR_NM, PSTN_CD, OGRP_CD, BIZAREA_CD,
-		BIZAREA_NM, ORG, POSI_CD, GRP_NM, DEPT_NM, PATH
+		BIZAREA_NM, ORG, POSI_CD, GRP_NM, DEPT_NM, DEPT_CD, PATH
 		FROM (
 		SELECT
-		HEM.EMP_NO EMP_NO,
+		HEM.EMP_NO
+		EMP_NO,
 		HEM.KOR_NM KOR_NM,
 		HEM.PSTN_CD PSTN_CD,
-		HEM.OGRP_CD OGRP_CD,
+		HEM.OGRP_CD
+		OGRP_CD,
 		HEM.BIZAREA_CD BIZAREA_CD,
 		MBM.BIZAREA_NM BIZAREA_NM,
 		COMET.FN_HR_UP_DEPT_NM2(HEM.COMPANY_CD, HEM.DEPT_CD, SYSDATE) AS ORG,
 		HEM.POSI_CD POSI_CD,
 		MGM.GRP_NM GRP_NM,
 		MDM.DEPT_NM DEPT_NM,
+		MDM.DEPT_CD
+		DEPT_CD,
 		MDM.DEPT_START_DT DEPT_START_DT,
 		ORG_TB.PATH PATH
-		FROM HR_EMP_MST HEM
-		JOIN MA_BIZAREA_MST MBM ON HEM.COMPANY_CD = MBM.COMPANY_CD AND
+		FROM
+		HR_EMP_MST HEM
+		JOIN MA_BIZAREA_MST MBM ON HEM.COMPANY_CD =
+		MBM.COMPANY_CD AND
 		HEM.BIZAREA_CD = MBM.BIZAREA_CD
-		JOIN MA_GROUP_MST MGM ON HEM.COMPANY_CD = MGM.COMPANY_CD AND
+		JOIN MA_GROUP_MST MGM
+		ON HEM.COMPANY_CD
+		= MGM.COMPANY_CD AND
 		MGM.MENUGRP_CD = HEM.BIZAREA_CD
-		JOIN MA_DEPT_MST MDM ON HEM.COMPANY_CD = MDM.COMPANY_CD AND HEM.DEPT_CD =
+		JOIN MA_DEPT_MST
+		MDM ON HEM.COMPANY_CD = MDM.COMPANY_CD AND HEM.DEPT_CD
+		=
 		MDM.DEPT_CD
 		LEFT OUTER JOIN (
 		SELECT
-		C.DEPT_NM || '/' || B.DEPT_NM || '/' || A.DEPT_NM AS PATH,
+		C.DEPT_NM || '/' || B.DEPT_NM ||
+		'/' ||
+		A.DEPT_NM AS PATH,
 		A.DEPT_START_DT DEPT_START_DT,
-		A.DEPT_CD DEPT_CD
-		FROM MA_DEPT_MST A
-		LEFT JOIN MA_DEPT_MST B ON A.UP_DEPT_CD = B.DEPT_CD AND B.COMPANY_CD =
+		A.DEPT_CD
+		DEPT_CD
+		FROM
+		MA_DEPT_MST A
+		LEFT JOIN MA_DEPT_MST B ON A.UP_DEPT_CD =
+		B.DEPT_CD AND
+		B.COMPANY_CD =
 		A.COMPANY_CD
-		LEFT JOIN MA_DEPT_MST C ON B.UP_DEPT_CD = C.DEPT_CD AND C.COMPANY_CD =
+		LEFT JOIN MA_DEPT_MST C ON
+		B.UP_DEPT_CD =
+		C.DEPT_CD AND C.COMPANY_CD =
 		A.COMPANY_CD
-		WHERE A.COMPANY_CD = #{P_COMPANY_CD}
+		WHERE
+		A.COMPANY_CD =
+		#{P_COMPANY_CD}
 		) ORG_TB ON HEM.DEPT_CD = ORG_TB.DEPT_CD
-		WHERE HEM.COMPANY_CD = #{P_COMPANY_CD}
+		WHERE
+		HEM.COMPANY_CD = #{P_COMPANY_CD}
 		AND HEM.EMP_NO = #{P_EMP_NO}
-		ORDER BY DEPT_START_DT DESC
+		ORDER BY
+		DEPT_START_DT DESC
 		)
 		WHERE ROWNUM = 1
+	</select>
+
+	<select id="selectEssodm01400_X10005ModelByPK"
+		parameterType="HashMap"
+		resultType="com.douzone.comet.service.hr.essodm.models.Essodm01400_X10005Model">
+		SELECT
+		HOMX.COMPANY_CD,
+		HOMX.REQ_NO,
+		HOMX.REQ_DT,
+		HOMX.DNLGB_CD,
+		HOMX.DNL_CD,
+		HOMX.START_DT,
+		HOMX.END_DT,
+		HOMX.BIZAREA_CD,
+		HOMX.ATHZ_DOC_CD,
+		HOMX.ATHZ_ST_CD,
+		HOMX.REQ_EMP_NO,
+		HEM2.REQ_KOR_NM,
+		HOMX.REASON_DC,
+		HEM.EMP_NO,
+		HEM.KOR_NM,
+		HEM.PSTN_CD,
+		HEM.OGRP_CD,
+		HEM.DEPT_CD,
+		(SELECT
+		COMET.FN_HR_UP_DEPT_NM2(HEM.COMPANY_CD, HEM.DEPT_CD
+		, SYSDATE)
+		FROM
+		DUAL) AS ORG,
+		HEM.POSI_CD
+		FROM HR_OFFAPPLY_MST_X10005 HOMX
+		LEFT JOIN
+		HR_EMP_MST HEM
+		ON HOMX.COMPANY_CD
+		= HEM.COMPANY_CD AND
+		HOMX.EMP_NO =
+		HEM.EMP_NO AND HOMX.DEPT_CD =
+		HEM.DEPT_CD
+		LEFT JOIN
+		(SELECT
+		COMPANY_CD,
+		DEPT_CD, EMP_NO, KOR_NM REQ_KOR_NM
+		FROM
+		HR_EMP_MST) HEM2
+		ON
+		HOMX.COMPANY_CD = HEM2.COMPANY_CD AND HOMX.REQ_EMP_NO = HEM2.EMP_NO
+		AND HOMX.DEPT_CD = HEM2.DEPT_CD
+		WHERE HOMX.DNLGB_CD = '400'
+		AND
+		HOMX.COMPANY_CD = #{P_COMPANY_CD}
+		AND HOMX.REQ_NO = #{P_REQ_NO}
 	</select>
 
 	<select id="selectEssodm01400_X10005ModelList"
@@ -123,10 +211,8 @@
 		WHERE HOMX.DNLGB_CD = '400'
 		AND
 		HOMX.COMPANY_CD = #{P_COMPANY_CD}
-		<if
-			test='P_START_DT !=null and P_START_DT !="" and P_END_DT !=null and P_END_DT !=""'>
-			AND START_DT BETWEEN #{P_START_DT} AND #{P_END_DT}
-		</if>
+		<!-- <if test='P_START_DT !=null and P_START_DT !="" and P_END_DT !=null 
+			and P_END_DT !=""'> AND START_DT BETWEEN #{P_START_DT} AND #{P_END_DT} </if> -->
 		<if
 			test='P_START_DT !=null and P_START_DT !="" and P_END_DT !=null and P_END_DT !=""'>
 			AND END_DT BETWEEN #{P_START_DT} AND #{P_END_DT}
@@ -197,9 +283,9 @@
 			<if test='P_START_DT != null and P_START_DT != ""'>START_DT = #{P_START_DT},</if>
 			<if test='P_END_DT != null and P_END_DT != ""'>END_DT = #{P_END_DT},</if>
 			<if test='P_REQ_DY != null and P_REQ_DY != ""'>REQ_DY = #{P_REQ_DY},</if>
-			<if test='P_REASON_DC != null and P_REASON_DC != ""'>REASON_DC = #{P_REASON_DC}</if>
-			<if test='P_UPDATE_ID != null and P_UPDATE_ID != ""'>UPDATE_ID = #{P_UPDATE_ID}</if>
-			<if test='P_UPDATE_IP != null and P_UPDATE_IP != ""'>UPDATE_IP = #{P_UPDATE_IP}</if>
+			<if test='P_REASON_DC != null and P_REASON_DC != ""'>REASON_DC = #{P_REASON_DC},</if>
+			<if test='P_UPDATE_ID != null and P_UPDATE_ID != ""'>UPDATE_ID = #{P_UPDATE_ID},</if>
+			<if test='P_UPDATE_IP != null and P_UPDATE_IP != ""'>UPDATE_IP = #{P_UPDATE_IP},</if>
 			<if test='P_UPDATE_DTS != null and P_UPDATE_DTS != ""'>UPDATE_DTS = #{P_UPDATE_DTS}</if>
 
 		</set>
@@ -208,10 +294,95 @@
 		AND REQ_NO = #{P_REQ_NO}
 	</update>
 
-	<delete id="deleteEssodm01400_X10005Model">
-		DELETE
-		FROM @{dzparam_dbname}[tableName]
+	<update parameterType="HashMap"
+		id="approveEssodm01400_X10005Model">
+		UPDATE HR_OFFAPPLY_MST_X10005
+		<set>
+			<if test='P_ATHZ_DOC_CD != null and P_ATHZ_DOC_CD != ""'>ATHZ_DOC_CD = #{P_ATHZ_DOC_CD},</if>
+			<if test='P_ATHZ_ST_CD != null and P_ATHZ_ST_CD != ""'>ATHZ_ST_CD = #{P_ATHZ_ST_CD},</if>
+			<if test='P_UPDATE_ID != null and P_UPDATE_ID != ""'>UPDATE_ID = #{P_UPDATE_ID},</if>
+			<if test='P_UPDATE_IP != null and P_UPDATE_IP != ""'>UPDATE_IP = #{P_UPDATE_IP},</if>
+			<if test='P_UPDATE_DTS != null and P_UPDATE_DTS != ""'>UPDATE_DTS = #{P_UPDATE_DTS}</if>
+		</set>
 		WHERE
-		[columnName] = [columnValue]
+		COMPANY_CD = #{P_COMPANY_CD}
+		AND REQ_NO = #{P_REQ_NO}
+	</update>
+
+	<delete id="deleteEssodm01400_X10005Model"
+		parameterType="HashMap">
+		DELETE FROM HR_OFFAPPLY_MST_X10005
+		WHERE COMPANY_CD =
+		#{P_COMPANY_CD}
+		AND REQ_NO = #{P_REQ_NO}
 	</delete>
+
+
+	<resultMap id="chartDataResultMap"
+		type="com.douzone.comet.service.hr.essodm.models.ChartData">
+		<result property="month" column="MONTH" />
+		<result property="count" column="COUNT_PER_MONTH" />
+	</resultMap>
+
+	<select id="selectDataByCondition"
+		resultMap="chartDataResultMap">
+		SELECT TO_CHAR(TO_DATE(START_DT, 'YYYY-MM-DD'), 'YYYY-MM')
+		AS MONTH,
+		COUNT(*) AS COUNT_PER_MONTH
+		FROM HR_OFFAPPLY_MST_X10005
+		WHERE
+		TO_DATE(START_DT, 'YYYY-MM-DD') BETWEEN TO_DATE('2023-01-01',
+		'YYYY-MM-DD') AND TRUNC(SYSDATE)
+		AND COMPANY_CD = #{P_COMPANY_CD}
+		AND
+		DEPT_CD = #{P_DEPT_CD}
+		AND BIZAREA_CD = #{P_BIZAREA_CD}
+		AND DNLGB_CD =
+		400
+		AND ATHZ_ST_CD = 4
+		GROUP BY TO_CHAR(TO_DATE(START_DT, 'YYYY-MM-DD'),
+		'YYYY-MM')
+		ORDER BY TO_CHAR(TO_DATE(START_DT, 'YYYY-MM-DD'), 'YYYY-MM')
+	</select>
+
+	<!-- OffApply 클래스와 매핑되는 resultMap 정의 -->
+	<resultMap id="offApplyResultMap"
+		type="com.douzone.comet.service.hr.essodm.models.OffApply">
+		<id property="reqNo" column="REQ_NO" />
+		<result property="startDate" column="START_DT" />
+		<result property="endDate" column="END_DT" />
+	</resultMap>
+
+	<!-- 데이터베이스에서 데이터를 가져오는 쿼리 -->
+	<select id="selectDataByWeekCondition"
+		resultMap="offApplyResultMap">
+		WITH DateRange AS (
+		SELECT
+		TO_CHAR(NEXT_DAY(TRUNC(SYSDATE, 'D'), '월요일'),
+		'YYYYMMDD') AS StartOfWeek,
+		TO_CHAR(NEXT_DAY(TRUNC(SYSDATE, 'D') + 4,
+		'금요일'), 'YYYYMMDD') AS
+		EndOfWeek
+		FROM DUAL
+		)
+		SELECT
+		o.REQ_NO,
+		o.START_DT,
+		o.END_DT
+		FROM
+		HR_OFFAPPLY_MST_X10005 o
+		JOIN
+		DateRange dr
+		ON
+		<![CDATA[
+		TO_DATE(o.START_DT, 'YYYYMMDD') <= TO_DATE(dr.EndOfWeek, 'YYYYMMDD')
+		AND TO_DATE(o.END_DT, 'YYYYMMDD') >= TO_DATE(dr.StartOfWeek, 'YYYYMMDD')
+		]]>
+		AND o.dept_cd = #{P_DEPT_CD}
+		AND o.bizarea_cd = #{P_BIZAREA_CD}
+		AND o.company_cd = #{P_COMPANY_CD}
+		AND o.DNLGB_CD = 400
+		AND o.ATHZ_ST_CD = 4
+		
+	</select>
 </mapper>

@@ -1,0 +1,146 @@
+<!--##44bba468-c017-4c6d-bd1f-a290cc6527bd##-->
+<!--##PAMODM01800_bizCode_X10005##-->
+<!--##xo82tKkkNbdJalhQm1oshfelaPynCxI6vE3d8y8XSXs5NF8gSt21J+9qq+L7W5+eWGNJ5vVWZeVqGb/Y/NBeHQ==##-->
+<!--
+  DEWS UI/UX IDE - Build Result - v1.5
+  # PageID: PAMODM01800_bizCode_X10005
+  # PageTitle: 계약상태 도움창
+  # Server: http://localhost:8090/
+-->
+<!--
+
+-->
+
+<div class="dews-dialog-contents-area" id="">
+  <div class="dews-ui-container-panel" data-dews-fit-bottom="true">
+    <div class="dews-container-item" data-dews-position="normal">
+      <div id="grid1" class="dews-ui-grid"></div>
+    </div>
+  </div>
+</div>
+
+<style>
+    
+</style>
+
+
+
+<script>
+  dews.ready(function () {
+    var self = this;
+    self.version = self.version || {};
+    self.version.view='1.0';
+
+
+    /*7fc97d16-ddd3-48ea-853d-5ee6474250cd*/ var thisDlg = dews.ui.dialog(self.$content.prop("id"));
+    
+    
+    
+    self.cont_st_ds_ct = dews.ui.dataSource('cont_st_ds_ct', {
+      grid: true,
+      transport: {
+        read: {
+          url: dews.url.getApiUrl('HR', 'PamadmServiceX10012', 'pamadm01900_ma_cont_st'),
+          data: function () {
+            return {
+              field_cd: 'S00070',
+              module_cd: 'MA'
+            };
+          }
+        }
+      },
+      schema: {
+        model: {
+          fields: [
+            { field: 'SYSDEF_CD', editable: false, dataType: 'string' }, 
+            { field: 'SYSDEF_NM', editable: false, dataType: 'string' }
+          ]
+    
+        }
+      }
+    });
+    self.cont_st_ds_odm = dews.ui.dataSource('cont_st_ds_odm', {
+      grid: true,
+      transport: {
+        read: {
+          url: dews.url.getApiUrl('HR', 'HRPamodm01800_X10005Service', 'list_bizarea_cd')
+        }
+      },
+      schema: {
+        model: {
+          fields: [
+            { field: 'DTL_ADDR', editable: false, dataType: 'string' }, 
+            { field: 'VAT_BIZAREA_VAT_CD', editable: false, dataType: 'string' }, 
+            { field: 'BASE_ADDR', editable: false, dataType: 'string' }, 
+            { field: 'BIZAREA_NM', editable: false, dataType: 'string' }, 
+            { field: 'BIZR_NO', editable: false, dataType: 'string' }, 
+            { field: 'BIZAREA_CD', editable: false, dataType: 'string' }
+          ]
+    
+        }
+      }
+    });
+    
+    
+    dews.ui.grid(self.$grid1, {
+      dataSource: self.cont_st_ds_odm,
+      rowNo: false,
+      selectable: true,
+      copyMode: 'cell',
+      columns: [
+        {
+          field: 'DTL_ADDR',
+          title: '상세주소',
+          width: 90,
+          align: 'left',
+          visible: false
+        },
+        {
+          field: 'VAT_BIZAREA_VAT_CD',
+          title: '부가세신고사업장코드',
+          width: 80,
+          visible: false
+        },
+        {
+          field: 'BASE_ADDR',
+          title: '기본주소',
+          width: 90,
+          align: 'left',
+          visible: false
+        },
+        {
+          field: 'BIZAREA_NM',
+          title: '사업장명',
+          width: 90,
+          align: 'left'
+        },
+        {
+          field: 'BIZAREA_CD',
+          title: '사업장코드',
+          width: 80
+        },
+        {
+          field: 'BIZR_NO',
+          title: '사업자등록번호',
+          width: 60
+        }
+      ],
+      fixed: {
+        colCount: 0,
+        rightColCount: 0
+      }
+    });
+    
+    
+    
+    
+    /*b480bc46-5075-4494-95f6-a1efdef7890b*/ thisDlg.buttons.ok.on('click', function (e) {
+        thisDlg.ok(self.grid1.dataItems(self.grid1.getCheckedIndex()));
+    });
+    
+    
+
+  
+  });
+
+</script>

@@ -1,0 +1,225 @@
+<!--##20772c78-c495-4449-ad6f-765aabc1173d##-->
+<!--##PAMPRG00100_COPY##-->
+<!--##p155faESd+j3xeubCZ9dqg7yi1KIilsh67ZMQ+709CE3e2N8eqskwlbEsewx7Mx+##-->
+<!--
+  DEWS UI/UX IDE - Build Result - v1.5
+  # PageID: PAMPRG00100_COPY
+  # PageTitle: 종전복사
+  # Server: http://localhost:8090/
+-->
+<!--
+
+-->
+
+<div class="dews-dialog-contents-area" id="id">
+  <div class="dews-button-group" style="text-align: right;">
+    <h3 id="tit1" class="dews-ui-title">기준승급년월</h3>
+  </div>
+  <div id="searchCondition" class="dews-ui-condition-panel" data-dews-columns="1" data-dews-label-width="100">
+    <ul class="required-area">
+      <li>
+        <label class="dews-ui-multilingual">사업장</label>
+        <span>
+          <select id="bizarea_cd" name="bizarea_cd" class="dews-ui-dropdownlist required padding:6px 10px" data-dews-value-field="BIZAREA_CD" data-dews-text-field="BIZAREA_NM" data-dews-show-tooltip="true" style="width: 150px;" data-dews-show-value-tooltip="true" data-dews-use-numkey="false"></select>
+        </span>
+      </li>
+      <li>
+        <label class="dews-ui-multilingual">기준년월</label>
+        <span>
+          <input type="text" id="mpPROMO_YEAR_MONTH" name="mpPROMO_YEAR_MONTH" class="dews-ui-monthpicker required" style="width: 120px;" />
+          <button id="aply_ym_btn" class="dews-ui-button ico-search"></button>
+        </span>
+      </li>
+    </ul>
+  </div>
+  <div class="dews-button-group" style="text-align: right;">
+    <h3 id="tit11" class="dews-ui-title">대상승급년월</h3>
+  </div>
+  <div id="searchCondition1" class="dews-ui-condition-panel" data-dews-columns="1" data-dews-label-width="100">
+    <ul class="required-area">
+      <li>
+        <label class="dews-ui-multilingual">사업장</label>
+        <span>
+          <select id="bizarea_copy" name="bizarea_copy" class="dews-ui-dropdownlist required" readonly="readonly" data-dews-value-field="BIZAREA_CD" data-dews-text-field="BIZAREA_NM" data-dews-show-tooltip="true" style="width: 150px;" data-dews-show-value-tooltip="true" data-dews-use-numkey="false"></select>
+        </span>
+      </li>
+      <li>
+        <label class="dews-ui-multilingual">대상년월</label>
+        <span>
+          <input type="text" id="targetYearMonth" name="targetYearMonth" class="dews-ui-monthpicker required" style="width: 150px;" />
+        </span>
+      </li>
+    </ul>
+  </div>
+</div>
+
+<style>
+    
+</style>
+
+
+
+<script>
+  dews.ready(function () {
+    var self = this;
+    self.version = self.version || {};
+    self.version.view='1.0';
+
+
+    /*4856536e-06f2-446f-baab-db4d8ab63754*/ //# sourceURL=PAMPRG00100_COPY.js
+    var thisdialog = dews.ui.dialog(self.$content.prop("id"));
+    
+    self.bizarea_cd.text(self.initData.bizarea_cd); //처음에만 값 받아옴
+    self.mpPROMO_YEAR_MONTH.value(self.initData.mpPROMO_YEAR_MONTH);
+    
+    var bizarea_cd = self.bizarea_cd.value();
+    self.bizarea_copy.value(bizarea_cd);
+    
+    function copyBeforeList() {
+        dews.api.get(dews.url.getApiUrl("HR", "HRPamprg00100_X10005Service", "copy_BeforeList"), {
+            async: false,
+            data: {
+                mpPROMO_YEAR_MONTH: self.mpPROMO_YEAR_MONTH.value(),
+                targetYearMonth: self.targetYearMonth.value(),
+                bizarea_cd: self.bizarea_cd.value()
+            }
+        }).done(function (data) {
+            dews.ui.snackbar.ok("종전자료복사가 완료되었습니다.");
+            self.targetYearMonth.value(data.STD_YM);
+            dews.ui.mainbuttons.search.click();
+        }).fail(function (message) {
+            dews.ui.snackbar.warning(message.responseJSON.message);
+        });
+    }
+    
+    function OpenDialogYm() {
+        var dialog = dews.ui.dialog("PAMPRG00100_YM", {
+            url: "/view/HR/PAMPRG00100_YM",
+            title: '년월조회',
+            initData: { bizarea_cd: self.bizarea_cd.value() },
+            size: "small",
+            height: 420,
+            buttons: 'applyAndClose',
+            ok: function (data) {
+                self.mpPROMO_YEAR_MONTH.value(data.STD_YM);
+                dews.ui.mainbuttons.search.click();
+            }
+        });
+        dialog.open();
+    }
+    
+    function deleteBeforeList() {
+        dews.api.get(dews.url.getApiUrl("HR", "HRPamprg00100_X10005Service", "delete_BeforeList"), {
+            async: false,
+            data: {
+                targetYearMonth: self.targetYearMonth.value(),
+                bizarea_cd: self.bizarea_cd.value()
+            }
+        }).done(function (data) {
+        }).fail(function (message) {
+            dews.ui.snackbar.warning(message.responseJSON.message);
+        });
+    }
+    
+    
+    function checkListExist() {
+        dews.api.get(dews.url.getApiUrl("HR", "HRPamprg00100_X10005Service", "checkListExist"), {
+            async: false,
+            data: {
+                targetYearMonth: self.targetYearMonth.value(),
+                bizarea_cd: self.bizarea_cd.value()
+            }
+        }).done(function (data) {
+            //console.log("data" + data); //true이면 데이터 바로 복사 , false 이면 기존데이터 삭제 후 
+            if (data) {
+                copyBeforeList(); //복사
+                self.dialog.close();
+            } else {
+                dews.confirm('기존 등록된 데이터가 삭제되고 등록됩니다.\n계속하시겠습니까?', "question")
+                    .yes(function () {
+                        deleteBeforeList(); //대상년월에 데이터가 있을 경우 삭제  
+                        copyBeforeList(); //복사
+                        thisdialog.ok(self.targetYearMonth.value()); //메인에 대상년월 전달
+                        self.dialog.close();
+    
+                    }).no(function () {
+                    });
+            }
+        }).fail(function (message) {
+            dews.ui.snackbar.warning(message.responseJSON.message);
+        });
+    }
+    
+    
+    
+    
+    
+    
+    
+    self.bizareaCd_ds = dews.ui.dataSource('bizareaCd_ds', {
+      transport: {
+        read: {
+          url: dews.url.getApiUrl('HR', 'HRPamprg00100_X10005Service', 'get_BizareaList')
+        }
+      },
+      schema: {
+        model: {
+          fields: [
+            { field: 'BIZAREA_CD', editable: false, type: 'string' }, 
+            { field: 'BIZAREA_NM', editable: false, type: 'string' }
+          ]
+    
+        }
+      }
+    });
+    self.bizareaCd_ds1 = dews.ui.dataSource('bizareaCd_ds1', {
+      schema: {
+        model: {
+          fields: [
+            { field: 'BIZAREA_CD', editable: false, type: 'string' }, 
+            { field: 'BIZAREA_NM', editable: false, type: 'string' }
+          ]
+    
+        }
+      },
+      data: [ {"BIZAREA_CD":"1000","BIZAREA_NM":"본점"},{"BIZAREA_CD":"2000","BIZAREA_NM":"부산점"},{"BIZAREA_CD":"4000","BIZAREA_NM":"여수점"},{"BIZAREA_CD":"522","BIZAREA_NM":"평화이즈"}]
+    });
+    
+    
+    self.bizarea_cd.setDataSource(self.bizareaCd_ds1);
+    self.bizarea_cd.on('change', /*e67a9a51-6fc8-4e08-824e-41bf4ea03259*/ function (e) {
+    
+        var bizarea_cd = self.bizarea_cd.value();
+        self.bizarea_copy.value(bizarea_cd);
+    });
+    self.$aply_ym_btn.on('click', /*c8db11b0-98b4-43b9-a7bf-92c47575ca3a*/ function (e) {
+        OpenDialogYm();
+    });
+    self.bizarea_copy.setDataSource(self.bizareaCd_ds1);
+    
+    
+    
+    
+    /*8719571d-39ab-4e2e-a100-b727b0610462*/ self.buttons.ok.on('click', function (e) {
+    
+        if (self.bizarea_cd.value() == self.bizarea_copy.value() && self.mpPROMO_YEAR_MONTH.value() == self.targetYearMonth.value()) {
+            dews.ui.snackbar.warning("대상 기준년월과 복사 기준년월이 동일합니다.");
+            return false;
+        }
+    
+        if (self.bizarea_cd.value() == null || self.bizarea_copy.value() == null || self.mpPROMO_YEAR_MONTH.value() == null || self.targetYearMonth.value() == null) { //등록된 데이터가 없으면
+            dews.ui.snackbar.warning("누락된 필수값이 있습니다.");
+            return false;
+        } else { // 등록된 데이터가 있으면
+            checkListExist(); // 복사로직 (기존 데이터 있을 경우 VS 없을 경우 처리 )
+        }
+    });
+    
+    
+    
+    
+
+  
+  });
+
+</script>

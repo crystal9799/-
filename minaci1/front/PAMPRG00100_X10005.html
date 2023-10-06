@@ -1,6 +1,6 @@
-<!--##3f684dce-b4dd-4bb1-ba00-b38278bca000##-->
+<!--##0eb373b6-e91f-4c14-926b-a66ba13861eb##-->
 <!--##PAMPRG00100_X10005##-->
-<!--##DCLvN5oSvmelCrlf2letTJprSxrzUYxD9E3mhdgPIo/OMyHHJLlg5PvjjZuETDIC##-->
+<!--##4g1yqtk/33CsQjq4LL7V6oxFRnZtmcI4DiNmUVdWiXcMlK70WWro2G8FIOxAjJoV##-->
 <!--
   DEWS UI/UX IDE - Build Result - v1.5
   # PageID: PAMPRG00100_X10005
@@ -451,8 +451,11 @@
             height: 390,
             buttons: 'applyAndClose',
             ok: function (data) {
+                console.log("data" + data);
                 self.mpPROMO_YEAR_MONTH.value(data); //대상년월 전달받아 바인딩
                 self.grid_ds.read();
+    
+                console.log("뭐야야야야");
             }
         });
         dialog.open();

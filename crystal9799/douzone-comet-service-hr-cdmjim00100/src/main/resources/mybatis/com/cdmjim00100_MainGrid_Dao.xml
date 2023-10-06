@@ -43,23 +43,41 @@
 			<if test='JOB_FG != null and JOB_FG != ""'>
 				AND JOB_FG = #{JOB_FG}				
 			</if>
-			<if test='LCLAS_CD != null and LCLAS_CD != ""'>
-				AND LCLAS_CD = #{LCLAS_CD}				
+			<if test='!valid_LCLAS_ARR'>
+				AND LCLAS_CD IN 
+				 <foreach item="item" index="index" collection="LCLAS_CD" open="(" separator="," close=")">
+				 	#{item}
+				 </foreach> 			
 			</if>
-			<if test='MLSFC_CD != null and MLSFC_CD != ""'>
-				AND MLSFC_CD = #{MLSFC_CD}				
+			<if test='!valid_MLSFC_ARR'>
+				AND MLSFC_CD IN
+				<foreach item="item" index="index" collection="MLSFC_CD" open="(" separator="," close=")">
+				 	#{item}
+				 </foreach> 				
 			</if>
-			<if test='S_CSF_CD != null and S_CSF_CD != ""'>
-				AND S_CSF_CD = #{S_CSF_CD}				
+			<if test='!valid_S_CSF_ARR'>
+				AND S_CSF_CD IN
+				<foreach item="item" index="index" collection="S_CSF_CD" open="(" separator="," close=")">
+				 	#{item}
+				 </foreach> 				
 			</if>
-			<if test='TCLF_CD != null and TCLF_CD != ""'>
-				AND TCLF_CD = #{TCLF_CD}				
+			<if test='valid_TCLF_ARR'>
+				AND TCLF_CD IN
+				<foreach item="item" index="index" collection="TCLF_CD" open="(" separator="," close=")">
+				 	#{item}
+				 </foreach> 				
 			</if>
-			<if test='ACLF_CD != null and ACLF_CD != ""'>
-				AND ACLF_CD = #{ACLF_CD}				
+			<if test='!valie_ACLF_CD_ARR'>
+				AND ACLF_CD IN
+				<foreach item="item" index="index" collection="ACLF_CD" open="(" separator="," close=")">
+				 	#{item}
+				 </foreach> 				
 			</if>
-			<if test='ACLF_LV != null and ACLF_LV != ""'>
-				AND ACLF_LV = #{ACLF_LV}				
+			<if test='!valid_ACLF_LV_ARR'>
+				AND ACLF_LV IN
+				<foreach item="item" index="index" collection="ACLF_LV" open="(" separator="," close=")">
+				 	#{item}
+				 </foreach> 				
 			</if>
 		</where>
 		ORDER BY VER_CD

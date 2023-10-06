@@ -1,6 +1,6 @@
-<!--##23301eb7-681e-4fa3-800b-485f0a7c9cf0##-->
+<!--##2d8612e2-fcd8-49af-9851-628205b6133c##-->
 <!--##PAMODM01800_X10005##-->
-<!--##5DEsf6vPsBUIfW7xbZQl/RvaPkmCotssLID0HuabpiaplYx28IQB4x4MNhHoQr7M##-->
+<!--##Ifc1i7CCGtuQ87gY7KzbzEEUZUGMDM+4cGMjkKEwK8VYpENO8MjK+ttJL3O0sDyZ##-->
 <!--
   DEWS UI/UX IDE - Build Result - v1.5
   # PageID: PAMODM01800_X10005
@@ -219,48 +219,48 @@
                 dews.ui.loading.show({ text: '조회중입니다.' });
     
                 // 각 데이터 아이템에 대한 Promise들을 저장할 배열
-                // const promises = data.map(item => {
-                //     return Promise.all([
-                //         get_org(item.COMPANY_CD, item.DEPT_CD),
-                //         get_ogrp_cd_pstn_cd(item.COMPANY_CD, item.OGRP_CD, item.PSTN_CD),
-                //         get_prmt_dt_retm_dt(item.COMPANY_CD, item.EMP_NO)
-                //     ]).then(([orgData, ogrpData, prmtData]) => {
-                //         // 각 Promise의 결과를 여기에서 처리
-                //         self.grid1.addRow();
-                //         self.grid1.setCellValue(self.grid1.select(), 'EMP_NO', item.EMP_NO);
-                //         self.grid1.setCellValue(self.grid1.select(), 'KOR_NM', item.KOR_NM);
-                //         self.grid1.setCellValue(self.grid1.select(), 'JNCO_DT', item.JNCO_DT);
-                //         self.grid1.setCellValue(self.grid1.select(), 'ORG', orgData);
-                //         self.grid1.setCellValue(self.grid1.select(), 'OGRP_CD', ogrpData[0]);
-                //         self.grid1.setCellValue(self.grid1.select(), 'PSTN_CD', ogrpData[1]);
-                //         self.grid1.setCellValue(self.grid1.select(), 'PRMT_DT', prmtData[0]);
-                //         self.grid1.setCellValue(self.grid1.select(), 'RETM_DT', prmtData[1]);
-                //         // 추가로 다른 cell 값들도 여기에서 설정할 수 있습니다.
-                //     });
-                // });
+                const promises = data.map(item => {
+                    return Promise.all([
+                        get_org(item.COMPANY_CD, item.DEPT_CD),
+                        get_ogrp_cd_pstn_cd(item.COMPANY_CD, item.OGRP_CD, item.PSTN_CD),
+                        get_prmt_dt_retm_dt(item.COMPANY_CD, item.EMP_NO)
+                    ]).then(([orgData, ogrpData, prmtData]) => {
+                        // 각 Promise의 결과를 여기에서 처리
+                        self.grid1.addRow();
+                        self.grid1.setCellValue(self.grid1.select(), 'EMP_NO', item.EMP_NO);
+                        self.grid1.setCellValue(self.grid1.select(), 'KOR_NM', item.KOR_NM);
+                        self.grid1.setCellValue(self.grid1.select(), 'JNCO_DT', item.JNCO_DT);
+                        self.grid1.setCellValue(self.grid1.select(), 'ORG', orgData);
+                        self.grid1.setCellValue(self.grid1.select(), 'OGRP_CD', ogrpData[0]);
+                        self.grid1.setCellValue(self.grid1.select(), 'PSTN_CD', ogrpData[1]);
+                        self.grid1.setCellValue(self.grid1.select(), 'PRMT_DT', prmtData[0]);
+                        self.grid1.setCellValue(self.grid1.select(), 'RETM_DT', prmtData[1]);
+                        // 추가로 다른 cell 값들도 여기에서 설정할 수 있습니다.
+                    });
+                });
     
-                // // 모든 Promise들이 완료되었을 때 로딩 화면을 숨깁니다.
-                // Promise.all(promises).then(() => {
-                //     dews.ui.loading.hide();
-                //     console.log("시간체크2");
-                // }).catch(error => {
-                //     // 오류 발생 시 처리 로직
-                //     dews.ui.loading.hide();
-                //     console.error(error);
-                // });
+                // 모든 Promise들이 완료되었을 때 로딩 화면을 숨깁니다.
+                Promise.all(promises).then(() => {
+                    dews.ui.loading.hide();
+                    console.log("시간체크2");
+                }).catch(error => {
+                    // 오류 발생 시 처리 로직
+                    dews.ui.loading.hide();
+                    console.error(error);
+                });
     
-                for (i = 0; i < data.length; i++) {
-                    self.grid1.addRow();
-                    self.grid1.setCellValue(self.grid1.select(), 'EMP_NO', data[i].EMP_NO);
-                    self.grid1.setCellValue(self.grid1.select(), 'KOR_NM', data[i].KOR_NM);
-                    self.grid1.setCellValue(self.grid1.select(), 'JNCO_DT', data[i].JNCO_DT);
+                // for (i = 0; i < data.length; i++) {
+                //     self.grid1.addRow();
+                //     self.grid1.setCellValue(self.grid1.select(), 'EMP_NO', data[i].EMP_NO);
+                //     self.grid1.setCellValue(self.grid1.select(), 'KOR_NM', data[i].KOR_NM);
+                //     self.grid1.setCellValue(self.grid1.select(), 'JNCO_DT', data[i].JNCO_DT);
     
-                    //추가 행 데이터 setCellValue
-                    get_org(data[i].COMPANY_CD, data[i].DEPT_CD);
-                    get_ogrp_cd_pstn_cd(data[i].COMPANY_CD, data[i].OGRP_CD, data[i].PSTN_CD);
-                    get_prmt_dt_retm_dt(data[i].COMPANY_CD, data[i].EMP_NO);
-                }
-                dews.ui.loading.hide();
+                //     //추가 행 데이터 setCellValue
+                //     get_org(data[i].COMPANY_CD, data[i].DEPT_CD);
+                //     get_ogrp_cd_pstn_cd(data[i].COMPANY_CD, data[i].OGRP_CD, data[i].PSTN_CD);
+                //     get_prmt_dt_retm_dt(data[i].COMPANY_CD, data[i].EMP_NO);
+                // }
+                // dews.ui.loading.hide();
             }
         });
         dialog.open();
@@ -702,136 +702,136 @@
         return year + '' + month + '' + day;
     }
     
-    function get_org(company_cd, dept_cd) {
-        dews.api.get(dews.url.getApiUrl("HR", "HRPamodm01800_X10005Service", "get_org"), {
-            async: false,
-            data: {
-                company_cd: company_cd,
-                dept_cd: dept_cd
-            }
-        }).done(function (data) {
-            self.grid1.setCellValue(self.grid1.select(), 'ORG', data);
-        }).fail(function (xhr, status, error) {
-            dews.error(xhr.responseJSON.message);
-        });
-    }
-    
-    function get_ogrp_cd_pstn_cd(company_cd, ogrp_cd, pstn_cd) {
-        dews.api.get(dews.url.getApiUrl("HR", "HRPamodm01800_X10005Service", "get_ogrp_cd_pstn_cd"), {
-            async: false,
-            data: {
-                company_cd: company_cd,
-                ogrp_cd: ogrp_cd,
-                pstn_cd: pstn_cd
-            }
-        }).done(function (data) {
-            self.grid1.setCellValue(self.grid1.select(), 'OGRP_CD', data[0].SYSDEF_NM);
-            self.grid1.setCellValue(self.grid1.select(), 'PSTN_CD', data[1].SYSDEF_NM);
-        }).fail(function (xhr, status, error) {
-            dews.error(xhr.responseJSON.message);
-        });
-    }
-    
-    function get_prmt_dt_retm_dt(company_cd, emp_no) {
-        dews.api.get(dews.url.getApiUrl("HR", "HRPamodm01800_X10005Service", "get_prmt_dt_retm_dt"), {
-            async: false,
-            data: {
-                company_cd: company_cd,
-                emp_no: emp_no
-            }
-        }).done(function (data) {
-            self.grid1.setCellValue(self.grid1.select(), 'PRMT_DT', data[0].DATE_VALUE);
-            self.grid1.setCellValue(self.grid1.select(), 'RETM_DT', data[1].DATE_VALUE);
-        }).fail(function (xhr, status, error) {
-            dews.error(xhr.responseJSON.message);
-        });
-    }
-    
-    function get_tm_cd_nm(emp_no, bwrk_dt) {
-        dews.api.get(dews.url.getApiUrl("HR", "HRPamodm01800_X10005Service", "get_tm_cd_nm"), {
-            async: false,
-            data: {
-                emp_no: emp_no,
-                bwrk_dt: bwrk_dt
-            }
-        }).done(function (data) {
-            self.grid1.setCellValue(self.grid1.select(), 'TM_CD_NM', data);
-        }).fail(function (xhr, status, error) {
-            dews.error(xhr.responseJSON.message);
-        });
-    }
-    
     // function get_org(company_cd, dept_cd) {
-    //     return new Promise((resolve, reject) => {
-    //         dews.api.get(dews.url.getApiUrl("HR", "HRPamodm01800_X10005Service", "get_org"), {
-    //             async: true,
-    //             data: {
-    //                 company_cd: company_cd,
-    //                 dept_cd: dept_cd
-    //             }
-    //         }).done(function (data) {
-    //             resolve(data); // 데이터가 성공적으로 수신되면 resolve() 호출
-    //         }).fail(function (xhr, status, error) {
-    //             reject(xhr.responseJSON.message); // 오류 발생 시 reject() 호출
-    //         });
+    //     dews.api.get(dews.url.getApiUrl("HR", "HRPamodm01800_X10005Service", "get_org"), {
+    //         async: false,
+    //         data: {
+    //             company_cd: company_cd,
+    //             dept_cd: dept_cd
+    //         }
+    //     }).done(function (data) {
+    //         self.grid1.setCellValue(self.grid1.select(), 'ORG', data);
+    //     }).fail(function (xhr, status, error) {
+    //         dews.error(xhr.responseJSON.message);
     //     });
     // }
     
     // function get_ogrp_cd_pstn_cd(company_cd, ogrp_cd, pstn_cd) {
-    //     return new Promise((resolve, reject) => {
-    //         dews.api.get(dews.url.getApiUrl("HR", "HRPamodm01800_X10005Service", "get_ogrp_cd_pstn_cd"), {
-    //             async: true,
-    //             data: {
-    //                 company_cd: company_cd,
-    //                 ogrp_cd: ogrp_cd,
-    //                 pstn_cd: pstn_cd
-    //             }
-    //         }).done(function (data) {
-    //             if (data.length >= 2 && data[0].hasOwnProperty('SYSDEF_NM') && data[1].hasOwnProperty('SYSDEF_NM')) {
-    //                 resolve([data[0].SYSDEF_NM, data[1].SYSDEF_NM]);
-    //             } else {
-    //                 resolve(["", ""]);
-    //             }
-    //         }).fail(function (xhr, status, error) {
-    //             reject(xhr.responseJSON.message);
-    //         });
+    //     dews.api.get(dews.url.getApiUrl("HR", "HRPamodm01800_X10005Service", "get_ogrp_cd_pstn_cd"), {
+    //         async: false,
+    //         data: {
+    //             company_cd: company_cd,
+    //             ogrp_cd: ogrp_cd,
+    //             pstn_cd: pstn_cd
+    //         }
+    //     }).done(function (data) {
+    //         self.grid1.setCellValue(self.grid1.select(), 'OGRP_CD', data[0].SYSDEF_NM);
+    //         self.grid1.setCellValue(self.grid1.select(), 'PSTN_CD', data[1].SYSDEF_NM);
+    //     }).fail(function (xhr, status, error) {
+    //         dews.error(xhr.responseJSON.message);
     //     });
     // }
     
     // function get_prmt_dt_retm_dt(company_cd, emp_no) {
-    //     return new Promise((resolve, reject) => {
-    //         dews.api.get(dews.url.getApiUrl("HR", "HRPamodm01800_X10005Service", "get_prmt_dt_retm_dt"), {
-    //             async: true,
-    //             data: {
-    //                 company_cd: company_cd,
-    //                 emp_no: emp_no
-    //             }
-    //         }).done(function (data) {
-    //             if (data.length >= 2 && data[0].hasOwnProperty('DATE_VALUE') && data[1].hasOwnProperty('DATE_VALUE')) {
-    //                 resolve([data[0].DATE_VALUE, data[1].DATE_VALUE]);
-    //             } else {
-    //                 resolve(["", ""]);
-    //             }
-    //         }).fail(function (xhr, status, error) {
-    //             reject(xhr.responseJSON.message);
-    //         });
+    //     dews.api.get(dews.url.getApiUrl("HR", "HRPamodm01800_X10005Service", "get_prmt_dt_retm_dt"), {
+    //         async: false,
+    //         data: {
+    //             company_cd: company_cd,
+    //             emp_no: emp_no
+    //         }
+    //     }).done(function (data) {
+    //         self.grid1.setCellValue(self.grid1.select(), 'PRMT_DT', data[0].DATE_VALUE);
+    //         self.grid1.setCellValue(self.grid1.select(), 'RETM_DT', data[1].DATE_VALUE);
+    //     }).fail(function (xhr, status, error) {
+    //         dews.error(xhr.responseJSON.message);
     //     });
     // }
     
-    
-    // function get_tm_cd_nm(index, emp_no, bwrk_dt) {
+    // function get_tm_cd_nm(emp_no, bwrk_dt) {
     //     dews.api.get(dews.url.getApiUrl("HR", "HRPamodm01800_X10005Service", "get_tm_cd_nm"), {
-    //         async: true,
+    //         async: false,
     //         data: {
     //             emp_no: emp_no,
     //             bwrk_dt: bwrk_dt
     //         }
     //     }).done(function (data) {
-    //         self.grid1.setCellValue(index, 'TM_CD_NM', data);
+    //         self.grid1.setCellValue(self.grid1.select(), 'TM_CD_NM', data);
     //     }).fail(function (xhr, status, error) {
     //         dews.error(xhr.responseJSON.message);
     //     });
     // }
+    
+    function get_org(company_cd, dept_cd) {
+        return new Promise((resolve, reject) => {
+            dews.api.get(dews.url.getApiUrl("HR", "HRPamodm01800_X10005Service", "get_org"), {
+                async: true,
+                data: {
+                    company_cd: company_cd,
+                    dept_cd: dept_cd
+                }
+            }).done(function (data) {
+                resolve(data); // 데이터가 성공적으로 수신되면 resolve() 호출
+            }).fail(function (xhr, status, error) {
+                reject(xhr.responseJSON.message); // 오류 발생 시 reject() 호출
+            });
+        });
+    }
+    
+    function get_ogrp_cd_pstn_cd(company_cd, ogrp_cd, pstn_cd) {
+        return new Promise((resolve, reject) => {
+            dews.api.get(dews.url.getApiUrl("HR", "HRPamodm01800_X10005Service", "get_ogrp_cd_pstn_cd"), {
+                async: true,
+                data: {
+                    company_cd: company_cd,
+                    ogrp_cd: ogrp_cd,
+                    pstn_cd: pstn_cd
+                }
+            }).done(function (data) {
+                if (data.length >= 2 && data[0].hasOwnProperty('SYSDEF_NM') && data[1].hasOwnProperty('SYSDEF_NM')) {
+                    resolve([data[0].SYSDEF_NM, data[1].SYSDEF_NM]);
+                } else {
+                    resolve(["", ""]);
+                }
+            }).fail(function (xhr, status, error) {
+                reject(xhr.responseJSON.message);
+            });
+        });
+    }
+    
+    function get_prmt_dt_retm_dt(company_cd, emp_no) {
+        return new Promise((resolve, reject) => {
+            dews.api.get(dews.url.getApiUrl("HR", "HRPamodm01800_X10005Service", "get_prmt_dt_retm_dt"), {
+                async: true,
+                data: {
+                    company_cd: company_cd,
+                    emp_no: emp_no
+                }
+            }).done(function (data) {
+                if (data.length >= 2 && data[0].hasOwnProperty('DATE_VALUE') && data[1].hasOwnProperty('DATE_VALUE')) {
+                    resolve([data[0].DATE_VALUE, data[1].DATE_VALUE]);
+                } else {
+                    resolve(["", ""]);
+                }
+            }).fail(function (xhr, status, error) {
+                reject(xhr.responseJSON.message);
+            });
+        });
+    }
+    
+    
+    function get_tm_cd_nm(index, emp_no, bwrk_dt) {
+        dews.api.get(dews.url.getApiUrl("HR", "HRPamodm01800_X10005Service", "get_tm_cd_nm"), {
+            async: true,
+            data: {
+                emp_no: emp_no,
+                bwrk_dt: bwrk_dt
+            }
+        }).done(function (data) {
+            self.grid1.setCellValue(index, 'TM_CD_NM', data);
+        }).fail(function (xhr, status, error) {
+            dews.error(xhr.responseJSON.message);
+        });
+    }
     
     self.$s_DEPT_CD.siblings('.dews-multicodepicker-wrap').find('.dews-icon.icon-search').on('click', function (e) {
         if (self.s_BIZAREA_CD.codes() == null || self.s_BIZAREA_CD.codes() == '') {

@@ -43,7 +43,7 @@ public class DwaggerService extends DzCometService {
 		try {
 			System.out.println("Service cacheModels===>" + cacheModels);
 			String result = callDatas.callApi(keywords, condition_cd);
-
+			System.out.println("callApi결과 result ===>" + result);
 			//어째서인지 자바 객체를 굳이 JSON으로 직렬화하지 않아도 올바르게 데이터가 전송된다. 아마 DzApi가 RestController로 작동하기 때문일 듯.
 			//결과값을 찾을 수 있다면
 			// 등록서비스 조회 api의 state가 error가 아니라면

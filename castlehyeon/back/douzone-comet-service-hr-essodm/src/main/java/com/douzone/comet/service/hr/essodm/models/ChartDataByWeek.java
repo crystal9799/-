@@ -15,5 +15,9 @@ public class ChartDataByWeek {
 	public void setCount(Integer count) {
 		this.count = count;
 	}
+	@Override
+	public String toString() {
+		return "ChartDataByWeek [day=" + day + ", count=" + count + "]";
+	}
 
 }

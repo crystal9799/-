@@ -1,6 +1,6 @@
-<!--##2d8612e2-fcd8-49af-9851-628205b6133c##-->
+<!--##eaf77d44-9afb-40c7-a093-44ba2d8932c9##-->
 <!--##PAMODM01800_X10005##-->
-<!--##Ifc1i7CCGtuQ87gY7KzbzEEUZUGMDM+4cGMjkKEwK8VYpENO8MjK+ttJL3O0sDyZ##-->
+<!--##WGtkw+NA/Bx5oXNDlK/KSiSHsfaBm8OccocMjKW2xAJyQ6cVtb3XRpXHL6ACJAyh##-->
 <!--
   DEWS UI/UX IDE - Build Result - v1.5
   # PageID: PAMODM01800_X10005
@@ -820,6 +820,7 @@
     
     
     function get_tm_cd_nm(index, emp_no, bwrk_dt) {
+        if(bwrk_dt=='') return false;
         dews.api.get(dews.url.getApiUrl("HR", "HRPamodm01800_X10005Service", "get_tm_cd_nm"), {
             async: true,
             data: {

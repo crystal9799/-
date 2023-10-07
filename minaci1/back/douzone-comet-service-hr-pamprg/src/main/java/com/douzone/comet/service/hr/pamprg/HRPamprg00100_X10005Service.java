@@ -104,7 +104,8 @@ public class HRPamprg00100_X10005Service extends DzCometService {
 			throws Exception {
 	 
 		try {
-			
+			System.out.println("grid_ds"+grid_ds);
+			System.out.println("왜 여기 안외ㅏ");
 			String companyCd = this.getCompanyCode();
 			String userId = this.getUserId();
 			String userIp = this.getRemoteHost();
@@ -126,7 +127,7 @@ public class HRPamprg00100_X10005Service extends DzCometService {
 
 			// [update]: 기본키 수정 가능하게 함(완료)
 			List<Pamprg00100_X10005Model> updatedRows = grid_ds.getUpdated();
-			 
+			
 			if (updatedRows != null && !updatedRows.isEmpty()) {
 			    for (Pamprg00100_X10005Model updateRow : updatedRows) {
 			        commonUtil.setCommonFields(updateRow, companyCd, userId, userIp);
@@ -141,9 +142,9 @@ public class HRPamprg00100_X10005Service extends DzCometService {
 						System.out.println("good throw");
 						throw new DzApplicationRuntimeException("이미 등록된 승급기준등록 이력이 있습니다.\n재조회 후 처리하십시오.");
 					}
+			        pamprg00100_X10005Dao.updatePAMPRG00100_Model(updatedRows);
+			        logger.info("그리드 수정완료");
 			    }
-			    pamprg00100_X10005Dao.updatePAMPRG00100_Model(updatedRows);
-			    logger.info("그리드 수정완료");
 			}
 
 			// [insert]: 일괄 저장 merge into
@@ -156,6 +157,14 @@ public class HRPamprg00100_X10005Service extends DzCometService {
 			                StringUtil.getLocaleTimeString(insertRow.getBwrk_my_calc_std_dt(), "yyyyMMdd"));
 			        insertRow.setStd_ym(StringUtil.getLocaleTimeString(insertRow.getStd_ym(), "yyyyMM"));
 			        logger.info("insertRow " + insertRow.toString());
+			        
+			        int count = pamprg00100_X10005Dao.checkValidate_update(insertRow);
+			        if (count > 0) {
+			        	System.out.println("count"+count);
+						System.out.println("good throw");
+						throw new DzApplicationRuntimeException("이미 등록된 승급기준등록 이력이 있습니다.\n재조회 후 처리하십시오.");
+					}
+			        
 			        try {
 			            pamprg00100_X10005Dao.uploadPAMPRG00100_Model(insertRow);
 			        } catch (Exception e) {
@@ -167,6 +176,7 @@ public class HRPamprg00100_X10005Service extends DzCometService {
 		} catch (Exception e) {
 			throw new DzApplicationRuntimeException(e);
 		}
+	
 	}
 
 	// [종전자료 전 기존데이터 조회]

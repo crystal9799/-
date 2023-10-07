@@ -1,6 +1,6 @@
-<!--##70f220e3-5b51-4904-8594-0a1e34dd7717##-->
+<!--##4b467109-61fd-49e8-8bc3-b6cfbc025fa5##-->
 <!--##PAMPRG00100_X10005##-->
-<!--##8vECQKWyq3SPH224IoVbkkNC0YbJIZFbIg0z2HOENfvZpcOACZafsMFHUy8ZpTE1##-->
+<!--##/d301/wLffi7EK8bLY5WjUnJbEV8F99hPNKxhwd+prXNRUQyfYlbINNhTlelGsL+##-->
 <!--
   DEWS UI/UX IDE - Build Result - v1.5
   # PageID: PAMPRG00100_X10005
@@ -33,14 +33,15 @@
       </span>
     </li>
   </ul>
+  <ul class="optional-area"></ul>
 </div>
 <div id="containerpanel1" class="dews-ui-container-panel" data-dews-container-height="263" data-dews-fit-bottom="true">
   <div id="containerpanelitem1" class="dews-container-item" data-dews-position="normal">
     <div id="gridMaster" class="dews-ui-grid"></div>
   </div>
 </div>
-<div id="excelFormGrid" class="dews-ui-grid" style="display: none;"></div>
-<div id="importExcelGrid" class="dews-ui-grid" style="display: none;"></div>
+<div id="excelFormGrid" class="dews-ui-grid"></div>
+<div id="importExcelGrid" class="dews-ui-grid"></div>
 
 <style>
     
@@ -83,6 +84,16 @@
         '대학원졸': 6
     };
     
+    var BWRK_SGRAD_NM
+    
+    var bwrkMap = {
+        'S': 10,
+        'A': 9,
+        'B': 8,
+        'C': 7,
+        'D': 6
+    }
+    
     function startProgress(totalDirtyData, onCompleted) {
         var progress = dews.ui.progress("progress6", {
             type: "circular",
@@ -91,7 +102,7 @@
         });
     
         var rowSizeInBytes = 84;
-        var timePerByte = 0.; //인터넷 환경에 따라 속도 다를 수 있음 
+        var timePerByte = 0.111; //인터넷 환경에 따라 속도 다를 수 있음 
         var duration = totalDirtyData * rowSizeInBytes * timePerByte;
     
         var interval = duration / 100;
@@ -175,9 +186,12 @@
             ugrdGrdCd = (ugrdGrdCd == null || ugrdGrdCd == undefined) ? 'K2' : ugrdGrdCd.toUpperCase();
     
             // MIN_BWRK_MY 처리 (기본값 30 설정)
-            var minBwrkMy = parseInt(self.importExcelGrid.getCellValue(i, 'MIN_BWRK_MY'));
-            minBwrkMy = isNaN(minBwrkMy) ? 30 : minBwrkMy; // 숫자가 아니면 기본값 30으로 설정
+            // var minBwrkMy = parseInt(self.importExcelGrid.getCellValue(i, 'MIN_BWRK_MY'));
+            // minBwrkMy = isNaN(minBwrkMy) ? 30 : minBwrkMy; // 숫자가 아니면 기본값 30으로 설정
     
+    
+            //BWRK_SGRAD_CD 처리
+            var bwrkSgradCd = self.importExcelGrid.getCellValue(i, 'BWRK_SGRAD_CD');
             //BWRK_MY_CALC_STD_DT 처리
             var bwrkMyCalcStdDt = self.importExcelGrid.getCellValue(i, 'BWRK_MY_CALC_STD_DT');
             bwrkMyCalcStdDt = (bwrkMyCalcStdDt == null || bwrkMyCalcStdDt == undefined || bwrkMyCalcStdDt == "") ? self.mpPROMO_YEAR_MONTH.value() + "01" : bwrkMyCalcStdDt;
@@ -187,9 +201,10 @@
             self.gridMaster.setCellValue(idx, 'PSTN_CD', pstnNmMap[pstnNm], false);
             self.gridMaster.setCellValue(idx, 'TRGT_GRD_CD', trgtGrdCd, false); // 대상등급
             self.gridMaster.setCellValue(idx, 'UGRD_GRD_CD', ugrdGrdCd, false); // 승급등급
-            self.gridMaster.setCellValue(idx, 'MIN_BWRK_MY', minBwrkMy, false); // 최소근무월수
+    
             self.gridMaster.setCellValue(idx, 'AGGR_TERM_CNT', self.importExcelGrid.getCellValue(i, 'AGGR_TERM_CNT'), false); // 근무성적집계기간
-            self.gridMaster.setCellValue(idx, 'BWRK_SGRAD_CD', self.importExcelGrid.getCellValue(i, 'BWRK_SGRAD_CD'), false); // 근무성적
+            self.gridMaster.setCellValue(idx, 'BWRK_SGRAD_CD', bwrkSgradCd, false); // 근무성적
+            self.gridMaster.setCellValue(idx, 'BWRK_SGRAD_NM', bwrkMap[bwrkSgradCd], false); // 근무성적
             self.gridMaster.setCellValue(idx, 'LEDU_NM', self.importExcelGrid.getCellValue(i, 'LEDU_NM'), false); // 학력
     
             self.gridMaster.setCellValue(idx, 'LEDU_CD', ledumCd, false); // 학력코드
@@ -197,12 +212,18 @@
             self.gridMaster.setCellValue(idx, 'RMK_NM', self.importExcelGrid.getCellValue(i, 'RMK_NM'), false); // 비고
             self.gridMaster.setCellValue(idx, 'bizarea_cd', self.bizarea_cd.value(), false);
     
+            var importExcelGrid = self.importExcelGrid;
+            //최소근무월수 생성
+            var minBwrkMy = updateMinimumWorkMonths(importExcelGrid, i);
+            console.log("minBwrkMy" + minBwrkMy);
+            self.gridMaster.setCellValue(idx, 'MIN_BWRK_MY', minBwrkMy, false);
+    
             // 'STD_YM', 'bizarea_cd', 'PSTN_CD', 'TRGT_GRD_CD'를 결합하여 'COMBINED_KEY' 생성
             var combinedKey = self.importExcelGrid.getCellValue(i, 'STD_YM') + '-' + self.bizarea_cd.value() + '-' + pstnNmMap[pstnNm] + '-' + trgtGrdCd + '-' + ugrdGrdCd + '-' + minBwrkMy;
             self.gridMaster.setCellValue(idx, 'COMBINED_KEY', combinedKey, false);// 결합키 
     
-        }
     
+        }
     }
     
     function handleDuplicateData() {
@@ -287,6 +308,12 @@
     }
     
     function saveExcelData(result) {
+    
+        for (var i = 0; i < self.importExcelGrid.dataItems().length; i++) {
+            var importGrid = self.importExcelGrid;
+            updateMinimumWorkMonths(importGrid, i);
+        }
+    
         var isProgressBarCompleted = false;
         var isApiDone = false;
     
@@ -335,7 +362,7 @@
         var stdYmMaxLength = 6;
         var pstnCdMaxLength = 6;
         var grdCdMaxLength = 10;
-        var minBwrkMyMaxLength = 10000000000;
+        //var minBwrkMyMaxLength = 10000000000;
         var titleDepth = 1;
     
         // 데이터 소스 초기화
@@ -356,10 +383,10 @@
                     "PSTN_NM": "직급명",
                     "TRGT_GRD_CD": "대상등급",
                     "UGRD_GRD_CD": "승급등급",
-                    "MIN_BWRK_MY": "최소근무월수",
+                    // "MIN_BWRK_MY": "최소근무월수",
                     "AGGR_TERM_CNT": "근무성적집계기간",
-                    "BWRK_SGRAD_CD": "근무성적",
-                    "LEDU_CD": "학력",
+                    "BWRK_SGRAD_NM": "근무성적",
+                    "LEDU_NM": "학력",
                     "BWRK_MY_CALC_STD_DT": "산정기준일",
                     "RMK_NM": "비고",
                 },
@@ -383,10 +410,11 @@
                     } else if (!row.UGRD_GRD_CD || row.UGRD_GRD_CD.length > grdCdMaxLength) {
                         msg = dews.string.format("승급등급이 올바르지 않습니다.\n확인 후 업로드 하십시오.({0}/{1}/{2}/{3})", row.STD_YM, row.PSTN_CD, row.TRGT_GRD_CD, row.UGRD_GRD_CD);
                         console.error(msg);
-                    } else if (!row.MIN_BWRK_MY || row.MIN_BWRK_MY.length > minBwrkMyMaxLength) {
-                        msg = dews.string.format("최소근무월수가 올바르지 않습니다.\n확인 후 업로드 하십시오.({0}/{1}/{2}/{3}/{4})", row.STD_YM, row.PSTN_CD, row.TRGT_GRD_CD, row.UGRD_GRD_CD, row.MIN_BWRK_MY);
-                        console.error(msg);
-                        return false;
+                        // } else if (!row.MIN_BWRK_MY || row.MIN_BWRK_MY.length > minBwrkMyMaxLength) {
+                        //     msg = dews.string.format("최소근무월수가 올바르지 않습니다.\n확인 후 업로드 하십시오.({0}/{1}/{2}/{3}/{4})", row.STD_YM, row.PSTN_CD, row.TRGT_GRD_CD, row.UGRD_GRD_CD, row.MIN_BWRK_MY);
+                        //     console.error(msg);
+                        //     return false;
+                        // }
                     }
                     if (msg) {
                         errMsg.push(msg);
@@ -403,18 +431,17 @@
                         row.BIZAREA_CD = self.bizarea_cd.value(); // 현재 선택된 사업장으로 저장
                     }
                     row.PSTN_CD = pstnNmMap[row.PSTN_NM]; // '직급명'에 넣기(없으면 필수값 입력하라고 나옴)
-                    row.LEDU_NM = row.LEDU_CD; //ds localdata 으로 매핑시도해봤지만 안됨
+                    row.LEDU_NM = row.LEDU_NM; //ds localdata 으로 매핑시도해봤지만 안됨
                     row.LEDU_CD = lecdMap[row.LEDU_NM];
-                    //console.log("row.LEDU_CD" + row.LEDU_CD);
-                    //self.importExcelGrid.setCellValue(idx, 'LEDU_CD', row.LEDU_CD, false); // 기본값 설정self.importExcel_ds.LED
+                    row.BWRK_SGRAD_CD = bwrkMap[row.BWRK_SGRAD_NM];
+    
                     return row;
     
                 },
             }).done(result => {
     
                 dews.ui.loading.hide();
-                //result에서 파생된 파일사이즈 확인이 어려움 
-                //console.log('resulttotalsize' + JSON.stringify(result));
+                //result에서 파생된 파일사이즈 확인이 어려움 => row 갯수로 시간 설정해야함
                 if (result.totalCount > 1000) { // 1000개 이상 back에서 바로 저장처리
                     processLargeData(result, errMsg);
                 }
@@ -470,7 +497,6 @@
                 self.mpPROMO_YEAR_MONTH.value(data); //대상년월 전달받아 바인딩
                 self.grid_ds.read();
     
-                console.log("뭐야야야야");
             }
         });
         dialog.open();
@@ -481,9 +507,9 @@
     //getDirty 각 중복검증 
     function isDuplicatedInDirty(dirty) {
         for (var i = 0; i < dirty.length; i++) {
-            var strA = dirty[i].STD_YM + dirty[i].PSTN_NM + dirty[i].TRGT_GRD_CD + dirty[i].UGRD_GRD_CD + dirty[i].BWRK_SGRAD_CD;
+            var strA = dirty[i].STD_YM + dirty[i].PSTN_NM + dirty[i].TRGT_GRD_CD + dirty[i].UGRD_GRD_CD + dirty[i].MIN_BWRK_MY;
             for (var j = i + 1; j < dirty.length; j++) {
-                var strB = dirty[j].STD_YM + dirty[j].PSTN_NM + dirty[j].TRGT_GRD_CD + dirty[j].UGRD_GRD_CD + dirty[j].BWRK_SGRAD_CD;
+                var strB = dirty[j].STD_YM + dirty[j].PSTN_NM + dirty[j].TRGT_GRD_CD + dirty[j].UGRD_GRD_CD + dirty[j].MIN_BWRK_MY;
                 if (strA === strB) {
                     return true;
                 }
@@ -495,9 +521,9 @@
     //getDirty added,updated 중복검증
     function isAddedUpdatedDuplicated(added, updated) {
         for (var i = 0; i < added.length; i++) {
-            var strA = added[i].STD_YM + added[i].PSTN_NM + added[i].TRGT_GRD_CD + added[i].UGRD_GRD_CD + added[i].BWRK_SGRAD_CD;
+            var strA = added[i].STD_YM + added[i].PSTN_NM + added[i].TRGT_GRD_CD + added[i].UGRD_GRD_CD + added[i].MIN_BWRK_MY;
             for (var j = 0; j < updated.length; j++) {
-                var strB = updated[j].STD_YM + updated[j].PSTN_NM + updated[j].TRGT_GRD_CD + updated[j].UGRD_GRD_CD + updated[j].BWRK_SGRAD_CD;
+                var strB = updated[j].STD_YM + updated[j].PSTN_NM + updated[j].TRGT_GRD_CD + updated[j].UGRD_GRD_CD + updated[j].MIN_BWRK_MY;
                 if (strA === strB) {
                     return true;
                 }
@@ -512,8 +538,8 @@
     
         //getDirty 데이터 있는 행 제외
         for (var k = 0; k < dirty.length; k++) {
-            var dirtyStr = dirty[k].STD_YM + dirty[k].PSTN_NM + dirty[k].TRGT_GRD_CD + dirty[k].UGRD_GRD_CD + dirty[k].BWRK_SGRAD_CD;
-            var index = items.findIndex(item => item.STD_YM + item.PSTN_NM + item.TRGT_GRD_CD + item.UGRD_GRD_CD + item.BWRK_SGRAD_CD === dirtyStr);
+            var dirtyStr = dirty[k].STD_YM + dirty[k].PSTN_NM + dirty[k].TRGT_GRD_CD + dirty[k].UGRD_GRD_CD + dirty[k].MIN_BWRK_MY;
+            var index = items.findIndex(item => item.STD_YM + item.PSTN_NM + item.TRGT_GRD_CD + item.UGRD_GRD_CD + item.MIN_BWRK_MY === dirtyStr);
             console.log("index" + index);
             if (index !== -1) {
                 items.splice(index, 1);
@@ -521,9 +547,9 @@
         }
     
         for (var i = 0; i < items.length; i++) {
-            var compareStr = items[i].STD_YM + items[i].PSTN_NM + items[i].TRGT_GRD_CD + items[i].UGRD_GRD_CD + items[i].BWRK_SGRAD_CD;
+            var compareStr = items[i].STD_YM + items[i].PSTN_NM + items[i].TRGT_GRD_CD + items[i].UGRD_GRD_CD + items[i].MIN_BWRK_MY;
             for (var j = 0; j < dirty.length; j++) {
-                var dirtyStr = dirty[j].STD_YM + dirty[j].PSTN_NM + dirty[j].TRGT_GRD_CD + dirty[j].UGRD_GRD_CD + dirty[j].BWRK_SGRAD_CD;
+                var dirtyStr = dirty[j].STD_YM + dirty[j].PSTN_NM + dirty[j].TRGT_GRD_CD + dirty[j].UGRD_GRD_CD + dirty[j].MIN_BWRK_MY;
                 if (dirtyStr === compareStr) {
                     return true;
                 }
@@ -532,13 +558,17 @@
         return false;
     }
     
-    function updateMinimumWorkMonths(e) {
+    function updateMinimumWorkMonths(gridName, rowIndex) {
+        var grid = self[gridName.id];
+        console.log("gridName" + gridName);
     
-        var position = self.gridMaster.getCellValue(self.gridMaster.select(), 'PSTN_CD') || "";
-        var targetGrade = self.gridMaster.getCellValue(self.gridMaster.select(), 'TRGT_GRD_CD') || "";
-        var upgradeGrade = self.gridMaster.getCellValue(self.gridMaster.select(), 'UGRD_GRD_CD') || "";
-        var workGrade = self.gridMaster.getCellValue(self.gridMaster.select(), 'BWRK_SGRAD_CD') || "";
-        var education = self.gridMaster.getCellValue(self.gridMaster.select(), 'LEDU_CD') || "";
+        var position = grid.getCellValue(rowIndex, 'PSTN_CD') || "";
+        var targetGrade = grid.getCellValue(rowIndex, 'TRGT_GRD_CD') || "";
+        var upgradeGrade = grid.getCellValue(rowIndex, 'UGRD_GRD_CD') || "";
+        var workGrade = grid.getCellValue(rowIndex, 'BWRK_SGRAD_CD') || ""; // 근무성적
+        var education = grid.getCellValue(rowIndex, 'LEDU_CD') || "";
+    
+    
     
         // getMinimumWorkMonths 함수를 이용하여 최소 근무 월 수를 계산
         var minWorkMonths = getMinimumWorkMonths(position, targetGrade, upgradeGrade, education, workGrade);
@@ -551,13 +581,20 @@
             minWorkMonths += 5;
         }
     
-        // 계산된 최소 근무 월 수를 해당 셀에 설정
-        self.gridMaster.setCellValue(self.gridMaster.select(), 'MIN_BWRK_MY', minWorkMonths.toString(), false);
-    
+        return minWorkMonths;
+        // // 계산된 최소 근무 월 수를 해당 셀에 설정
+        // grid.setCellValue(rowIndex, 'MIN_BWRK_MY', minWorkMonths, false);
+    }
+    // 알파벳 순서 기반의 계산 함수
+    function getAlphabetOrderValue(grade) {
+        if (!grade) return 0;
+        var firstCharValue = grade.charCodeAt(0) - 65;  // A = 0, B = 1, ...
+        var secondCharValue = parseInt(grade[1], 10) || 0;
+        return firstCharValue * 10 + secondCharValue;
     }
     
     function getMinimumWorkMonths(position, targetGrade, upgradeGrade, education, workGrade) {
-        let baseMonthsForPosition = {
+        var baseMonthsForPosition = {
             '11': 60,
             '13': 55,
             '14': 50,
@@ -569,7 +606,7 @@
             '21': 20
         };
     
-        let gradeModifier = {
+        var gradeModifier = {
             'K1': 5,
             'K2': 4,
             'K3': 3,
@@ -577,7 +614,7 @@
             'K5': 1
         };
     
-        let educationModifier = {
+        var educationModifier = {
             '1': 5,
             '2': 4,
             '3': 3,
@@ -586,24 +623,21 @@
             '6': -3
         };
     
-        let workGradeModifier = {
-            'S': -5,
-            'A': -3,
-            'B': -1,
-            'C': 1,
-            'D': 3
-        };
+        // gradeModifier에서 값을 가져오고, 없으면 알파벳 순서로 값을 가져옴
+        const getGradeValue = (grade) => gradeModifier[grade] || -getAlphabetOrderValue(grade);
+    
     
         // targetGrade와 upgradeGrade 간의 차이 계산
-        let gradeDifference = gradeModifier[upgradeGrade] - gradeModifier[targetGrade];
+        var gradeDifference = (getGradeValue[upgradeGrade] || 0) - (getGradeValue[targetGrade] || 0);
     
         // 차이가 클수록 근무월수가 늘어나도록 반영
-        let gradeDifferenceMonths = -gradeDifference * 5;  // 차이가 클수록 근무월수가 늘어나도록 음수를 곱해 반전
+        var gradeDifferenceMonths = -gradeDifference * 5;
+    
     
         return Number(baseMonthsForPosition[position] || 0)
-            + gradeDifferenceMonths
+            + Number(gradeDifferenceMonths || 0)
             + Number(educationModifier[education] || 0)
-            + Number(workGradeModifier[workGrade] || 0);
+            + Number(workGrade || 0);
     }
     
     
@@ -646,63 +680,25 @@
             { field: 'LEDU_NM', editable: false, dataType: 'string' }, 
             { field: 'RMK_NM', editable: false, dataType: 'string' }, 
             { field: 'BIZAREA_NM', editable: false, dataType: 'string' }, 
-            { field: 'INSERT_ID', editable: false, dataType: 'string' }, 
-            { field: 'INSERT_DTS', editable: false, dataType: 'string' }, 
-            { field: 'INSERT_IP', editable: false, dataType: 'string' }, 
-            { field: 'UPDATE_ID', editable: false, dataType: 'string' }, 
-            { field: 'UPDATE_DTS', editable: false, dataType: 'string' }, 
-            { field: 'UPDATE_IP', editable: false, dataType: 'string' }, 
             { field: 'COMBINED_KEY', editable: false, dataType: 'string' }, 
             { field: 'SEQ', editable: false, dataType: 'string' }, 
-            { field: 'pagingStart', editable: false, dataType: 'string' }, 
-            { field: 'pagingCount', editable: false, dataType: 'string' }, 
-            { field: 'paging', editable: false, dataType: 'string' }
+            { field: 'BWRK_SGRAD_NM', editable: false, dataType: 'string' }
           ]
     
         }
       }
     });
-    dews.api.get(dews.url.getApiUrl('CM', 'CommonCodeDtlService', 'common_codeDtl_list'),{
-      async: false,
-      data: {
-          dept_cd: '',
-          base_dt: '',
-          end_dt: '',
-          crud_fg: '',
-          menu_cd: '',
-          foreign_yn: '',
-          up_sysdef_cd: '',
-          field_cd_pipe: 'P00650|ZA11_10005|P00670',
-          module_cd: 'HR',
-          company_cd: '',
-          syscode_yn: '',
-          keyword: '',
-          base_yn: ''
-      }
-    }).done(function (data) {
-      var ar_P00650 = new Array();
-      var ar_ZA11_10005 = new Array();
-      var ar_P00670 = new Array();
-    
-      for (var i = 0; i < data.length; i++) {
-        if (data[i].FIELD_CD == "P00650") { 
-          ar_P00650.push(data[i]); 
+    self.pipeDataSource1 = dews.ui.dataSource('pipeDataSource1', {
+      schema: {
+        model: {
+          fields: [
+            { field: 'BWRK_SGRAD_CD', editable: false, type: 'string' }, 
+            { field: 'BWRK_SGRAD_NM', editable: false, type: 'string' }
+          ]
     
         }
-        else if (data[i].FIELD_CD == "ZA11_10005") { 
-          ar_ZA11_10005.push(data[i]); 
-    
-        }
-        else if (data[i].FIELD_CD == "P00670") { 
-          ar_P00670.push(data[i]); 
-    
-        }
-      }
-      self.pipeDataSource1_P00650 = dews.ui.dataSource('pipeDataSource1_P00650',  { data: ar_P00650 });
-      self.pipeDataSource1_ZA11_10005 = dews.ui.dataSource('pipeDataSource1_ZA11_10005',  { data: ar_ZA11_10005 });
-      self.pipeDataSource1_P00670 = dews.ui.dataSource('pipeDataSource1_P00670',  { data: ar_P00670 });
-      self.pipeDataSource1 = dews.ui.dataSource('pipeDataSource1', { data: data });
-      
+      },
+      data: [ {"BWRK_SGRAD_CD":10,"BWRK_SGRAD_NM":"S"},{"BWRK_SGRAD_CD":9,"BWRK_SGRAD_NM":"A"},{"BWRK_SGRAD_CD":8,"BWRK_SGRAD_NM":"B"},{"BWRK_SGRAD_CD":7,"BWRK_SGRAD_NM":"C"},{"BWRK_SGRAD_CD":6,"BWRK_SGRAD_NM":"D"}]
     });
     dews.api.get(dews.url.getApiUrl('CM', 'CommonCodeDtlService', 'common_ci_codeDtl_list'),{
       async: false,
@@ -962,7 +958,7 @@
         }
         ).done(function (data) {
             dews.ui.snackbar.ok('자료가 정상적으로 저장되었습니다.');
-            self.mpPROMO_YEAR_MONTH.value(getCurrentMonth()); //데이터 있는 기준 날짜 확인해야 함 
+            //self.mpPROMO_YEAR_MONTH.value(getCurrentMonth()); //데이터 있는 기준 날짜 확인해야 함 
             dews.ui.loading.show({
                 text: '조회중입니다.'
             });
@@ -1204,11 +1200,17 @@
           field: 'BWRK_SGRAD_CD',
           title: '근무성적',
           width: 60,
+          formats: {
+            type: 'dataSource',
+            dataSource: self.pipeDataSource1,
+            dataValueField: 'BWRK_SGRAD_CD',
+            dataTextField: 'BWRK_SGRAD_NM'
+          },
           editor: {
             type: 'dropDown',
-            dataSource: self.pipeDataSource1_ZA11_10005,
-            dataValueField: 'SYSDEF_CD',
-            dataTextField: 'SYSDEF_NM'
+            dataSource: self.pipeDataSource1,
+            dataValueField: 'BWRK_SGRAD_CD',
+            dataTextField: 'BWRK_SGRAD_NM'
           }
         },
         {
@@ -1238,7 +1240,11 @@
           field: 'MIN_BWRK_MY',
           title: '최소근무월수',
           width: 60,
-          attributes: { class: 'required' }
+          attributes: { class: 'required' },
+          formats: {
+            type: 'number'
+          },
+          editor: { type: 'readonly' }
         },
         {
           field: 'BWRK_MY_CALC_STD_DT',
@@ -1317,6 +1323,18 @@
           field: 'SEQ',
           title: '순번',
           visible: false
+        },
+        {
+          field: 'BWRK_SGRAD_NM',
+          title: '근무성적명',
+          visible: false,
+          formats: {
+            type: 'dataSource',
+            dataSource: self.pipeDataSource1,
+            dataValueField: 'BWRK_SGRAD_CD',
+            dataTextField: 'BWRK_SGRAD_NM'
+          },
+          editor: { type: 'string', maxLength: 3 }
         }
       ],
       fixed: {
@@ -1324,8 +1342,9 @@
         rightColCount: 0
       },
       change: /*80877057-17fc-477a-a8da-eb9945bf98d2*/ function (e) {
-            updateMinimumWorkMonths(e);
-    
+            var gridMaster = self.gridMaster;
+            var minWorkMonths = updateMinimumWorkMonths(gridMaster, self.gridMaster.select());
+            self.gridMaster.setCellValue(self.gridMaster.select(), 'MIN_BWRK_MY', minWorkMonths, false);
         }
     ,
       dataBound: /*229bd09a-9f83-4ca2-aec7-7740faa6c3de*/ function (e) {
@@ -1334,6 +1353,12 @@
     ,
       validationCheck: /*4ce437c6-dafa-4120-a385-640d2b1d45b0*/ function (e) {
             checkValidate(e);
+        }
+    ,
+      clicked: /*26cd9703-eaf4-4075-b621-4d4ccb524a81*/ function (e) {
+            var gridMaster = self.gridMaster;
+            var minWorkMonths = updateMinimumWorkMonths(gridMaster, self.gridMaster.select());
+            self.gridMaster.setCellValue(self.gridMaster.select(), 'MIN_BWRK_MY', minWorkMonths, false);
         }
     
     });
@@ -1368,7 +1393,8 @@
         {
           field: 'MIN_BWRK_MY',
           title: '최소근무월수',
-          width: 60
+          width: 60,
+          visible: false
         },
         {
           field: 'AGGR_TERM_CNT',
@@ -1382,19 +1408,19 @@
         },
         {
           field: 'LEDU_CD',
+          title: '학력코드',
+          visible: false
+        },
+        {
+          field: 'LEDU_NM',
           title: '학력',
-          visible: false,
+          width: 80,
           formats: {
             type: 'dataSource',
             dataSource: self.ledu_cd_ds,
             dataValueField: 'LEDU_CD',
             dataTextField: 'LEDU_NM'
           }
-        },
-        {
-          field: 'LEDU_NM',
-          title: '학력명',
-          width: 80
         },
         {
           field: 'BWRK_MY_CALC_STD_DT',
@@ -1410,6 +1436,16 @@
           title: '비고',
           width: 90,
           align: 'left'
+        },
+        {
+          field: 'BWRK_SGRAD_NM',
+          title: '근무성적명',
+          formats: {
+            type: 'dataSource',
+            dataSource: self.pipeDataSource1,
+            dataValueField: 'BWRK_SGRAD_CD',
+            dataTextField: 'BWRK_SGRAD_NM'
+          }
         }
       ],
       fixed: {
@@ -1448,7 +1484,8 @@
         {
           field: 'MIN_BWRK_MY',
           title: '최소근무월수',
-          width: 60
+          width: 60,
+          visible: false
         },
         {
           field: 'AGGR_TERM_CNT',
@@ -1462,13 +1499,13 @@
         },
         {
           field: 'LEDU_CD',
-          title: '학력',
+          title: '학력코드',
           width: 80,
           visible: false
         },
         {
           field: 'LEDU_NM',
-          title: '학력명',
+          title: '학력',
           width: 80,
           formats: {
             type: 'dataSource',
@@ -1505,6 +1542,16 @@
             dataSource: self.pstn_cd_ds,
             dataValueField: 'PSTN_NM',
             dataTextField: 'PSTN_CD'
+          }
+        },
+        {
+          field: 'BWRK_SGRAD_NM',
+          title: '근무성적명',
+          formats: {
+            type: 'dataSource',
+            dataSource: self.pipeDataSource1,
+            dataValueField: 'BWRK_SGRAD_CD',
+            dataTextField: 'BWRK_SGRAD_NM'
           }
         }
       ],

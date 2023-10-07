@@ -1,6 +1,6 @@
-<!--##4b467109-61fd-49e8-8bc3-b6cfbc025fa5##-->
+<!--##643702e4-bbd4-46b6-83c7-b75b2813e691##-->
 <!--##PAMPRG00100_X10005##-->
-<!--##/d301/wLffi7EK8bLY5WjUnJbEV8F99hPNKxhwd+prXNRUQyfYlbINNhTlelGsL+##-->
+<!--##ZRdoz+ypZtRDTv053icRpFk7wbBZj5GrJflBhhJe9PfqU3mrqRkKPMLKFTIn+SUM##-->
 <!--
   DEWS UI/UX IDE - Build Result - v1.5
   # PageID: PAMPRG00100_X10005
@@ -83,8 +83,6 @@
         '대졸': 5,
         '대학원졸': 6
     };
-    
-    var BWRK_SGRAD_NM
     
     var bwrkMap = {
         'S': 10,
@@ -229,6 +227,7 @@
     function handleDuplicateData() {
     
         var allData = self.gridMaster.dataItems();
+        self.mpPROMO_YEAR_MONTH.value(self.gridMaster.dataItems()[0].STD_YM);
         var groupedDataMap = new Map();
         var seqCounter = 1; // SEQ 시작
     
@@ -309,11 +308,17 @@
     
     function saveExcelData(result) {
     
-        for (var i = 0; i < self.importExcelGrid.dataItems().length; i++) {
-            var importGrid = self.importExcelGrid;
-            updateMinimumWorkMonths(importGrid, i);
+        if (self.importExcelGrid.dataItems().length >= 100) {
+            dews.ui.loading.show("업로드가 시작됩니다.");
         }
     
+    
+        for (var i = 0; i < self.importExcelGrid.dataItems().length; i++) {
+            var importGrid = self.importExcelGrid;
+            var minBwrkMy = updateMinimumWorkMonths(importGrid, i);
+            self.importExcelGrid.setCellValue(i, 'MIN_BWRK_MY', minBwrkMy, false);
+        }
+        dews.ui.loading.hide();
         var isProgressBarCompleted = false;
         var isApiDone = false;
     
@@ -321,12 +326,15 @@
         function checkAndShowSnackbar() {
             if (isProgressBarCompleted && isApiDone) {
                 dews.ui.snackbar.ok('자료가 정상적으로 저장되었습니다.');
+                self.mpPROMO_YEAR_MONTH.value(self.importExcelGrid.dataItems()[0].STD_YM);
+                searchData();
             }
         }
     
-        // startProgress 함수를 호출하고 프로그레스바가 완료될 때의 콜백을 정의합니다.
+        // startProgress 함수를 호출하고 프로그레스바가 완료될 때의 콜백을 정의
         var progressIntervalReference = startProgress(result.totalCount, function () {
             isProgressBarCompleted = true;
+            isApiDone = true;
             checkAndShowSnackbar();
         });
     
@@ -343,11 +351,11 @@
         ).done(function (data) {
             clearInterval(progressIntervalReference);  // 프로그레스 인터벌을 중지
             dews.ui.progress("progress6").setCurrent(100);  // 프로그레스바를 100%로 설정
+            isProgressBarCompleted = true;
             isApiDone = true;  // API 완료 상태를 true로 설정
             checkAndShowSnackbar();  // 스낵바 표시 조건 확인 및 표시
     
-            self.mpPROMO_YEAR_MONTH.value(result.success.data.STD_YM);
-            dews.ui.mainbuttons.search.click();
+    
     
         }).fail(function (xhr, status, error) {
             clearInterval(progressIntervalReference);  // 에러 발생 시 프로그레스 인터벌 중지
@@ -362,7 +370,8 @@
         var stdYmMaxLength = 6;
         var pstnCdMaxLength = 6;
         var grdCdMaxLength = 10;
-        //var minBwrkMyMaxLength = 10000000000;
+        //var minBwrkMyMa
+        Length = 10000000000;
         var titleDepth = 1;
     
         // 데이터 소스 초기화
@@ -560,7 +569,7 @@
     
     function updateMinimumWorkMonths(gridName, rowIndex) {
         var grid = self[gridName.id];
-        console.log("gridName" + gridName);
+        console.log("grid" + grid);
     
         var position = grid.getCellValue(rowIndex, 'PSTN_CD') || "";
         var targetGrade = grid.getCellValue(rowIndex, 'TRGT_GRD_CD') || "";

@@ -1,6 +1,6 @@
-<!--##643702e4-bbd4-46b6-83c7-b75b2813e691##-->
+<!--##272d9792-ba0e-4fdd-9e40-277bb81d8ab2##-->
 <!--##PAMPRG00100_X10005##-->
-<!--##ZRdoz+ypZtRDTv053icRpFk7wbBZj5GrJflBhhJe9PfqU3mrqRkKPMLKFTIn+SUM##-->
+<!--##kzxDk6Fysv8q9jgsYMOYUZwyi+AfrpXvZcuGXNrYhlkLYWP7f4px5FUt9s4Zh8SA##-->
 <!--
   DEWS UI/UX IDE - Build Result - v1.5
   # PageID: PAMPRG00100_X10005
@@ -40,8 +40,8 @@
     <div id="gridMaster" class="dews-ui-grid"></div>
   </div>
 </div>
-<div id="excelFormGrid" class="dews-ui-grid"></div>
-<div id="importExcelGrid" class="dews-ui-grid"></div>
+<div id="excelFormGrid" class="dews-ui-grid" style="display: none;"></div>
+<div id="importExcelGrid" class="dews-ui-grid" style="display: none;"></div>
 
 <style>
     
@@ -504,7 +504,14 @@
             ok: function (data) {
                 console.log("data" + data);
                 self.mpPROMO_YEAR_MONTH.value(data); //대상년월 전달받아 바인딩
-                self.grid_ds.read();
+                dews.ui.loading.show({
+                    text: '조회중입니다.'
+                });
+                self.grid_ds.read(function () {
+                    // 데이터 로딩이 완료된 후
+                    dews.ui.loading.hide();
+                });
+    
     
             }
         });

@@ -1,6 +1,6 @@
-<!--##f5b5c520-a4ef-401c-b7f3-9d0372d11bd9##-->
+<!--##70f220e3-5b51-4904-8594-0a1e34dd7717##-->
 <!--##PAMPRG00100_X10005##-->
-<!--##Cbd7azeCejXD8LERDmoyyoKRctPasTfodqLtzLnNjNLavqghyDl1Wh/mDqOcKCEP##-->
+<!--##8vECQKWyq3SPH224IoVbkkNC0YbJIZFbIg0z2HOENfvZpcOACZafsMFHUy8ZpTE1##-->
 <!--
   DEWS UI/UX IDE - Build Result - v1.5
   # PageID: PAMPRG00100_X10005
@@ -531,7 +531,81 @@
         }
         return false;
     }
-     
+    
+    function updateMinimumWorkMonths(e) {
+    
+        var position = self.gridMaster.getCellValue(self.gridMaster.select(), 'PSTN_CD') || "";
+        var targetGrade = self.gridMaster.getCellValue(self.gridMaster.select(), 'TRGT_GRD_CD') || "";
+        var upgradeGrade = self.gridMaster.getCellValue(self.gridMaster.select(), 'UGRD_GRD_CD') || "";
+        var workGrade = self.gridMaster.getCellValue(self.gridMaster.select(), 'BWRK_SGRAD_CD') || "";
+        var education = self.gridMaster.getCellValue(self.gridMaster.select(), 'LEDU_CD') || "";
+    
+        // getMinimumWorkMonths 함수를 이용하여 최소 근무 월 수를 계산
+        var minWorkMonths = getMinimumWorkMonths(position, targetGrade, upgradeGrade, education, workGrade);
+    
+        //학력과 근무성적 값이 입력되지 않았을 경우, 최소근무월수를 추가로 5개월씩 더함
+        if (education === "") {
+            minWorkMonths += 5;
+        }
+        if (workGrade === "") {
+            minWorkMonths += 5;
+        }
+    
+        // 계산된 최소 근무 월 수를 해당 셀에 설정
+        self.gridMaster.setCellValue(self.gridMaster.select(), 'MIN_BWRK_MY', minWorkMonths.toString(), false);
+    
+    }
+    
+    function getMinimumWorkMonths(position, targetGrade, upgradeGrade, education, workGrade) {
+        let baseMonthsForPosition = {
+            '11': 60,
+            '13': 55,
+            '14': 50,
+            '16': 45,
+            '17': 40,
+            '18': 35,
+            '19': 30,
+            '20': 25,
+            '21': 20
+        };
+    
+        let gradeModifier = {
+            'K1': 5,
+            'K2': 4,
+            'K3': 3,
+            'K4': 2,
+            'K5': 1
+        };
+    
+        let educationModifier = {
+            '1': 5,
+            '2': 4,
+            '3': 3,
+            '4': -1,
+            '5': -2,
+            '6': -3
+        };
+    
+        let workGradeModifier = {
+            'S': -5,
+            'A': -3,
+            'B': -1,
+            'C': 1,
+            'D': 3
+        };
+    
+        // targetGrade와 upgradeGrade 간의 차이 계산
+        let gradeDifference = gradeModifier[upgradeGrade] - gradeModifier[targetGrade];
+    
+        // 차이가 클수록 근무월수가 늘어나도록 반영
+        let gradeDifferenceMonths = -gradeDifference * 5;  // 차이가 클수록 근무월수가 늘어나도록 음수를 곱해 반전
+    
+        return Number(baseMonthsForPosition[position] || 0)
+            + gradeDifferenceMonths
+            + Number(educationModifier[education] || 0)
+            + Number(workGradeModifier[workGrade] || 0);
+    }
+    
     
     
     
@@ -771,26 +845,15 @@
     
     dews.ui.mainbuttons.localize.disable(true);
     dews.ui.mainbuttons.add.click(/*71614df6-9a67-4b0a-8f1b-7fb106ef6a8f*/ function () {
-    
-        self.gridMaster.addRow(0);  // 그리드 제일 위쪽에 추가
+        self.gridMaster.addRow(0);
         var idx = self.gridMaster.select();
-        var allData = self.gridMaster.dataItems();
-        var seq = allData.length > 0 ? allData.length : 0; // 데이터가 있을 경우 마지막 순번에서 +1, 없을 경우 1로 시작
     
-        self.gridMaster.setCellValue(idx, 'SEQ', seq, false); // 순번 컬럼에 값 설정
-        self.gridMaster.setCellValue(idx, 'STD_YM', self.mpPROMO_YEAR_MONTH.value(), false); // 기준년월에 "승급년월" 저장
-        self.gridMaster.setCellValue(idx, 'bizarea_cd', self.bizarea_cd.value(), false); // 사업장 코드 저장
-        self.gridMaster.setCellValue(idx, 'BIZAREA_NM', self.bizarea_cd.text(), false); // 사업장명 저장
-        self.gridMaster.setCellValue(idx, 'TRGT_GRD_CD', 'K1', false); // 기본값 설정
-        self.gridMaster.setCellValue(idx, 'UGRD_GRD_CD', 'K2', false); // 기본값 설정
-    
-        self.gridMaster.setCellValue(idx, 'MIN_BWRK_MY', '30', false); // 기본값 설정
-    
-        self.gridMaster.setCellValue(idx, 'BWRK_MY_CALC_STD_DT', self.mpPROMO_YEAR_MONTH.value() + "01", false); // 산정기준일에 "승급년월"의 1일로 저장
-    
-        self.gridMaster.select(idx, "PSTN_NM"); // "직급명" 컬럼으로 포커스 이동
-        //self.gridMaster.setCellValue(idx, 'PSTN_CD', self.PSTN_NM, false); // 기본값 설정
-    
+        self.gridMaster.setCellValue(idx, 'STD_YM', self.mpPROMO_YEAR_MONTH.value(), false);
+        self.gridMaster.setCellValue(idx, 'bizarea_cd', self.bizarea_cd.value(), false);
+        self.gridMaster.setCellValue(idx, 'BIZAREA_NM', self.bizarea_cd.text(), false);
+        self.gridMaster.setCellValue(idx, 'TRGT_GRD_CD', 'K1', false);
+        self.gridMaster.setCellValue(idx, 'UGRD_GRD_CD', 'K2', false);
+        self.gridMaster.setCellValue(idx, 'BWRK_MY_CALC_STD_DT', self.mpPROMO_YEAR_MONTH.value() + "01", false);
     });
     dews.ui.mainbuttons.search.click(/*37fe89ce-9f9d-444b-a3a3-dfe45a8e42e2*/ function () {
     
@@ -1125,12 +1188,6 @@
           }
         },
         {
-          field: 'MIN_BWRK_MY',
-          title: '최소근무월수',
-          width: 60,
-          attributes: { class: 'required' }
-        },
-        {
           field: 'AGGR_TERM_CNT',
           title: '근무성적집계기간',
           width: 90,
@@ -1176,6 +1233,12 @@
     }
     
           }
+        },
+        {
+          field: 'MIN_BWRK_MY',
+          title: '최소근무월수',
+          width: 60,
+          attributes: { class: 'required' }
         },
         {
           field: 'BWRK_MY_CALC_STD_DT',
@@ -1260,6 +1323,11 @@
         colCount: 0,
         rightColCount: 0
       },
+      change: /*80877057-17fc-477a-a8da-eb9945bf98d2*/ function (e) {
+            updateMinimumWorkMonths(e);
+    
+        }
+    ,
       dataBound: /*229bd09a-9f83-4ca2-aec7-7740faa6c3de*/ function (e) {
             dews.ui.loading.hide();
         }

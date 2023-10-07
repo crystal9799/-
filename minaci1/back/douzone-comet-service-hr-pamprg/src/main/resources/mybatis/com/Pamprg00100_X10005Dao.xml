@@ -69,9 +69,21 @@
 				        WHERE IDX <![CDATA[>]]> TO_NUMBER(#{P_PAGING_START})
 				        AND TO_NUMBER(#{P_PAGING_START}) + TO_NUMBER(#{P_PAGING_CNT}) +1 <![CDATA[>]]> IDX
 				        ORDER BY IDX
+				        		 ,BIZAREA_CD ASC
+								 ,PSTN_CD ASC
+								 ,TRGT_GRD_CD ASC
+								 ,UGRD_GRD_CD ASC
+								 ,MIN_BWRK_MY ASC
+								 ,AGGR_TERM_CNT ASC
 				    </when>
 				    <otherwise>
-				        ORDER BY IDX
+				        ORDER BY BIZAREA_CD ASC
+								 ,PSTN_CD ASC
+								 ,TRGT_GRD_CD ASC
+								 ,UGRD_GRD_CD ASC
+								 ,MIN_BWRK_MY ASC
+								 ,AGGR_TERM_CNT ASC
+								 ,IDX
 				    </otherwise>
 				</choose>
 	</select>

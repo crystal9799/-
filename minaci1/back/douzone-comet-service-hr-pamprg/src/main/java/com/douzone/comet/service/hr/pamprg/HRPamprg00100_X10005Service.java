@@ -126,7 +126,7 @@ public class HRPamprg00100_X10005Service extends DzCometService {
 
 			// [update]: 기본키 수정 가능하게 함(완료)
 			List<Pamprg00100_X10005Model> updatedRows = grid_ds.getUpdated();
-			
+			 
 			if (updatedRows != null && !updatedRows.isEmpty()) {
 			    for (Pamprg00100_X10005Model updateRow : updatedRows) {
 			        commonUtil.setCommonFields(updateRow, companyCd, userId, userIp);
@@ -134,6 +134,13 @@ public class HRPamprg00100_X10005Service extends DzCometService {
 			                StringUtil.getLocaleTimeString(updateRow.getBwrk_my_calc_std_dt(), "yyyyMMdd"));
 			        updateRow.setStd_ym(StringUtil.getLocaleTimeString(updateRow.getStd_ym(), "yyyyMM"));
 			        logger.info("updateRow " + updateRow.toString());
+			        
+			        int count = pamprg00100_X10005Dao.checkValidate_update(updateRow);
+			        if (count > 0) {
+			        	System.out.println("count"+count);
+						System.out.println("good throw");
+						throw new DzApplicationRuntimeException("이미 등록된 승급기준등록 이력이 있습니다.\n재조회 후 처리하십시오.");
+					}
 			    }
 			    pamprg00100_X10005Dao.updatePAMPRG00100_Model(updatedRows);
 			    logger.info("그리드 수정완료");

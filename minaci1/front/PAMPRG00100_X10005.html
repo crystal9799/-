@@ -1,6 +1,6 @@
-<!--##0eb373b6-e91f-4c14-926b-a66ba13861eb##-->
+<!--##f5b5c520-a4ef-401c-b7f3-9d0372d11bd9##-->
 <!--##PAMPRG00100_X10005##-->
-<!--##4g1yqtk/33CsQjq4LL7V6oxFRnZtmcI4DiNmUVdWiXcMlK70WWro2G8FIOxAjJoV##-->
+<!--##Cbd7azeCejXD8LERDmoyyoKRctPasTfodqLtzLnNjNLavqghyDl1Wh/mDqOcKCEP##-->
 <!--
   DEWS UI/UX IDE - Build Result - v1.5
   # PageID: PAMPRG00100_X10005
@@ -110,8 +110,6 @@
         return progressInterval;
     }
     
-    
-    
     function getCurrentMonth() {
     
         var date = new Date();
@@ -135,6 +133,23 @@
     
     }
     
+    function checkValidate(e) {
+    
+        var trgtGrdCd = self.gridMaster.getCellValue(self.gridMaster.select(), 'TRGT_GRD_CD');
+        var ugrdGrdCd = self.gridMaster.getCellValue(self.gridMaster.select(), 'UGRD_GRD_CD');
+        var cellData = e.cell.data;
+    
+        if (cellData && e.cell.field === 'TRGT_GRD_CD' && ugrdGrdCd && cellData >= ugrdGrdCd) {
+            self.gridMaster.setCellValue(e.row.index, 'TRGT_GRD_CD', "");
+            return dews.ui.snackbar.warning("대상등급이 승급등급보다 낮아야 합니다.");
+        }
+        if (cellData && e.cell.field === 'UGRD_GRD_CD' && trgtGrdCd && cellData <= trgtGrdCd) {
+            self.gridMaster.setCellValue(e.row.index, 'UGRD_GRD_CD', "");
+            return dews.ui.snackbar.warning("대상등급보다 승급등급이 높아야 합니다.");
+    
+        }
+    
+    }
     //엑셀업로드 그리드 -> 마스터그리드로 데이터 전달
     function transferExcelGridToMasterGrid() {
     
@@ -462,6 +477,62 @@
     
     }
     
+    //데이터 insert, update 시에 3개의 유효성 검증을 치뤄야함
+    //getDirty 각 중복검증 
+    function isDuplicatedInDirty(dirty) {
+        for (var i = 0; i < dirty.length; i++) {
+            var strA = dirty[i].STD_YM + dirty[i].PSTN_NM + dirty[i].TRGT_GRD_CD + dirty[i].UGRD_GRD_CD + dirty[i].BWRK_SGRAD_CD;
+            for (var j = i + 1; j < dirty.length; j++) {
+                var strB = dirty[j].STD_YM + dirty[j].PSTN_NM + dirty[j].TRGT_GRD_CD + dirty[j].UGRD_GRD_CD + dirty[j].BWRK_SGRAD_CD;
+                if (strA === strB) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+    
+    //getDirty added,updated 중복검증
+    function isAddedUpdatedDuplicated(added, updated) {
+        for (var i = 0; i < added.length; i++) {
+            var strA = added[i].STD_YM + added[i].PSTN_NM + added[i].TRGT_GRD_CD + added[i].UGRD_GRD_CD + added[i].BWRK_SGRAD_CD;
+            for (var j = 0; j < updated.length; j++) {
+                var strB = updated[j].STD_YM + updated[j].PSTN_NM + updated[j].TRGT_GRD_CD + updated[j].UGRD_GRD_CD + updated[j].BWRK_SGRAD_CD;
+                if (strA === strB) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+    
+    //getDirty 제외한 기존 데이터와 중복검증 
+    function isDuplicatedInMaster(dirty) {
+        var items = self.gridMaster.dataItems().slice();
+    
+        //getDirty 데이터 있는 행 제외
+        for (var k = 0; k < dirty.length; k++) {
+            var dirtyStr = dirty[k].STD_YM + dirty[k].PSTN_NM + dirty[k].TRGT_GRD_CD + dirty[k].UGRD_GRD_CD + dirty[k].BWRK_SGRAD_CD;
+            var index = items.findIndex(item => item.STD_YM + item.PSTN_NM + item.TRGT_GRD_CD + item.UGRD_GRD_CD + item.BWRK_SGRAD_CD === dirtyStr);
+            console.log("index" + index);
+            if (index !== -1) {
+                items.splice(index, 1);
+            }
+        }
+    
+        for (var i = 0; i < items.length; i++) {
+            var compareStr = items[i].STD_YM + items[i].PSTN_NM + items[i].TRGT_GRD_CD + items[i].UGRD_GRD_CD + items[i].BWRK_SGRAD_CD;
+            for (var j = 0; j < dirty.length; j++) {
+                var dirtyStr = dirty[j].STD_YM + dirty[j].PSTN_NM + dirty[j].TRGT_GRD_CD + dirty[j].UGRD_GRD_CD + dirty[j].BWRK_SGRAD_CD;
+                if (dirtyStr === compareStr) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+     
+    
     
     
     
@@ -712,6 +783,7 @@
         self.gridMaster.setCellValue(idx, 'BIZAREA_NM', self.bizarea_cd.text(), false); // 사업장명 저장
         self.gridMaster.setCellValue(idx, 'TRGT_GRD_CD', 'K1', false); // 기본값 설정
         self.gridMaster.setCellValue(idx, 'UGRD_GRD_CD', 'K2', false); // 기본값 설정
+    
         self.gridMaster.setCellValue(idx, 'MIN_BWRK_MY', '30', false); // 기본값 설정
     
         self.gridMaster.setCellValue(idx, 'BWRK_MY_CALC_STD_DT', self.mpPROMO_YEAR_MONTH.value() + "01", false); // 산정기준일에 "승급년월"의 1일로 저장
@@ -789,62 +861,58 @@
     });
     dews.ui.mainbuttons.save.click(/*de6735b5-68c0-4785-bc2d-308bb03c399d*/ function () {
     
-    
-        // TRGT_GRD_CD와 UGRD_GRD_CD 비교
-        // var trgtGrdCd = self.gridMaster.getCellValue(idx, 'TRGT_GRD_CD');
-        // var ugrdGrdCd = self.gridMaster.getCellValue(idx, 'UGRD_GRD_CD');
-        // if (trgtGrdCd > ugrdGrdCd) {
-        //     dews.ui.snackbar.warning("대상등급이 승급등급보다 낮아야 합니다.");
-        //     return;  // 저장을 중지하고 함수를 종료
-        // }
-    
         self.gridMaster.commitCell();
-        var checkedIndices = self.gridMaster.getCheckedIndex();
     
-        if (checkedIndices && checkedIndices.length > 0) {
-            dews.ui.snackbar.warning("중복값이 존재합니다. 체크된 데이터 삭제해주세요.");
-        } else {
-    
-            var dirtyData = self.grid_ds.getDirtyData();
-            var totalDirtyData = dirtyData.Deleted.length + dirtyData.Updated.length + dirtyData.Added.length;
-    
-            if (totalDirtyData >= 3000) {
-                var progressInterval = startProgress(totalDirtyData);
-            }
-    
-            dews.api.post(
-                dews.url.getApiUrl('HR', 'HRPamprg00100_X10005Service', 'save_HR_URGDBASETBL_INFO_X10005MST'), {
-                async: false,
-                data: {
-                    grid_ds: JSON.stringify(self.grid_ds.getDirtyData())
-                }
-            }
-            ).done(function (data) {
-                if (progressInterval) {
-                    clearInterval(progressInterval);
-                    dews.ui.progress("progress6").setCurrent(100);
-                }
-    
-                dews.ui.snackbar.ok('자료가 정상적으로 저장되었습니다.');
-                self.mpPROMO_YEAR_MONTH.value(getCurrentMonth()); //데이터 있는 기준 날짜 확인해야 함 
-                dews.ui.loading.show({
-                    text: '조회중입니다.'
-                });
-    
-                // 1초 후에 로딩 메시지를 숨기고 데이터 조회
-                setTimeout(function () {
-                    dews.ui.loading.hide();
-                    self.grid_ds.read();
-                }, 1000);
-    
-            }).fail(function (xhr, status, error) {
-                if (progressInterval) {
-                    clearInterval(progressInterval);
-                    dews.ui.progress("progress6").setCurrent(100);
-                }
-                dews.ui.snackbar.error(error);
-            });
+        if (self.grid_ds.getDirtyDataCount() == 0) {
+            dews.alert('변경된 데이터가 없습니다.');
+            return false;
         }
+    
+        if (self.gridMaster.validate().result == false) {
+            dews.alert('필수 값이 입력되지 않은 항목이 있습니다.');
+            return false;
+        }
+        //getDirty끼리의 중복 검증 
+        if (isAddedUpdatedDuplicated(self.grid_ds.getDirtyData().Added, self.grid_ds.getDirtyData().Updated)) {
+            return dews.ui.snackbar.warning("이미 중복된 내용이 있습니다. 다시 입력해주세요");
+        }
+    
+        //getDirty 제외한 기존에 있는 데이터 중복 확인
+        if (self.grid_ds.getDirtyData().Added.length > 0) {
+            if (isDuplicatedInDirty(self.grid_ds.getDirtyData().Added) || isDuplicatedInMaster(self.grid_ds.getDirtyData().Added)) {
+                return dews.ui.snackbar.warning("이미 중복된 내용이 있습니다. 다시 입력해주세요");
+            }
+        }
+    
+        if (self.grid_ds.getDirtyData().Updated.length > 0) {
+            if (isDuplicatedInDirty(self.grid_ds.getDirtyData().Updated) || isDuplicatedInMaster(self.grid_ds.getDirtyData().Updated)) {
+                return dews.ui.snackbar.warning("이미 중복된 내용이 있습니다. 다시 입력해주세요");
+            }
+        }
+    
+        dews.api.post(
+            dews.url.getApiUrl('HR', 'HRPamprg00100_X10005Service', 'save_HR_URGDBASETBL_INFO_X10005MST'), {
+            async: false,
+            data: {
+                grid_ds: JSON.stringify(self.grid_ds.getDirtyData())
+            }
+        }
+        ).done(function (data) {
+            dews.ui.snackbar.ok('자료가 정상적으로 저장되었습니다.');
+            self.mpPROMO_YEAR_MONTH.value(getCurrentMonth()); //데이터 있는 기준 날짜 확인해야 함 
+            dews.ui.loading.show({
+                text: '조회중입니다.'
+            });
+    
+            // 1초 후에 로딩 메시지를 숨기고 데이터 조회
+            setTimeout(function () {
+                dews.ui.loading.hide();
+                self.grid_ds.read();
+            }, 1000);
+    
+        }).fail(function (xhr, status, error) {
+            dews.ui.snackbar.error("이미 등록된 승급기준등록 이력이 있습니다. 재조회 후 처리하십시오.");
+        });
     
     });
     self.$copybtnApply.on('click', /*df183ba1-b663-4f91-b5c4-39905db4b87c*/ function (e) {
@@ -1197,27 +1265,7 @@
         }
     ,
       validationCheck: /*4ce437c6-dafa-4120-a385-640d2b1d45b0*/ function (e) {
-            var field = e.cell.field;
-            var trgtGrdCd = e.cell.data;
-            var ugrdGrdCd = self.gridMaster.getCellValue(self.gridMaster.select(), 'UGRD_GRD_CD');
-    
-            // TRGT_GRD_CD 또는 UGRD_GRD_CD 컬럼의 값이 변경될 때만 유효성 검사 수행
-            if (field == 'TRGT_GRD_CD') {
-                if (trgtGrdCd > ugrdGrdCd || trgtGrdCd === ugrdGrdCd) {
-                    try {
-    
-                        dews.ui.snackbar.warning("대상등급이 승급등급보다 낮아야 합니다.");
-                        self.gridMaster.commitCell();
-                        self.gridMaster.cancelEdit();
-                        self.gridMaster.rowRemove(self.gridMaster.select());
-                        e.preventDefault();
-    
-                    } catch (error) {
-                        console.error(error); // 콘솔에 에러를 출력
-                        // 사용자에게 친숙한 메시지 표시 또는 오류 로깅
-                    }
-                }
-            }
+            checkValidate(e);
         }
     
     });

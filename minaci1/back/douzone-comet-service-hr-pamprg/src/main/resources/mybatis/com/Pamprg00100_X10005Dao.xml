@@ -64,16 +64,16 @@
 					</if>
 			)
 			SELECT * FROM RankedResults 
-	  <choose>
-		    <when test='"Y".equals(IS_MORE_THAN)'>
-		        WHERE IDX <![CDATA[>]]> TO_NUMBER(#{P_PAGING_START})
-		        AND TO_NUMBER(#{P_PAGING_START}) + TO_NUMBER(#{P_PAGING_CNT}) +1 <![CDATA[>]]> IDX
-		        ORDER BY IDX
-		    </when>
-		    <otherwise>
-		        ORDER BY IDX
-		    </otherwise>
-		</choose>
+			  <choose>
+				    <when test='"Y".equals(IS_MORE_THAN)'>
+				        WHERE IDX <![CDATA[>]]> TO_NUMBER(#{P_PAGING_START})
+				        AND TO_NUMBER(#{P_PAGING_START}) + TO_NUMBER(#{P_PAGING_CNT}) +1 <![CDATA[>]]> IDX
+				        ORDER BY IDX
+				    </when>
+				    <otherwise>
+				        ORDER BY IDX
+				    </otherwise>
+				</choose>
 	</select>
 
 	<select id="totalCount"  parameterType="hashmap"  resultType="String">
@@ -83,7 +83,6 @@
 		WHERE COMPANY_CD = #{P_COMPANY_CD}
 		AND BIZAREA_CD = #{P_BIZAREA_CD}
     </select>
-	
 	
 	<select id="get_BizareaList" parameterType="hashmap" resultType="com.douzone.comet.service.hr.pamprg.models.Pamprg00100_X10005Model">
 		SELECT MBM.COMPANY_CD
@@ -112,6 +111,18 @@
 			AND (UGRD_GRD_CD = #{urgd_grd_cd})
 			AND (MIN_BWRK_MY = #{min_bwrk_my})
 	</delete>
+	
+	<select id='checkValidate_update' parameterType="com.douzone.comet.service.hr.pamprg.models.Pamprg00100_X10005Model" resultType ="int">
+		SELECT COUNT(*)
+			  FROM HR_URGDBASETBL_INFO_X10005
+		WHERE COMPANY_CD = #{company_cd}
+		AND BIZAREA_CD = #{bizarea_cd}
+		AND STD_YM = #{std_ym}
+		AND PSTN_CD =#{pstn_cd}
+		AND TRGT_GRD_CD = #{trgt_grd_cd}
+		AND UGRD_GRD_CD = #{ugrd_grd_cd}
+		AND MIN_BWRK_MY = #{min_bwrk_my}
+	</select>
 	
 	<update id="updatePAMPRG00100_Model" parameterType="com.douzone.comet.service.hr.pamprg.models.Pamprg00100_X10005Model">
 		UPDATE 
@@ -290,8 +301,6 @@
  		GROUP BY STD_YM
  		ORDER BY STD_YM 
 	</select>
-	
-
 	
 	<update id="uploadPAMPRG00100_Model" parameterType="com.douzone.comet.service.hr.pamprg.models.Pamprg00100_X10005Model">
 		MERGE INTO HR_URGDBASETBL_INFO_X10005

@@ -1,6 +1,6 @@
-<!--##f0eca65c-e7a1-4dcb-a64f-093b41b7bdb6##-->
+<!--##cba810d6-0085-4028-b33f-e2f60232cc07##-->
 <!--##Dwagger_SearchService##-->
-<!--##D+CwO9jfBby+jZ8aFphiqWscPAcrgYeUUQB5QGy0wXUwcBDXeim31aR0s4A9jCAo##-->
+<!--##zPzXW+kprpKX1j4Nt1ubKSYOWPCGbFWI25Uposp6/oKU73Y9qF8AAQu1Sh9kc6KN##-->
 <!--
   DEWS UI/UX IDE - Build Result - v1.5
   # PageID: Dwagger_SearchService
@@ -505,7 +505,14 @@
     //XSS 공격 대응을 위한 조치
     //서버를 거치지 않는 DOM기반 XSS 공격 대응
     function EscapeHtml(input) {
-        return input.replace(/</g, "&lt;").replace(/>/g, "&gt;");
+        return input.replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;")
+            .replace(/'/g, "&#x27;")
+            .replace(/\//g, "&#x2F;")
+            .replace(/\(/g, "&#x28;")
+            .replace(/\)/g, "&#x29;");
     }
     //현재 넘겨받은 JSON데이터 객체에서 키워드를 통해 찾는다.
     function GetDataByKeywords() {

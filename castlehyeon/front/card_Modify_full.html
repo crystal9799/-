@@ -1,6 +1,6 @@
-<!--##d3c4f51b-b6db-4c4d-9c67-dbc41c0e4def##-->
+<!--##70cf22e2-6a86-4718-a4a6-f6a0535db96f##-->
 <!--##card_Modify_full##-->
-<!--##XPau17YYTyfY67hgxfZz5XdQuUnBA5nQQUvkXDpGUv3zNNzpcnUZ6hJq8XhNODJ+##-->
+<!--##tvmVAaKM1a71sYkHg7jU3BqL+clqGFNY8d6/jKhnjmZC9oEQ4hkJHjZTSNftkq1P##-->
 <!--
   DEWS UI/UX IDE - Build Result - v1.5
   # PageID: card_Modify_full
@@ -362,7 +362,14 @@
     //XSS 공격 대응을 위한 조치
     //서버를 거치지 않는 DOM기반 XSS 공격 대응
     function EscapeHtml(input) {
-        return input.replace(/</g, "&lt;").replace(/>/g, "&gt;");
+        return input.replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;")
+            .replace(/'/g, "&#x27;")
+            .replace(/\//g, "&#x2F;")
+            .replace(/\(/g, "&#x28;")
+            .replace(/\)/g, "&#x29;");
     }
     //현재 넘겨받은 JSON데이터 객체에서 키워드를 통해 찾는다.
     //대소문자 구별 없이 검색할 수 있도록 검색어와 비교하는 요소 둘 다 toLowerCase()

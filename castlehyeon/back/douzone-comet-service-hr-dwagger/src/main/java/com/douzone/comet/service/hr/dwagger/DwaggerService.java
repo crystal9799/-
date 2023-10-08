@@ -62,6 +62,7 @@ public class DwaggerService extends DzCometService {
 				System.out.println("cacheModels==>" + cacheModels);
 				System.out.println("--------------------------");
 			}else {
+				//그 밖의 에러가 난 경우.
 				DwaggerModel errorModel = new DwaggerModel();
 				errorModel.setModule(result);
 				dwaggerModelList.add(errorModel);
@@ -83,7 +84,10 @@ public class DwaggerService extends DzCometService {
 			@DzParam(key = "condition_cd", desc = "검색조건코드", paramType = DzParamType.QueryString) String condition_cd) throws Exception {
 		List<DwaggerModel> dwaggerModelList = new ArrayList<DwaggerModel>();
 		try {
-			System.out.println("Service cacheModels===>" + cacheModels);
+			//APIDATACall의 응답이 에러일 때, 기존의 빈 객체를 반환해주기.
+			System.out.println("--------------------------");
+			System.out.println("기존 빈객체의 cacheModels의 리스트==>" + cacheModels.getApiList());
+			System.out.println("--------------------------");
 			dwaggerModelList = cacheModels.getApiList();
 				
 		} catch (Exception e) {

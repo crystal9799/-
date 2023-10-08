@@ -1,6 +1,6 @@
-<!--##012511ef-5913-4ced-8c43-9a8b7b771d6c##-->
+<!--##ce393f59-b643-4cba-a3ef-1ebe42e170cb##-->
 <!--##Dwagger_SearchService##-->
-<!--##I4waE1x+mMLK2gGB8KZmEJ1xoAB20pg0k/ooQsObg6b7KCNryvaq74a2XV9y9qUX##-->
+<!--##7Bp+yoqLQv1wykgRK+hXuG/Rrt+GaqisTD3KcSji/88GUQjsh/CGv/KT21ln4GRb##-->
 <!--
   DEWS UI/UX IDE - Build Result - v1.5
   # PageID: Dwagger_SearchService
@@ -252,7 +252,6 @@
             self.param_ds.data(apiParamList);
             var apiSchemaList = self.total_grid.getCellValue(self.total_grid.select(), 'apiSchemaList');
             self.schema_ds.data(apiSchemaList);
-    
         }
     ,
       clicked: /*c9fa2f0b-2d38-4a9d-bca3-5aac1aefce48*/ function (e) {
@@ -366,7 +365,6 @@
                 condition_cd: condition_cd
             }
         }).done(function (data) {
-    
             if (data != '' && data != null && data != undefined && data[0] != null && data[0] != undefined && data[0] != '' && data[0].module != '-1') {
                 //전체 검색일 때만 로컬스토리지에 저장
                 //마지막 백업날짜 업데이트
@@ -376,13 +374,38 @@
                     SaveDataToLocalStorage("saveData", data);
                     SaveDataToLocalStorage("last_saveDTS", new Date());
                     dews.alert("백업데이터를 저장했습니다.", "success");
-                } else
+                } else {
+                    //다른 검색조건의 경우 전역 데이터객체에는 담지 않는다.
                     self.total_ds.data(data);
+                }
+    
     
     
             } else if (data === null || data.length === 0) { //데이터가 빈 배열이 왔다면
                 dews.ui.snackbar.warning("검색결과가 없습니다.");
+                //하위 그리드도 날리기. 
+                self.param_grid.clearRows();
+                self.schema_grid.clearRows();
             } else if (data[0].module === '-1') {
+                //CallAPI의 백단 결과에서 찾을 수 없는 경우.
+                //기존 빈객체 데이터를 리턴하도록 함.
+                dews.api.get(dews.url.getApiUrl("HR", "DwaggerService", "dwagger_errorGetInfo"), {
+                    async: false,
+                    data: {
+                        keywords: self.SearchKeyword.text(),
+                        langCd: 'KR',
+                        condition_cd: condition_cd
+                    }
+                }).done(function (data) {
+                    apiDatas = data;
+                    self.last_backupDT.text(GetformatDate(new Date()));
+                    SaveDataToLocalStorage("saveData", data);
+                    SaveDataToLocalStorage("last_saveDTS", new Date());
+                    // dews.alert("백업데이터를 저장했습니다.", "success");
+                });
+                //로컬스토리지와 받아온 데이터 간의 동기화 
+    
+    
                 //로컬스토리지 api 데이터
                 retrievedData = getDataFromLocalStorage("saveData");
                 //로컬스토리지 업데이트 날짜
@@ -479,27 +502,66 @@
             self.SearchKeyword.readonly(false);
         }
     }
+    //XSS 공격 대응을 위한 조치
+    //서버를 거치지 않는 DOM기반 XSS 공격 대응
+    function EscapeHtml(input) {
+        return input.replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;")
+            .replace(/'/g, "&#x27;")
+            .replace(/\//g, "&#x2F;")
+            .replace(/\(/g, "&#x28;")
+            .replace(/\)/g, "&#x29;");
+    }
     //현재 넘겨받은 JSON데이터 객체에서 키워드를 통해 찾는다.
     function GetDataByKeywords() {
-        var keywords = self.SearchKeyword.text().toLowerCase(); // 키워드를 소문자로 변환
-        var mainData = self.initialData.apiDatas;
+        // var keywords = self.SearchKeyword.text().toLowerCase(); // 키워드를 소문자로 변환
+        var keywords = EscapeHtml(self.SearchKeyword.text().toLowerCase());
+        var mainData = apiDatas;
         if (apiDatas != '' && apiDatas != null && apiDatas != undefined) {
             // data 배열에서 keywords를 포함하는 요소들을 필터링하여 새로운 배열 생성
             const filteredData = mainData.filter(item => {
-                // item 객체의 필드 중에서 keywords를 포함하는 필드가 있는지 확인 (대소문자 구별 없이)
-                for (const key in item) {
-                    if (item.hasOwnProperty(key) && typeof item[key] === 'string' && item[key].toLowerCase().includes(keywords)) {
-                        return true; // keywords를 포함하는 필드가 발견되면 해당 요소를 포함
-                    }
+                // condition_cd에 따라 필터링할 필드를 선택
+                var filterField;
+                var condition_cd = self.search_condition.value();
+                switch (condition_cd) {
+                    case '2':
+                        filterField = item.service;
+                        break;
+                    case '3':
+                        filterField = item.serviceDesc;
+                        break;
+                    case '4':
+                        filterField = item.UrlPattern;
+                        break;
+                    case '5':
+                        filterField = item.patternDesc;
+                        break;
+                    default:
+                        filterField = "";
                 }
+    
+                // filterField이 유효하고 keywords를 포함하는지 (대소문자 구별 없이) 확인
+                if (filterField && typeof filterField === 'string' && filterField.toLowerCase().includes(keywords)) {
+                    return true; // keywords를 포함하는 필드가 발견되면 해당 요소를 포함
+                }
+    
                 return false; // keywords를 포함하는 필드가 없으면 해당 요소를 제외
-            })
+            });
+    
             self.total_ds.data(filteredData);
             console.log('filteredData===>' + filteredData);
             if (filteredData.length > 0) {
-                dews.alert("백업데이터를 불러왔습니다.", "success");
-            } else
+                // dews.alert("백업데이터를 불러왔습니다.", "success");
+                dews.ui.snackbar.ok("검색을 완료 했습니다.");
+                console.log('백업데이터를 불러왔습니다.');
+            } else {
                 dews.ui.snackbar.warning("검색결과가 없습니다.");
+                //하위 그리드도 날리기. 
+                self.param_grid.clearRows();
+                self.schema_grid.clearRows();
+            }
         } else if (apiDatas === '' || apiDatas === null || apiDatas === undefined) {
             dews.alert("백업데이터가 존재하지 않습니다.", "warning");
             dews.api.get(dews.url.getApiUrl("HR", "DwaggerService", "dwagger_notExistLocal"), {
@@ -526,6 +588,10 @@
     
                 } else if (data === null || data.length === 0) { //데이터가 빈 배열이 왔다면
                     dews.ui.snackbar.warning("검색결과가 없습니다.");
+                    //하위 그리드도 날리기. 
+                    self.param_grid.clearRows();
+                    self.schema_grid.clearRows();
+    
                 } else if (data[0].module != '-1') {
                     dews.api.get(dews.url.getApiUrl("HR", "DwaggerService", "dwagger_errorGetInfo"), {
                         async: false,
@@ -544,8 +610,12 @@
                 }
                 // dews.ui.page.close(); // 페이지 닫기
             });
-        } else
+        } else {
             dews.ui.snackbar.warning("검색결과가 없습니다.");
+            //하위 그리드도 날리기. 
+            self.param_grid.clearRows();
+            self.schema_grid.clearRows();
+        }
     
     };
     

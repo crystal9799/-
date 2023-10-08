@@ -213,6 +213,11 @@
 		WHERE HOMX.DNLGB_CD = '400'
 		AND
 		HOMX.COMPANY_CD = #{P_COMPANY_CD}
+		AND
+		<if
+			test='P_REQ_EMP_NO !=null and P_REQ_EMP_NO !="" '>
+		HOMX.REQ_EMP_NO = #{P_REQ_EMP_NO}
+		</if>
 		<!-- <if test='P_START_DT !=null and P_START_DT !="" and P_END_DT !=null 
 			and P_END_DT !=""'> AND START_DT BETWEEN #{P_START_DT} AND #{P_END_DT} </if> -->
 		<if

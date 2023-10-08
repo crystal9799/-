@@ -1,6 +1,6 @@
-<!--##f22dc96c-7eb6-46d4-a9b1-57573866ae39##-->
+<!--##136ec91d-7ced-4b97-88f0-9dd7539df6ce##-->
 <!--##ESSODM01400_x10005##-->
-<!--##Ab3M+go/Xr8zDOEiJFVRkzFO7rAmYjFIJQHDLG0fozoT8KAv24UZtGGB8lDygXZj##-->
+<!--##FiqHo3weCkmNjlqOB+nMy/Rjwp/MzyXegoRKUE0hBEbphjhh4GdSM9W9EJAde130##-->
 <!--
   DEWS UI/UX IDE - Build Result - v1.5
   # PageID: ESSODM01400_x10005
@@ -18,7 +18,7 @@
         <li id="tab2" class="dews-tab-item" data-dews-title="주간결근자내역">
           <div id="containerpanel6" class="dews-ui-container-panel">
             <div id="containerpanelitem6" class="dews-container-item" data-dews-position="normal">
-              <div id="week_chart" class="dews-ui-chart" />
+              <div id="week_chart" class="dews-ui-chart" style="font-size: 1.5em;" />
             </div>
           </div>
         </li>
@@ -132,7 +132,9 @@
     self.period_picker.setEndDate(GetEndDate());
     // self.COMPANY_CD.text(self.user.companyCode());
     self.COMPANY_CD.text(self.user.companyCode);
-    
+    //두개의 차트 max값을 동적으로 적용하기 위한 변수
+    var line_chartMax = -Infinity;
+    var column_chartMax = -Infinity;
     
     
     
@@ -306,7 +308,7 @@
         }
       },
       tooltip: {
-        template: '#: category # #: value #'
+        template: '#: category #요일 #: value #명 결근'
       }
     });
     dews.ui.chart(self.$month_chart, {
@@ -340,7 +342,7 @@
       tooltip: {
         background: 'transparent',
         format: 'none',
-        template: '#= series.name #: #= value #'
+        template: '#= series.name #: #= value #건'
       }
     });
     self.$search_button.on('click', /*956f3142-ecd5-425f-a5e9-e4621fe5753d*/ function (e) {
@@ -579,10 +581,6 @@
     
     /*7b94ccf8-7b1d-41e7-9ddb-3b62c2f625c1*/ GetChartInfo();
     
-    
-    //두개의 차트 max값을 동적으로 적용하기 위한 변수
-    var line_chartMax = -Infinity;
-    var column_chartMax = -Infinity;
     //chart 정보를 받아오는 API
     function GetChartInfo() {
         dews.api.get(dews.url.getApiUrl("HR", "HREssodm01400_X10005Service", "selectDataByCondition"), {
@@ -613,8 +611,11 @@
             var result = Math.ceil(line_chartMax / interval);
             var options = {
                 valueAxis: {
-                    max: line_chartMax,
-                    majorUnit: result
+                    max: line_chartMax + result,
+                    majorUnit: result,
+                    labels: {
+                        format: '{0}건'
+                    }
                 }
             }
             //max값 동적적용
@@ -650,8 +651,11 @@
     
             var options = {
                 valueAxis: {
-                    max: column_chartMax,
-                    majorUnit: result
+                    max: column_chartMax + result,
+                    majorUnit: result,
+                    labels: {
+                        format: '{0}명'
+                    }
                 }
             }
             //max값 동적적용

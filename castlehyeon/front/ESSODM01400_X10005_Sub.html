@@ -1,6 +1,6 @@
-<!--##3c0d7d89-329f-4912-aba7-1d5dee637d1e##-->
+<!--##e5007381-4862-4484-bf8f-65a357f089d7##-->
 <!--##ESSODM01400_X10005_Sub##-->
-<!--##ZHuwKnbVg5OKAGYfHm0Waz+3Rmh5XbxemZCM0A5SL7jm9u+NrfIQeXjSuBQnRHVy##-->
+<!--##ELkV0TfoPDW5+HQTonF/fI8dp44fBzUmOpSgPBe0056jYdiG7fDR0aoO+EPd3X3M##-->
 <!--
   DEWS UI/UX IDE - Build Result - v1.5
   # PageID: ESSODM01400_X10005_Sub
@@ -445,6 +445,9 @@
                     self.main_grid.setCellValue(self.main_grid.select(), 'ATHZ_ST_CD', '2');
                     self.ATHZ_ST_NM.text(GetATHZ_ST_NM('2'));
                     InitBtns();
+                    //결재요청을 하게 되면 결재상태 코드가 바뀌게 되므로, HasChanged()에서 비교하는 데이터를 새롭게 줘야함.
+                    isSaved = true;
+                    inputData = IsNewInputNewData();
                 });
             }).no(function () {
                 dews.ui.snackbar.warning('결재신청을 취소하였습니다.')
@@ -475,6 +478,9 @@
                     self.main_grid.setCellValue(self.main_grid.select(), 'ATHZ_ST_CD', '1');
                     self.ATHZ_ST_NM.text(GetATHZ_ST_NM('1'));
                     InitBtns();
+                    //결재요청취소를 하게 되면 결재상태 코드가 바뀌게 되므로, HasChanged()에서 비교하는 데이터를 새롭게 줘야함.
+                    isSaved = true;
+                    inputData = IsNewInputNewData();
                 });
             }).no(function () {
     
@@ -1415,6 +1421,9 @@
                     self.main_grid.setCellValue(self.main_grid.select(), 'ATHZ_ST_CD', modalData);
                     self.ATHZ_ST_NM.text(GetATHZ_ST_NM(modalData));
                     InitBtns();
+                    //결재나 반려를 하게 되면 결재상태 코드가 바뀌게 되므로, HasChanged()에서 비교하는 데이터를 새롭게 줘야함.
+                    isSaved = true;
+                    inputData = IsNewInputNewData();
                 }
             });
             // 대화 상자(모달창) 열기

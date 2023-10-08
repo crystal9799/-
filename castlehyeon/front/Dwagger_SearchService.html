@@ -1,6 +1,6 @@
-<!--##41b8f5e4-9585-40a3-8836-842baaa11b80##-->
+<!--##f0eca65c-e7a1-4dcb-a64f-093b41b7bdb6##-->
 <!--##Dwagger_SearchService##-->
-<!--##3PTfvxucfP4Q1+fsXlm1mnlqkt/LfnhlstEUu9M/1n//8CCkevdZvwlsibewCP7Z##-->
+<!--##D+CwO9jfBby+jZ8aFphiqWscPAcrgYeUUQB5QGy0wXUwcBDXeim31aR0s4A9jCAo##-->
 <!--
   DEWS UI/UX IDE - Build Result - v1.5
   # PageID: Dwagger_SearchService
@@ -502,9 +502,15 @@
             self.SearchKeyword.readonly(false);
         }
     }
+    //XSS 공격 대응을 위한 조치
+    //서버를 거치지 않는 DOM기반 XSS 공격 대응
+    function EscapeHtml(input) {
+        return input.replace(/</g, "&lt;").replace(/>/g, "&gt;");
+    }
     //현재 넘겨받은 JSON데이터 객체에서 키워드를 통해 찾는다.
     function GetDataByKeywords() {
-        var keywords = self.SearchKeyword.text().toLowerCase(); // 키워드를 소문자로 변환
+        // var keywords = self.SearchKeyword.text().toLowerCase(); // 키워드를 소문자로 변환
+        var keywords = EscapeHtml(self.SearchKeyword.text().toLowerCase());
         var mainData = apiDatas;
         if (apiDatas != '' && apiDatas != null && apiDatas != undefined) {
             // data 배열에서 keywords를 포함하는 요소들을 필터링하여 새로운 배열 생성

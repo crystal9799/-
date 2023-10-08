@@ -51,7 +51,11 @@ public class HREssodm01400_X10005Service extends DzCometService {
 			parameters.put("P_COMPANY_CD", company_cd);
 			parameters.put("P_START_DT", start_dt);
 			parameters.put("P_END_DT", end_dt);
-
+			
+			//목록은 신청자 사원번호를 기준으로 접속자 사원번호와 비교해서 보여주기.
+			String reqEmpNo = this.getEmpCode();
+			System.out.println(reqEmpNo);
+			parameters.put("P_REQ_EMP_NO", reqEmpNo);
 			items = essodm01400_x10005DAO.selectEssodm01400_X10005ModelList(parameters);
 
 			System.out.println("MainGrid1Model==========================");

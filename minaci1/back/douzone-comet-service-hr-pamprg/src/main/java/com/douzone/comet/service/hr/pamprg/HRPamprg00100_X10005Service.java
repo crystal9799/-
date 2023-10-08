@@ -73,6 +73,13 @@ public class HRPamprg00100_X10005Service extends DzCometService {
  					 
  					String totalCount = mybatisSupport.selectOne("com.douzone.comet.service.hr.pamprg.dao.Pamprg00100_X10005Dao.totalCount", parameters);
  					System.out.println("totalCount"+totalCount);
+ 					
+ 					if(Integer.parseInt(totalCount) >= Integer.parseInt(pagingCount)) { //500건 미만일 경우 select 조건
+ 					    parameters.put("IS_MORE_THAN", "Y");
+ 					} else {
+ 					    parameters.put("IS_MORE_THAN", "N");
+ 					}
+ 					System.out.println("IS_MORE_THAN_500"+ parameters.toString());
  		            //페이징토탈카운트를 저장합니다(필수!)
  					this.setTotalCount(totalCount);
  					 
@@ -80,7 +87,6 @@ public class HRPamprg00100_X10005Service extends DzCometService {
  		        //각자 페이징관련 쿼리를 작성하여 호출합니다.
  				
  				pamprg00100_X10005ModelList = mybatisSupport.selectList("com.douzone.comet.service.hr.pamprg.dao.Pamprg00100_X10005Dao.master_list_paging", parameters);
- 				System.out.println("이거 뿌려주니??"+pamprg00100_X10005ModelList.toString());
  		        return pamprg00100_X10005ModelList;
 
  		
@@ -97,7 +103,8 @@ public class HRPamprg00100_X10005Service extends DzCometService {
 			throws Exception {
 	 
 		try {
-			
+			System.out.println("grid_ds"+grid_ds);
+			System.out.println("왜 여기 안외ㅏ");
 			String companyCd = this.getCompanyCode();
 			String userId = this.getUserId();
 			String userIp = this.getRemoteHost();
@@ -127,9 +134,16 @@ public class HRPamprg00100_X10005Service extends DzCometService {
 			                StringUtil.getLocaleTimeString(updateRow.getBwrk_my_calc_std_dt(), "yyyyMMdd"));
 			        updateRow.setStd_ym(StringUtil.getLocaleTimeString(updateRow.getStd_ym(), "yyyyMM"));
 			        logger.info("updateRow " + updateRow.toString());
+			        
+			        int count = pamprg00100_X10005Dao.checkValidate_update(updateRow);
+			        if (count > 0) {
+			        	System.out.println("count"+count);
+						System.out.println("good throw");
+						throw new DzApplicationRuntimeException("이미 등록된 승급기준등록 이력이 있습니다.\n재조회 후 처리하십시오.");
+					}
+			        pamprg00100_X10005Dao.updatePAMPRG00100_Model(updatedRows);
+			        logger.info("그리드 수정완료");
 			    }
-			    pamprg00100_X10005Dao.updatePAMPRG00100_Model(updatedRows);
-			    logger.info("그리드 수정완료");
 			}
 
 			// [insert]: 일괄 저장 merge into
@@ -142,6 +156,14 @@ public class HRPamprg00100_X10005Service extends DzCometService {
 			                StringUtil.getLocaleTimeString(insertRow.getBwrk_my_calc_std_dt(), "yyyyMMdd"));
 			        insertRow.setStd_ym(StringUtil.getLocaleTimeString(insertRow.getStd_ym(), "yyyyMM"));
 			        logger.info("insertRow " + insertRow.toString());
+//			        
+//			        int count = pamprg00100_X10005Dao.checkValidate_update(insertRow);
+//			        if (count > 0) {
+//			        	System.out.println("count"+count);
+//						System.out.println("good throw");
+//						throw new DzApplicationRuntimeException("이미 등록된 승급기준등록 이력이 있습니다.\n재조회 후 처리하십시오.");
+//					}
+//			        
 			        try {
 			            pamprg00100_X10005Dao.uploadPAMPRG00100_Model(insertRow);
 			        } catch (Exception e) {
@@ -153,6 +175,7 @@ public class HRPamprg00100_X10005Service extends DzCometService {
 		} catch (Exception e) {
 			throw new DzApplicationRuntimeException(e);
 		}
+	
 	}
 
 	// [종전자료 전 기존데이터 조회]

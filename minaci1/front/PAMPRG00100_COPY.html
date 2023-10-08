@@ -1,11 +1,11 @@
-<!--##20772c78-c495-4449-ad6f-765aabc1173d##-->
+<!--##f7b47ac3-f208-4273-86ea-ba49c81c6513##-->
 <!--##PAMPRG00100_COPY##-->
-<!--##p155faESd+j3xeubCZ9dqg7yi1KIilsh67ZMQ+709CE3e2N8eqskwlbEsewx7Mx+##-->
+<!--##m60rYxN4a9vtR/S+h0PrbnCGVkd6xXnBoX5lqtT66evFXL6gtk3QyOKU89Aoj4Fs##-->
 <!--
   DEWS UI/UX IDE - Build Result - v1.5
   # PageID: PAMPRG00100_COPY
   # PageTitle: 종전복사
-  # Server: http://localhost:8090/
+  # Server: http://localhost:8080/
 -->
 <!--
 
@@ -75,6 +75,7 @@
     var bizarea_cd = self.bizarea_cd.value();
     self.bizarea_copy.value(bizarea_cd);
     
+    
     function copyBeforeList() {
         dews.api.get(dews.url.getApiUrl("HR", "HRPamprg00100_X10005Service", "copy_BeforeList"), {
             async: false,
@@ -85,8 +86,6 @@
             }
         }).done(function (data) {
             dews.ui.snackbar.ok("종전자료복사가 완료되었습니다.");
-            self.targetYearMonth.value(data.STD_YM);
-            dews.ui.mainbuttons.search.click();
         }).fail(function (message) {
             dews.ui.snackbar.warning(message.responseJSON.message);
         });
@@ -130,9 +129,10 @@
                 bizarea_cd: self.bizarea_cd.value()
             }
         }).done(function (data) {
-            //console.log("data" + data); //true이면 데이터 바로 복사 , false 이면 기존데이터 삭제 후 
+            //console.log("data" + data); true이면 데이터 바로 복사 , false 이면 기존데이터 삭제 후 복사
             if (data) {
                 copyBeforeList(); //복사
+                thisdialog.ok(self.targetYearMonth.value()); //메인에 대상년월 전달
                 self.dialog.close();
             } else {
                 dews.confirm('기존 등록된 데이터가 삭제되고 등록됩니다.\n계속하시겠습니까?', "question")
@@ -141,7 +141,6 @@
                         copyBeforeList(); //복사
                         thisdialog.ok(self.targetYearMonth.value()); //메인에 대상년월 전달
                         self.dialog.close();
-    
                     }).no(function () {
                     });
             }

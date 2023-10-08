@@ -87,7 +87,6 @@ public class HRPamprg00100_X10005Service extends DzCometService {
  		        //각자 페이징관련 쿼리를 작성하여 호출합니다.
  				
  				pamprg00100_X10005ModelList = mybatisSupport.selectList("com.douzone.comet.service.hr.pamprg.dao.Pamprg00100_X10005Dao.master_list_paging", parameters);
- 				System.out.println("이거 뿌려주니??"+pamprg00100_X10005ModelList.toString());
  		        return pamprg00100_X10005ModelList;
 
  		
@@ -157,14 +156,14 @@ public class HRPamprg00100_X10005Service extends DzCometService {
 			                StringUtil.getLocaleTimeString(insertRow.getBwrk_my_calc_std_dt(), "yyyyMMdd"));
 			        insertRow.setStd_ym(StringUtil.getLocaleTimeString(insertRow.getStd_ym(), "yyyyMM"));
 			        logger.info("insertRow " + insertRow.toString());
-			        
-			        int count = pamprg00100_X10005Dao.checkValidate_update(insertRow);
-			        if (count > 0) {
-			        	System.out.println("count"+count);
-						System.out.println("good throw");
-						throw new DzApplicationRuntimeException("이미 등록된 승급기준등록 이력이 있습니다.\n재조회 후 처리하십시오.");
-					}
-			        
+//			        
+//			        int count = pamprg00100_X10005Dao.checkValidate_update(insertRow);
+//			        if (count > 0) {
+//			        	System.out.println("count"+count);
+//						System.out.println("good throw");
+//						throw new DzApplicationRuntimeException("이미 등록된 승급기준등록 이력이 있습니다.\n재조회 후 처리하십시오.");
+//					}
+//			        
 			        try {
 			            pamprg00100_X10005Dao.uploadPAMPRG00100_Model(insertRow);
 			        } catch (Exception e) {

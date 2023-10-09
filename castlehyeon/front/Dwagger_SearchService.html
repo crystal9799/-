@@ -1,6 +1,6 @@
-<!--##ce393f59-b643-4cba-a3ef-1ebe42e170cb##-->
+<!--##cc0c0367-29f8-46a4-b4f4-8f79e534ac7b##-->
 <!--##Dwagger_SearchService##-->
-<!--##7Bp+yoqLQv1wykgRK+hXuG/Rrt+GaqisTD3KcSji/88GUQjsh/CGv/KT21ln4GRb##-->
+<!--##0ySs+dxNq5RnWIRH2q7a/Op6MNwJOuVrE1RiF8awhvcYMEqVQUm/ZBH1zRvAslCK##-->
 <!--
   DEWS UI/UX IDE - Build Result - v1.5
   # PageID: Dwagger_SearchService
@@ -373,6 +373,7 @@
                     self.last_backupDT.text(GetformatDate(new Date()));
                     SaveDataToLocalStorage("saveData", data);
                     SaveDataToLocalStorage("last_saveDTS", new Date());
+                    self.total_ds.data(apiDatas);
                     dews.alert("백업데이터를 저장했습니다.", "success");
                 } else {
                     //다른 검색조건의 경우 전역 데이터객체에는 담지 않는다.
@@ -383,6 +384,7 @@
     
             } else if (data === null || data.length === 0) { //데이터가 빈 배열이 왔다면
                 dews.ui.snackbar.warning("검색결과가 없습니다.");
+                self.total_grid.clearRows();
                 //하위 그리드도 날리기. 
                 self.param_grid.clearRows();
                 self.schema_grid.clearRows();

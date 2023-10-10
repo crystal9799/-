@@ -1,6 +1,6 @@
-<!--##eaf77d44-9afb-40c7-a093-44ba2d8932c9##-->
+<!--##bd639de6-244b-4c2b-909a-c4fb0c301bb5##-->
 <!--##PAMODM01800_X10005##-->
-<!--##WGtkw+NA/Bx5oXNDlK/KSiSHsfaBm8OccocMjKW2xAJyQ6cVtb3XRpXHL6ACJAyh##-->
+<!--##8pmEus8JxpL+iDH4dx67hPs4kaWsGjAN5aQKDv+KG0HgNau95sk8wDeDv7gdlNqm##-->
 <!--
   DEWS UI/UX IDE - Build Result - v1.5
   # PageID: PAMODM01800_X10005
@@ -208,6 +208,16 @@
     dews.ui.mainbuttons.approval.hide();
     dews.ui.mainbuttons.etnapproval.hide();
     dews.ui.mainbuttons.add.click(/*d1cbdcb0-8f4b-4a3e-9937-683f712ca116*/ function () {
+        if (self.s_BIZAREA_CD.codes() == "" || self.s_BIZAREA_CD.codes() == undefined || self.s_BIZAREA_CD.codes() == null) {
+            dews.alert("사업장은 필수입력 항목입니다.", 'warning');
+            return false;
+        }
+    
+        if (self.s_DEPT_CD.codes() == "" || self.s_DEPT_CD.codes() == undefined || self.s_DEPT_CD.codes() == null) {
+            dews.alert("부서는 필수입력 항목입니다.", 'warning');
+            return false;
+        }
+    
         var dialog;
         dialog = dews.ui.dialog('PAMODM01800_X10005_EMP_POP', {
             url: '/view/HR/PAMODM01800_X10005_EMP_POP',
@@ -820,7 +830,7 @@
     
     
     function get_tm_cd_nm(index, emp_no, bwrk_dt) {
-        if(bwrk_dt=='') return false;
+        if (bwrk_dt == '') return false;
         dews.api.get(dews.url.getApiUrl("HR", "HRPamodm01800_X10005Service", "get_tm_cd_nm"), {
             async: true,
             data: {

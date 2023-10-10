@@ -66,8 +66,8 @@ public class Pamodm01800_X10005Dao {
 	 * @param List<Pamodm01800_X10005Model> parameters
 	 * @return void
 	 */
-	public void update_HR_STRK_INFO_X10005MST(List<Pamodm01800_X10005Model> parameters) throws Exception {
-		this.mybatisSupport.updateBatch(this.getClass().getName() + ".update_HR_STRK_INFO_X10005MST", parameters);
+	public void update_HR_STRK_INFO_X10005MST(Pamodm01800_X10005Model parameters) throws Exception {
+		this.mybatisSupport.update(this.getClass().getName() + ".update_HR_STRK_INFO_X10005MST", parameters);
 	}
 	
 	/**

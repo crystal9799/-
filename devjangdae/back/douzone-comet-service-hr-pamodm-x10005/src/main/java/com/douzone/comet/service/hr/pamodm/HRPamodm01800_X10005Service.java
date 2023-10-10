@@ -118,7 +118,7 @@ public class HRPamodm01800_X10005Service extends DzCometService {
 			}
 
 
-			// [UPDATE 배치]
+			// [UPDATE]
 			for (Pamodm01800_X10005Model row : dataSourceMst.getUpdated()) {
 
 				// COMPANY_CD
@@ -128,30 +128,29 @@ public class HRPamodm01800_X10005Service extends DzCometService {
 				}
 				row.setCompany_cd(companyCd);
 				row.setEmp_no(row.getEmp_no());
-				// START_DT
-				row.setStart_dt(StringUtil.getLocaleTimeString(row.getStart_dt(), "yyyyMMdd"));
-				// END_DT
-				row.setEnd_dt(StringUtil.getLocaleTimeString(row.getEnd_dt(), "yyyyMMdd"));
-
+				row.setStart_dt(StringUtil.getLocaleTimeString(row.getStart_dt(), "yyyyMMdd"));// START_DT
+				row.setEnd_dt(StringUtil.getLocaleTimeString(row.getEnd_dt(), "yyyyMMdd"));// END_DT
 				row.setDof_tp(row.getDof_tp());
 				row.setStart_tm(row.getStart_tm());
 				row.setEnd_tm(row.getEnd_tm());
 				row.setDof_tm_cnt(row.getDof_tm_cnt());
 				row.setLve_tm_cnt(row.getLve_tm_cnt());
 
-				// UPDATE_ID
-				row.setUpdate_id(this.getUserId());
-				// UPDATE_IP
-				row.setUpdate_ip(this.getRemoteHost());
-				// UPDATE_DTS
-				row.setUpdate_dts(new Date());
+				row.setUpdate_id(this.getUserId());// UPDATE_ID
+				row.setUpdate_ip(this.getRemoteHost());// UPDATE_IP
+				row.setUpdate_dts(new Date());// UPDATE_DTS
 
-				// pamodm01800_X10005Dao.updateBatch(row); //update 배치사용함
+				try {
+					pamodm01800_X10005Dao.update_HR_STRK_INFO_X10005MST(row); //update 배치사용함
+				}
+				catch (Exception e) {
+			        throw new DzApplicationRuntimeException("이미 등록된 데이터가 있습니다.\n재조회 후 처리하십시오.");
+			    }
 			}
 
-			if (dataSourceMst.getUpdated() != null && dataSourceMst.getUpdated().size() > 0) {
-				pamodm01800_X10005Dao.update_HR_STRK_INFO_X10005MST(dataSourceMst.getUpdated());
-			}
+//			if (dataSourceMst.getUpdated() != null && dataSourceMst.getUpdated().size() > 0) {
+//				pamodm01800_X10005Dao.update_HR_STRK_INFO_X10005MST(dataSourceMst.getUpdated());
+//			}
 
 
 			// [INSERT]

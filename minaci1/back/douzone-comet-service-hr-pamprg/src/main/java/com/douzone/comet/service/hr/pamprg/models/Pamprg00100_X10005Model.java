@@ -10,15 +10,10 @@ import com.google.gson.annotations.SerializedName;
 @DzModel(name = "Pamprg00100_X10005Model", desc = "승급기준표등록", tableName = "")
 public class Pamprg00100_X10005Model extends DzAbstractModel {
 	
-	
 	@SerializedName("COMPANY_CD")
 	@DzModelField(name = "company_cd", desc = "회사코드", colName = "COMPANY_CD", colSize = "7", isKey = false)
 	private String company_cd;
-	
-//	@SerializedName("SEQ")
-//	@DzModelField(name = "company_cd", desc = "순번", colName = "SEQ", colSize = "7", isKey = false)
-//	private int seq;
-	
+
 	@SerializedName("STD_YM")
 	@DzModelField(name = "std_ym", desc = "기준년월", colName = "STD_YM", colSize = "6", isKey = false)
 	private String std_ym;
@@ -114,23 +109,10 @@ public class Pamprg00100_X10005Model extends DzAbstractModel {
 	@SerializedName("UPDATE_IP")
 	@DzModelField(name = "update_ip", desc = "수정IP", colName = "UPDATE_IP", colSize = "200", isKey = false)
 	private String update_ip;
-	
-//	@SerializedName("COMBINED_KEY")
-//	@DzModelField(name = "combined_key", desc = "결합키", colName = "COMBINED_KEY", colSize = "7", isKey = false)
-//	private String combined_key;
-	
 
 	public String getCompany_cd() {
 		return company_cd;
 	}
-
-//	public int getSeq() {
-//		return seq;
-//	}
-//
-//	public void setSeq(int i) {
-//		this.seq = i;
-//	}
 
 	public void setCompany_cd(String company_cd) {
 		this.company_cd = company_cd;
@@ -228,7 +210,6 @@ public class Pamprg00100_X10005Model extends DzAbstractModel {
 		return ugrd_grd_cd;
 	}
  
-
 	public String getBizarea_nm() {
 		return bizarea_nm;
 	}
@@ -349,13 +330,6 @@ public class Pamprg00100_X10005Model extends DzAbstractModel {
 		this.orig_ugrd_grd_cd = orig_ugrd_grd_cd;
 	}
 
-//	public String getCombined_key() {
-//		return combined_key;
-//	}
-//
-//	public void setCombined_key(String combined_key) {
-//		this.combined_key = combined_key;
-//	}
 
 	@Override
 	public String toString() {
@@ -368,5 +342,5 @@ public class Pamprg00100_X10005Model extends DzAbstractModel {
 				+ ", rmk_nm=" + rmk_nm + ", bizarea_nm=" + bizarea_nm + ", insert_id=" + insert_id + ", insert_dts="
 				+ insert_dts + ", insert_ip=" + insert_ip + ", update_id=" + update_id + ", update_dts=" + update_dts
 				+ ", update_ip=" + update_ip + "]";
-	}
+	} 
 }

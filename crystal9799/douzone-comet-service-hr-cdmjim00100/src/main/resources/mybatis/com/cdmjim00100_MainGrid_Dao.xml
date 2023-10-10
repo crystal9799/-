@@ -43,6 +43,42 @@
 			<if test='JOB_FG != null and JOB_FG != ""'>
 				AND JOB_FG = #{JOB_FG}				
 			</if>
+			<if test='!valid_LCLAS_ARR'>
+				AND LCLAS_CD IN 
+				 <foreach item="item" index="index" collection="LCLAS_CD" open="(" separator="," close=")">
+				 	#{item}
+				 </foreach> 			
+			</if>
+			<if test='!valid_MLSFC_ARR'>
+				AND MLSFC_CD IN
+				<foreach item="item" index="index" collection="MLSFC_CD" open="(" separator="," close=")">
+				 	#{item}
+				 </foreach> 				
+			</if>
+			<if test='!valid_S_CSF_ARR'>
+				AND S_CSF_CD IN
+				<foreach item="item" index="index" collection="S_CSF_CD" open="(" separator="," close=")">
+				 	#{item}
+				 </foreach> 				
+			</if>
+			<if test='!valid_TCLF_ARR'>
+				AND TCLF_CD IN
+				<foreach item="item" index="index" collection="TCLF_CD" open="(" separator="," close=")">
+				 	#{item}
+				 </foreach> 				
+			</if>
+			<if test='!valie_ACLF_CD_ARR'>
+				AND ACLF_CD IN
+				<foreach item="item" index="index" collection="ACLF_CD" open="(" separator="," close=")">
+				 	#{item}
+				 </foreach> 				
+			</if>
+			<if test='!valid_ACLF_LV_ARR'>
+				AND ACLF_LV IN
+				<foreach item="item" index="index" collection="ACLF_LV" open="(" separator="," close=")">
+				 	#{item}
+				 </foreach> 				
+			</if>
 		</where>
 		ORDER BY VER_CD
 	</select>

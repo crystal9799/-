@@ -4,130 +4,83 @@
    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.douzone.comet.service.hr.pamprg.dao.Pamprg00100_X10005Dao">
  
-	<select id="selectPamprg00100_X10005ModelList" parameterType="hashMap" resultType="com.douzone.comet.service.hr.pamprg.models.Pamprg00100_X10005Model">		
-		SELECT
-			  HUI.COMPANY_CD                                     -- 회사 코드
-			 ,HUI.BIZAREA_CD                                     -- 사업장 코드
-			 ,MBM.BIZAREA_NM                                     -- 사업장명
-			 ,HUI.STD_YM                                         -- 기준년월
-			 ,HUI.BIZAREA_CD                                     -- 사업장코드
-			 ,HUI.PSTN_CD                                        -- 직급코드
-			 ,HUI.PSTN_CD ORIG_PSTN_CD                           -- 수정이전 직급코드
-			 ,COALESCE(MCS.SYSDEF_NM, MC.SYSDEF_NM) AS PSTN_NM   -- 직급명
-			 ,HUI.TRGT_GRD_CD                                    -- 대상등급코드
-			 ,HUI.TRGT_GRD_CD ORIG_TRGT_GRD_CD                   -- 수정이전 대상등급코드
-			 ,HUI.UGRD_GRD_CD                    				 -- 승급등급코드
-			 ,HUI.UGRD_GRD_CD ORIG_UGRD_GRD_CD                   -- 수정이전 승급등급코드
-			 ,HUI.MIN_BWRK_MY                                    -- 최소근무월수
-			 ,HUI.MIN_BWRK_MY ORIG_MIN_BWRK_MY                   -- 수정이전 최소근무월수
-			 ,HUI.AGGR_TERM_CNT                                  -- 근무성적집계기간
-			 ,HUI.BWRK_SGRAD_CD                                  -- 근무성적
-			 ,HUI.LEDU_CD                                        -- 학력
-			 ,MC2.SYSDEF_NM LEDU_NM                              -- 학력명
-			 ,HUI.BWRK_MY_CALC_STD_DT                            -- 산정기준일
-			 ,HUI.RMK_NM                                         -- 비고
-		FROM 
-			HR_URGDBASETBL_INFO_X10005 HUI
-			LEFT OUTER JOIN MA_CODEDTL MC
-				ON (MC.COMPANY_CD = #{P_COMPANY_CD})
-				AND (MC.MODULE_CD = 'HR')
-				AND (MC.FIELD_CD = 'P00650')
-				AND (MC.SYSDEF_CD = HUI.PSTN_CD)
-			LEFT OUTER JOIN MA_CODEDTL_SDTL MCS
-				ON (MC.COMPANY_CD = MCS.COMPANY_CD)
-				AND (MC.SYSDEF_CD = MCS.SYSDEF_CD)
-				AND (MC.MODULE_CD = MCS.MODULE_CD)
-				AND (MC.FIELD_CD = MCS.FIELD_CD)
-				AND (MCS.LANG_CD = 'KO')
-			LEFT OUTER JOIN MA_CODEDTL MC2
-				ON (MC2.COMPANY_CD = #{P_COMPANY_CD})
-				AND (MC2.MODULE_CD = 'HR')
-				AND (MC2.FIELD_CD = 'P00670')
-				AND (MC2.SYSDEF_CD = HUI.LEDU_CD)
-			LEFT OUTER JOIN MA_BIZAREA_MST MBM
-				ON (HUI.COMPANY_CD = MBM.COMPANY_CD)
-				AND (HUI.BIZAREA_CD = MBM.BIZAREA_CD)
-			WHERE 1=1 AND 
-			(HUI.COMPANY_CD = #{P_COMPANY_CD})
-			AND (HUI.STD_YM = #{P_PROMO_YEAR_MONTH})
-				<if test="P_BIZAREA_CD != '' and P_BIZAREA_CD != null">
-				    AND (HUI.BIZAREA_CD = #{P_BIZAREA_CD})
-				</if>
-			ORDER BY HUI.BIZAREA_CD ASC, HUI.PSTN_CD ASC, HUI.TRGT_GRD_CD ASC,
-					 HUI.UGRD_GRD_CD ASC, HUI.MIN_BWRK_MY ASC, HUI.AGGR_TERM_CNT ASC
+	<select id="master_list_paging" parameterType="hashmap" resultType="com.douzone.comet.service.hr.pamprg.models.Pamprg00100_X10005Model">
+			WITH RankedResults AS (
+			    SELECT
+			    	  ROW_NUMBER() OVER (
+								            ORDER BY 
+								            		 HUI.BIZAREA_CD ASC
+								            		,HUI.PSTN_CD ASC
+								            		,HUI.TRGT_GRD_CD DESC
+								            		,HUI.UGRD_GRD_CD DESC
+								            		,HUI.MIN_BWRK_MY DESC
+								            		,HUI.AGGR_TERM_CNT DESC
+			        					) AS idx
+			    	 ,HUI.COMPANY_CD AS COMPANY_CD                                      -- 회사 코드
+					 ,HUI.BIZAREA_CD AS BIZAREA_CD                                      -- 사업장 코드
+					 ,MBM.BIZAREA_NM AS BIZAREA_NM                                      -- 사업장명
+					 ,HUI.STD_YM AS STD_YM                                              -- 기준년월
+				     ,HUI.PSTN_CD AS PSTN_CD                                            -- 직급코드
+				     ,HUI.PSTN_CD AS ORIG_PSTN_CD                                       -- 수정이전 직급코드
+					 ,COALESCE(MCS.SYSDEF_NM, MC.SYSDEF_NM) AS PSTN_NM                  -- 직급명
+				     ,HUI.TRGT_GRD_CD AS TRGT_GRD_CD                                    -- 대상등급코드
+				     ,HUI.TRGT_GRD_CD AS ORIG_TRGT_GRD_CD                               -- 수정이전 대상등급코드
+					 ,HUI.UGRD_GRD_CD AS UGRD_GRD_CD                   				    -- 승급등급코드
+					 ,HUI.UGRD_GRD_CD AS ORIG_UGRD_GRD_CD                               -- 수정이전 승급등급코드
+					 ,HUI.MIN_BWRK_MY AS MIN_BWRK_MY                                    -- 최소근무월수
+					 ,HUI.MIN_BWRK_MY AS ORIG_MIN_BWRK_MY                               -- 수정이전 최소근무월수
+					 ,HUI.AGGR_TERM_CNT AS AGGR_TERM_CNT                                -- 근무성적집계기간
+					 ,HUI.BWRK_SGRAD_CD AS BWRK_SGRAD_CD                                -- 근무성적
+					 ,HUI.LEDU_CD AS LEDU_CD                                            -- 학력
+					 ,MC2.SYSDEF_NM AS LEDU_NM                                          -- 학력명
+					 ,HUI.BWRK_MY_CALC_STD_DT AS BWRK_MY_CALC_STD_DT                    -- 산정기준일
+					 ,HUI.RMK_NM AS RMK_NM                                              -- 비고
+			    FROM 
+			        HR_URGDBASETBL_INFO_X10005 HUI
+				LEFT OUTER JOIN MA_CODEDTL MC
+					ON (MC.COMPANY_CD = #{P_COMPANY_CD})
+					AND (MC.MODULE_CD = 'HR')
+					AND (MC.FIELD_CD = 'P00650')
+					AND (MC.SYSDEF_CD = HUI.PSTN_CD)
+				LEFT OUTER JOIN MA_CODEDTL_SDTL MCS
+					ON (MC.COMPANY_CD = MCS.COMPANY_CD)
+					AND (MC.SYSDEF_CD = MCS.SYSDEF_CD)
+					AND (MC.MODULE_CD = MCS.MODULE_CD)
+					AND (MC.FIELD_CD = MCS.FIELD_CD)
+					AND (MCS.LANG_CD = 'KO')
+				LEFT OUTER JOIN MA_CODEDTL MC2
+					ON (MC2.COMPANY_CD = #{P_COMPANY_CD})
+					AND (MC2.MODULE_CD = 'HR')
+					AND (MC2.FIELD_CD = 'P00670')
+					AND (MC2.SYSDEF_CD = HUI.LEDU_CD)
+				LEFT OUTER JOIN MA_BIZAREA_MST MBM
+					ON (HUI.COMPANY_CD = MBM.COMPANY_CD)
+					AND (HUI.BIZAREA_CD = MBM.BIZAREA_CD)
+				WHERE 1=1 AND 
+				(HUI.COMPANY_CD = #{P_COMPANY_CD})
+				AND (HUI.STD_YM = #{P_PROMO_YEAR_MONTH})
+					<if test="P_BIZAREA_CD != '' and P_BIZAREA_CD != null">
+					    AND (HUI.BIZAREA_CD = #{P_BIZAREA_CD})
+					</if>
+			)
+			SELECT * 
+				  FROM 
+				  	  RankedResults
+			WHERE idx > TO_NUMBER(#{P_PAGING_START})
+			AND TO_NUMBER(#{P_PAGING_START}) + TO_NUMBER(#{P_PAGING_CNT}) +1 > idx
+			ORDER BY idx
 	</select>
+
+	<select id="totalCount"  parameterType="hashmap"  resultType="String">
+        SELECT TO_CHAR(COUNT(BIZAREA_CD))
+        	  FROM
+        	  	  HR_URGDBASETBL_INFO_X10005
+		WHERE COMPANY_CD = #{P_COMPANY_CD}
+		AND BIZAREA_CD = #{P_BIZAREA_CD}
+    </select>
 	
 	
-	<select id="master_list_paging" parameterType="hashmap" resultType="com.douzone.comet.service.hr.pamodb.models.Pamodb00500_master">
-		WITH RankedResults AS (
-		    SELECT
-		    	  ROW_NUMBER() OVER (
-							            ORDER BY 
-							            HUI.BIZAREA_CD ASC, 
-							            HUI.PSTN_CD ASC, 
-							            HUI.TRGT_GRD_CD ASC,
-							            HUI.UGRD_GRD_CD ASC, 
-							            HUI.MIN_BWRK_MY ASC, 
-							            HUI.AGGR_TERM_CNT ASC
-		        					) AS ROWNUM
-		    	 ,HUI.COMPANY_CD                                     -- 회사 코드
-				 ,HUI.BIZAREA_CD                                     -- 사업장 코드
-				 ,MBM.BIZAREA_NM                                     -- 사업장명
-				 ,HUI.STD_YM                                         -- 기준년월
-				 ,HUI.BIZAREA_CD                                     -- 사업장코드
-			     ,HUI.PSTN_CD                                        -- 직급코드
-			     ,HUI.PSTN_CD ORIG_PSTN_CD                           -- 수정이전 직급코드
-				 ,COALESCE(MCS.SYSDEF_NM, MC.SYSDEF_NM) AS PSTN_NM   -- 직급명
-			     ,HUI.TRGT_GRD_CD                                    -- 대상등급코드
-			     ,HUI.TRGT_GRD_CD ORIG_TRGT_GRD_CD                   -- 수정이전 대상등급코드
-				 ,HUI.UGRD_GRD_CD                    				 -- 승급등급코드
-				 ,HUI.UGRD_GRD_CD ORIG_UGRD_GRD_CD                   -- 수정이전 승급등급코드
-				 ,HUI.MIN_BWRK_MY                                    -- 최소근무월수
-				 ,HUI.MIN_BWRK_MY ORIG_MIN_BWRK_MY                   -- 수정이전 최소근무월수
-				 ,HUI.AGGR_TERM_CNT                                  -- 근무성적집계기간
-				 ,HUI.BWRK_SGRAD_CD                                  -- 근무성적
-				 ,HUI.LEDU_CD                                        -- 학력
-				 ,MC2.SYSDEF_NM LEDU_NM                              -- 학력명
-				 ,HUI.BWRK_MY_CALC_STD_DT                            -- 산정기준일
-				 ,HUI.RMK_NM                                         -- 비고
-		    FROM 
-		        HR_URGDBASETBL_INFO_X10005 HUI
-			LEFT OUTER JOIN MA_CODEDTL MC
-				ON (MC.COMPANY_CD = #{P_COMPANY_CD})
-				AND (MC.MODULE_CD = 'HR')
-				AND (MC.FIELD_CD = 'P00650')
-				AND (MC.SYSDEF_CD = HUI.PSTN_CD)
-			LEFT OUTER JOIN MA_CODEDTL_SDTL MCS
-				ON (MC.COMPANY_CD = MCS.COMPANY_CD)
-				AND (MC.SYSDEF_CD = MCS.SYSDEF_CD)
-				AND (MC.MODULE_CD = MCS.MODULE_CD)
-				AND (MC.FIELD_CD = MCS.FIELD_CD)
-				AND (MCS.LANG_CD = 'KO')
-			LEFT OUTER JOIN MA_CODEDTL MC2
-				ON (MC2.COMPANY_CD = #{P_COMPANY_CD})
-				AND (MC2.MODULE_CD = 'HR')
-				AND (MC2.FIELD_CD = 'P00670')
-				AND (MC2.SYSDEF_CD = HUI.LEDU_CD)
-			LEFT OUTER JOIN MA_BIZAREA_MST MBM
-				ON (HUI.COMPANY_CD = MBM.COMPANY_CD)
-				AND (HUI.BIZAREA_CD = MBM.BIZAREA_CD)
-			WHERE 1=1 AND 
-			(HUI.COMPANY_CD = #{P_COMPANY_CD})
-			AND (HUI.STD_YM = #{P_PROMO_YEAR_MONTH})
-				<if test="P_BIZAREA_CD != '' and P_BIZAREA_CD != null">
-				    AND (HUI.BIZAREA_CD = #{P_BIZAREA_CD})
-				</if>
-		)
-		SELECT * 
-			  FROM 
-			  	  RankedResults
-		WHERE ROWNUM 
-	    BETWEEN #{P_PAGING_START} + 1 AND #{P_PAGING_START} + #{P_PAGING_COUNT}
-</select>
-	
-	
-	
-	<select id="get_BizareaList" parameterType="hashMap" resultType="Map">
+	<select id="get_BizareaList" parameterType="hashmap" resultType="com.douzone.comet.service.hr.pamprg.models.Pamprg00100_X10005Model">
 		SELECT MBM.COMPANY_CD
 			   ,MBM.BIZAREA_CD
 			   ,COALESCE(MBL.BIZAREA_NM, MBM.BIZAREA_NM) AS BIZAREA_NM

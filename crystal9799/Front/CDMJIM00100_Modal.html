@@ -1,6 +1,6 @@
-<!--##c1c89c69-a458-4770-ae59-d731e9a222f8##-->
+<!--##2356436b-7b61-47fd-94c1-c8dde8af85ad##-->
 <!--##CDMJIM00100_Modal##-->
-<!--##ei6sYvymm70jERiBOgTeOLL9pLWJYbBvKNqGSf/vJ3thV5ykYNQRmKkSyg50nQoW##-->
+<!--##EomJP/JBe4FdX1Q0iRQjmLf52xCyYivJEuGShFQg13M0jRhNovujaV3EiUALAx7u##-->
 <!--
   DEWS UI/UX IDE - Build Result - v1.5
   # PageID: CDMJIM00100_Modal
@@ -16,7 +16,7 @@
     <li>
       <label class="dews-ui-multilingual">검색어</label>
       <span>
-        <input id="textbox1" name="textbox1" type="text" class="dews-ui-textbox basic" />
+        <input id="Search_Info" name="Search_Info" type="text" class="dews-ui-textbox basic" />
       </span>
     </li>
   </ul>
@@ -187,14 +187,31 @@
     	// if(TCLF_CD == null){
     	// 	TCLF_CD = "";
     	// }
-    	
+    	var index = self.KND_GRID.select();
+        var target = null;
+        switch(index){
+            case 1: target = "MLSFC_NM";
+                console.log(target);
+                break;
+            case 2: target = "S_CSF_NM";
+                console.log(target);
+                break;
+            case 3: target = "TCLF_NM";
+                console.log(target);
+                break;
+            case 4: target = "ACLF_NM";
+                console.log(target);
+                break;
+        }
         return {
             param_cd: self.CD_TXT.text(),
             param_name: self.NM_TXT.text(),
             LCLAS_CD: self.INSERT_GRID == null ? "" : self.INSERT_GRID.getCellValue(0,"LCLAS_CD"),
             MLSFC_CD: self.INSERT_GRID == null ? "" : self.INSERT_GRID.getCellValue(0,"MLSFC_CD"),
             S_CSF_CD: self.INSERT_GRID == null ? "" : self.INSERT_GRID.getCellValue(0,"S_CSF_CD"),
-            TCLF_CD: self.INSERT_GRID == null ? "" : self.INSERT_GRID.getCellValue(0,"TCLF_CD")
+            TCLF_CD: self.INSERT_GRID == null ? "" : self.INSERT_GRID.getCellValue(0,"TCLF_CD"),
+            TARGET: target,
+            NAME : self.Search_Info.text()
         }
     }
         }
@@ -301,6 +318,12 @@
     });
     
     
+    self.$Search_Info.on('keydown', /*cbe25a3f-fa11-4a08-a0c8-65c729572da3*/ function (e) {
+        if (e.keyCode == "13") {
+            self.FGINF_DS.read();
+            self.Search_Info.text('');
+        }
+    });
     self.$add_btn.on('click', /*c4ef9a55-d674-40d2-aaaa-133eb1ce97ac*/ function (e) {
         self.detail_grid.addRow();
     });

@@ -1,6 +1,6 @@
-<!--##df536996-036c-4145-8da9-ada968e0056c##-->
+<!--##0b44dd62-86a9-4ae8-be70-91ab8c53e66a##-->
 <!--##card_Modify_full##-->
-<!--##BCj/CasZOvMGk7IVI48shCDIinExAiaEi+9die29TYyZjKM1ziE+9/4Uk6ELqAcn##-->
+<!--##ZMndzwiu4OMmKrhwj+omByKnjiwk/zx/uQKpvdxVq0vLBwfyLGc6hNhaMDb79OOs##-->
 <!--
   DEWS UI/UX IDE - Build Result - v1.5
   # PageID: card_Modify_full
@@ -361,22 +361,23 @@
     }
     
     //현재 넘겨받은 JSON데이터 객체에서 키워드를 통해 찾는다.
+    //대소문자 구별 없이 검색할 수 있도록 검색어와 비교하는 요소 둘 다 toLowerCase()
     function GetDataByKeywords() {
-        var keywords = self.SearchKeyword.text();
+        var keywords = self.SearchKeyword.text().toLowerCase(); // 키워드를 소문자로 변환
         var mainData = self.initialData.apiDatas;
         // data 배열에서 keywords를 포함하는 요소들을 필터링하여 새로운 배열 생성
         const filteredData = mainData.filter(item => {
-            // item 객체의 필드 중에서 keywords를 포함하는 필드가 있는지 확인
+            // item 객체의 필드 중에서 keywords를 포함하는 필드가 있는지 확인 (대소문자 구별 없이)
             for (const key in item) {
-                if (item.hasOwnProperty(key) && typeof item[key] === 'string' && item[key].includes(keywords)) {
+                if (item.hasOwnProperty(key) && typeof item[key] === 'string' && item[key].toLowerCase().includes(keywords)) {
                     return true; // keywords를 포함하는 필드가 발견되면 해당 요소를 포함
                 }
             }
             return false; // keywords를 포함하는 필드가 없으면 해당 요소를 제외
         })
         self.total_ds.data(filteredData);
-    
     };
+    
     
     
 

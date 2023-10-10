@@ -1,0 +1,165 @@
+<!--##ba44e265-320e-47c3-b5db-3eab2c4b9d78##-->
+<!--##CDMJIM00100_Modal2##-->
+<!--##IxCGaAsGTsZqx6zo3HO2EFiLVztAmJT5MJs4DbeMUdSSsvs+82laXGtAlbvt9TDi##-->
+<!--
+  DEWS UI/UX IDE - Build Result - v1.5
+  # PageID: CDMJIM00100_Modal2
+  # PageTitle: 직무분류코드도움창
+  # Server: http://localhost:8080/
+-->
+<!--
+
+-->
+
+<div class="dews-ui-condition-panel">
+  <ul class="required-area">
+    <li>
+      <label class="dews-ui-multilingual">검색어</label>
+      <span>
+        <input id="SEARCH_TXT" name="SEARCH_TXT" type="text" class="dews-ui-textbox basic" />
+      </span>
+    </li>
+  </ul>
+</div>
+<div id="MCP_GRID" class="dews-ui-grid"></div>
+<div class="dews-dialog-button-group bottom" style="text-align: center;">
+  <button id="ok_btn" class="dews-ui-button">적용</button>
+  <button id="close_btn" class="dews-ui-button">닫기</button>
+</div>
+
+<style>
+    
+</style>
+
+
+
+<script>
+  dews.ready(function () {
+    var self = this;
+    self.version = self.version || {};
+    self.version.view='1.0';
+
+
+    /*926e781e-6e8c-4888-b59f-6ca477b7d6a0*/ //# sourceURL=CDMJIM00100_Modal2.js
+    // var dialog = dews.ui.dialog("LCLAS_PICKER");
+    var dialog = this;
+    var initData = this.initData;
+    var initParam = this.initData.params;
+    console.log(dialog.getInitData());
+    
+    
+    
+    self.PARAM_DS = dews.ui.dataSource('PARAM_DS', {
+      grid: true,
+      transport: {
+        read: {
+          type: 'post',
+          url: dews.url.getApiUrl('HR', 'Cdmjim00100_Modal_Service', 'selectFgList'),
+          data: /*df8b2a45-47f3-48fa-a774-d722429be127*/ function() {
+        var target = dialog.getInitData().params.param_name;
+        return({
+            param_cd : dialog.getInitData().params.param_cd,
+            param_name: dialog.getInitData().params.param_name,
+            TARGET : target,
+            NAME : self.SEARCH_TXT && self.SEARCH_TXT.text ? self.SEARCH_TXT.text() : ""
+        })
+    }
+    
+        }
+      },
+      schema: {
+        model: {
+          fields: [
+            { field: 'PARAM_CD', editable: false, dataType: 'string' }, 
+            { field: 'PARAM_NAME', editable: false, dataType: 'string' }
+          ]
+    
+        }
+      }
+    });
+    dews.api.get(dews.url.getApiUrl('CM', 'CommonCodeDtlService', 'common_ci_codeDtl_list'),{
+      async: false,
+      data: {
+          end_dt: '',
+          foreign_yn: '',
+          field_cd_pipe: 'ZN09_10005',
+          module_cd: 'HR',
+          syscode_yn: '',
+          keyword: '',
+          base_yn: ''
+      }
+    }).done(function (data) {
+      var ar_ZN09_10005 = new Array();
+    
+      for (var i = 0; i < data.length; i++) {
+        if (data[i].FIELD_CD == "ZN09_10005") { 
+          ar_ZN09_10005.push(data[i]); 
+    
+        }
+      }
+      self.pipeDataSource1_ZN09_10005 = dews.ui.dataSource('pipeDataSource1_ZN09_10005',  { data: ar_ZN09_10005 });
+      self.pipeDataSource1 = dews.ui.dataSource('pipeDataSource1', { data: data });
+      
+    });
+    
+    
+    self.$SEARCH_TXT.on('keydown', /*ee7b8026-0f8f-4719-a14f-0a8bd03f5454*/ function (e) {
+        if (e.keyCode == "13") {
+            self.PARAM_DS.read();
+            self.SEARCH_TXT.text("");
+        }
+    });
+    dews.ui.grid(self.$MCP_GRID, {
+      dataSource: self.PARAM_DS,
+      height: 348,
+      sortable: false,
+      copyMode: 'cell',
+      columns: [
+        {
+          field: 'param_cd',
+          title: '코드',
+          width: 60
+        },
+        {
+          field: 'param_name',
+          title: '내역',
+          width: 60
+        }
+      ],
+      fixed: {
+        colCount: 0,
+        rightColCount: 0
+      },
+      dblClicked: /*85448e81-24b1-49f8-b0f9-8670fbff0e67*/ function (e) {
+            var data = [{
+                PARAM_NAME: self.MCP_GRID.getCellValue(self.MCP_GRID.select(), "PARAM_NAME"),
+                PARAM_CD: self.MCP_GRID.getCellValue(self.MCP_GRID.select(), "PARMA_CD")
+            }]
+            self.ok(data);
+        }
+    
+    });
+    self.$ok_btn.on('click', /*7d96eefc-d402-4a4d-bb98-ea69066c3a35*/ function (e) {
+    
+        console.log("self.MCP_GRID.getCheckedRows() === > " + self.MCP_GRID.getCheckedRows());
+        var data = self.MCP_GRID.getCheckedRows();
+        self.initData
+        if (self.MCP_GRID.getCheckedIndex().length == 0) {
+            dews.ui.snackbar.warning('선택된 데이터가 없습니다.');
+        } else {
+            self.ok(data);
+        }
+    });
+    self.$close_btn.on('click', /*1f81c0e5-6b2c-4bae-907b-837bb518d93b*/ function (e) {
+        self.close();
+    });
+    
+    
+    
+    
+    
+
+  
+  });
+
+</script>

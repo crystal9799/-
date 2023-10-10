@@ -134,6 +134,8 @@
 		AND TRGT_GRD_CD = #{trgt_grd_cd}
 		AND UGRD_GRD_CD = #{ugrd_grd_cd}
 		AND MIN_BWRK_MY = #{min_bwrk_my}
+		AND LEDU_CD = #{ledu_cd}
+		AND RMK_NM = #{rmk_nm}
 	</select>
 	
 	<update id="updatePAMPRG00100_Model" parameterType="com.douzone.comet.service.hr.pamprg.models.Pamprg00100_X10005Model">

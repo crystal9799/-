@@ -135,7 +135,7 @@ public class HRPamprg00100_X10005Service extends DzCometService {
 			        updateRow.setStd_ym(StringUtil.getLocaleTimeString(updateRow.getStd_ym(), "yyyyMM"));
 			        logger.info("updateRow " + updateRow.toString());
 			        
-			        int count = pamprg00100_X10005Dao.checkValidate_update(updateRow);
+			        int count = pamprg00100_X10005Dao.checkValidate_update(updateRow); //모든 값 비교
 			        if (count > 0) {
 			        	System.out.println("count"+count);
 						System.out.println("good throw");

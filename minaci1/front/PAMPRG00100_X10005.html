@@ -1,6 +1,6 @@
-<!--##07eaa4db-cc77-4553-85dd-e72c0304d329##-->
+<!--##0311862c-3938-4e7e-87ae-46e4ec5ac544##-->
 <!--##PAMPRG00100_X10005##-->
-<!--##X922f+Ps8ryGGmIWrOA54sNWb9bL6tS6duVnpsV3a2FyzRuP1+dRFnkNTzQCUTiw##-->
+<!--##UNSbnGtVD5g+I57RmNMlGAcz+FafHL+qWY8usKN71XpY6VLb6/PeeA/Ytg9GXyhs##-->
 <!--
   DEWS UI/UX IDE - Build Result - v1.5
   # PageID: PAMPRG00100_X10005
@@ -246,7 +246,9 @@
         for (var group of groupedDataMap.values()) {
     
             if (group.length > 1) { // 중복 데이터가 있는 경우만 처리
-    
+                var item = group[1]; // 중복 데이터 중 최상위 바로 아래의 데이터
+                var idx = self.gridMaster.getDataIndexFromItemIndex(allData.indexOf(item));
+                self.gridMaster.select(idx); // 해당 로우 선택
                 for (var k = 1; k < group.length; k++) { // 최상위 중복 데이터는 제외
                     var rowIndex = group[k].SEQ - 1; // 0-based index
                     var idx = self.gridMaster.getDataIndexFromItemIndex(rowIndex);
@@ -258,7 +260,6 @@
         }
     
         self.gridMaster.sort([{ field: 'COMBINED_KEY', dir: 'asc' }]); //결합키 기준으로 오름차순 (그룹화 효과)
-        //self.gridMaster.select(1);
         //console.log("최상위 "+groupedDataMap[0][1]);
     
     }
@@ -326,7 +327,7 @@
             if (isProgressBarCompleted && isApiDone) {
                 dews.ui.snackbar.ok('자료가 정상적으로 저장되었습니다.');
                 //self.gridMaster.select(checkedIndices[0], 'STD_YM');
-                self.mpPROMO_YEAR_MONTH.value(self.importExcelGrid.dataItems()[0].STD_YM);
+                //self.mpPROMO_YEAR_MONTH.value(self.importExcelGrid.dataItems()[0].STD_YM);
                 searchData();
             }
         }
@@ -668,7 +669,7 @@
     
     self.grid_ds = dews.ui.dataSource('grid_ds', {
       grid: true,
-      paging: 'scroll',
+      paging: true,
       pagingCount: 500,
       transport: {
         read: {

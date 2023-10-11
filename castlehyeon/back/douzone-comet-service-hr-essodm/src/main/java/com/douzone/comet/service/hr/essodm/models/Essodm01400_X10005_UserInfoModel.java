@@ -52,6 +52,10 @@ public class Essodm01400_X10005_UserInfoModel extends DzAbstractModel {
 	@DzModelField(name="path", desc="수정소속", colName="PATH", colSize="200", isKey=false)
 	private String path;
 	
+	@SerializedName("DEPT_CD")
+	@DzModelField(name="dept_cd", desc="부서코드", colName="DEPT_CD", colSize="20", isKey=false)
+	private String dept_cd;
+	
 	public String getEmp_no() {
 		return emp_no;
 	}
@@ -142,12 +146,23 @@ public class Essodm01400_X10005_UserInfoModel extends DzAbstractModel {
 	public void setPath(String path) {
 		this.path = path;
 	}
+	
+	
+
+	public String getDept_cd() {
+		return dept_cd;
+	}
+
+	public void setDept_cd(String dept_cd) {
+		this.dept_cd = dept_cd;
+	}
 
 	@Override
 	public String toString() {
 		return "Essodm01400_X10005_UserInfoModel [emp_no=" + emp_no + ", kor_nm=" + kor_nm + ", pstn_cd=" + pstn_cd
 				+ ", ogrp_cd=" + ogrp_cd + ", org=" + org + ", posi_cd=" + posi_cd + ", bizarea_cd=" + bizarea_cd
-				+ ", bizarea_nm=" + bizarea_nm + ", grp_nm=" + grp_nm + ", dept_nm=" + dept_nm + ", path=" + path + "]";
+				+ ", bizarea_nm=" + bizarea_nm + ", grp_nm=" + grp_nm + ", dept_nm=" + dept_nm + ", path=" + path
+				+ ", dept_cd=" + dept_cd + "]";
 	}
 	
 }

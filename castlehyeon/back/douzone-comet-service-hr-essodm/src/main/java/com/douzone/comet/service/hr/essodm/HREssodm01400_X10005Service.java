@@ -11,11 +11,16 @@ import com.douzone.gpd.restful.annotation.DzParam;
 import com.douzone.gpd.restful.enums.DzParamType;
 import com.douzone.gpd.restful.enums.DzRequestMethod;
 import com.douzone.comet.service.hr.essodm.dao.Essodm01400_x10005Dao;
+import com.douzone.comet.service.hr.essodm.models.ChartData;
+import com.douzone.comet.service.hr.essodm.models.ChartDataByWeek;
 import com.douzone.comet.service.hr.essodm.models.Essodm01400_X10005Model;
 import com.douzone.comet.service.hr.essodm.models.Essodm01400_X10005_UserInfoModel;
+import com.douzone.comet.service.hr.essodm.models.OffApply;
 import com.douzone.comet.service.hr.essodm.models.ResponseHashMap;
 import com.douzone.comet.service.hr.essodm.utils.GetInsertUpdateInfo;
 import com.douzone.gpd.restful.model.DzGridModel;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import com.douzone.gpd.components.exception.DzApplicationRuntimeException;
 import org.springframework.transaction.annotation.Transactional;
@@ -46,7 +51,11 @@ public class HREssodm01400_X10005Service extends DzCometService {
 			parameters.put("P_COMPANY_CD", company_cd);
 			parameters.put("P_START_DT", start_dt);
 			parameters.put("P_END_DT", end_dt);
-
+			
+			//목록은 신청자 사원번호를 기준으로 접속자 사원번호와 비교해서 보여주기.
+			String reqEmpNo = this.getEmpCode();
+			System.out.println(reqEmpNo);
+			parameters.put("P_REQ_EMP_NO", reqEmpNo);
 			items = essodm01400_x10005DAO.selectEssodm01400_X10005ModelList(parameters);
 
 			System.out.println("MainGrid1Model==========================");
@@ -61,7 +70,7 @@ public class HREssodm01400_X10005Service extends DzCometService {
 		return items;
 	}
 
-	// 이건 사용하지 않을 것 그리드에서 기본정보를 다 들고 있음.
+	
 	@DzApi(url = "/getUserInfo", desc = "메인페이지 기본정보 조회", httpMethod = DzRequestMethod.GET)
 	public List<Essodm01400_X10005_UserInfoModel> getUserInfo(
 			@DzParam(key = "company_cd", desc = "회사코드", paramType = DzParamType.QueryString) String company_cd,
@@ -84,34 +93,53 @@ public class HREssodm01400_X10005Service extends DzCometService {
 
 		return items;
 	}
+	
+	@DzApi(url = "/selectDataByCondition", desc = "메인페이지 차트정보 조회 월간", httpMethod = DzRequestMethod.GET)
+	public List<ChartData> selectDataByCondition(
+			@DzParam(key = "company_cd", desc = "회사코드", paramType = DzParamType.QueryString) String company_cd,
+			@DzParam(key = "bizarea_cd", desc = "사업장코드", paramType = DzParamType.QueryString) String bizarea_cd,
+			@DzParam(key = "dept_cd", desc = "부서코드", paramType = DzParamType.QueryString) String dept_cd)
+			throws Exception {
+		List<ChartData> datas = new ArrayList<ChartData>();
+		try {
+			HashMap<String, Object> parameters = new HashMap<>();
+			parameters.put("P_COMPANY_CD", company_cd);
+			parameters.put("P_BIZAREA_CD", bizarea_cd);
+			parameters.put("P_DEPT_CD", dept_cd);
+			datas = essodm01400_x10005DAO.selectDataByCondition(parameters);
+		} catch (Exception e) {
+			throw new DzApplicationRuntimeException(e);
+		}
 
-	// posi_cd=19, end_dt=20201208, reason_dc=수술, req_no=PAB202010300005,
-	// pstn_cd=2C, req_emp_no=KHLEE,
-	// start_dt=20201201, dept_cd=50042165, emp_no=KHLEE, company_cd=EWP, req_dy=8,
-	// ogrp_cd=B, dnl_cd=5100,
+		return datas;
+	}
+	
+	
+	@DzApi(url = "/getDataByWeek", desc = "메인페이지 차트정보 조회 주간", httpMethod = DzRequestMethod.GET)
+	public List<ChartDataByWeek> getDataByWeek(
+			@DzParam(key = "company_cd", desc = "", paramType = DzParamType.QueryString) String company_cd,
+			@DzParam(key = "bizarea_cd", desc = "", paramType = DzParamType.QueryString) String bizarea_cd,
+			@DzParam(key = "dept_cd", desc = "", paramType = DzParamType.QueryString) String dept_cd)	
+			throws Exception {
+		OffApply offApply = new OffApply();
+		List<ChartDataByWeek> list = new ArrayList<ChartDataByWeek>();
+		try {
+			HashMap<String, Object> parameters = new HashMap<>();
+			parameters.put("P_COMPANY_CD", company_cd);
+			parameters.put("P_BIZAREA_CD", bizarea_cd);
+			parameters.put("P_DEPT_CD", dept_cd);
+			list = offApply.getDataByWeek(essodm01400_x10005DAO.selectDataByWeekCondition(parameters));
+			System.out.println("차트정보주간==>"+list.toString());
+			
+			
+		} catch (Exception e) {
+			throw new DzApplicationRuntimeException(e);
+		}
 
-	//// 기본키
-//                        company_cd: self.COMPANY_CD.text(),//회사코드
-//                        req_no: self.main_grid.getCellValue(0, 'REQ_NO'), // 신청번호
-//
-//
-//                        //소속 (사업장/부서)
-//                        bizarea_cd: self.main_grid.getCellValue(0, 'BIZAREA_CD'), //사업장코드
-//                        dept_cd: self.main_grid.getCellValue(0, 'DEPT_CD'),
-//
-//                        //결근 대상자 정보
-//                        emp_no: self.EMP_NO.text(),  // 결근 대상자 사원번호
-//                        pstn_cd: self.main_grid.getCellValue(0, 'PSTN_CD'), // 결근 대상자 직급코드
-//                        ogrp_cd: self.main_grid.getCellValue(0, 'OGRP_CD'), // 직군코드
-//                        posi_cd: self.main_grid.getCellValue(0, 'POSI_CD'), // 직위 코드
-//
-//                        //결근 신청자 정보
-//                        req_emp_no: self.REQ_EMP_NO.text(), // 결근 신청하는(현재 로그인한) 사원번호
-//                        dnl_cd: self.DNL_CD.value(), // 현재 선택되어 있는 드랍다운리스트의 value 값
-//                        start_dt: self.START_DT.value(),
-//                        end_dt: self.END_DT.value(),
-//                        req_dy: self.main_grid.getCellValue(0, 'REQ_DY'),
-//                        reason_dc: self.main_grid.getCellValue(0, 'REASON_DC')
+		return list;
+	}
+	
+	
 	@Transactional(rollbackFor = Exception.class)
 	@DzApi(url = "/update_HR_OFFAPPLY_MST_X10005MST", desc = "결근계 수정", httpMethod = DzRequestMethod.GET)
 	public String save_HR_OFFAPPLY_MST_X10005(
@@ -128,7 +156,8 @@ public class HREssodm01400_X10005Service extends DzCometService {
 			@DzParam(key = "start_dt", desc = "", paramType = DzParamType.QueryString) String start_dt,
 			@DzParam(key = "end_dt", desc = "", paramType = DzParamType.QueryString) String end_dt,
 			@DzParam(key = "req_dy", desc = "", paramType = DzParamType.QueryString) String req_dy,
-			@DzParam(key = "reason_dc", desc = "", paramType = DzParamType.QueryString) String reason_dc)
+			@DzParam(key = "reason_dc", desc = "", paramType = DzParamType.QueryString) String reason_dc,
+			@DzParam(key = "athz_st_cd", desc = "", paramType = DzParamType.QueryString) String athz_st_cd)
 			throws Exception {
 		// 전부 단건 처리
 		// 1. 파라미터로 들어온 기간이 기존에 있는지 검사
@@ -152,17 +181,27 @@ public class HREssodm01400_X10005Service extends DzCometService {
 			parameters.put("P_REQ_DY", req_dy);
 			parameters.put("P_REASON_DC", reason_dc);
 
+
 			logger.info("parameter====>" + parameters);
 
-			// 기존에 기간이 겹치는지 유효성 검사
+			// 기존에 기간이 겹치는지 유효성 검사, 기간이 변경되지 않았을 경우 유효성 검사를 진행하지 않음.
+			Essodm01400_X10005Model oldModel = null;
+			oldModel = essodm01400_x10005DAO.selectEssodm01400_X10005ModelByPK(parameters);
 			ResponseHashMap responseMap = new ResponseHashMap();
 			Essodm01400_X10005Model model = new Essodm01400_X10005Model();
-			model.setCompany_cd(company_cd);
-			model.setEmp_no(emp_no);
-			model.setStart_dt(start_dt);
-			model.setEnd_dt(end_dt);
 			HashMap<String, Object> response = new HashMap<String, Object>();
-			response = responseMap.hasContainSamePeriod(model, essodm01400_x10005DAO);
+			logger.info("oldModel.getStart_dt()==>" + oldModel.getStart_dt() + "oldModel.getEnd_dt()===>"
+					+ oldModel.getEnd_dt());
+			if (!oldModel.getStart_dt().equals(parameters.get("P_START_DT"))
+					&& !oldModel.getEnd_dt().equals(parameters.get("P_END_DT"))
+					&& oldModel.getReq_no().equals(parameters.get("P_REQ_NO"))) {
+				model.setCompany_cd(company_cd);
+				model.setEmp_no(emp_no);
+				model.setStart_dt(start_dt);
+				model.setEnd_dt(end_dt);
+				response = responseMap.hasContainSamePeriod(model, essodm01400_x10005DAO);
+			} else
+				response.put("MSG", "OK");
 
 			if (response.get("MSG").equals("OK")) {
 				GetInsertUpdateInfo userInfo = new GetInsertUpdateInfo();
@@ -177,7 +216,7 @@ public class HREssodm01400_X10005Service extends DzCometService {
 			throw new DzApplicationRuntimeException(e);
 		}
 	}
-	
+
 	@Transactional(rollbackFor = Exception.class)
 	@DzApi(url = "/insert_HR_OFFAPPLY_MST_X10005MST", desc = "결근계 신청", httpMethod = DzRequestMethod.GET)
 	public String insert_HR_OFFAPPLY_MST_X10005MST(
@@ -220,7 +259,6 @@ public class HREssodm01400_X10005Service extends DzCometService {
 			parameters.put("P_REASON_DC", reason_dc);
 			parameters.put("P_DNLGB_CD", dnlgb_cd);
 			parameters.put("P_REQ_DT", req_dt);
-			
 
 			logger.info("parameter====>" + parameters);
 
@@ -233,43 +271,85 @@ public class HREssodm01400_X10005Service extends DzCometService {
 			model.setEnd_dt(end_dt);
 			HashMap<String, Object> response = new HashMap<String, Object>();
 			response = responseMap.hasContainSamePeriod(model, essodm01400_x10005DAO);
-			
-			//유효성 검사 통과
+			// 유효성 검사 통과
 			if (response.get("MSG").equals("OK")) {
-				//채번 생성
+				// 채번 생성
 				response = responseMap.createReqNo(model, essodm01400_x10005DAO);
-				model.setReq_no((String)response.get("REQ_NO"));
-				logger.info("새로 생성된 req_no=========>"+model.getReq_no());
-				//모델로 넘기지 않고 파라미터로 넘긴다.
+				model.setReq_no((String) response.get("REQ_NO"));
+				logger.info("새로 생성된 req_no=========>" + model.getReq_no());
+				// 모델로 넘기지 않고 파라미터로 넘긴다.
 				parameters.put("P_REQ_NO", model.getReq_no());
-				
-				//유저정보 추가
+
+				// 유저정보 추가
 				GetInsertUpdateInfo userInfo = new GetInsertUpdateInfo();
 				parameters.put("P_INSERT_ID", userInfo.getUserId() != null ? userInfo.getUserId() : this.getUserId());
 				parameters.put("P_INSERT_IP", userInfo.getIp());
 				parameters.put("P_INSERT_DTS", userInfo.getDate());
 				essodm01400_x10005DAO.insertEssodm01400_X10005Model(parameters);
-			}
 				response.put("MSG", model.getReq_no());
+			}
+			
+			return (String) response.get("MSG");
+		} catch (Exception e) {
+			throw new DzApplicationRuntimeException(e);
+		}
+	}
+
+	
+	@Transactional(rollbackFor = Exception.class)
+	@DzApi(url = "/approve_HR_OFFAPPLY_MST_X10005MST", desc = "결근계 결재", httpMethod = DzRequestMethod.GET)
+	public void approve_HR_OFFAPPLY_MST_X10005MST(
+			@DzParam(key = "company_cd", desc = "", paramType = DzParamType.QueryString) String company_cd,
+			@DzParam(key = "req_no", desc = "", paramType = DzParamType.QueryString) String req_no,
+			@DzParam(key = "athz_st_cd", desc = "", paramType = DzParamType.QueryString) String athz_st_cd)
+			throws Exception {
+		try {
+			HashMap<String, Object> parameters = new HashMap<>();
+			parameters.put("P_COMPANY_CD", company_cd);
+			parameters.put("P_REQ_NO", req_no);
+			parameters.put("P_ATHZ_ST_CD", athz_st_cd);
+			logger.info("parameter====>" + parameters);
+			
+			
+			GetInsertUpdateInfo userInfo = new GetInsertUpdateInfo();
+			//결재완료 시 결재문서번호 넣기 ATHZ_DOC_CD  예시) EWP_HR_GWA2022050176
+			ResponseHashMap responseMap = new ResponseHashMap();
+			String doc_no = responseMap.createDocNo(essodm01400_x10005DAO);
+			System.out.println("생성된 결재문서번호===>"+doc_no);
+			parameters.put("P_ATHZ_DOC_CD", doc_no);
+			parameters.put("P_UPDATE_ID", userInfo.getUserId() != null ? userInfo.getUserId() : this.getUserId());
+			parameters.put("P_UPDATE_IP", userInfo.getIp());
+			parameters.put("P_UPDATE_DTS", userInfo.getDate());
+			essodm01400_x10005DAO.approveEssodm01400_X10005Model(parameters);
+			
+			
+		} catch (Exception e) {
+			throw new DzApplicationRuntimeException(e);
+		}
+	}
+	
+	@Transactional(rollbackFor = Exception.class)
+	@DzApi(url = "/delete_HR_OFFAPPLY_MST_X10005MST", desc = "결근계 삭제", httpMethod = DzRequestMethod.GET)
+	public String delete_HR_OFFAPPLY_MST_X10005MST(
+			@DzParam(key = "company_cd", desc = "", paramType = DzParamType.QueryString) String company_cd,
+			@DzParam(key = "req_no", desc = "", paramType = DzParamType.QueryString) String req_no) throws Exception {
+		try {
+			HashMap<String, Object> parameters = new HashMap<>();
+			parameters.put("P_COMPANY_CD", company_cd);
+			parameters.put("P_REQ_NO", req_no);
+
+			logger.info("parameter====>" + parameters);
+			HashMap<String, Object> response = new HashMap<String, Object>();
+			try {
+				essodm01400_x10005DAO.deleteEssodm01400_X10005Model(parameters);
+				response.put("MSG", "OK");
+			} catch (Exception e) {
+				logger.info(e.getMessage());
+				response.put("MSG", "FAIL");
+			}
 			return (String) response.get("MSG");
 		} catch (Exception e) {
 			throw new DzApplicationRuntimeException(e);
 		}
 	}
 }
-
-// update
-//	        for(Essodm01400_X10005Model essodm01400_X10005Model : main_ds.getUpdated()) {
-//	        	essodm01400_x10005DAO.updateEssodm01400_X10005Model(essodm01400_X10005Model);
-//	        }
-
-// delete
-//	        for(Essodm01400_X10005Model essodm01400_X10005Model : main_ds.getDeleted()) {
-//	        	essodm01400_x10005DAO.deleteEssodm01400_X10005Model(essodm01400_X10005Model);
-//	        }
-
-// add
-//	        for(Essodm01400_X10005Model essodm01400_X10005Model : main_ds.getAdded()) {
-//	        	
-//	        	essodm01400_x10005DAO.insertEssodm01400_X10005Model(essodm01400_X10005Model);
-//	        }

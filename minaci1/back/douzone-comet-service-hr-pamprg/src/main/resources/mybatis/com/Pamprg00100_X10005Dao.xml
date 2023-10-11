@@ -4,60 +4,99 @@
    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.douzone.comet.service.hr.pamprg.dao.Pamprg00100_X10005Dao">
  
-	<select id="selectPamprg00100_X10005ModelList" parameterType="hashMap" resultType="com.douzone.comet.service.hr.pamprg.models.Pamprg00100_X10005Model">		
-		SELECT
-			  HUI.COMPANY_CD                                     -- 회사 코드
-			 ,HUI.BIZAREA_CD                                     -- 사업장 코드
-			 ,MBM.BIZAREA_NM                                     -- 사업장명
-			 ,HUI.STD_YM                                         -- 기준년월
-			 ,HUI.BIZAREA_CD                                     -- 사업장코드
-			 ,HUI.PSTN_CD                                        -- 직급코드
-			 ,HUI.PSTN_CD ORIG_PSTN_CD                           -- 수정이전 직급코드
-			 ,COALESCE(MCS.SYSDEF_NM, MC.SYSDEF_NM) AS PSTN_NM   -- 직급명
-			 ,HUI.TRGT_GRD_CD                                    -- 대상등급코드
-			 ,HUI.TRGT_GRD_CD ORIG_TRGT_GRD_CD                   -- 수정이전 대상등급코드
-			 ,HUI.UGRD_GRD_CD                    				 -- 승급등급코드
-			 ,HUI.UGRD_GRD_CD ORIG_UGRD_GRD_CD                   -- 수정이전 승급등급코드
-			 ,HUI.MIN_BWRK_MY                                    -- 최소근무월수
-			 ,HUI.MIN_BWRK_MY ORIG_MIN_BWRK_MY                   -- 수정이전 최소근무월수
-			 ,HUI.AGGR_TERM_CNT                                  -- 근무성적집계기간
-			 ,HUI.BWRK_SGRAD_CD                                  -- 근무성적
-			 ,HUI.LEDU_CD                                        -- 학력
-			 ,MC2.SYSDEF_NM LEDU_NM                              -- 학력명
-			 ,HUI.BWRK_MY_CALC_STD_DT                            -- 산정기준일
-			 ,HUI.RMK_NM                                         -- 비고
-		FROM 
-			HR_URGDBASETBL_INFO_X10005 HUI
-			LEFT OUTER JOIN MA_CODEDTL MC
-				ON (MC.COMPANY_CD = #{P_COMPANY_CD})
-				AND (MC.MODULE_CD = 'HR')
-				AND (MC.FIELD_CD = 'P00650')
-				AND (MC.SYSDEF_CD = HUI.PSTN_CD)
-			LEFT OUTER JOIN MA_CODEDTL_SDTL MCS
-				ON (MC.COMPANY_CD = MCS.COMPANY_CD)
-				AND (MC.SYSDEF_CD = MCS.SYSDEF_CD)
-				AND (MC.MODULE_CD = MCS.MODULE_CD)
-				AND (MC.FIELD_CD = MCS.FIELD_CD)
-				AND (MCS.LANG_CD = 'KO')
-			LEFT OUTER JOIN MA_CODEDTL MC2
-				ON (MC2.COMPANY_CD = #{P_COMPANY_CD})
-				AND (MC2.MODULE_CD = 'HR')
-				AND (MC2.FIELD_CD = 'P00670')
-				AND (MC2.SYSDEF_CD = HUI.LEDU_CD)
-			LEFT OUTER JOIN MA_BIZAREA_MST MBM
-				ON (HUI.COMPANY_CD = MBM.COMPANY_CD)
-				AND (HUI.BIZAREA_CD = MBM.BIZAREA_CD)
-			WHERE 
-				 (HUI.COMPANY_CD = #{P_COMPANY_CD})
-			AND (HUI.STD_YM = #{P_PROMO_YEAR_MONTH})
-				<if test="P_BIZAREA_CD != '' and P_BIZAREA_CD != null">
-				    AND (HUI.BIZAREA_CD = #{P_BIZAREA_CD})
-				</if>
-			ORDER BY HUI.BIZAREA_CD ASC, HUI.PSTN_CD ASC, HUI.TRGT_GRD_CD DESC,
-					 HUI.UGRD_GRD_CD DESC, HUI.MIN_BWRK_MY DESC, HUI.AGGR_TERM_CNT DESC
+	<select id="master_list_paging" parameterType="hashmap" resultType="com.douzone.comet.service.hr.pamprg.models.Pamprg00100_X10005Model">
+			WITH RankedResults AS (
+			    SELECT
+			    	  ROW_NUMBER() OVER (
+								            ORDER BY 
+								            		 HUI.BIZAREA_CD ASC
+								            		,HUI.PSTN_CD ASC
+								            		,HUI.TRGT_GRD_CD ASC
+								            		,HUI.UGRD_GRD_CD ASC
+								            		,HUI.MIN_BWRK_MY ASC
+								            		,HUI.AGGR_TERM_CNT ASC
+			        					) AS IDX
+			    	 ,HUI.COMPANY_CD AS COMPANY_CD                                      -- 회사 코드
+					 ,HUI.BIZAREA_CD AS BIZAREA_CD                                      -- 사업장 코드
+					 ,MBM.BIZAREA_NM AS BIZAREA_NM                                      -- 사업장명
+					 ,HUI.STD_YM AS STD_YM                                              -- 기준년월
+				     ,HUI.PSTN_CD AS PSTN_CD                                            -- 직급코드
+				     ,HUI.PSTN_CD AS ORIG_PSTN_CD                                       -- 수정이전 직급코드
+					 ,COALESCE(MCS.SYSDEF_NM, MC.SYSDEF_NM) AS PSTN_NM                  -- 직급명
+				     ,HUI.TRGT_GRD_CD AS TRGT_GRD_CD                                    -- 대상등급코드
+				     ,HUI.TRGT_GRD_CD AS ORIG_TRGT_GRD_CD                               -- 수정이전 대상등급코드
+					 ,HUI.UGRD_GRD_CD AS UGRD_GRD_CD                   				    -- 승급등급코드
+					 ,HUI.UGRD_GRD_CD AS ORIG_UGRD_GRD_CD                               -- 수정이전 승급등급코드
+					 ,HUI.MIN_BWRK_MY AS MIN_BWRK_MY                                    -- 최소근무월수
+					 ,HUI.MIN_BWRK_MY AS ORIG_MIN_BWRK_MY                               -- 수정이전 최소근무월수
+					 ,HUI.AGGR_TERM_CNT AS AGGR_TERM_CNT                                -- 근무성적집계기간
+					 ,HUI.BWRK_SGRAD_CD AS BWRK_SGRAD_CD                                -- 근무성적
+					 ,HUI.LEDU_CD AS LEDU_CD                                            -- 학력
+					 ,MC2.SYSDEF_NM AS LEDU_NM                                          -- 학력명
+					 ,HUI.BWRK_MY_CALC_STD_DT AS BWRK_MY_CALC_STD_DT                    -- 산정기준일
+					 ,HUI.RMK_NM AS RMK_NM                                              -- 비고
+			    FROM 
+			        HR_URGDBASETBL_INFO_X10005 HUI
+				LEFT OUTER JOIN MA_CODEDTL MC
+					ON (MC.COMPANY_CD = #{P_COMPANY_CD})
+					AND (MC.MODULE_CD = 'HR')
+					AND (MC.FIELD_CD = 'P00650')
+					AND (MC.SYSDEF_CD = HUI.PSTN_CD)
+				LEFT OUTER JOIN MA_CODEDTL_SDTL MCS
+					ON (MC.COMPANY_CD = MCS.COMPANY_CD)
+					AND (MC.SYSDEF_CD = MCS.SYSDEF_CD)
+					AND (MC.MODULE_CD = MCS.MODULE_CD)
+					AND (MC.FIELD_CD = MCS.FIELD_CD)
+					AND (MCS.LANG_CD = 'KO')
+				LEFT OUTER JOIN MA_CODEDTL MC2
+					ON (MC2.COMPANY_CD = #{P_COMPANY_CD})
+					AND (MC2.MODULE_CD = 'HR')
+					AND (MC2.FIELD_CD = 'P00670')
+					AND (MC2.SYSDEF_CD = HUI.LEDU_CD)
+				LEFT OUTER JOIN MA_BIZAREA_MST MBM
+					ON (HUI.COMPANY_CD = MBM.COMPANY_CD)
+					AND (HUI.BIZAREA_CD = MBM.BIZAREA_CD)
+				WHERE 1=1 AND 
+				(HUI.COMPANY_CD = #{P_COMPANY_CD})
+				AND (HUI.STD_YM = #{P_PROMO_YEAR_MONTH})
+					<if test="P_BIZAREA_CD != '' and P_BIZAREA_CD != null">
+					    AND (HUI.BIZAREA_CD = #{P_BIZAREA_CD})
+					</if>
+			)
+			SELECT * FROM RankedResults 
+			  <choose>
+				    <when test='"Y".equals(IS_MORE_THAN)'>
+				        WHERE IDX <![CDATA[>]]> TO_NUMBER(#{P_PAGING_START})
+				        AND TO_NUMBER(#{P_PAGING_START}) + TO_NUMBER(#{P_PAGING_CNT}) +1 <![CDATA[>]]> IDX
+				        ORDER BY IDX
+				        		 ,BIZAREA_CD ASC
+								 ,PSTN_CD ASC
+								 ,TRGT_GRD_CD ASC
+								 ,UGRD_GRD_CD ASC
+								 ,MIN_BWRK_MY ASC
+								 ,AGGR_TERM_CNT ASC
+				    </when>
+				    <otherwise>
+				        ORDER BY BIZAREA_CD ASC
+								 ,PSTN_CD ASC
+								 ,TRGT_GRD_CD ASC
+								 ,UGRD_GRD_CD ASC
+								 ,MIN_BWRK_MY ASC
+								 ,AGGR_TERM_CNT ASC
+								 ,IDX
+				    </otherwise>
+				</choose>
 	</select>
+
+	<select id="totalCount"  parameterType="hashmap"  resultType="String">
+        SELECT TO_CHAR(COUNT(BIZAREA_CD))
+        	  FROM
+        	  	  HR_URGDBASETBL_INFO_X10005
+		WHERE COMPANY_CD = #{P_COMPANY_CD}
+		AND BIZAREA_CD = #{P_BIZAREA_CD}
+    </select>
 	
-	<select id="get_BizareaList" parameterType="hashMap" resultType="hashMap">
+	<select id="get_BizareaList" parameterType="hashmap" resultType="com.douzone.comet.service.hr.pamprg.models.Pamprg00100_X10005Model">
 		SELECT MBM.COMPANY_CD
 			   ,MBM.BIZAREA_CD
 			   ,COALESCE(MBL.BIZAREA_NM, MBM.BIZAREA_NM) AS BIZAREA_NM
@@ -84,6 +123,20 @@
 			AND (UGRD_GRD_CD = #{urgd_grd_cd})
 			AND (MIN_BWRK_MY = #{min_bwrk_my})
 	</delete>
+	
+	<select id='checkValidate_update' parameterType="com.douzone.comet.service.hr.pamprg.models.Pamprg00100_X10005Model" resultType ="int">
+		SELECT COUNT(*)
+			  FROM HR_URGDBASETBL_INFO_X10005
+		WHERE COMPANY_CD = #{company_cd}
+		AND BIZAREA_CD = #{bizarea_cd}
+		AND STD_YM = #{std_ym}
+		AND PSTN_CD =#{pstn_cd}
+		AND TRGT_GRD_CD = #{trgt_grd_cd}
+		AND UGRD_GRD_CD = #{ugrd_grd_cd}
+		AND MIN_BWRK_MY = #{min_bwrk_my}
+		AND LEDU_CD = #{ledu_cd}
+		AND RMK_NM = #{rmk_nm}
+	</select>
 	
 	<update id="updatePAMPRG00100_Model" parameterType="com.douzone.comet.service.hr.pamprg.models.Pamprg00100_X10005Model">
 		UPDATE 
@@ -122,34 +175,90 @@
 			AND (MIN_BWRK_MY = #{orig_min_bwrk_my})
 	</update>
 	
+	<!-- merge 사용하기 전엔 기존 데이터 기존에서 변경된건 update하고 중복된건 delete하고 insert 해줘야 했음 --> 
 	<insert id="insertPAMPRG00100_Model" parameterType="com.douzone.comet.service.hr.pamprg.models.Pamprg00100_X10005Model">
-		INSERT INTO 
-				   HR_URGDBASETBL_INFO_X10005
-											 (
-												 COMPANY_CD, STD_YM,BIZAREA_CD, PSTN_CD,TRGT_GRD_CD, 
-												 UGRD_GRD_CD,MIN_BWRK_MY, AGGR_TERM_CNT,
-												 BWRK_SGRAD_CD,LEDU_CD, BWRK_MY_CALC_STD_DT,
-												 RMK_NM,
-												 INSERT_ID, INSERT_IP, INSERT_DTS,
-												 UPDATE_ID, UPDATE_IP, UPDATE_DTS
-											  )
-										VALUES
-											  (
-											    #{company_cd}, #{std_ym}, #{bizarea_cd},
-											    #{pstn_cd}, #{trgt_grd_cd}, #{urgd_grd_cd}, 
-											    #{min_bwrk_my}, #{aggr_term_cnt},
-												#{bwrk_sgrad_cd}, #{ledu_cd}, #{bwrk_my_calc_std_dt}, #{rmk_nm},
-												#{insert_id}, #{insert_ip}, #{insert_dts},
-												#{insert_id}, #{insert_ip},  #{insert_dts}
-										)
+			INSERT INTO 
+					   HR_URGDBASETBL_INFO_X10005
+												 (
+													 COMPANY_CD, STD_YM,BIZAREA_CD, PSTN_CD,TRGT_GRD_CD, 
+													 UGRD_GRD_CD,MIN_BWRK_MY, AGGR_TERM_CNT,
+													 BWRK_SGRAD_CD,LEDU_CD, BWRK_MY_CALC_STD_DT,
+													 RMK_NM,
+													 INSERT_ID, INSERT_IP, INSERT_DTS,
+													 UPDATE_ID, UPDATE_IP, UPDATE_DTS
+												  )
+											VALUES
+												  (
+												    #{company_cd}, #{std_ym}, #{bizarea_cd},
+												    #{pstn_cd}, #{trgt_grd_cd}, #{urgd_grd_cd}, 
+												    #{min_bwrk_my}, #{aggr_term_cnt},
+													#{bwrk_sgrad_cd}, #{ledu_cd}, #{bwrk_my_calc_std_dt}, #{rmk_nm},
+													#{insert_id}, #{insert_ip}, #{insert_dts},
+													#{insert_id}, #{insert_ip},  #{insert_dts}
+											)
 	</insert>
+	
+	
+	
+	<update id="mergeintoPAMPRG00100_Model" parameterType="com.douzone.comet.service.hr.pamprg.models.Pamprg00100_X10005Model">
+		MERGE INTO HR_URGDBASETBL_INFO_X10005
+			USING DUAL
+			ON
+			(
+				COMPANY_CD = #{company_cd}
+				AND (STD_YM = #{std_ym})
+				AND (BIZAREA_CD = #{bizarea_cd})
+				AND (PSTN_CD = #{pstn_cd})
+				AND (TRGT_GRD_CD = #{trgt_grd_cd})
+				AND (UGRD_GRD_CD = #{ugrd_grd_cd})
+				AND (MIN_BWRK_MY = #{min_bwrk_my})
+			  )
+			WHEN MATCHED THEN  --복합키는 같은데 그 외의 키는 업데이트 될 수 있음 
+				 UPDATE SET
+				 		   aggr_term_cnt = #{aggr_term_cnt}
+				 		   ,bwrk_sgrad_cd = #{bwrk_sgrad_cd}
+				 		   ,bwrk_my_calc_std_dt = #{bwrk_my_calc_std_dt}
+				 		   ,rmk_nm = #{rmk_nm}
+						   ,update_id = #{insert_id}
+						   ,update_dts = #{insert_dts}
+			WHEN NOT MATCHED THEN 
+				INSERT 
+					  (
+						 COMPANY_CD, STD_YM, BIZAREA_CD, PSTN_CD,TRGT_GRD_CD, 
+						 UGRD_GRD_CD,MIN_BWRK_MY, AGGR_TERM_CNT,
+						 BWRK_SGRAD_CD,LEDU_CD, BWRK_MY_CALC_STD_DT,
+						 RMK_NM,
+						 INSERT_ID, INSERT_IP, INSERT_DTS,
+						 UPDATE_ID, UPDATE_IP, UPDATE_DTS
+					   )
+				VALUES
+					  (
+					    #{company_cd}, #{std_ym}, #{bizarea_cd},
+					    #{pstn_cd}, #{trgt_grd_cd}, #{urgd_grd_cd}, 
+					    #{min_bwrk_my}, #{aggr_term_cnt},
+						#{bwrk_sgrad_cd}, #{ledu_cd}, #{bwrk_my_calc_std_dt},
+						#{rmk_nm},
+						#{insert_id}, #{insert_ip}, #{insert_dts},
+						#{insert_id}, #{insert_ip}, #{insert_dts}
+						)
+	</update>
+	
+	<select id="checkListExist" parameterType="hashMap" resultType="int" >
+		SELECT COUNT(*)
+			  FROM HR_URGDBASETBL_INFO_X10005
+		WHERE COMPANY_CD = #{P_COMPANY_CD} 
+		AND STD_YM = #{P_TARGET_YEAR_MONTH}
+		<if test="P_BIZAREA_CD != '' and P_BIZAREA_CD != null">
+		    AND BIZAREA_CD = #{P_BIZAREA_CD}
+		</if>
+	</select>
 	
 	<delete id="delete_BeforeList" parameterType="hashMap">
 		DELETE 
 			  FROM
 			  	  HR_URGDBASETBL_INFO_X10005
 		WHERE COMPANY_CD = #{P_COMPANY_CD}
-		AND STD_YM = #{P_PROMO_YEAR_MONTH}
+		AND STD_YM = #{P_TARGET_YEAR_MONTH}
 		<if test="P_BIZAREA_CD != '' and P_BIZAREA_CD != null">
 		    AND BIZAREA_CD = #{P_BIZAREA_CD}
 		</if>
@@ -157,7 +266,8 @@
 		
 	<insert id="copy_BeforeList"  parameterType="hashMap">
 		INSERT INTO HR_URGDBASETBL_INFO_X10005
-			( COMPANY_CD,
+			( 
+			COMPANY_CD,
 			STD_YM,
 			BIZAREA_CD,
 			PSTN_CD,
@@ -170,9 +280,10 @@
 			BWRK_MY_CALC_STD_DT, -- 산정기준일
 			RMK_NM,
 			INSERT_ID, INSERT_IP, INSERT_DTS,
-			UPDATE_ID, UPDATE_IP, UPDATE_DTS )
+			UPDATE_ID, UPDATE_IP, UPDATE_DTS 
+			)
 			SELECT HUI.COMPANY_CD,
-				   #{P_PROMO_YEAR_MONTH}, -- 기준년월
+				   #{P_TARGET_YEAR_MONTH}, -- 기준년월
 				   HUI.BIZAREA_CD,
 				   HUI.PSTN_CD, -- 직급코드
 				   HUI.TRGT_GRD_CD, -- 대상등급코드
@@ -187,17 +298,74 @@
 				   #{P_INSERT_ID}, #{P_INSERT_IP}, SYSDATE
 			FROM HR_URGDBASETBL_INFO_X10005 HUI
 			WHERE HUI.COMPANY_CD = #{P_COMPANY_CD}
-				AND HUI.STD_YM = ( SELECT MAX(STD_YM) -- 기준년월
-								   FROM HR_URGDBASETBL_INFO_X10005
-								   WHERE COMPANY_CD = #{P_COMPANY_CD}
-										AND STD_YM <![CDATA[<]]> #{P_PROMO_YEAR_MONTH}
+				AND HUI.STD_YM =  #{P_PROMO_YEAR_MONTH}
+				
 									<if test="P_BIZAREA_CD != '' and P_BIZAREA_CD != null">
 									    AND BIZAREA_CD = #{P_BIZAREA_CD}
 									</if>
-								  )
-				<if test="P_BIZAREA_CD != '' and P_BIZAREA_CD != null">
-				    AND HUI.BIZAREA_CD = #{P_BIZAREA_CD}
-				</if>
+
 	</insert>
+	
+	<select id = "list_ym" parameterType="hashMap" resultType="Map">
+		SELECT DISTINCT STD_YM 
+ 				FROM 
+ 					HR_URGDBASETBL_INFO_X10005
+ 		WHERE COMPANY_CD = #{P_COMPANY_CD}
+ 		AND   BIZAREA_CD = #{P_BIZAREA_CD}
+ 		GROUP BY STD_YM
+ 		ORDER BY STD_YM 
+	</select>
+	
+	<update id="uploadPAMPRG00100_Model" parameterType="com.douzone.comet.service.hr.pamprg.models.Pamprg00100_X10005Model">
+		MERGE INTO HR_URGDBASETBL_INFO_X10005
+			USING DUAL
+			ON
+			(
+				COMPANY_CD = #{company_cd}
+				AND (STD_YM = #{std_ym})
+				AND (BIZAREA_CD = #{bizarea_cd})
+				AND (PSTN_CD = #{pstn_cd})
+				AND (TRGT_GRD_CD = #{trgt_grd_cd})
+				AND (UGRD_GRD_CD = #{ugrd_grd_cd})
+				AND (MIN_BWRK_MY = #{min_bwrk_my})
+			  )
+			WHEN MATCHED THEN  --복합키는 같은데 그 외의 키는 업데이트 될 수 있음 
+				 UPDATE SET
+				 		   aggr_term_cnt = #{aggr_term_cnt}
+				 		   ,bwrk_sgrad_cd = #{bwrk_sgrad_cd}
+				 		   ,bwrk_my_calc_std_dt = #{bwrk_my_calc_std_dt}
+				 		   ,rmk_nm = #{rmk_nm}
+						   ,update_id = #{insert_id}
+						   ,update_dts = #{insert_dts}
+			WHEN NOT MATCHED THEN 
+				INSERT 
+					  (
+						 COMPANY_CD, STD_YM, BIZAREA_CD, PSTN_CD,TRGT_GRD_CD, 
+						 UGRD_GRD_CD,MIN_BWRK_MY, AGGR_TERM_CNT,
+						 BWRK_SGRAD_CD,LEDU_CD, BWRK_MY_CALC_STD_DT,
+						 RMK_NM,
+						 INSERT_ID, INSERT_IP, INSERT_DTS,
+						 UPDATE_ID, UPDATE_IP, UPDATE_DTS
+					   )
+				VALUES
+					  (
+					    #{company_cd}, #{std_ym}, #{bizarea_cd},
+					    #{pstn_cd}, #{trgt_grd_cd}, #{urgd_grd_cd}, 
+					    #{min_bwrk_my}, #{aggr_term_cnt},
+						#{bwrk_sgrad_cd}, #{ledu_cd}, #{bwrk_my_calc_std_dt},
+						#{rmk_nm},
+						#{insert_id}, #{insert_ip}, #{insert_dts},
+						#{insert_id}, #{insert_ip}, #{insert_dts}
+						)
+	</update>
+	
+ 
+	<select id="selectModel" parameterType ="HashMap" resultType="com.douzone.comet.service.hr.pamprg.models.Pamprg00100_X10005Model">	
+		SELECT *
+			  FROM HR_URGDBASETBL_INFO_X10005
+		WHERE COMPANY_CD = #{P_COMPANY_CD}
+		AND STD_YM || BIZAREA_CD || PSTN_CD || TRGT_GRD_CD || UGRD_GRD_CD || MIN_BWRK_MY = #{P_COMBINED_KEY}
+	</select>
+  
 	
 </mapper>

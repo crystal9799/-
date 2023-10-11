@@ -20,6 +20,7 @@
 */.settings/
 */.loadpath
 */.recommenders
+*/*.properties
 
 # External tool builders
 */.externalToolBuilders/
@@ -179,5 +180,10 @@
 # End of https://www.toptal.com/developers/gitignore/api/react
 # End of https://www.toptal.com/developers/gitignore/api/maven
 
+# Eclipse Core       
+.project 
 
-crystal9799/douzone-comet-service-hr-cdmjim00100/target/classes/META-INF/maven/com.douzone.comet.service/douzone-comet-service-hr-cdmjim00100/pom.properties
+# JDT-specific (Eclipse Java Development Tools)      
+.classpath
+.settings/
+/pom.properties

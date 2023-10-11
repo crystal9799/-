@@ -1,6 +1,6 @@
-<!--##b848e199-3f9f-4b63-9640-e5c027c2dce8##-->
+<!--##e5007381-4862-4484-bf8f-65a357f089d7##-->
 <!--##ESSODM01400_X10005_Sub##-->
-<!--##A38MmKUC9joLWhauaLnzreTzZhAMfSMcBT2+7+z06SGYk0aIMkKxlveRAuZcl0B9##-->
+<!--##ELkV0TfoPDW5+HQTonF/fI8dp44fBzUmOpSgPBe0056jYdiG7fDR0aoO+EPd3X3M##-->
 <!--
   DEWS UI/UX IDE - Build Result - v1.5
   # PageID: ESSODM01400_X10005_Sub
@@ -31,13 +31,13 @@
         <li>
           <label>직급</label>
           <span>
-            <input id="PSTN_CD" name="PSTN_CD" type="text" class="dews-ui-textbox basic" readonly="readonly" />
+            <input id="PSTN_NM" name="PSTN_NM" type="text" class="dews-ui-textbox basic" readonly="readonly" />
           </span>
         </li>
         <li>
           <label>직군</label>
           <span>
-            <input id="OGRP_CD" name="OGRP_CD" type="text" class="dews-ui-textbox basic" readonly="readonly" />
+            <input id="OGRP_NM" name="OGRP_NM" type="text" class="dews-ui-textbox basic" readonly="readonly" />
           </span>
         </li>
         <li class="col-3">
@@ -49,7 +49,7 @@
         <li>
           <label>직위</label>
           <span>
-            <input id="POSI_CD" name="POSI_CD" type="text" class="dews-ui-textbox basic" readonly="readonly" />
+            <input id="POSI_NM" name="POSI_NM" type="text" class="dews-ui-textbox basic" readonly="readonly" />
           </span>
         </li>
         <li style="display: none;">
@@ -64,12 +64,31 @@
             <input type="text" id="s_EMP_NO" name="s_EMP_NO" class="dews-ui-codepicker basic" data-dews-help-code="H_HR_EMP_MST_S" data-dews-help-title="사원 도움창" data-dews-help-custom="false" data-dews-help-size="big" data-dews-ajax="true" />
           </span>
         </li>
+        <li style="display: none;">
+          <label>라벨</label>
+          <span>
+            <input id="DEPT_CD" name="DEPT_CD" type="text" class="dews-ui-textbox basic" />
+          </span>
+        </li>
+        <li style="display: none;">
+          <label>라벨</label>
+          <span>
+            <input id="REQ_DEPT_CD" name="REQ_DEPT_CD" type="text" class="dews-ui-textbox basic" />
+          </span>
+        </li>
+        <li style="display: none;">
+          <label>라벨</label>
+          <span>
+            <input id="REQ_BIZAREA_CD" name="REQ_BIZAREA_CD" type="text" class="dews-ui-textbox basic" />
+          </span>
+        </li>
       </ul>
     </div>
     <div class="dews-button-group" style="text-align: right;">
       <button id="temp_save_button" class="dews-ui-button">임시 저장</button>
-      <button id="req_button" class="dews-ui-button">결재 요청</button>
+      <button id="req_button" class="dews-ui-button">결재요청</button>
       <button id="req_cancel_button" class="dews-ui-button">결재요청 취소</button>
+      <button id="approve_button" class="dews-ui-button">결재 페이지</button>
       <button id="delete_button" class="dews-ui-button">삭제</button>
       <button id="sub_close_button" class="dews-ui-button">목록</button>
     </div>
@@ -87,7 +106,7 @@
         <li class="col-3">
           <label>근태종류</label>
           <span>
-            <select id="DNL_CD" name="DNL_CD" class="dews-ui-dropdownlist required" data-dews-value-field="HR_CD" data-dews-text-field="HR_CD_NM" data-dews-show-tooltip="true" style="width: 204px;" data-dews-show-value-tooltip="true" data-dews-use-numkey="false"></select>
+            <select id="DNL_CD" name="DNL_CD" class="dews-ui-dropdownlist required" data-dews-value-field="HR_CD" data-dews-text-field="HR_CD_NM" data-dews-bind-value="DNL_CD" data-dews-show-tooltip="true" style="width: 204px;" data-dews-show-value-tooltip="true" data-dews-use-numkey="false"></select>
           </span>
         </li>
         <li>
@@ -105,7 +124,7 @@
         <li class="col-3">
           <label>사유</label>
           <span>
-            <input id="REASON_DC" name="REASON_DC" type="text" class="dews-ui-textbox required" style="width: 500px;" />
+            <textarea id="REASON_DC" name="REASON_DC" class="dews-ui-textbox required" style="width: 500px;" rows="0"></textarea>
           </span>
         </li>
         <li class="col-3">
@@ -128,7 +147,7 @@
         </li>
       </ul>
     </div>
-    <div id="main_grid" class="dews-ui-grid"></div>
+    <div id="main_grid" class="dews-ui-grid" style="display: none;"></div>
   </div>
 </div>
 
@@ -146,7 +165,39 @@
 
 
     /*b86609c9-3017-4aef-896e-65022e1080a4*/ //# sourceURL=ESSODM01400_x10005_Sub.js
+    // 대상자 변경 시 접속유저 기준으로 파라미터 바인딩
     self.COMPANY_CD.text(self.user.companyCode);
+    self.REQ_DEPT_CD.text(self.user.deptCode);
+    self.REQ_BIZAREA_CD.text(self.user.bizAreaCode);
+    
+    //더미데이터 넣기
+    // self.START_DT.value('20230821');
+    // self.END_DT.value('20230824');
+    // self.REASON_DC.text('휴가신청합니다.');
+    
+    // 직급, 직위 데이터
+    const positionData = [
+        { PSTN_CD: '11', PSTN_NM: '대표이사' },
+        { PSTN_CD: '13', PSTN_NM: '감사' },
+        { PSTN_CD: '14', PSTN_NM: '전무이사' },
+        { PSTN_CD: '16', PSTN_NM: '이사' },
+        { PSTN_CD: '17', PSTN_NM: '부장' },
+        { PSTN_CD: '18', PSTN_NM: '차장' },
+        { PSTN_CD: '19', PSTN_NM: '과장' },
+        { PSTN_CD: '20', PSTN_NM: '대리' },
+        { PSTN_CD: '21', PSTN_NM: '사원' },
+    ];
+    const ogrpData = [
+        { OGRP_CD: '1', OGRP_NM: '임원' },
+        { OGRP_CD: '2', OGRP_NM: '일반직' },
+        { OGRP_CD: '3', OGRP_NM: '생산직' }
+    ];
+    //신규신청 데이터의 상태관리를 위한 데이터 객체
+    let inputData =
+    {
+    };
+    
+    
     
     
     
@@ -170,7 +221,8 @@
             { field: 'DEPT_NM', editable: false, dataType: 'string' }, 
             { field: 'GRP_NM', editable: false, dataType: 'string' }, 
             { field: 'BIZAREA_NM', editable: false, dataType: 'string' }, 
-            { field: 'PATH', editable: false, dataType: 'string' }
+            { field: 'PATH', editable: false, dataType: 'string' }, 
+            { field: 'DEPT_CD', editable: false, dataType: 'string' }
           ]
     
         }
@@ -178,18 +230,6 @@
     });
     self.main_ds = dews.ui.dataSource('main_ds', {
       grid: true,
-      transport: {
-        read: {
-          url: dews.url.getApiUrl('HR', 'HREssodm01400_X10005Service', 'list_HR_OFFAPPLY_MST_X10005MST'),
-          data: function () {
-            return {
-              start_dt: self.START_DT.value(),
-              end_dt: self.END_DT.value(),
-              company_cd: self.COMPANY_CD.text()
-            };
-          }
-        }
-      },
       schema: {
         model: {
           fields: [
@@ -217,7 +257,8 @@
           ]
     
         }
-      }
+      },
+      data: []
     });
     self.dnl_ds = dews.ui.dataSource('dnl_ds', {
       schema: {
@@ -248,9 +289,100 @@
     { DNL_CD: "3", DNL_NM: "반려"},
     { DNL_CD: "4", DNL_NM: "결재완료"}]
     });
+    dews.api.get(dews.url.getApiUrl('CM', 'CommonCodeDtlService', 'common_ci_codeDtl_list'),{
+      async: false,
+      data: {
+          end_dt: '',
+          foreign_yn: '',
+          field_cd_pipe: 'P00110|P00050|P00650|P00660|P41090|P00640',
+          module_cd: 'HR',
+          syscode_yn: '',
+          keyword: '',
+          base_yn: ''
+      }
+    }).done(function (data) {
+      var ar_P00110 = new Array();
+      var ar_P00050 = new Array();
+      var ar_P00650 = new Array();
+      var ar_P00660 = new Array();
+      var ar_P41090 = new Array();
+      var ar_P00640 = new Array();
+    
+      for (var i = 0; i < data.length; i++) {
+        if (data[i].FIELD_CD == "P00110") { 
+          ar_P00110.push(data[i]); 
+    
+        }
+        else if (data[i].FIELD_CD == "P00050") { 
+          ar_P00050.push(data[i]); 
+    
+        }
+        else if (data[i].FIELD_CD == "P00650") { 
+          ar_P00650.push(data[i]); 
+    
+        }
+        else if (data[i].FIELD_CD == "P00660") { 
+          ar_P00660.push(data[i]); 
+    
+        }
+        else if (data[i].FIELD_CD == "P41090") { 
+          ar_P41090.push(data[i]); 
+    
+        }
+        else if (data[i].FIELD_CD == "P00640") { 
+          ar_P00640.push(data[i]); 
+    
+        }
+      }
+      self.pipeDataSource1_P00110 = dews.ui.dataSource('pipeDataSource1_P00110',  { data: ar_P00110 });
+      self.pipeDataSource1_P00050 = dews.ui.dataSource('pipeDataSource1_P00050',  { data: ar_P00050 });
+      self.pipeDataSource1_P00650 = dews.ui.dataSource('pipeDataSource1_P00650',  { data: ar_P00650 });
+      self.pipeDataSource1_P00660 = dews.ui.dataSource('pipeDataSource1_P00660',  { data: ar_P00660 });
+      self.pipeDataSource1_P41090 = dews.ui.dataSource('pipeDataSource1_P41090',  { data: ar_P41090 });
+      self.pipeDataSource1_P00640 = dews.ui.dataSource('pipeDataSource1_P00640',  { data: ar_P00640 });
+      self.pipeDataSource1 = dews.ui.dataSource('pipeDataSource1', { data: data });
+      
+    });
+    dews.api.get(dews.url.getApiUrl('CM', 'CommonCodeDtlService', 'common_ci_codeDtl_list'),{
+      async: false,
+      data: {
+          end_dt: '',
+          foreign_yn: '',
+          field_cd_pipe: 'S00320|P00880',
+          module_cd: 'MA',
+          syscode_yn: '',
+          keyword: '',
+          base_yn: ''
+      }
+    }).done(function (data) {
+      var ar_S00320 = new Array();
+      var ar_P00880 = new Array();
+    
+      for (var i = 0; i < data.length; i++) {
+        if (data[i].FIELD_CD == "S00320") { 
+          ar_S00320.push(data[i]); 
+    
+        }
+        else if (data[i].FIELD_CD == "P00880") { 
+          ar_P00880.push(data[i]); 
+    
+        }
+      }
+      self.pipeDataSource2_S00320 = dews.ui.dataSource('pipeDataSource2_S00320',  { data: ar_S00320 });
+      self.pipeDataSource2_P00880 = dews.ui.dataSource('pipeDataSource2_P00880',  { data: ar_P00880 });
+      self.pipeDataSource2 = dews.ui.dataSource('pipeDataSource2', { data: data });
+      
+    });
     
     
-    dews.ui.mainbuttons.localize.disable(true);
+    dews.ui.mainbuttons.localize.hide();
+    dews.ui.mainbuttons.approval.hide();
+    dews.ui.mainbuttons.etnapproval.hide();
+    dews.ui.mainbuttons.add.hide();
+    dews.ui.mainbuttons.search.hide();
+    dews.ui.mainbuttons.delete.hide();
+    dews.ui.mainbuttons.print.hide();
+    dews.ui.mainbuttons.save.hide();
     self.s_EMP_NO.on('codedialog', /*bac2ec72-9198-4777-905f-fcea45bac730*/ function (e) {
         e.callback = function (s) {
             // self.REQ_EMP_NO.text(s.EMP_NO);
@@ -258,12 +390,12 @@
             // self.main_grid.setCellValue(self.main_grid.select(), 'REQ_EMP_NO', s.EMP_NO);
             // self.main_grid.setCellValue(self.main_grid.select(), 'REQ_KOR_NM', s.KOR_NM);
             GetUserInfo(s.EMP_NO, s.COMPANY_CD);
-    
         }
     });
     self.s_EMP_NO.setHelpParams(function () {
       return {
-        company_cd: self.COMPANY_CD.text()
+        company_cd: self.COMPANY_CD.text() || 'auth',
+        auth_dept: self.REQ_DEPT_CD.text()
       };
     });
     self.$temp_save_button.on('click', /*e07a479f-2584-47d9-9db3-60a574b7f674*/ function (e) {
@@ -276,18 +408,124 @@
             SaveTempData();
         } else if (athz_st_cd == "2") {
             SaveTempData();
-            dews.alert("결재대기 중입니다.", "warning");
+            dews.ui.snackbar.ok("결재대기 중입니다.");
         } else if (athz_st_cd == "3") {
             SaveTempData();
-            dews.alert("결재반려 되었습니다.", "warning");
+            dews.ui.snackbar.ok("결재반려 되었습니다.");
         } else if (athz_st_cd == "4") {
             SaveTempData();
-            dews.alert("결재완료 되었습니다.", "warning");
+            dews.ui.snackbar.ok("결재완료 되었습니다.");
         } else {
             SaveTempData();
             grid.commitCell();
         }
     
+    });
+    self.$req_button.on('click', /*f56047f2-5d5e-4010-8581-246f5c29f3b3*/ function (e) {
+        if (HasChanges() > 0) {
+            dews.ui.snackbar.warning("변경된 내용이 있습니다. \n임시저장을 해주세요.");
+        } else {
+            dews.confirm('결재신청 하시겠습니까?', {
+                icon: "question"
+            }).yes(function () {
+                dews.api.get(dews.url.getApiUrl("HR", "HREssodm01400_X10005Service", "approve_HR_OFFAPPLY_MST_X10005MST"), {
+                    async: false,
+                    data: {
+                        //기본키
+                        company_cd: self.main_grid.getCellValue(0, 'COMPANY_CD'),//회사코드
+                        req_no: self.main_grid.getCellValue(0, 'REQ_NO'), // 신청번호
+    
+                        //결재상태코드
+                        athz_st_cd: '2'
+                        //한번에 모델로 보내기 => dirtyData 상에서 added로 들어가는 문제점
+                        // main_ds: main_ds
+                    }
+                }).done(function (data) {
+                    dews.ui.snackbar.ok('결재신청 되었습니다.');
+                    self.main_grid.setCellValue(self.main_grid.select(), 'ATHZ_ST_CD', '2');
+                    self.ATHZ_ST_NM.text(GetATHZ_ST_NM('2'));
+                    InitBtns();
+                    //결재요청을 하게 되면 결재상태 코드가 바뀌게 되므로, HasChanged()에서 비교하는 데이터를 새롭게 줘야함.
+                    isSaved = true;
+                    inputData = IsNewInputNewData();
+                });
+            }).no(function () {
+                dews.ui.snackbar.warning('결재신청을 취소하였습니다.')
+            });
+        }
+    });
+    self.$req_cancel_button.on('click', /*d1d1abf1-bdb2-4e1e-876d-2cf45aa12988*/ function (e) {
+        if (HasChanges() > 0) {
+            dews.ui.snackbar.warning("변경된 내용이 있습니다. \n임시저장을 해주세요.");
+        } else {
+            dews.confirm('결재요청을 취소 하시겠습니까?', {
+                icon: "question"
+            }).yes(function () {
+                dews.api.get(dews.url.getApiUrl("HR", "HREssodm01400_X10005Service", "approve_HR_OFFAPPLY_MST_X10005MST"), {
+                    async: false,
+                    data: {
+                        //기본키
+                        company_cd: self.main_grid.getCellValue(0, 'COMPANY_CD'),//회사코드
+                        req_no: self.main_grid.getCellValue(0, 'REQ_NO'), // 신청번호
+    
+                        //결재상태코드
+                        athz_st_cd: '1'
+                        //한번에 모델로 보내기 => dirtyData 상에서 added로 들어가는 문제점
+                        // main_ds: main_ds
+                    }
+                }).done(function (data) {
+                    dews.ui.snackbar.ok('결재요청이 취소 되었습니다.');
+                    self.main_grid.setCellValue(self.main_grid.select(), 'ATHZ_ST_CD', '1');
+                    self.ATHZ_ST_NM.text(GetATHZ_ST_NM('1'));
+                    InitBtns();
+                    //결재요청취소를 하게 되면 결재상태 코드가 바뀌게 되므로, HasChanged()에서 비교하는 데이터를 새롭게 줘야함.
+                    isSaved = true;
+                    inputData = IsNewInputNewData();
+                });
+            }).no(function () {
+    
+            });
+        }
+    });
+    self.$approve_button.on('click', /*ff94b48d-1e4f-4be1-aa8b-c8c89538591b*/ function (e) {
+        try {
+            OpenReqPage(self.main_grid.dataItem(self.main_grid.select()));
+        } catch (error) {
+            dews.error(error);
+            console.error(error);
+        }
+    });
+    self.$delete_button.on('click', /*4d8e17ac-e695-4e96-93b8-5762ecd28545*/ function (e) {
+        var req_no = self.main_grid.getCellValue(0, 'REQ_NO');
+        var company_cd = self.COMPANY_CD.text();
+        if (HasChanges() > 0) {
+            dews.ui.snackbar.warning("변경된 내용이 있습니다. \n임시저장을 해주세요.");
+        } else {
+            dews.confirm('삭제하시겠습니까?', "question").yes(function () {
+                if (req_no == "") {
+                    dews.ui.snackbar.error('존재하지 않는 문서입니다.');
+                    return;
+                }
+                else {
+                    dews.api.get(dews.url.getApiUrl("HR", "HREssodm01400_X10005Service", "delete_HR_OFFAPPLY_MST_X10005MST"), {
+                        async: false,
+                        data: {
+                            req_no: req_no,
+                            company_cd: company_cd
+                        }
+                    }).done(function (data) {
+                        if (data == 'OK') {
+                            dews.ui.snackbar.ok('삭제되었습니다.');
+                            dews.ui.page.close(); // 현재 서브페이지 닫기
+                        } else
+                            dews.ui.snackbar.warning(data);
+                    }).fail(function (e) {
+                        dews.ui.snackbar.error('삭제하는데 실패하였습니다.');
+                    });
+                }
+            }).no(function () {
+            });
+        }
     });
     self.$sub_close_button.on('click', /*64036093-15ee-4515-9241-24b3b54e6681*/ function (e) {
         //   if (self.absData_ds.getDirtyDataCount() > 0) {
@@ -296,19 +534,22 @@
         //     }).no(function () {
         //     });
         //   } else {
-        dews.ui.page.close();
+        if (HasChanges() > 0 && isSaved) {
+            dews.ui.snackbar.warning("변경된 내용이 있습니다. \n임시저장을 해주세요.");
+        } else
+            dews.ui.page.close();
         //   }
     
     });
     self.$REQ_EMP_NO.on('change', /*1f1fac4a-039e-4381-8e09-422d31b52d2d*/ function (e) {
         self.userInfo_formpanel.bindTo(self.main_grid);
         self.sub_formpanel.bindTo(self.main_grid);
-        GetOriginData();
+        // GetOriginData();
     });
     self.$REQ_KOR_NM.on('change', /*7d0bb8eb-1fce-45ec-a9a2-7857091a706a*/ function (e) {
         self.userInfo_formpanel.bindTo(self.main_grid);
         self.sub_formpanel.bindTo(self.main_grid);
-        GetOriginData();
+        // GetOriginData();
     });
     self.$CHANGE_REQ_USERT.on('click', /*10c3134e-6820-4e85-a391-74ef74a1d7bd*/ function (e) {
         self.s_EMP_NO.open();
@@ -324,18 +565,18 @@
         self.main_grid.setCellValue(self.main_grid.select(), 'REQ_DY', GetREQ_DY());
         self.userInfo_formpanel.bindTo(self.main_grid);
         self.sub_formpanel.bindTo(self.main_grid);
-        GetOriginData();
+        // GetOriginData();
     });
     self.END_DT.on('change', /*a139e6fd-50ba-44f9-b311-e7d4e459801d*/ function (e) {
         self.main_grid.setCellValue(self.main_grid.select(), 'REQ_DY', GetREQ_DY());
         self.userInfo_formpanel.bindTo(self.main_grid);
         self.sub_formpanel.bindTo(self.main_grid);
-        GetOriginData();
+        // GetOriginData();
     });
     self.$REASON_DC.on('change', /*6fbf625f-c7be-46c0-973b-2fc0932200a0*/ function (e) {
         self.userInfo_formpanel.bindTo(self.main_grid);
         self.sub_formpanel.bindTo(self.main_grid);
-        GetOriginData();
+        // GetOriginData();
     });
     self.$ATHZ_ST_NM.on('change', /*1c610c93-aae0-41c7-acdf-94d47324e4d1*/ function (e) {
     
@@ -378,13 +619,7 @@
         {
           field: 'DNL_CD',
           title: '근태코드',
-          width: 80,
-          formats: {
-            type: 'dataSource',
-            dataSource: self.dnl_ds,
-            dataValueField: 'HR_CD',
-            dataTextField: 'HR_CD_NM'
-          }
+          width: 80
         },
         {
           field: 'START_DT',
@@ -490,17 +725,10 @@
         colCount: 0,
         rightColCount: 0
       },
-      change: /*c04e9cc0-71cf-4547-95b0-7d9c0086bb38*/ function (e) {
-            self.userInfo_formpanel.bindTo(self.main_grid);
-            self.sub_formpanel.bindTo(self.main_grid);
-            GetOriginData();
+      dataBound: /*14b4f56a-681a-4065-a5b0-8d94ca678c80*/ function (e) {
+    
         }
-    ,
-      dataBound: /*ed8e6da1-4b37-4159-9ad7-d1e40519430c*/ function (e) {
-            self.userInfo_formpanel.bindTo(self.main_grid);
-            self.sub_formpanel.bindTo(self.main_grid);
-            GetOriginData();
-        }
+    
     
     });
     
@@ -508,6 +736,13 @@
     
     
     /*cdd3d4f4-7ecd-43e5-9538-0f8096f35ab0*/ InitData();
+    InitBtns();
+    //isExist를 전역변수로 할당
+    var isExistSub = self.initialData.isExist;
+    //기존 데이터를 불러왔을 경우, 임시저장을 한번이라도 했을 때, 상태관리 비교는 initData로 해서는 안됨.
+    var isSaved = false;
+    
+    
     
     function InitData() {
         try {
@@ -521,9 +756,19 @@
                 //파라미터로 넘겨 받은 데이터를 폼패널에 바인딩
                 self.userInfo_formpanel.bindData(userData);
                 self.sub_formpanel.bindData(userData);
-                self.ATHZ_ST_NM.text(GetATHZ_ST_NM());
+                self.ATHZ_ST_NM.text(GetATHZ_ST_NM(self.initialData.userData.ATHZ_ST_CD));
                 self.REQ_DT.text(userData.REQ_DT);
+                GetUserInfo(self.EMP_NO.text(), self.COMPANY_CD.text());
     
+                //소속값 처리
+                //PATH 값 처리
+                var path = self.ORG.text();
+    
+                // 만약 path 값이 존재하고, 앞에 슬래시가 두 번 온다면 앞의 슬래시를 제외한 나머지 문자열을 출력
+                if (path && path.startsWith('//')) {
+                    path = path.substring(2); // 앞의 두 슬래시를 제거
+                }
+                self.ORG.text(path);
     
                 //만약 REQ_EMP_NO와 REQ_KOR_NM이 공백이라면 기본정보의 데이터 바인딩
                 if (self.REQ_EMP_NO.text() === '' && self.REQ_KOR_NM.text() === '') {
@@ -532,8 +777,9 @@
                 }
     
                 //직급, 직위에 대한 기본값 설정
-                self.PSTN_CD.text(userData.PSTN_CD === undefined || userData.PSTN_CD === '' ? '연구원' : userData.PSTN_CD); //직급
-                self.POSI_CD.text(userData.POSI_CD === undefined || userData.POSI_CD === '' ? '사원' : userData.POSI_CD); // 직위
+                self.PSTN_NM.text(GetPSTNPOSI_NM(userData.PSTN_CD)); //직급
+                self.POSI_NM.text(GetPSTNPOSI_NM(userData.POSI_CD)); // 직위
+                self.OGRP_NM.text(GetOGRP_NM(userData.OGRP_CD)); // 직군
                 //데이터소스에서 조회된 값이 아닌 파라미터로 넘겨받은 데이터를 그리드에 바인딩.
                 self.main_grid.addRow();
                 self.userInfo_formpanel.bindTo(self.main_grid);
@@ -552,6 +798,9 @@
                 //직급, 직위는 undefined라면 보여지는 임시값이므로 공백으로 바로 넣어주어야함.
                 self.main_grid.setCellValue(0, 'PSTN_CD', userData.PSTN_CD);
                 self.main_grid.setCellValue(0, 'POSI_CD', userData.POSI_CD);
+                self.main_grid.setCellValue(0, 'OGRP_CD', userData.OGRP_CD);
+    
+    
             } else {
                 self.main_grid.addRow();
                 //기본정보 패널
@@ -563,7 +812,9 @@
                 // self.POSI_CD.text(self.user.dutyCode === undefined ? '사원' : self.user.dutyCode); // 직위
                 // self.COMPANY_CD.text(self.user.companyCode); //회사코드
                 GetUserInfo(self.user.empCode, self.user.companyCode);
-    
+                self.PSTN_NM.text(GetPSTNPOSI_NM(self.user.dutyRankCode)); //직급
+                self.POSI_NM.text(GetPSTNPOSI_NM(self.user.dutyCode)); // 직위
+                self.OGRP_NM.text(GetOGRP_NM('2')); // 직군
                 //신청자 패널
                 self.REQ_EMP_NO.text(self.user.empCode); //사원번호
                 self.REQ_KOR_NM.text(self.user.username); //이름
@@ -586,19 +837,27 @@
                 self.sub_formpanel.bindTo(self.main_grid);
     
                 //직급, 직위는 undefined라면 보여지는 임시값이므로 공백으로 바로 넣어주어야함.
-                self.main_grid.setCellValue(0, 'PSTN_CD', self.user.dutyRankCode);
-                self.main_grid.setCellValue(0, 'POSI_CD', self.user.dutyCode);
+                self.main_grid.setCellValue(0, 'PSTN_CD', self.user.dutyRankCode === undefined ? '' : self.user.dutyRankCode);
+                self.main_grid.setCellValue(0, 'POSI_CD', self.user.dutyCode === undefined ? '' : self.user.dutyCode);
+                self.main_grid.setCellValue(0, 'OGRP_CD', self.user.gaapCode === undefined ? '' : self.user.gaapCode);
+    
+                //부서코드
+                // self.DEPT_CD.text(self.user.deptCode);
+                // self.main_grid.setCellValue(0, 'DETP_CD', self.user.deptCode);
             }
+            //신규든, 기존 데이터든 직급이나 직위는 동일하기 때문에 한쪽이 공백이면 다른 값을 가져온다.
+            IsPSTNPOSINULL();
+    
         } catch (error) {
             dews.error(error);
             console.error(error);
         }
     }
     
-    function GetATHZ_ST_NM() {
+    function GetATHZ_ST_NM(param) {
         var status = '';
     
-        switch (self.initialData.userData.ATHZ_ST_CD) {
+        switch (param) {
             case '1':
                 status = '임시저장';
                 break;
@@ -657,38 +916,109 @@
             var grid = self.main_grid;
             grid.setCellValue(grid.select(), 'EMP_NO', data[0].EMP_NO, false); // 사원번호
             grid.setCellValue(grid.select(), 'KOR_NM', data[0].KOR_NM, false); // 한글명
-            grid.setCellValue(grid.select(), 'PSTN_CD', data[0].PSTN_CD === null ? '연구원' : data[0].PSTN_CD, false); // 직급코드
+            grid.setCellValue(grid.select(), 'PSTN_CD', data[0].PSTN_CD, false); // 직급코드
             grid.setCellValue(grid.select(), 'OGRP_CD', data[0].OGRP_CD, false); // 직군코드
-            grid.setCellValue(grid.select(), 'ORG', data[0].ORG === null ? data[0].PATH : data[0].ORG, false); // 소속
-            grid.setCellValue(grid.select(), 'POSI_CD', data[0].POSI_CD === undefined ? '사원' : data[0].POSI_CD, false); // 직위코드
+            //PATH 값 처리
+            var path = data[0].PATH === null ? '' : data[0].PATH;
+    
+            // 만약 path 값이 존재하고, 앞에 슬래시가 두 번 온다면 앞의 슬래시를 제외한 나머지 문자열을 출력
+            if (path && path.startsWith('//')) {
+                path = path.substring(2); // 앞의 두 슬래시를 제거
+            }
+            grid.setCellValue(grid.select(), 'ORG', data[0].ORG === null ? path : data[0].ORG, false); // 소속
+            grid.setCellValue(grid.select(), 'POSI_CD', data[0].POSI_CD, false); // 직위코드
+            // grid.setCellValue(grid.select(), 'DEPT_CD', data[0].DEPT_CD, false);
+            self.DEPT_CD.text(data[0].DEPT_CD);
             self.EMP_NO.text(data[0].EMP_NO);
             self.KOR_NM.text(data[0].KOR_NM);
-            self.PSTN_CD.text(data[0].PSTN_CD === null ? '연구원' : data[0].PSTN_CD);
-            self.OGRP_CD.text(data[0].OGRP_CD);
+            self.PSTN_NM.text(GetPSTNPOSI_NM(data[0].PSTN_CD));
+            self.OGRP_NM.text(GetOGRP_NM(data[0].OGRP_CD));
             self.ORG.text(data[0].ORG === null ? data[0].PATH : data[0].ORG);
-            self.POSI_CD.text(data[0].POSI_CD === null ? '사원' : data[0].POSI_CD);
+            self.POSI_NM.text(GetPSTNPOSI_NM(data[0].POSI_CD));
+            self.ORG.text(grid.getCellValue(grid.select(), 'ORG'));
+    
+            //대상자가 변경되었다면 패널 정보를 바인딩 해주기.
+            self.userInfo_formpanel.bindTo(self.main_grid);
+            self.sub_formpanel.bindTo(self.main_grid);
         }).fail(function (xhr, status, error) {
             dews.error(xhr.responseJSON.message);
         });
     }
     
     //파이프 데이터소스에서 생성한 것처럼 드롭다운리스트에서 값의 범위에 따라 유효성 검증
+    // function CheckPeriod() {
+    //     var req_date = GetREQ_DY();
+    //     var startDateStr = self.START_DT.text(); // 예시: YYYYMMDD 형식
+    //     var endDateStr = self.END_DT.text();
+    
+    //     // 시작날짜와 종료날짜를 Date 객체로 변환
+    //     var startDate = new Date(startDateStr);
+    //     var endDate = new Date(endDateStr);
+    //     var today = new Date();
+    
+    //     if (req_date < 0) {           // 신청가능일 < 10
+    //         dews.ui.snackbar.warning("종료일은 시작일보다 작을 수 없습니다.");
+    //         return false;
+    //     } else if (startDate < today || endDate < today) {           // 신청 날짜는 오늘부터 가능하다.
+    //         dews.ui.snackbar.warning("시작일과 종료일은 오늘날짜보다 작을 수 없습니다.");
+    //         return false;
+    //     } else if (self.DNL_CD.value() === '5100') {           // 신청가능일 < 10
+    //         if (req_date > 10) {
+    //             dews.ui.snackbar.warning("10일 이내로 신청해야 합니다. 현재 신청일 : " + req_date + "일");
+    //             return false;
+    //         }
+    //     } else if (self.DNL_CD.value() === '5101') {           // 11 < 신청가능일 < 30
+    //         if (req_date < 11 || req_date > 30) {
+    //             dews.ui.snackbar.warning("11~30일 이내로 신청해야 합니다. 현재 신청일 : " + req_date + "일");
+    //             return false;
+    //         }
+    //     } else if (self.DNL_CD.value() === '5102') {    // 신청가능일 < 30 
+    //         if (req_date < 31) {
+    //             dews.ui.snackbar.warning("31일 이상 신청해야 합니다. 현재 신청일 : " + req_date + "일");
+    //             return false;
+    //         }
+    //     }
+    //     return true;
+    // }
+    
+    //위의 코드는 시간까지 비교하므로 적절하지 않음. 시간은 무시하고 날짜까지만 비교할 수 있도록 로직 수정
     function CheckPeriod() {
         var req_date = GetREQ_DY();
-        if (req_date < 0) {           // 신청가능일 < 10
+        var startDateStr = self.START_DT.text(); // 예시: YYYYMMDD 형식
+        var endDateStr = self.END_DT.text();
+    
+        // 시작날짜와 종료날짜를 Date 객체로 변환
+        var startDateParts = startDateStr.split('-');
+        var endDateParts = endDateStr.split('-');
+        var today = new Date();
+    
+        // 입력된 날짜를 YYYY, MM, DD로 분리하여 Date 객체 생성
+        var startDate = new Date(startDateParts[0], startDateParts[1] - 1, startDateParts[2]);
+        var endDate = new Date(endDateParts[0], endDateParts[1] - 1, endDateParts[2]);
+    
+        today.setHours(0, 0, 0, 0); // 시간을 00:00:00으로 설정
+    
+    
+        if (req_date < 0) { // 신청가능일 < 10
             dews.ui.snackbar.warning("종료일은 시작일보다 작을 수 없습니다.");
             return false;
-        } else if (self.DNL_CD.value() === '5100') {           // 신청가능일 < 10
+        }
+        // 더미데이터를 넣기 위해 다음 유효성 검사는 주석처리
+        else if (startDate < today || endDate < today) { // 신청 날짜는 오늘부터 가능하다.
+            dews.ui.snackbar.warning("시작일과 종료일은 오늘날짜보다 작을 수 없습니다.");
+            return false;
+        }
+        else if (self.DNL_CD.value() === '5100') { // 신청가능일 < 10
             if (req_date > 10) {
                 dews.ui.snackbar.warning("10일 이내로 신청해야 합니다. 현재 신청일 : " + req_date + "일");
                 return false;
             }
-        } else if (self.DNL_CD.value() === '5101') {           // 11 < 신청가능일 < 30
+        } else if (self.DNL_CD.value() === '5101') { // 11 < 신청가능일 < 30
             if (req_date < 11 || req_date > 30) {
                 dews.ui.snackbar.warning("11~30일 이내로 신청해야 합니다. 현재 신청일 : " + req_date + "일");
                 return false;
             }
-        } else if (self.DNL_CD.value() === '5102') {    // 신청가능일 < 30 
+        } else if (self.DNL_CD.value() === '5102') { // 신청가능일 < 30 
             if (req_date < 31) {
                 dews.ui.snackbar.warning("31일 이상 신청해야 합니다. 현재 신청일 : " + req_date + "일");
                 return false;
@@ -697,23 +1027,28 @@
         return true;
     }
     
+    
+    
     //임시저장을 눌렀을 때 신규 || 기존에 따라 데이터 처리
     function SaveTempData() {
-        var userData = self.initialData.userData;
-        var isExist = self.initialData.isExist;
+        // var userData = self.initialData.userData;
+        // var isExist = self.initialData.isExist;
     
         if (self.sub_formpanel.validate({ tooltip: true, message: '필수 항목을 입력 해주세요.' })) {
             //드롭다운리스트의 날짜 기준에 맞게 시작일과 종료일이 설정되었는지 유효성 검사
             if (!CheckPeriod()) { return false; }
     
             //기존 데이터 조회 시
-            if (isExist === true) {
-                if (self.main_ds.getDirtyDataCount() <= 0) {
+            if (isExistSub === true && self.main_grid.getCellValue(0, 'REQ_NO') != null && self.main_grid.getCellValue(0, 'REQ_NO') != undefined && self.main_grid.getCellValue(0, 'REQ_NO') != '') {
+                // if (self.main_ds.getDirtyDataCount() <= 0) {
+                if (HasChanges() <= 0) {
                     dews.ui.snackbar.warning("변경된 내용이 없습니다.");
                 } else {
                     dews.api.get(dews.url.getApiUrl("HR", "HREssodm01400_X10005Service", "update_HR_OFFAPPLY_MST_X10005MST"), {
                         async: false,
                         data: {
+                            //결재상태코드
+                            athz_st_cd: self.ATHZ_ST_CD.text(),
                             //기본키
                             company_cd: self.COMPANY_CD.text(),//회사코드
                             req_no: self.main_grid.getCellValue(0, 'REQ_NO'), // 신청번호
@@ -750,10 +1085,14 @@
                             return;
                         }
                         dews.ui.snackbar.ok("임시 저장 되었습니다.");
+                        InitBtns();
+                        //한번이라도 임시저장을 했을 경우, HasChanged()에서 비교하는 데이터를 새롭게 줘야함.
+                        isSaved = true;
+                        inputData = IsNewInputNewData();
                         // dews.ui.page.close(); // 페이지 닫기
                     });
                 }
-            } else if (isExist === false) {
+            } else if (isExistSub === false) {
                 dews.api.get(dews.url.getApiUrl("HR", "HREssodm01400_X10005Service", "insert_HR_OFFAPPLY_MST_X10005MST"), {
                     async: false,
                     data: {
@@ -769,9 +1108,10 @@
                         req_dy: self.main_grid.getCellValue(0, 'REQ_DY'),
                         bizarea_cd: self.main_grid.getCellValue(0, 'BIZAREA_CD'),
                         dept_cd: self.main_grid.getCellValue(0, 'DEPT_CD'),
-                        pstn_cd: self.main_grid.getCellValue(0, 'PSTN_CD'),
-                        ogrp_cd: self.main_grid.getCellValue(0, 'OGRP_CD'),
-                        posi_cd: self.main_grid.getCellValue(0, 'POSI_CD'),
+                        //사원정보를 불러왔을 때, 없다면 null이 아니라 undefined
+                        pstn_cd: self.main_grid.getCellValue(0, 'PSTN_CD') === undefined ? '' : self.main_grid.getCellValue(0, 'PSTN_CD'),
+                        ogrp_cd: self.main_grid.getCellValue(0, 'OGRP_CD') === undefined ? '' : self.main_grid.getCellValue(0, 'OGRP_CD'),
+                        posi_cd: self.main_grid.getCellValue(0, 'POSI_CD') === undefined ? '' : self.main_grid.getCellValue(0, 'POSI_CD'),
                         dnlgb_cd: self.main_grid.getCellValue(0, 'DNLGB_CD')
                     }
                 }).done(function (data) {
@@ -786,9 +1126,14 @@
                     dews.ui.snackbar.ok("임시 저장 되었습니다.");
                     self.main_grid.setCellValue(0, 'REQ_NO', data, false);
                     self.main_grid.setCellValue(0, 'ATHZ_ST_CD', 1, false);
+                    self.ATHZ_ST_CD.text('1');
                     self.ATHZ_ST_NM.text('임시저장');
                     // dews.ui.page.close(); // 페이지 닫기
-                    isExist = true;
+                    isExistSub = true;
+                    //신규신청 데이터의 상태관리를 위한 데이터 객체
+                    inputData = IsNewInputNewData();
+                    //임시저장 후 버튼 활성화
+                    InitBtns();
                 });
             }
         }
@@ -796,9 +1141,297 @@
     
     //직군, 직위 등의 임시값 대신 원래값으로 그리드에 저장해놓는 메서드
     //데이터가 바인딩 될 때마다 넣어주어야함.
+    //0921 GetPSTNPOSI()함수로 필요없어짐.
     function GetOriginData() {
         self.main_grid.setCellValue(0, 'PSTN_CD', self.PSTN_CD.text() === '연구원' ? '' : self.PSTN_CD.text());
         self.main_grid.setCellValue(0, 'POSI_CD', self.POSI_CD.text() === '사원' ? '' : self.POSI_CD.text());
+    }
+    
+    //서브페이지로 갈 때 add로 무조건 들어가기 때문에 getDirtyData로 관리될 수 없음.
+    //데이터 상태관리를 위한 별도의 함수 구현
+    function HasChanges() {
+        var grid = self.main_grid;
+        // 변경 여부에 따라 0 또는 1을 반환
+        let hasChanges = 0;
+    
+        // 변경 여부를 확인할 데이터
+        const newData = {
+            ATHZ_DOC_CD: grid.getCellValue(0, 'ATHZ_DOC_CD'),
+            ATHZ_ST_CD: grid.getCellValue(0, 'ATHZ_ST_CD'),
+            BIZAREA_CD: grid.getCellValue(0, 'BIZAREA_CD'),
+            COMPANY_CD: grid.getCellValue(0, 'COMPANY_CD'),
+            DEPT_CD: grid.getCellValue(0, 'DEPT_CD'),
+            DNLGB_CD: grid.getCellValue(0, 'DNLGB_CD'),
+            DNL_CD: grid.getCellValue(0, 'DNL_CD'),
+            EMP_NO: grid.getCellValue(0, 'EMP_NO'),
+            END_DT: grid.getCellValue(0, 'END_DT'),
+            KOR_NM: grid.getCellValue(0, 'KOR_NM'),
+            OGRP_CD: grid.getCellValue(0, 'OGRP_CD'),
+            ORG: grid.getCellValue(0, 'ORG'),
+            POSI_CD: grid.getCellValue(0, 'POSI_CD'),
+            PSTN_CD: grid.getCellValue(0, 'PSTN_CD'),
+            REASON_DC: grid.getCellValue(0, 'REASON_DC'),
+            REQ_DT: grid.getCellValue(0, 'REQ_DT'),
+            //일수는 시작일과 종료일에 의해 자동계산 되므로 비교할 필요x
+            // REQ_DY: grid.getCellValue(0, 'REQ_DY'),
+            REQ_EMP_NO: grid.getCellValue(0, 'REQ_EMP_NO'),
+            REQ_KOR_NM: grid.getCellValue(0, 'REQ_KOR_NM'),
+            REQ_NO: grid.getCellValue(0, 'REQ_NO'),
+            START_DT: grid.getCellValue(0, 'START_DT')
+        };
+    
+        // 초기 데이터와 새 데이터의 각 키를 비교하여 변경 여부 확인
+        var dateRegex = /\w{3} \w{3} \d{2} \d{4} \d{2}:\d{2}:\d{2} GMT\+\d{4} \(.+\)/;
+    
+        for (const key in newData) {
+            if (newData.hasOwnProperty(key))
+                //신규 신청 후 다시 저장버튼을 눌렀을 때.
+                //메인 페이지에서 넘겨 받은 데이터가 없음.
+                if (self.initialData.userData === null) {
+                    if (dateRegex.test(inputData[key]) && dateRegex.test(newData[key])) {
+                        var oldDate = new Date(inputData[key]);
+                        var newDate = new Date(newData[key]);
+                        if (oldDate.getTime() !== newDate.getTime()) {
+                            hasChanges = 1;
+                            break;
+                        }
+                    } else {
+                        if (inputData[key] !== newData[key]) {
+                            hasChanges = 1;
+                            break;
+                        }
+                    }
+                    //기존 데이터에서 임시저장을 한번도 하지 않았음. 수정했거나, 수정사항이 없는경우
+                    //메인페이지에서 넘겨받은 데이터로 비교하기.
+                } else if (!isSaved) {
+                    if (dateRegex.test(self.initialData.userData[key]) && dateRegex.test(newData[key])) {
+                        var oldDate = new Date(self.initialData.userData[key]);
+                        var newDate = new Date(newData[key]);
+                        if (oldDate.getTime() !== newDate.getTime()) {
+                            hasChanges = 1;
+                            break;
+                        }
+                    } else {
+                        if (self.initialData.userData[key] !== newData[key]) {
+                            hasChanges = 1;
+                            break;
+                        }
+                    }
+                } else if (isSaved) {
+                    //기존 데이터에서 임시저장을 한번이라도 했을 경우. 수정했거나, 수정사항이 없는경우
+                    //inputData = IsNewInputNewData();를 통해 임시저장된 데이터를 기존 데이터로 비교해주어야함.
+                    if (dateRegex.test(inputData[key]) && dateRegex.test(newData[key])) {
+                        var oldDate = new Date(inputData[key]);
+                        var newDate = new Date(newData[key]);
+                        if (oldDate.getTime() !== newDate.getTime()) {
+                            hasChanges = 1;
+                            break;
+                        }
+                    } else {
+                        if (inputData[key] !== newData[key]) {
+                            hasChanges = 1;
+                            break;
+                        }
+                    }
+                }
+        }
+    
+        return hasChanges;
+    }
+    
+    // PSTN_CD에 해당하는 PSTN_NM을 반환하는 함수
+    function GetPSTNPOSI_NM(code) {
+        // PSTN_CD가 NULL인 경우 ''을 반환
+        if (code === null) {
+            return '';
+        }
+    
+        // PSTN_CD에 해당하는 PSTN_NM을 찾아 반환
+        const position = positionData.find((item) => item.PSTN_CD === code);
+    
+        // PSTN_CD가 데이터에 없는 경우에도 ''을 반환
+        return position ? position.PSTN_NM : '';
+    }
+    function GetOGRP_NM(code) {
+        if (code === null) {
+            return '';
+        }
+    
+        const ogrp = ogrpData.find((item) => item.OGRP_CD === code);
+    
+        return ogrp ? ogrp.OGRP_NM : '';
+    }
+    
+    function InitBtns() {
+        var isExist = self.initialData.isExist;
+        var userData = self.initialData.userData;
+    
+        var isReq_no = self.main_grid.getCellValue(0, 'REQ_NO');
+    
+        //기존에 있는 데이터라면.
+        ////신규신청 후 임시저장을 눌렀다면 req_no가 있는지 체크해서 임시저장과 동일하게 세팅해주기.
+        if (isExist == true || (isReq_no !== null && isReq_no !== '' && isReq_no !== undefined)) {
+            var athzStCd_val = self.main_grid.getCellValue(0, 'ATHZ_ST_CD');
+    
+            // 결재상태가 저장일 때 => 임시저장 버튼, 신청자 변경 버튼 활성화, 결재 페이지 비활성화
+            if (athzStCd_val == '1') {
+                self.temp_save_button.enable(true);
+                self.DNL_CD.readonly(false);
+                self.START_DT.readonly(false);
+                self.END_DT.readonly(false);
+                self.REASON_DC.readonly(false);
+                self.CHANGE_REQ_USERT.enable(true);
+            } else {
+                self.temp_save_button.enable(false);
+            }
+    
+            // 결재상태가 반려, 임시저장, 일 때 => 결재 페이지 비활성화
+            if (athzStCd_val == '3') {
+                self.req_cancel_button.enable(true);
+                self.approve_button.enable(false);
+                self.DNL_CD.readonly(false);
+                self.START_DT.readonly(false);
+                self.END_DT.readonly(false);
+                self.REASON_DC.readonly(false);
+                self.CHANGE_REQ_USERT.enable(false);
+            }
+    
+    
+            // 결재상태가 저장 또는 반려 => 결재요청, 삭제 버튼 활성화
+            if (athzStCd_val == '1' || athzStCd_val == '3') {
+                self.req_button.enable(true);
+                self.delete_button.enable(true);
+            } else {
+                self.req_button.enable(false);
+                self.delete_button.enable(false);
+            }
+            // 결재상태가 임시저장, 결재완료 => 결재 취소 불가, 결재페이지 활성화
+            if (athzStCd_val == '2') {
+                self.req_cancel_button.enable(true);
+                self.approve_button.enable(true);
+            }
+            else if (athzStCd_val == '1' || athzStCd_val == '4') {
+                self.req_cancel_button.enable(false);
+                self.approve_button.enable(false);
+            }
+            // 결재상태가 결재대기이거나 결재완료인 상태는 readonly => 반려일 때도 바로 수정가능하다.
+            if (athzStCd_val == '2' || athzStCd_val == '4') {
+                self.DNL_CD.readonly(true);
+                self.START_DT.readonly(true);
+                self.END_DT.readonly(true);
+                self.REASON_DC.readonly(true);
+                self.CHANGE_REQ_USERT.enable(false);
+    
+            }
+        }
+        //신규신청이라면 결제요청, 삭제, 취소 비활성화
+        else if (isExist == false) {
+            self.approve_button.enable(false);
+            self.req_cancel_button.enable(false);
+            self.delete_button.enable(false);
+            self.req_button.enable(false);
+            self.DNL_CD.readonly(false);
+            self.START_DT.readonly(false);
+            self.END_DT.readonly(false);
+            self.REASON_DC.readonly(false);
+        }
+    }
+    
+    function IsPSTNPOSINULL() {
+        var pstn_cd = self.main_grid.getCellValue(0, 'PSTN_CD');
+        var posi_cd = self.main_grid.getCellValue(0, 'POSI_CD');
+    
+        // 둘 다 null인 경우에는 아무 작업도 하지 않음
+        if (pstn_cd === null && posi_cd === null) {
+            return;
+        }
+    
+        // pstn_cd가 null이면 posi_cd 값을 복사
+        if (pstn_cd === null || pstn_cd === '') {
+            self.PSTN_NM.text(self.POSI_NM.text());
+        }
+    
+        // posi_cd가 null이면 pstn_cd 값을 복사
+        if (posi_cd === null || posi_cd === '') {
+            self.POSI_NM.text(self.PSTN_NM.text());
+        }
+    }
+    
+    
+    function IsNewInputNewData() {
+        //신규 신청 시 넘겨 받은 데이터가 없으므로 해당 페이지에서 변경사항을 비교할 수 있는 데이터 객체를 따로 만든다.
+        var grid = self.main_grid;
+        const inputData = {
+            ATHZ_DOC_CD: grid.getCellValue(0, 'ATHZ_DOC_CD'),
+            ATHZ_ST_CD: grid.getCellValue(0, 'ATHZ_ST_CD'),
+            BIZAREA_CD: grid.getCellValue(0, 'BIZAREA_CD'),
+            COMPANY_CD: grid.getCellValue(0, 'COMPANY_CD'),
+            DEPT_CD: grid.getCellValue(0, 'DEPT_CD'),
+            DNLGB_CD: grid.getCellValue(0, 'DNLGB_CD'),
+            DNL_CD: grid.getCellValue(0, 'DNL_CD'),
+            EMP_NO: grid.getCellValue(0, 'EMP_NO'),
+            END_DT: grid.getCellValue(0, 'END_DT'),
+            KOR_NM: grid.getCellValue(0, 'KOR_NM'),
+            OGRP_CD: grid.getCellValue(0, 'OGRP_CD'),
+            ORG: grid.getCellValue(0, 'ORG'),
+            POSI_CD: grid.getCellValue(0, 'POSI_CD'),
+            PSTN_CD: grid.getCellValue(0, 'PSTN_CD'),
+            REASON_DC: grid.getCellValue(0, 'REASON_DC'),
+            REQ_DT: grid.getCellValue(0, 'REQ_DT'),
+            //일수는 시작일과 종료일에 의해 자동계산 되므로 비교할 필요x
+            // REQ_DY: grid.getCellValue(0, 'REQ_DY'),
+            REQ_EMP_NO: grid.getCellValue(0, 'REQ_EMP_NO'),
+            REQ_KOR_NM: grid.getCellValue(0, 'REQ_KOR_NM'),
+            REQ_NO: grid.getCellValue(0, 'REQ_NO'),
+            START_DT: grid.getCellValue(0, 'START_DT')
+        };
+        return inputData;
+    
+    }
+    
+    function SearchData() {
+        try {
+            dews.ui.loading.show({ // 로딩화면 보여주기
+                text: '조회중입니다.'
+            });
+            self.main_ds.read();  // 데이터소스 Read
+            dews.ui.loading.hide();
+        } catch (error) {
+            dews.ui.loading.hide();
+        }
+    }
+    
+    
+    function OpenReqPage(userData) {
+        try {
+            var dialog = dews.ui.dialog("popup", {
+                // 대화 상자(모달창) 경로
+                url: '/view/HR/ESSODM01400_X10005_Modal.html',
+                // 대화 상자(모달창) 문서 제목
+                title: '결재화면',
+                // 대화 상자(모달창) 크기 설정
+                width: 800,
+                height: 733,
+                // 대화 상자(모달창)에 전달할 데이터
+                initData: {
+                    userData: userData
+                },
+                //,대화상자(모달창) 정상적으로 종료되었을 때 전달받은 데이터를 처리하는 콜백 함수
+                ok: function (modalData) {
+                    self.main_grid.setCellValue(self.main_grid.select(), 'ATHZ_ST_CD', modalData);
+                    self.ATHZ_ST_NM.text(GetATHZ_ST_NM(modalData));
+                    InitBtns();
+                    //결재나 반려를 하게 되면 결재상태 코드가 바뀌게 되므로, HasChanged()에서 비교하는 데이터를 새롭게 줘야함.
+                    isSaved = true;
+                    inputData = IsNewInputNewData();
+                }
+            });
+            // 대화 상자(모달창) 열기
+            dialog.open();
+        } catch (error) {
+            dews.error(error);
+            console.error(error);
+        }
     }
     
     

@@ -26,7 +26,8 @@
 	<classpathentry kind="con" path="org.eclipse.m2e.MAVEN2_CLASSPATH_CONTAINER">
 		<attributes>
 			<attribute name="maven.pomderived" value="true"/>
+			<attribute name="org.eclipse.jst.component.nondependency" value=""/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="output" path="bin/com/douzone/comet/service/hr/cdmjim00100/services"/>
+	<classpathentry kind="output" path="target/classes"/>
 </classpath>

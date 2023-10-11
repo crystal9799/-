@@ -1,0 +1,164 @@
+<!--##bfe317c3-720d-4400-ba9d-8dfbdc4f231c##-->
+<!--##PAMODM01800_empCode_X10005##-->
+<!--##DkhpuJfNcns9bo8/6KC0quVUF6gfNUhrHa7Qw2veJhldp/YR9h9qS8iI5zSBAh6Or4shMZXHUJqxqPp3khVLKQ==##-->
+<!--
+  DEWS UI/UX IDE - Build Result - v1.5
+  # PageID: PAMODM01800_empCode_X10005
+  # PageTitle: 사원 도움창
+  # Server: http://localhost:8090/
+-->
+<!--
+
+-->
+
+<div class="dews-dialog-contents-area" id="">
+  <div id="conditionpanel1" class="dews-ui-condition-panel" data-dews-label-align="left">
+    <ul class="required-area">
+      <li>
+        <label class="dews-ui-multilingual">재직구분</label>
+        <span>
+          <select id="ddl1" name="ddl1" class="dews-ui-dropdownlist basic" data-dews-value-field="SYSDEF_CD" data-dews-text-field="SYSDEF_NM" data-dews-show-tooltip="true" data-dews-show-value-tooltip="true" data-dews-use-numkey="false"></select>
+        </span>
+      </li>
+      <li>
+        <label class="dews-ui-multilingual">고용형태</label>
+        <span>
+          <select id="ddl2" name="ddl2" class="dews-ui-dropdownlist basic" data-dews-value-field="SYSDEF_CD" data-dews-text-field="SYSDEF_NM" data-dews-show-tooltip="true" data-dews-show-value-tooltip="true" data-dews-use-numkey="false"></select>
+        </span>
+      </li>
+      <li>
+        <label class="dews-ui-multilingual">검색어</label>
+        <span>
+          <input id="txt1" name="txt1" type="text" class="dews-ui-textbox" />
+        </span>
+      </li>
+    </ul>
+  </div>
+  <div class="dews-ui-container-panel" data-dews-fit-bottom="true">
+    <div class="dews-container-item" data-dews-position="normal">
+      <div id="grid1" class="dews-ui-grid"></div>
+    </div>
+  </div>
+</div>
+
+<style>
+    
+</style>
+
+
+
+<script>
+  dews.ready(function () {
+    var self = this;
+    self.version = self.version || {};
+    self.version.view='1.0';
+
+
+    /*7fc97d16-ddd3-48ea-853d-5ee6474250cd*/ var thisDlg = dews.ui.dialog(self.$content.prop("id"));
+    
+    
+    
+    self.custom_emp_ds = dews.ui.dataSource('custom_emp_ds', {
+      grid: true,
+      transport: {
+        read: {
+          url: dews.url.getApiUrl('HR', 'HRPamodm01800_X10005Service', 'list_HR_EMP_MST')
+        }
+      },
+      schema: {
+        model: {
+          fields: [
+            { field: 'DEPT_CD', editable: false, dataType: 'string' }, 
+            { field: 'EMP_NO', editable: false, dataType: 'string' }, 
+            { field: 'KOR_NM', editable: false, dataType: 'string' }, 
+            { field: 'JNCO_DT', editable: false, dataType: 'string' }
+          ]
+    
+        }
+      }
+    });
+    
+    
+    self.ddl1.setDataSource(self.pipeDataSource1_P00750);
+    self.ddl2.setDataSource(self.pipeDataSource1_P00010);
+    dews.ui.grid(self.$grid1, {
+      dataSource: self.custom_emp_ds,
+      selectable: true,
+      sortable: false,
+      copyMode: 'cell',
+      columns: [
+        {
+          field: 'EMP_NO',
+          title: '사번코드',
+          width: 80,
+          editor: {
+            type: 'codepicker',
+            helpCode: 'H_ME_SHEMP_MST_C',
+            codeField: 'EMP_NO',
+            textField: 'KOR_NM',
+            helpTitle: '작업자별 레시피 조회 도움창',
+            helpSize: 'largebig'
+          }
+        },
+        {
+          field: 'KOR_NM',
+          title: '사원성명',
+          width: 80
+        },
+        {
+          field: 'JNCO_DT',
+          title: '입사일',
+          width: 80,
+          formats: {
+            type: 'date',
+            format: 'yyyy-MM-dd'
+          },
+          editor: {
+            type: 'date',
+            format: 'yyyy-MM-dd'
+          }
+        },
+        {
+          field: 'DEPT_CD',
+          title: '부서코드',
+          width: 80
+        }
+      ],
+      fixed: {
+        colCount: 0,
+        rightColCount: 0
+      }
+    });
+    
+    
+    
+    
+    /*b480bc46-5075-4494-95f6-a1efdef7890b*/ thisDlg.buttons.ok.on('click', function (e) {
+        try {
+            // 체크된 행 인덱스를 가진 배열
+            var checkArray = self.grid1.getCheckedIndex();
+            console.log("checkArray: " + checkArray);
+    
+            if (checkArray.length == 0) { // 체크된 행이 없다면
+                dews.ui.snackbar.warning("체크된 행이 없습니다."); // 스낵바 경고 띄우기
+                return;
+            }
+    
+            dews.ui.snackbar.info("시작일과 종료일을 입력하세요.")
+    
+            console.log("sendBataItems: ");
+            console.log(self.grid1.dataItems(self.grid1.getCheckedIndex()));
+            thisDlg.ok(self.grid1.dataItems(self.grid1.getCheckedIndex()));
+    
+        } catch (error) {
+            console.error(error);
+            dews.error(error);
+        }
+    });
+    
+    
+
+  
+  });
+
+</script>

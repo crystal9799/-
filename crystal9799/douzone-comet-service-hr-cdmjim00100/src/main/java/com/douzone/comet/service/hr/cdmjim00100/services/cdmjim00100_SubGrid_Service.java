@@ -148,6 +148,7 @@ public class cdmjim00100_SubGrid_Service extends DzCometService {
 	    		for(cdmjim00100_left_grid update_data: update_List) {
 	    			System.out.println("업데이트 데이터 정보 : ====== > " + update_data.toString());
 	    			update_data.setIP(request.getRemoteAddr());
+	    			update_data.setCompany_cd(this.getCompanyCode());
 	    			update_data.setUSER_ID(getUserId());
 	    			subgrid_dao.updatecdmjim00100_left_grid(update_data);
 	    		}	    		

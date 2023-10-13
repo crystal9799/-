@@ -91,11 +91,19 @@
 			#{COMPANY_CD},
 			#{AELM_CD},
 			#{ACLF_NO},
-			(
-			SELECT MAX(VER_CD) 
-			FROM HR_JOBDIVBASE_MST hjm 
-			WHERE ACLF_NO = #{aclf_no}
-			),
+			<choose>
+		        <when test="VER_CD == null">
+		            (
+		            SELECT NVL(MAX(VER_CD),SUBSTR(SYSDATE,0,2)||'V'||'1')
+		            FROM HR_JOBDIVBASE_MST hjm 
+		            WHERE ACLF_NO = #{aclf_no}
+		            AND SUBSTR(VER_CD,0,2) = SUBSTR(SYSDATE,0,2)
+		            )
+		        </when>
+		        <otherwise>
+		            #{VER_CD}
+		        </otherwise>
+		    </choose>,
 			#{AELM_NM},
 			#{AELM_LV},
 			<choose>
@@ -154,11 +162,19 @@
 			#{COMPANY_CD},
 			#{AELM_CD},
 			#{ACLF_NO},
-			(
-			SELECT MAX(VER_CD) 
-			FROM HR_JOBDIVBASE_MST hjm 
-			WHERE ACLF_NO = #{aclf_no}
-			),
+			<choose>
+		        <when test="VER_CD == null">
+		            (
+		            SELECT NVL(MAX(VER_CD),SUBSTR(SYSDATE,0,2)||'V'||'1')
+		            FROM HR_JOBDIVBASE_MST hjm 
+		            WHERE ACLF_NO = #{aclf_no}
+		            AND SUBSTR(VER_CD,0,2) = SUBSTR(SYSDATE,0,2)
+		            )
+		        </when>
+		        <otherwise>
+		            #{VER_CD}
+		        </otherwise>
+		    </choose>,
 			#{AELM_NM},
 			#{AELM_LV},
 			<choose>
@@ -243,11 +259,53 @@
 						          AND AELM_CD = #{AELM_CD}
 						          AND PCFM_CD = #{PCFM_CD}
 				 		)
-		SELECT #{COMPANY_CD}, #{ACLF_NO}, #{VER_CD}, #{AELM_CD}, #{PCFM_CD}, 1, NEED_RQISIT_CD, #{NEED_RQISIT_NM1}, #{USER_ID}, #{IP}, SYSDATE FROM Filtered
+		SELECT #{COMPANY_CD}, #{ACLF_NO}, 
+		<choose>
+	        <when test="VER_CD == null">
+	            (
+	            SELECT NVL(MAX(VER_CD),SUBSTR(SYSDATE,0,2)||'V'||'1')
+	            FROM HR_JOBDIVBASE_MST hjm 
+	            WHERE ACLF_NO = #{aclf_no}
+	            AND SUBSTR(VER_CD,0,2) = SUBSTR(SYSDATE,0,2)
+	            )
+	        </when>
+	        <otherwise>
+	            #{VER_CD}
+	        </otherwise>
+    	</choose>, 
+			#{AELM_CD}, #{PCFM_CD}, 1, NEED_RQISIT_CD, #{NEED_RQISIT_NM1}, #{USER_ID}, #{IP}, SYSDATE FROM Filtered
 		UNION ALL
-		SELECT #{COMPANY_CD}, #{ACLF_NO}, #{VER_CD}, #{AELM_CD}, #{PCFM_CD}, 2, NEED_RQISIT_CD, #{NEED_RQISIT_NM2}, #{USER_ID}, #{IP}, SYSDATE FROM Filtered
+		SELECT #{COMPANY_CD}, #{ACLF_NO}, 
+		<choose>
+	        <when test="VER_CD == null">
+	            (
+	            SELECT NVL(MAX(VER_CD),SUBSTR(SYSDATE,0,2)||'V'||'1')
+	            FROM HR_JOBDIVBASE_MST hjm 
+	            WHERE ACLF_NO = #{aclf_no}
+	            AND SUBSTR(VER_CD,0,2) = SUBSTR(SYSDATE,0,2)
+	            )
+	        </when>
+        <otherwise>
+            #{VER_CD}
+        </otherwise>
+    </choose>
+			, #{AELM_CD}, #{PCFM_CD}, 2, NEED_RQISIT_CD, #{NEED_RQISIT_NM2}, #{USER_ID}, #{IP}, SYSDATE FROM Filtered
 		UNION ALL
-		SELECT #{COMPANY_CD}, #{ACLF_NO}, #{VER_CD}, #{AELM_CD}, #{PCFM_CD}, 3, NEED_RQISIT_CD, #{NEED_RQISIT_NM3}, #{USER_ID}, #{IP}, SYSDATE FROM Filtered
+		SELECT #{COMPANY_CD}, #{ACLF_NO}, 
+		<choose>
+	        <when test="VER_CD == null">
+	            (
+	            SELECT NVL(MAX(VER_CD),SUBSTR(SYSDATE,0,2)||'V'||'1')
+	            FROM HR_JOBDIVBASE_MST hjm 
+	            WHERE ACLF_NO = #{aclf_no}
+	            AND SUBSTR(VER_CD,0,2) = SUBSTR(SYSDATE,0,2)
+	            )
+	        </when>
+	        <otherwise>
+	            #{VER_CD}
+	        </otherwise>
+	    </choose>
+			, #{AELM_CD}, #{PCFM_CD}, 3, NEED_RQISIT_CD, #{NEED_RQISIT_NM3}, #{USER_ID}, #{IP}, SYSDATE FROM Filtered
 	</insert>
 	
 	<update id="updatecdmjim00100_right2_grid1" parameterType="com.douzone.comet.service.hr.cdmjim00100.models.cdmjim00100_right_grid2">

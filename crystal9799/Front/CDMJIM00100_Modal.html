@@ -1,6 +1,6 @@
-<!--##2356436b-7b61-47fd-94c1-c8dde8af85ad##-->
+<!--##7299e599-33f3-4962-9db4-9f69b516df13##-->
 <!--##CDMJIM00100_Modal##-->
-<!--##EomJP/JBe4FdX1Q0iRQjmLf52xCyYivJEuGShFQg13M0jRhNovujaV3EiUALAx7u##-->
+<!--##Lkkos4gdkEt1NwzFJol5IBJ2uLqRnwDqSULLbUpiGkmt8pGlyzojuYpUSMfx4UuR##-->
 <!--
   DEWS UI/UX IDE - Build Result - v1.5
   # PageID: CDMJIM00100_Modal
@@ -11,7 +11,7 @@
 
 -->
 
-<div id="INF_PANEL" class="dews-ui-condition-panel" data-dews-item-width="500">
+<div id="INF_PANEL" class="dews-ui-condition-panel">
   <ul class="required-area">
     <li>
       <label class="dews-ui-multilingual">검색어</label>
@@ -22,8 +22,6 @@
   </ul>
 </div>
 <div class="dews-button-group" style="text-align: right;">
-  <button id="add_btn" class="dews-ui-button">추가</button>
-  <button id="delete_btn" class="dews-ui-button">삭제</button>
   <h2 class="dews-ui-title">직무분류선택</h2>
 </div>
 <div class="dews-ui-container-panel">
@@ -37,7 +35,7 @@
 <div class="dews-button-group" style="text-align: right;">
   <h2 class="dews-ui-title">선택내역</h2>
 </div>
-<div class="dews-ui-container-panel">
+<div class="dews-ui-container-panel" style="width: 740px; height: 100px;">
   <div class="dews-container-item" data-dews-position="normal">
     <div id="INSERT_GRID" class="dews-ui-grid"></div>
   </div>
@@ -324,12 +322,6 @@
             self.Search_Info.text('');
         }
     });
-    self.$add_btn.on('click', /*c4ef9a55-d674-40d2-aaaa-133eb1ce97ac*/ function (e) {
-        self.detail_grid.addRow();
-    });
-    self.$delete_btn.on('click', /*86fc1b80-97e1-40ba-9184-970f08d5dee5*/ function (e) {
-        self.detail_grid.removeRow(self.detail_grid.select());
-    });
     dews.ui.grid(self.$KND_GRID, {
       dataSource: self.KND_DS,
       height: 277,
@@ -453,6 +445,7 @@
     });
     dews.ui.grid(self.$INSERT_GRID, {
       dataSource: self.INSERT_DS,
+      height: 100,
       rowNo: false,
       sortable: false,
       checkable: false,
